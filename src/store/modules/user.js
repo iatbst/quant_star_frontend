@@ -33,7 +33,9 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
+        // alert(JSON.stringify(response))
+        const data = response
+        // alert(data)
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()
@@ -44,25 +46,39 @@ const actions = {
   },
 
   // get user info
+  // 暂时没有权限接口
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          return reject('Verification failed, please Login again.')
-        }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+      const avatarUrl = 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
+      const data = {
+        roles: state.roles,
+        name: state.name,
+        avatar: avatarUrl
+      }
+      commit('SET_AVATAR', avatarUrl)
+      resolve(data)
     })
   },
+
+  // getInfo({ commit, state }) {
+  //   return new Promise((resolve, reject) => {
+  //     getInfo(state.token).then(response => {
+  //       const { data } = response
+  //
+  //       if (!data) {
+  //         return reject('Verification failed, please Login again.')
+  //       }
+  //
+  //       const { name, avatar } = data
+  //
+  //       commit('SET_NAME', name)
+  //       commit('SET_AVATAR', avatar)
+  //       resolve(data)
+  //     }).catch(error => {
+  //       reject(error)
+  //     })
+  //   })
+  // },
 
   // user logout
   logout({ commit, state }) {

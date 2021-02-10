@@ -29,15 +29,26 @@ module.exports = {
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
-  devServer: {
-    port: port,
-    open: true,
-    overlay: {
-      warnings: false,
-      errors: true
-    },
-    before: require('./mock/mock-server.js')
-  },
+  // devServer: {
+  //   port: port,
+  //   open: true,
+  //   overlay: {
+  //     warnings: false,
+  //     errors: true
+  //   },
+  //   // before: require('./mock/mock-server.js'),
+  //   proxy: {
+  //     '/api': {
+  //       target: 'http://localhost:8080', // 后台端口地址
+  //       changeOrigin: true, // 将基于名称的虚拟托管网站的选项，如果不配置，请求会报404  如果接口跨域，需要进行这个参数配置
+  //       ws: true, // true / false，是否代理websockets
+  //       secure: false, // 如果是https接口，需要配置这个参数
+  //       pathRewrite: {
+  //         '^/api': ''
+  //       }
+  //     }
+  //   }
+  // },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
