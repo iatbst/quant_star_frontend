@@ -8,27 +8,52 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="ID" width="95">
-        <template slot-scope="scope">
-          {{ scope.$index }}
-        </template>
-      </el-table-column>
 
-      <el-table-column label="Name">
+      <el-table-column label="名称">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
 
-      <el-table-column label="Exchange" width="110" align="center">
+      <el-table-column label="类型">
         <template slot-scope="scope">
-          <span>{{ scope.row.exchange.name }}</span>
+          {{ scope.row.product_type }}
         </template>
       </el-table-column>
 
-      <el-table-column label="Gateway" width="110" align="center">
+      <el-table-column label="交易所">
         <template slot-scope="scope">
-          <span>{{ scope.row.gateway.name }}</span>
+          {{ scope.row.exchange.name }}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="代码">
+        <template slot-scope="scope">
+          {{ scope.row.symbol }}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="平台代码">
+        <template slot-scope="scope">
+          {{ scope.row.exchange_symbol }}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="子类">
+        <template slot-scope="scope">
+          {{ scope.row.sub_type }}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="结算资产">
+        <template slot-scope="scope">
+          {{ scope.row.settle_currency }}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="交易单位">
+        <template slot-scope="scope">
+          {{ scope.row.size_type }}
         </template>
       </el-table-column>
     </el-table>
@@ -36,7 +61,7 @@
 </template>
 
 <script>
-import { getWorkerList } from '@/api/worker'
+import { getProductList } from '@/api/product'
 
 export default {
   filters: {
@@ -61,7 +86,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getWorkerList().then(response => {
+      getProductList().then(response => {
         // console.log(response)
         this.list = response.results
         this.listLoading = false

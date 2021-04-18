@@ -1,18 +1,18 @@
 import request from '@/utils/request'
 
-export function getWorkerList(params) {
+export function getSignalPointList(params) {
   return request({
     // 注意要带上结尾的'/' ！
-    url: '/workers/',
+    url: '/signal-points/',
     method: 'get',
     params
   })
 }
 
-export function getWorkerListByPortfolio(pfo_id) {
+export function getSignalPointListByWorker(worker_id) {
   return request({
     // 注意要带上结尾的'/' ！
-    url: '/workers/' + '?portfolio_id=' + pfo_id,
+    url: '/signal-points/?ordering=-sig_ts' + '&worker_id=' + worker_id,
     method: 'get'
   })
 }

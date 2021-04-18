@@ -15,6 +15,8 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import moment from 'moment' // 浏览器本地时间转换(后端都是UTC时间)
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

@@ -8,11 +8,6 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="ID" width="95">
-        <template slot-scope="scope">
-          {{ scope.$index }}
-        </template>
-      </el-table-column>
 
       <el-table-column label="Name">
         <template slot-scope="scope">
@@ -20,23 +15,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Exchange" width="110" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.exchange.name }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Gateway" width="110" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.gateway.name }}</span>
-        </template>
-      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
-import { getWorkerList } from '@/api/worker'
+import { getExchangeList } from '@/api/exchange'
 
 export default {
   filters: {
@@ -61,7 +45,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getWorkerList().then(response => {
+      getExchangeList().then(response => {
         // console.log(response)
         this.list = response.results
         this.listLoading = false

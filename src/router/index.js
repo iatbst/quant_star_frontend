@@ -84,6 +84,66 @@ export const constantRoutes = [
   },
 
   {
+    path: '/objects',
+    component: Layout,
+    redirect: '/objects/workers',
+    name: '核心对象',
+    meta: { title: '核心对象', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'workers',
+        name: 'Workers',
+        component: () => import('@/views/worker/index'),
+        meta: { title: '算法工人', icon: 'table' }
+      },
+      {
+        path: 'exchanges',
+        name: 'Exchanges',
+        component: () => import('@/views/exchange/index'),
+        meta: { title: '交易所', icon: 'table' }
+      },
+      {
+        path: 'products',
+        name: 'Products',
+        component: () => import('@/views/product/index'),
+        meta: { title: '交易品种', icon: 'table' }
+      }
+    ]
+  },
+
+  {
+    path: '/worker-runs',
+    component: Layout,
+    redirect: '/worker-runs',
+    name: '策略运行',
+    meta: { title: '策略运行', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'worker-runs',
+        name: 'WorkerRuns',
+        component: () => import('@/views/worker_run/index'),
+        meta: { title: '策略运行', icon: 'table' }
+      }
+    ]
+  },
+
+  {
+    path: '/monitors',
+    component: Layout,
+    redirect: '/monitors',
+    name: '系统监控',
+    meta: { title: '系统监控', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'monitors',
+        name: 'Monitors',
+        component: () => import('@/views/monitor/index'),
+        meta: { title: '系统监控', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/form',
     component: Layout,
     children: [
