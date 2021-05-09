@@ -43,7 +43,8 @@ module.exports = {
     // before: require('./mock/mock-server.js'),
     proxy: {
       '/api': {
-        target: 'http://localhost:8080', // 后台端口地址
+        // target: 'http://localhost:8080', // 后台端口地址
+        target: 'http://ec2-54-169-201-152.ap-southeast-1.compute.amazonaws.com:8000',
         changeOrigin: true, // 将基于名称的虚拟托管网站的选项，如果不配置，请求会报404  如果接口跨域，需要进行这个参数配置
         ws: true, // true / false，是否代理websockets
         secure: false, // 如果是https接口，需要配置这个参数
