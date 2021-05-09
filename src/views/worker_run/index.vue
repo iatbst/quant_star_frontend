@@ -305,13 +305,11 @@ export default {
       this.portfolioListLoading = true
       for (var i = 0; i < this.pfo_hosts.length; i++){
         getPortfolios(this.pfo_hosts[i]).then(response => {
-          this.portfolioList += response.results
-          this.portfolioListLoading = false
+          this.portfolioList = this.portfolioList.concat(response.results)
           if (this.portfolioList.length == this.pfo_hosts.length){
             // pfo加载完成
             this.portfolioListLoading = false
             this.choosePortfolio(this.portfolioList[0])
-            debugger
           }
         })
       }
