@@ -199,7 +199,7 @@
 
 
 <script>
-import { getPortfolioList, getPortfolios } from '@/api/portfolio'
+import { getPortfolios } from '@/api/portfolio'
 import { getWorkersByPfo } from '@/api/worker'
 import { getSignalPointsByWorker } from '@/api/signal_point'
 import { getSubOrdersByParentOrder } from '@/api/order'
@@ -303,7 +303,7 @@ export default {
     },
     fetchPortfolios() {
       this.portfolioListLoading = true
-      for (var i = 0; i <= this.pfo_hosts.length; i++){
+      for (var i = 0; i < this.pfo_hosts.length; i++){
         getPortfolios(this.pfo_hosts[i]).then(response => {
           this.portfolioList += response.results
           this.portfolioListLoading = false
