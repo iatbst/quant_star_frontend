@@ -11,7 +11,7 @@
           >
             <el-table-column align="center" label="投资组合">
               <template slot-scope="scope">
-                <el-button style="width: 100%" type="primary" v-on:click="fetchWorkersByPortfolioId(scope.row.id)" plain>
+                <el-button style="width: 100%" type="primary" v-on:click="fetchWorkersByPfo(scope.row)" plain>
                   {{ scope.row.name }}
                 </el-button>
               </template>
@@ -32,7 +32,7 @@
           >
             <el-table-column align="center" label="策略工人">
               <template slot-scope="scope">
-                <el-button style="width: 100%" type="primary" v-on:click="fetchSignalPointListByWorker(scope.row.id)" plain>
+                <el-button style="width: 100%" type="primary" v-on:click="fetchSignalPointsByWorker(scope.row)" plain>
                   {{ scope.row.name }}
                 </el-button>
               </template>
@@ -336,7 +336,7 @@ export default {
       this.orderJson = JSON.stringify(order,null,2)
       this.dialogOrderJsonVisible = true
     },
-    fetchLogListByWorker(worker, ts) {
+    fetchLogsByWorker(worker, ts) {
       this.logListLoading = true
       // TODO: 优化datetime的操作
       var ts_obj = new Date(ts)
