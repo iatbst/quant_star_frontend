@@ -31,7 +31,7 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     disableHostCheck: true,
-  }
+  },
   // devServer: {
   //   port: port,
   //   open: true,
