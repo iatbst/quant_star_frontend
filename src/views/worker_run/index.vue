@@ -265,7 +265,7 @@ export default {
         'http://ec2-3-101-132-250.us-west-1.compute.amazonaws.com:8000/api'
       ],
 
-      portfolioList: null,
+      portfolioList: [],
       portfolioListLoading: true,
 
       workerList: null,
