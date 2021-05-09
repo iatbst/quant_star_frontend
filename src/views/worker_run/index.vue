@@ -311,6 +311,7 @@ export default {
             // pfo加载完成
             this.portfolioListLoading = false
             this.choosePortfolio(this.portfolioList[0])
+            debugger
           }
         })
       }
