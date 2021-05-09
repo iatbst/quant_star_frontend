@@ -307,10 +307,13 @@ export default {
         getPortfolios(this.pfo_hosts[i]).then(response => {
           this.portfolioList += response.results
           this.portfolioListLoading = false
+          if (this.portfolioList.length == this.pfo_hosts.length){
+            // pfo加载完成
+            this.portfolioListLoading = false
+            this.choosePortfolio(this.portfolioList[0])
+          }
         })
       }
-      this.portfolioListLoading = false
-      this.choosePortfolio(this.portfolioList[0])
     },
     choosePortfolio(pfo) {
       this.host = pfo.host
