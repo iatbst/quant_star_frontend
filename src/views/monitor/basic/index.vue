@@ -49,44 +49,44 @@
                   :data="Object.keys(monitorStatStyFeedData)"
                   element-loading-text="Loading"
               >
-                <el-table-column label="标的">
+                <el-table-column label="标的" min-width="10%">
                   <template slot-scope="scope">
                     {{ scope.row }}
                   </template>
                 </el-table-column>
 
-                <el-table-column label="Bar级别1">
+                <el-table-column label="Bar级别1" min-width="10%">
                   <template slot-scope="scope">
                     {{ Object.values(monitorStatStyFeedData[scope.row])[0].data.bar_level }}
                   </template>
                 </el-table-column>
 
-                <el-table-column label="状态">
+                <el-table-column label="状态" min-width="10%">
                   <template slot-scope="scope">
                     <span v-html="statusIcon(Object.values(monitorStatStyFeedData[scope.row])[0].status)"> </span>
                   </template>
                 </el-table-column>
 
-                <el-table-column label="更新时间">
+                <el-table-column label="更新时间" min-width="20%">
                   <template slot-scope="scope">
                     {{ Object.values(monitorStatStyFeedData[scope.row])[0].data.ts | epochToTimestamp}}
                   </template>
                 </el-table-column>
 
-                <el-table-column label="Bar级别2">
+                <el-table-column label="Bar级别2" min-width="10%">
                   <template slot-scope="scope">
                     {{ Object.values(monitorStatStyFeedData[scope.row])[1].data.bar_level }}
                   </template>
                 </el-table-column>
 
-                <el-table-column label="状态">
+                <el-table-column label="状态" min-width="10%">
                   <template slot-scope="scope">
                     <span v-html="statusIcon(Object.values(monitorStatStyFeedData[scope.row])[1].status)"> </span>
                   </template>
                 </el-table-column>
 
 
-                <el-table-column label="更新时间">
+                <el-table-column label="更新时间" min-width="20%">
                   <template slot-scope="scope">
                     {{ Object.values(monitorStatStyFeedData[scope.row])[1].data.ts | epochToTimestamp}}
                   </template>
@@ -207,7 +207,7 @@
 
 <script>
 import { getPortfolioList } from '@/api/portfolio'
-import { getMonitorStatListByPortfolio } from '@/api/monitor_stat'
+import { getBasicMonitorStatListByPortfolio } from '@/api/monitor_stat'
 import moment from 'moment'
 
 export default {
@@ -292,7 +292,7 @@ export default {
     fetchMonitorStatsByPortfolioId(pfo_id) {
       //this.clearMonitorStatData()
       this.monitorStatListLoading = true
-      getMonitorStatListByPortfolio(pfo_id).then(response => {
+      getBasicMonitorStatListByPortfolio(pfo_id).then(response => {
         this.monitorStatList = response.results
         this.monitorStatListLoading = false
         this.parseMonitorStatList()

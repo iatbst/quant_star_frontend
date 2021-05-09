@@ -9,10 +9,12 @@ export function getWorkerList(params) {
   })
 }
 
-export function getWorkerListByPortfolio(pfo_id) {
+export function getWorkersByPfo(pfo) {
+  var url = ((pfo.host == null) ? '' : pfo.host + '/api/workers/?portfolio_id=' + pfo.id)
   return request({
     // 注意要带上结尾的'/' ！
-    url: '/workers/' + '?portfolio_id=' + pfo_id,
+    // url: '/workers/' + '?portfolio_id=' + pfo_id,
+    url: url,
     method: 'get'
   })
 }

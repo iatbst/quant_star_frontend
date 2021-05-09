@@ -69,39 +69,16 @@
                       </el-col>
                      <el-col :span="13">
                         <el-button style="float: right; padding: 3px 0" type="text"
-                                   v-on:click="fetchLogListByWorker(currentWorkerId, scope.row.sig_ts)" plain>
+                                   v-on:click="fetchLogsByWorker(currentWorker, scope.row.sig_ts)" plain>
                         日志</el-button>
                       </el-col>
                     </el-row>
                   </div>
 
-                  <div v-for="order in scope.row.orders" :key="order.sys_id" class="text item">
-                    <el-row @click.native="showOrderJsonDialog(order)" style="cursor: pointer" v-if="order.exec_algo == 'simple'">
-                      <!-- 简单订单 -->
-                      <el-col :span="2">
-                        <span v-html="statusIcon(order.status)"> </span>
-                      </el-col>
-                      <el-col :span="3" align="left">
-                        {{ order.order_type | chineseString}}:{{ order.side | chineseString}} ({{ order.id }})
-                      </el-col>
-                      <el-col :span="5" align="left">
-                        {{ order.created_ts | formatTimestamp }}
-                      </el-col>
-                      <el-col :span="3" align="left">
-                        {{ String(order.price) }}
-                      </el-col>
-                      <el-col :span="2" align="left">
-                        {{ order.orig_type }}
-                      </el-col>
-                      <el-col :span="8" align="left">
-                        {{ order.size }} / <b>{{ order.exec_size }}</b> ({{ String(order.exec_avg_price) }})
-                      </el-col>
-                      <el-col :span="1"></el-col>
-                    </el-row>
-                    <el-row v-else>
+                  <div v-for="order in scope.row.orders" :key="order.sys_id">
+                    <el-row>
                       <!-- 算法订单 -->
-                      <el-col :span="2" @click.native="showOrderJsonDialog(order)" style="cursor: pointer"
-                              v-html="statusIcon(order.status)">
+                      <el-col :span="2" @click.native="showOrderJsonDialog(order)" style="cursor: pointer" v-html="statusIcon(order.status)">
                       </el-col>
                       <el-col :span="3" align="left">
                         {{ order.order_type | chineseString}}:{{ order.side | chineseString}} ({{ order.id }})
@@ -109,11 +86,13 @@
                       <el-col :span="5" align="left">
                         {{ order.created_ts | formatTimestamp}}
                       </el-col>
+                      
                       <el-col :span="10" align="left">
                         {{ order.size }} / <b>{{ order.exec_size }}</b> ({{ String(order.exec_avg_price) }})
                       </el-col>
                       <el-col :span="3" align="right">
-                        <el-button style="margin-top: -6px" type="text" @click="fetchSubOrderListByParentOrder(order)">子订单</el-button>
+                        <el-button style="margin-top: -6px" type="text" @click="showOrderJsonDialog(order)" v-if="order.exec_algo == 'simple'">JSON</el-button>
+                        <el-button style="margin-top: -6px" type="text" @click="fetchSubOrdersByParentOrder(order)" v-else>子订单</el-button>
                       </el-col>
                       <el-col :span="1"></el-col>
                     </el-row>
@@ -221,10 +200,10 @@
 
 <script>
 import { getPortfolioList } from '@/api/portfolio'
-import { getWorkerList, getWorkerListByPortfolio } from '@/api/worker'
-import { getSignalPointListByWorker } from '@/api/signal_point'
-import { getSubOrderListByParentOrder } from '@/api/order'
-import { getLogListByWorkerAndTs } from '@/api/log'
+import { getWorkersByPfo } from '@/api/worker'
+import { getSignalPointsByWorker } from '@/api/signal_point'
+import { getSubOrdersByParentOrder } from '@/api/order'
+import { getLogsByWorkerAndTs } from '@/api/log'
 import moment from 'moment'
 
 export default {
@@ -264,7 +243,15 @@ export default {
         cs = '关仓'
       } else if (s === 'adjust'){
         cs = '调整'
-      } else {
+      } else if (s === 'lose_stop'){
+        cs = '止损'
+      } else if (s === 'increase'){
+        cs = '补仓'
+      } else if (s === 'decrease'){
+        cs = '减仓'
+      } else if (s === 'rollback'){
+        cs = '回撤'
+      }else {
         cs = s
       }
       return cs
@@ -272,12 +259,14 @@ export default {
   },
   data() {
     return {
+      host: null,
+
       portfolioList: null,
       portfolioListLoading: true,
 
       workerList: null,
       workerListLoading: true,
-      currentWorkerId: null,
+      currentWorker: null,
 
       signalPointList: null,
       signalPointListLoading: true,
@@ -314,29 +303,29 @@ export default {
       getPortfolioList().then(response => {
         this.portfolioList = response.results
         this.portfolioListLoading = false
-        this.fetchWorkersByPortfolioId(this.portfolioList[0].id)
+        this.fetchWorkersByPfo(this.portfolioList[0])
       })
     },
-    fetchWorkersByPortfolioId(pfo_id) {
+    fetchWorkersByPfo(pfo) {
       this.workerListLoading = true
-      getWorkerListByPortfolio(pfo_id).then(response => {
+      this.host = pfo.host
+      getWorkersByPfo(pfo).then(response => {
         this.workerList = response.results
         this.workerListLoading = false
-        this.fetchSignalPointListByWorker(this.workerList[0].id)
+        this.fetchSignalPointsByWorker(this.workerList[0])
       })
     },
-    fetchSignalPointListByWorker(worker_id) {
+    fetchSignalPointsByWorker(worker) {
       this.signalPointListLoading = true
-      getSignalPointListByWorker(worker_id).then(response => {
+      getSignalPointsByWorker(worker, this.host).then(response => {
         this.signalPointList = response.results
         this.signalPointListLoading = false
-        this.currentWorkerId = worker_id
+        this.currentWorker = worker
       })
     },
-    fetchSubOrderListByParentOrder(order) {
-      const order_id = order.id
+    fetchSubOrdersByParentOrder(order) {
       this.subOrderListLoading = true
-      getSubOrderListByParentOrder(order_id).then(response => {
+      getSubOrdersByParentOrder(order).then(response => {
         this.dialogSubOrdersVisible = true
         this.subOrderList = response.results
         this.subOrderListLoading = false
@@ -347,7 +336,7 @@ export default {
       this.orderJson = JSON.stringify(order,null,2)
       this.dialogOrderJsonVisible = true
     },
-    fetchLogListByWorker(worker_id, ts) {
+    fetchLogListByWorker(worker, ts) {
       this.logListLoading = true
       // TODO: 优化datetime的操作
       var ts_obj = new Date(ts)
@@ -357,7 +346,7 @@ export default {
       max_ts = new Date(max_ts)
       min_ts = moment(min_ts).format("YYYY-MM-DD HH:mm:ss")
       max_ts = moment(max_ts).format("YYYY-MM-DD HH:mm:ss")
-      getLogListByWorkerAndTs(worker_id, min_ts, max_ts).then(response => {
+      getLogsByWorkerAndTs(worker, min_ts, max_ts, this.host).then(response => {
         this.dialogLogVisible = true
         this.logList = response.results
         this.logListLoading = false

@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function getLogListByWorkerAndTs(worker_id, min_ts, max_ts) {
+export function getLogsByWorkerAndTs(worker, min_ts, max_ts, host=null) {
+  var url = ((host == null) ? '' : host + '/api/logs/' + '?worker_id=' + worker.id + '&ts__gte=' + min_ts + '&ts__lte=' + max_ts)
   return request({
     // 注意要带上结尾的'/' ！
-    url: '/logs/' + '?worker_id=' + worker_id + '&ts__gte=' + min_ts + '&ts__lte=' + max_ts,
+    url: url,
     method: 'get'
   })
 }

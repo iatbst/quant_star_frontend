@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function getSubOrderListByParentOrder(order_id) {
+export function getSubOrdersByParentOrder(order, host=null) {
+  var url = ((host == null) ? '' : host + '/api/orders/' + '?parent_order_id=' + order.id)
   return request({
     // 注意要带上结尾的'/' ！
-    url: '/orders/' + '?parent_order_id=' + order_id,
+    url: url,
     method: 'get'
   })
 }

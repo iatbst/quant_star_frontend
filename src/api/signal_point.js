@@ -9,10 +9,11 @@ export function getSignalPointList(params) {
   })
 }
 
-export function getSignalPointListByWorker(worker_id) {
+export function getSignalPointsByWorker(worker, host=null) {
+  var url = ((host == null) ? '' : host + '/api/signal-points/?ordering=-sig_ts' + '&worker_id=' + worker.id)
   return request({
     // 注意要带上结尾的'/' ！
-    url: '/signal-points/?ordering=-sig_ts' + '&worker_id=' + worker_id,
+    url: url,
     method: 'get'
   })
 }

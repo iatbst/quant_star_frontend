@@ -130,15 +130,27 @@ export const constantRoutes = [
   {
     path: '/monitors',
     component: Layout,
-    redirect: '/monitors',
+    redirect: '/monitors/basics',
     name: '系统监控',
     meta: { title: '系统监控', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'monitors',
-        name: 'Monitors',
-        component: () => import('@/views/monitor/index'),
-        meta: { title: '系统监控', icon: 'table' }
+        path: 'basics',
+        name: 'Basics',
+        component: () => import('@/views/monitor/basic/index'),
+        meta: { title: '基础监控', icon: 'table' }
+      },
+      {
+        path: 'positions_signals',
+        name: 'Positions_Signals',
+        component: () => import('@/views/monitor/position_signal/index'),
+        meta: { title: '仓位/信号', icon: 'table' }
+      },
+      {
+        path: 'errors',
+        name: 'Errors',
+        component: () => import('@/views/monitor/error/index'),
+        meta: { title: '警报事件', icon: 'table' }
       }
     ]
   },
