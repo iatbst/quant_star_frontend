@@ -11,7 +11,7 @@ export function getWorkerList(params) {
 
 export function getWorkersByPfo(pfo) {
   var req_obj = {
-    url: '/api/workers/?portfolio_id=' + pfo.id,
+    url: '/workers/?portfolio_id=' + pfo.id,
     method: 'get'
   }
   if (pfo.host) {

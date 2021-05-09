@@ -11,7 +11,7 @@
           >
             <el-table-column align="center" label="投资组合">
               <template slot-scope="scope">
-                <el-button style="width: 100%" type="primary" v-on:click="fetchWorkersByPfo(scope.row)" plain>
+                <el-button style="width: 100%" type="primary" v-on:click="choosePortfolio(scope.row)" plain>
                   {{ scope.row.name }}
                 </el-button>
               </template>
@@ -199,7 +199,7 @@
 
 
 <script>
-import { getPortfolioList } from '@/api/portfolio'
+import { getPortfolioList, getPortfolios } from '@/api/portfolio'
 import { getWorkersByPfo } from '@/api/worker'
 import { getSignalPointsByWorker } from '@/api/signal_point'
 import { getSubOrdersByParentOrder } from '@/api/order'
@@ -260,6 +260,10 @@ export default {
   data() {
     return {
       host: null,
+      pfo_hosts: [
+        'http://ec2-54-169-201-152.ap-southeast-1.compute.amazonaws.com:8000/api',
+        'http://ec2-3-101-132-250.us-west-1.compute.amazonaws.com:8000/api'
+      ],
 
       portfolioList: null,
       portfolioListLoading: true,
@@ -286,7 +290,6 @@ export default {
   },
   created() {
     this.fetchPortfolios()
-
   },
   methods: {
     statusIcon(status) {
@@ -300,15 +303,21 @@ export default {
     },
     fetchPortfolios() {
       this.portfolioListLoading = true
-      getPortfolioList().then(response => {
-        this.portfolioList = response.results
-        this.portfolioListLoading = false
-        this.fetchWorkersByPfo(this.portfolioList[0])
-      })
+      for (var i = 0; i <= this.pfo_hosts.length; i++){
+        getPortfolios(this.pfo_hosts[i]).then(response => {
+          this.portfolioList += response.results
+          this.portfolioListLoading = false
+        })
+      }
+      this.portfolioListLoading = false
+      this.choosePortfolio(this.portfolioList[0])
+    },
+    choosePortfolio(pfo) {
+      this.host = pfo.host
+      this.fetchWorkersByPfo(pfo)
     },
     fetchWorkersByPfo(pfo) {
       this.workerListLoading = true
-      this.host = pfo.host
       getWorkersByPfo(pfo).then(response => {
         this.workerList = response.results
         this.workerListLoading = false
@@ -325,7 +334,7 @@ export default {
     },
     fetchSubOrdersByParentOrder(order) {
       this.subOrderListLoading = true
-      getSubOrdersByParentOrder(order).then(response => {
+      getSubOrdersByParentOrder(order, this.host).then(response => {
         this.dialogSubOrdersVisible = true
         this.subOrderList = response.results
         this.subOrderListLoading = false

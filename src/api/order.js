@@ -1,10 +1,10 @@
 import request from '@/utils/request'
 
 export function getSubOrdersByParentOrder(order, host=null) {
-  var url = ((host == null) ? '' : host + '/api/orders/' + '?parent_order_id=' + order.id)
-  return request({
-    // 注意要带上结尾的'/' ！
-    url: url,
+  var req_obj = {
+    url: '/orders/' + '?parent_order_id=' + order.id,
     method: 'get'
-  })
+  }
+  if (host) { req_obj['baseURL'] = host }
+  return request(req_obj)
 }
