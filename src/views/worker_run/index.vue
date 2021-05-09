@@ -303,6 +303,7 @@ export default {
     },
     fetchPortfolios() {
       this.portfolioListLoading = true
+      this.portfolioList = []
       for (var i = 0; i < this.pfo_hosts.length; i++){
         getPortfolios(this.pfo_hosts[i]).then(response => {
           this.portfolioList = this.portfolioList.concat(response.results)
