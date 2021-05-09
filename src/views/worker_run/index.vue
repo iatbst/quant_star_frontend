@@ -262,7 +262,7 @@ export default {
       host: null,
       pfo_hosts: [
         'http://ec2-3-101-132-250.us-west-1.compute.amazonaws.com:8000/api',
-        'http://ec2-13-250-43-118.ap-southeast-1.compute.amazonaws.com/api'
+        'http://ec2-13-250-43-118.ap-southeast-1.compute.amazonaws.com:8000/api'
       ],
 
       portfolioList: [],
