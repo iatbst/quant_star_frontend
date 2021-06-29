@@ -8,10 +8,11 @@
             v-loading="portfolioListLoading"
             :data="portfolioList"
             style="width: 100%"
+            height="750"
           >
             <el-table-column align="center" label="投资组合">
               <template slot-scope="scope">
-                <el-button style="width: 100%" type="primary" v-on:click="fetchPositionMonitorStatByPortfolioId(scope.row.id)" plain>
+                <el-button style="width: 100%" type="primary" v-on:click="fetchPositionMonitorStatsByPfo(scope.row)" plain>
                   {{ scope.row.name }}
                 </el-button>
               </template>
@@ -27,7 +28,7 @@
           <el-table
             v-loading="summaryTableLoading"
             :data="Object.values(positionMonitorStat)"
-            style="width: 100%; margin-bottom: 20px"
+            style="width: 100%; margin-bottom: 20px; margin-top: 45px"
             :header-cell-style="{ background: 'lightgray' }"
             border
           >
@@ -78,7 +79,7 @@
 
           <!-- 明细 -->
           <el-table
-            v-loading="summaryTableLoading"
+            v-loading="detailTableLoading"
             :data="detailTableDataList"
             style="width: 100%"
             :span-method="arraySpanMethod"
@@ -101,8 +102,11 @@
                 <span style="color:green" v-if="scope.row.sig_type == 'long'">
                   多
                 </span>
-                <span style="color:red" v-else>
+                <span style="color:red" v-else-if="scope.row.sig_type == 'short'">
                   空
+                </span>
+                <span style="color: lightgray" v-else>
+                  N/A
                 </span>
               </template>
             </el-table-column>
@@ -137,8 +141,9 @@
 
 
 <script>
-import { getPortfolioList } from '@/api/portfolio'
-import { getPositionMonitorStatListByPortfolio } from '@/api/monitor_stat'
+import config from '@/configs/system_configs'
+import { getPortfolios } from '@/api/portfolio'
+import { getPositionMonitorStatsByPortfolio } from '@/api/monitor_stat'
 import moment from 'moment'
 
 export default {
@@ -165,6 +170,7 @@ export default {
   },
   data() {
     return {
+      host: null,
       portfolioList: null,
       portfolioListLoading: true,
 
@@ -199,17 +205,27 @@ export default {
     },
     fetchPortfolios() {
       this.portfolioListLoading = true
-      getPortfolioList().then(response => {
-        this.portfolioList = response.results
-        this.portfolioListLoading = false
-        this.fetchPositionMonitorStatByPortfolioId(this.portfolioList[0].id)
-      })
+      this.portfolioList = []
+      for (var i = 0; i < config.pfoHosts.length; i++){
+        getPortfolios(config.pfoHosts[i]).then(response => {
+          this.portfolioList = this.portfolioList.concat(response.results)
+          if (this.portfolioList.length == config.pfoHosts.length){
+            // pfo加载完成
+            this.portfolioListLoading = false
+            this.choosePortfolio(this.portfolioList[0])
+          }
+        })
+      }
     },
-    fetchPositionMonitorStatByPortfolioId(pfo_id) {
+    choosePortfolio(pfo) {
+      this.host = pfo.host
+      this.fetchPositionMonitorStatsByPfo(this.portfolioList[0])
+    },
+    fetchPositionMonitorStatsByPfo(pfo) {
       //this.clearMonitorStatData()
       this.summaryTableLoading = true
       this.detailTableLoading = true
-      getPositionMonitorStatListByPortfolio(pfo_id).then(response => {
+      getPositionMonitorStatsByPortfolio(pfo).then(response => {
         this.positionMonitorStat = response.results[0].data
         this.summaryTableLoading = false
         this.detailTableLoading = false
@@ -267,3 +283,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.el-table tbody tr:hover>td { 
+    background-color:#ffffff!important
+}
+</style>

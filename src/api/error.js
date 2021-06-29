@@ -1,10 +1,11 @@
 import request from '@/utils/request'
 
-export function getErrorListByPortfolio(pfo_id) {
-  return request({
-    // 注意要带上结尾的'/' ！
+export function getErrorsByPortfolio(pfo) {
+  var req_obj = {
     url: '/errors/',
     method: 'get'
-  })
+  }
+  if (pfo.host) { req_obj['baseURL'] = pfo.host }
+  return request(req_obj)
 }
 

@@ -1,17 +1,9 @@
 import request from '@/utils/request'
 
-export function getWorkerList(params) {
-  return request({
-    // 注意要带上结尾的'/' ！
-    url: '/workers/',
-    method: 'get',
-    params
-  })
-}
 
 export function getWorkersByPfo(pfo) {
   var req_obj = {
-    url: '/workers/?portfolio_id=' + pfo.id,
+    url: '/workers/?status=normal&portfolio_id=' + pfo.id,
     method: 'get'
   }
   if (pfo.host) {

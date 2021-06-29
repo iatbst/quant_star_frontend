@@ -56,57 +56,33 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
+    path: '/balances',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    redirect: '/balances/summary',
+    name: '资金管理',
+    meta: { title: '资金管理', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      },
-      {
-        path: 'worker',
-        name: 'Worker',
-        component: () => import('@/views/worker/index'),
-        meta: { title: 'Worker', icon: 'table' }
+        path: 'summary',
+        name: 'Summary',
+        component: () => import('@/views/balance/summary'),
+        meta: { title: '资金总览', icon: 'table' }
       }
     ]
   },
 
   {
-    path: '/objects',
+    path: '/positions',
     component: Layout,
-    redirect: '/objects/workers',
-    name: '核心对象',
-    meta: { title: '核心对象', icon: 'el-icon-s-help' },
+    redirect: '/positions/summary',
+    name: '仓位总览',
+    meta: { title: '仓位总览', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'workers',
-        name: 'Workers',
-        component: () => import('@/views/worker/index'),
-        meta: { title: '算法工人', icon: 'table' }
-      },
-      {
-        path: 'exchanges',
-        name: 'Exchanges',
-        component: () => import('@/views/exchange/index'),
-        meta: { title: '交易所', icon: 'table' }
-      },
-      {
-        path: 'products',
-        name: 'Products',
-        component: () => import('@/views/product/index'),
-        meta: { title: '交易品种', icon: 'table' }
+        path: 'summary',
+        name: 'Summary',
+        component: () => import('@/views/position/summary'),
+        meta: { title: '仓位总览', icon: 'table' }
       }
     ]
   },
@@ -155,6 +131,34 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/example',
+    component: Layout,
+    redirect: '/example/table',
+    name: 'Example',
+    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'table',
+        name: 'Table',
+        component: () => import('@/views/table/index'),
+        meta: { title: 'Table', icon: 'table' }
+      },
+      {
+        path: 'tree',
+        name: 'Tree',
+        component: () => import('@/views/tree/index'),
+        meta: { title: 'Tree', icon: 'tree' }
+      },
+      {
+        path: 'worker',
+        name: 'Worker',
+        component: () => import('@/views/worker/index'),
+        meta: { title: 'Worker', icon: 'table' }
+      }
+    ]
+  },
+  
   {
     path: '/form',
     component: Layout,

@@ -8,6 +8,7 @@
             v-loading="portfolioListLoading"
             :data="portfolioList"
             style="width: 100%"
+            height="750"
           >
             <el-table-column align="center" label="投资组合">
               <template slot-scope="scope">
@@ -29,8 +30,9 @@
             v-loading="workerListLoading"
             :data="workerList"
             style="width: 100%"
+            height="750"
           >
-            <el-table-column align="center" label="策略工人">
+            <el-table-column align="center" label="策略机器人">
               <template slot-scope="scope">
                 <el-button style="width: 100%" type="primary" v-on:click="fetchSignalPointsByWorker(scope.row)" plain>
                   {{ scope.row.name }}
@@ -50,6 +52,7 @@
             v-loading="signalPointListLoading"
             :data="signalPointList"
             style="width: 100%"
+            height="750"
           >
             <el-table-column align="center" label="策略执行详情">
               <template slot-scope="scope" style="padding: 0px">
@@ -199,6 +202,7 @@
 
 
 <script>
+import config from '@/configs/system_configs'
 import { getPortfolios } from '@/api/portfolio'
 import { getWorkersByPfo } from '@/api/worker'
 import { getSignalPointsByWorker } from '@/api/signal_point'
@@ -260,10 +264,7 @@ export default {
   data() {
     return {
       host: null,
-      pfo_hosts: [
-        'http://ec2-3-101-132-250.us-west-1.compute.amazonaws.com:8000/api',
-        'http://ec2-13-250-43-118.ap-southeast-1.compute.amazonaws.com:8000/api'
-      ],
+      pfo_hosts: config.pfoHosts,
 
       portfolioList: [],
       portfolioListLoading: true,

@@ -8,10 +8,11 @@
             v-loading="portfolioListLoading"
             :data="portfolioList"
             style="width: 100%"
+            :highlight-current-row="true"
           >
             <el-table-column align="center" label="投资组合">
               <template slot-scope="scope">
-                <el-button style="width: 100%" type="primary" v-on:click="fetchErrorsByPortfolioId(scope.row.id)" plain>
+                <el-button style="width: 100%" type="primary"  v-on:click="fetchErrorsByPortfolio(scope.row)" plain>
                   {{ scope.row.name }}
                 </el-button>
               </template>
@@ -22,12 +23,12 @@
 
 
       <el-col :span="20">
-        <div class="grid-content" style="margin-top: 20px">
+        <div class="grid-content bg-purple">
           <!-- Errors.type表 -->
           <el-table
             v-loading="errorTableLoading"
             :data="Object.values(errorTableDict)"
-            style="width: 100%; margin-bottom: 20px"
+            style="width: 100%; margin-bottom: 20px; margin-top: 45px"
             :header-cell-style="{ background: 'lightgray' }"
           >
 
@@ -116,8 +117,9 @@
 
 
 <script>
-import { getPortfolioList } from '@/api/portfolio'
-import { getErrorListByPortfolio } from '@/api/error'
+import config from '@/configs/system_configs'
+import { getPortfolios } from '@/api/portfolio'
+import { getErrorsByPortfolio } from '@/api/error'
 import moment from 'moment'
 
 export default {
@@ -155,6 +157,7 @@ export default {
   },
   data() {
     return {
+      host: null,
       portfolioList: null,
       portfolioListLoading: true,
 
@@ -176,10 +179,14 @@ export default {
   },
   methods: {
     levelIcon(level) {
-      if (level === 'exception'){
+      if (level === 'critical'){
+        return "<i style=\"font-size:20px; color: black \" class=\"el-icon-error\"></i>"
+      } else if (level === 'exception'){
         return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-warning\"></i>"
       } else if (level === 'error') {
         return "<i style=\"font-size:20px; color: red \" class=\"el-icon-error\"></i>"
+      } else if (level === 'warn') {
+        return "<i style=\"font-size:20px; color: gray \" class=\"el-icon-question\"></i>"
       } else {
         return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-warning\"></i>"
       }
@@ -190,25 +197,35 @@ export default {
       // debugger;
       this.dialogJsonVisible = true
     },
-    fetchPortfolios() {
-      this.portfolioListLoading = true
-      getPortfolioList().then(response => {
-        this.portfolioList = response.results
-        this.portfolioListLoading = false
-        this.fetchErrorsByPortfolioId(this.portfolioList[0].id)
-      })
-    },
     showTsDialog(list){
       this.tsList = list
       this.dialogTsVisible = true
     },
-    fetchErrorsByPortfolioId(pfo_id) {
+    fetchErrorsByPortfolio(pfo) {
       this.errorTableLoading = true
-      getErrorListByPortfolio(pfo_id).then(response => {
+      getErrorsByPortfolio(pfo).then(response => {
         this.errorTableList = response.results
         this.errorTableLoading = false
         this.parseErrorList()
       })
+    },
+    choosePortfolio(pfo) {
+      this.host = pfo.host
+      this.fetchErrorsByPortfolio(this.portfolioList[0])
+    },
+    fetchPortfolios() {
+      this.portfolioListLoading = true
+      this.portfolioList = []
+      for (var i = 0; i < config.pfoHosts.length; i++){
+        getPortfolios(config.pfoHosts[i]).then(response => {
+          this.portfolioList = this.portfolioList.concat(response.results)
+          if (this.portfolioList.length == config.pfoHosts.length){
+            // pfo加载完成
+            this.portfolioListLoading = false
+            this.choosePortfolio(this.portfolioList[0])
+          }
+        })
+      }
     },
     formatTimestamp(ts) {
       if (ts) {
@@ -282,5 +299,9 @@ export default {
 <style>
 pre {
   display: inline;
+}
+
+.el-table tbody tr:hover>td { 
+    background-color:#ffffff!important
 }
 </style>

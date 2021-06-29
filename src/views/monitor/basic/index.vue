@@ -1,9 +1,9 @@
 <template>
   <div class="app-container" >
     <el-row :gutter="0" type="flex"  style="margin-bottom: 50px">
+      <!-- 所有的Portfolios -->
       <el-col :span="4">
         <div class="grid-content bg-purple">
-          <!-- 所有的Portfolios -->
           <el-table
             v-loading="portfolioListLoading"
             :data="portfolioList"
@@ -11,7 +11,7 @@
           >
             <el-table-column align="center" label="投资组合">
               <template slot-scope="scope">
-                <el-button style="width: 100%" type="primary" v-on:click="fetchMonitorStatsByPortfolioId(scope.row.id)" plain>
+                <el-button style="width: 100%" type="primary" v-on:click="fetchMonitorStatsByPortfolio(scope.row)" plain>
                   {{ scope.row.name }}
                 </el-button>
               </template>
@@ -22,11 +22,10 @@
         </div>
       </el-col>
 
-
-      <el-col :span="20">
-        <div class="grid-content" style="margin-top: 20px">
-          <!-- Strategy Feeds -->
-          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px">
+      <!-- Strategy Feeds -->
+      <el-col :span="20" v-loading="monitorStatListLoading">
+        <div class="grid-content" style="margin-top: 20px" >
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px; margin-top: 45px">
             <div slot="header" class="clearfix" style="">
               <el-row :gutter="15" class="el-row">
                 <el-col :span="12" align="left">
@@ -49,44 +48,44 @@
                   :data="Object.keys(monitorStatStyFeedData)"
                   element-loading-text="Loading"
               >
-                <el-table-column label="标的" min-width="10%">
+                <el-table-column label="标的" min-width="20%" align="center">
                   <template slot-scope="scope">
                     {{ scope.row }}
                   </template>
                 </el-table-column>
 
-                <el-table-column label="Bar级别1" min-width="10%">
+                <el-table-column label="" min-width="5%">
                   <template slot-scope="scope">
                     {{ Object.values(monitorStatStyFeedData[scope.row])[0].data.bar_level }}
                   </template>
                 </el-table-column>
 
-                <el-table-column label="状态" min-width="10%">
+                <el-table-column label="状态" min-width="10%" align="center">
                   <template slot-scope="scope">
                     <span v-html="statusIcon(Object.values(monitorStatStyFeedData[scope.row])[0].status)"> </span>
                   </template>
                 </el-table-column>
 
-                <el-table-column label="更新时间" min-width="20%">
+                <el-table-column label="更新时间" min-width="20%" align="center">
                   <template slot-scope="scope">
                     {{ Object.values(monitorStatStyFeedData[scope.row])[0].data.ts | epochToTimestamp}}
                   </template>
                 </el-table-column>
 
-                <el-table-column label="Bar级别2" min-width="10%">
+                <el-table-column label="" min-width="5%">
                   <template slot-scope="scope">
                     {{ Object.values(monitorStatStyFeedData[scope.row])[1].data.bar_level }}
                   </template>
                 </el-table-column>
 
-                <el-table-column label="状态" min-width="10%">
+                <el-table-column label="状态" min-width="10%" align="center">
                   <template slot-scope="scope">
                     <span v-html="statusIcon(Object.values(monitorStatStyFeedData[scope.row])[1].status)"> </span>
                   </template>
                 </el-table-column>
 
 
-                <el-table-column label="更新时间" min-width="20%">
+                <el-table-column label="更新时间" min-width="20%" align="center">
                   <template slot-scope="scope">
                     {{ Object.values(monitorStatStyFeedData[scope.row])[1].data.ts | epochToTimestamp}}
                   </template>
@@ -206,8 +205,9 @@
 
 
 <script>
-import { getPortfolioList } from '@/api/portfolio'
-import { getBasicMonitorStatListByPortfolio } from '@/api/monitor_stat'
+import config from '@/configs/system_configs'
+import { getPortfolios } from '@/api/portfolio'
+import { getBasicMonitorStatsByPortfolio } from '@/api/monitor_stat'
 import moment from 'moment'
 
 export default {
@@ -234,11 +234,12 @@ export default {
   },
   data() {
     return {
+      host: null,
       portfolioList: null,
-      portfolioListLoading: true,
+      portfolioListLoading: false,
 
       monitorStatList: null,
-      monitorStatListLoading: true,
+      monitorStatListLoading: false,
 
       // OS
       monitorStatOSData: null,
@@ -283,19 +284,30 @@ export default {
     },
     fetchPortfolios() {
       this.portfolioListLoading = true
-      getPortfolioList().then(response => {
-        this.portfolioList = response.results
-        this.portfolioListLoading = false
-        this.fetchMonitorStatsByPortfolioId(this.portfolioList[0].id)
-      })
+      this.portfolioList = []
+      for (var i = 0; i < config.pfoHosts.length; i++){
+        getPortfolios(config.pfoHosts[i]).then(response => {
+          this.portfolioList = this.portfolioList.concat(response.results)
+          if (this.portfolioList.length == config.pfoHosts.length){
+            // pfo加载完成
+            this.portfolioListLoading = false
+            this.choosePortfolio(this.portfolioList[0])
+          }
+        })
+      }
     },
-    fetchMonitorStatsByPortfolioId(pfo_id) {
+    choosePortfolio(pfo) {
+      this.host = pfo.host
+      this.fetchMonitorStatsByPortfolio(this.portfolioList[0])
+    },
+    fetchMonitorStatsByPortfolio(pfo) {
       //this.clearMonitorStatData()
       this.monitorStatListLoading = true
-      getBasicMonitorStatListByPortfolio(pfo_id).then(response => {
+      getBasicMonitorStatsByPortfolio(pfo).then(response => {
         this.monitorStatList = response.results
         this.monitorStatListLoading = false
         this.parseMonitorStatList()
+        console.log(this.monitorStatStyFeedData)
       })
     },
     getGatewayFromMonitorID(monitor_id) {
@@ -469,4 +481,10 @@ export default {
     padding-bottom: 15px;
     padding-top: 15px;
   }
+</style>
+
+<style scoped>
+.el-table tbody tr:hover>td { 
+    background-color:#ffffff!important
+}
 </style>
