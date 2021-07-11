@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container" style="background-image: url('/background.jpeg');">
+  <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
@@ -69,8 +69,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'iatbst',
-        password: 'yyyjjj1984'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
