@@ -1,9 +1,9 @@
 <template>
-  <div class="login-container">
+  <div class="login-container" style="background-image: url('/background.jpeg');">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title" style="">SUN & YOUNG CAPITAL</h3>
       </div>
 
       <el-form-item prop="username">
@@ -42,10 +42,6 @@
       </el-form-item>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-      <div class="tips">
-        <span style="margin-right:20px;">username: iatbst</span>
-      </div>
 
     </el-form>
   </div>
@@ -108,16 +104,16 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          alert('Success1')
+          // alert('Success1')
           this.$store.dispatch('user/login', this.loginForm).then(() => {
-            alert('Success2')
+            // alert('Success2')
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           })
-          //   .catch((err) => {
-          //   alert(err.message)
-          //   this.loading = false
-          // })
+            .catch((err) => {
+            alert(err.message)
+            this.loading = false
+          })
         } else {
           console.log('error submit!!')
           return false
