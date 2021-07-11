@@ -6,8 +6,18 @@ const pfoHosts = [
     'http://ec2-18-141-185-127.ap-southeast-1.compute.amazonaws.com:8000/api',
 ]
 
+// 当前投资组合的初始资金
+const pfoInitUSD = {
+    btcusd: 750000,
+    top_altcoin: 877000,
+    altcoin: 750000,
+    altbtc: 750000,
+}
+const totalInitUSD = 3127000
+
 // Master的Host地址
 const masterHost = 'http://ec2-54-169-201-152.ap-southeast-1.compute.amazonaws.com:8000/api'
+const totalPfoCount = 5 // 算上总pfo
 
 // Crypto父pfo的名称
 const cryptoParentPfo = 'crypto_pfo'
@@ -60,7 +70,10 @@ export default {
     cryptoPfo3,
     cryptoPfo4,
     assetRoundLevel,
-    usdStableCoins
+    usdStableCoins,
+    pfoInitUSD,
+    totalInitUSD,
+    totalPfoCount,
 }
 
 

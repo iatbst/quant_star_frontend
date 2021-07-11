@@ -11,3 +11,31 @@ export function getWorkersByPfo(pfo) {
   }
   return request(req_obj)
 }
+
+export function getWorkerDatas(host=null, fields=null) {
+  var url = '/worker-datas/'
+  if (fields != null){
+    // 指定fields
+    url += '?fields=' + fields
+  }
+  var req_obj = {
+    url: url,
+    method: 'get'
+  }
+  if (host) { req_obj['baseURL'] = host }
+  return request(req_obj)
+}
+
+export function getDelegateWorkerDatas(host=null, fields=null) {
+  var url = '/worker-datas/?delegate=true'
+  if (fields != null){
+    // 指定fields
+    url += '&fields=' + fields
+  }
+  var req_obj = {
+    url: url,
+    method: 'get'
+  }
+  if (host) { req_obj['baseURL'] = host }
+  return request(req_obj)
+}

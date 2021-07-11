@@ -10,12 +10,16 @@ export function getPortfolios(host=null) {
   return request(req_obj)
 }
 
-export function getPortfolioDatas(host=null) {
+export function getPortfolioDatas(host=null, fields=null) {
+  var url = '/portfolio-datas/'
+  if (fields != null){
+    // 指定fields
+    url += '?fields=' + fields
+  }
   var req_obj = {
-    url: '/portfolio-datas/',
+    url: url,
     method: 'get'
   }
   if (host) { req_obj['baseURL'] = host }
-
   return request(req_obj)
 }

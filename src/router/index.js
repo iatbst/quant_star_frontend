@@ -65,7 +65,7 @@ export const constantRoutes = [
       {
         path: 'summary',
         name: 'Summary',
-        component: () => import('@/views/balance/summary'),
+        component: () => import('@/views/balance/index'),
         meta: { title: '资金总览', icon: 'table' }
       }
     ]
@@ -81,8 +81,24 @@ export const constantRoutes = [
       {
         path: 'summary',
         name: 'Summary',
-        component: () => import('@/views/position/summary'),
+        component: () => import('@/views/position/index'),
         meta: { title: '仓位总览', icon: 'table' }
+      }
+    ]
+  },
+
+  {
+    path: '/performances',
+    component: Layout,
+    redirect: '/performances/summary',
+    name: '策略表现',
+    meta: { title: '策略表现', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'summary',
+        name: 'Summary',
+        component: () => import('@/views/performance/index'),
+        meta: { title: '表现总览', icon: 'table' }
       }
     ]
   },
@@ -131,46 +147,6 @@ export const constantRoutes = [
     ]
   },
 
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      },
-      {
-        path: 'worker',
-        name: 'Worker',
-        component: () => import('@/views/worker/index'),
-        meta: { title: 'Worker', icon: 'table' }
-      }
-    ]
-  },
-  
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
 
   {
     path: '/nested',
@@ -227,17 +203,6 @@ export const constantRoutes = [
         component: () => import('@/views/nested/menu2/index'),
         name: 'Menu2',
         meta: { title: 'menu2' }
-      }
-    ]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
       }
     ]
   },
