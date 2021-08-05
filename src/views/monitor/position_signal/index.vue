@@ -93,7 +93,7 @@
             <el-table-column align="center" label="类型" prop="sub_type" min-width="10%">
             </el-table-column>   
 
-            <el-table-column align="center" label="子策略" prop="strategy" min-width="20%">
+            <el-table-column align="center" label="子策略" prop="strategy" min-width="10%">
             </el-table-column>        
 
 
@@ -123,7 +123,22 @@
             <el-table-column align="center" label="状态说明" prop="message" min-width="30%">
             </el-table-column>        
 
-            <el-table-column align="center" label="原因" prop="reason" min-width="10%">
+            <el-table-column align="center" label="原因" prop="reason" min-width="20%">
+              <template slot-scope="scope">
+                <div v-if="scope.row.status !== 'success' && scope.row.reason === undefined">
+                  <el-form :inline="true" :model="errorReason" class="demo-form-inline" size="mini">
+                    <el-form-item label="">
+                      <el-input v-model="errorReason.reason" placeholder="原因"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button type="primary" @click="onSubmitErrorReason(scope.row.worker_id, scope.row)">标记</el-button>
+                    </el-form-item>
+                  </el-form>      
+                </div>
+                <div v-else>
+                  {{ scope.row.reason }}
+                </div>
+              </template>    
             </el-table-column>
           </el-table>       
   
@@ -144,7 +159,10 @@
 import config from '@/configs/system_configs'
 import { getPortfolios } from '@/api/portfolio'
 import { getPositionMonitorStatsByPortfolio } from '@/api/monitor_stat'
+import { markErrorPositionReason } from '@/api/signal_point'
 import moment from 'moment'
+import { countDecimals } from '@/utils/general'
+
 
 export default {
   filters: {
@@ -184,6 +202,9 @@ export default {
       jsonData: null,
       dialogJsonVisible: false,
 
+      errorReason: {
+        reason: null,
+      }
     }
   },
   created() {
@@ -195,6 +216,8 @@ export default {
         return "<i style=\"font-size:20px; color: lightgreen \" class=\"el-icon-success\"></i>"
       } else if (status === 'fail') {
         return "<i style=\"font-size:20px; color: red \" class=\"el-icon-error\"></i>"
+      } else if (status === 'mark') {
+        return "<i style=\"font-size:20px; color: lightgray \" class=\"el-icon-info\"></i>"
       } else {
         return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-warning\"></i>"
       }
@@ -208,9 +231,11 @@ export default {
       this.portfolioList = []
       for (var i = 0; i < config.pfoHosts.length; i++){
         getPortfolios(config.pfoHosts[i]).then(response => {
+          response.results[0]['sort_id'] = config.pfoSortWeights[response.results[0]['name']]
           this.portfolioList = this.portfolioList.concat(response.results)
           if (this.portfolioList.length == config.pfoHosts.length){
             // pfo加载完成
+            this.portfolioList.sort((a, b) => a.sort_id - b.sort_id)
             this.portfolioListLoading = false
             this.choosePortfolio(this.portfolioList[0])
           }
@@ -222,7 +247,7 @@ export default {
       this.fetchPositionMonitorStatsByPfo(this.portfolioList[0])
     },
     fetchPositionMonitorStatsByPfo(pfo) {
-      //this.clearMonitorStatData()
+      this.host = pfo.host
       this.summaryTableLoading = true
       this.detailTableLoading = true
       getPositionMonitorStatsByPortfolio(pfo).then(response => {
@@ -242,17 +267,20 @@ export default {
         var data = this.positionMonitorStat[key1]
         for (var symbol in data.worker_groups){
           var _data = data.worker_groups[symbol]
+          // debugger;
+          _data.workers.sort((a, b) => parseInt(a.worker_tag) - parseInt(b.worker_tag))
           for (var ix in _data.workers){
             var __data = _data.workers[ix]
             this.detailTableDataList.push({
               exchange: data.exchange,
               sub_type: data.sub_type,
               strategy: symbol + '_' + __data.worker_tag,
-              position: __data.position,
+              position: countDecimals(__data.position) > 3 ? __data.position.toFixed(3) : __data.position,
               sig_type: __data.signal_position_check.sig_type,
               status: __data.signal_position_check.status,
               message: __data.signal_position_check.message,
-              reason: '',
+              reason: __data.signal_position_check.reason,
+              worker_id: __data.worker_id
             })
           }
           this.detailTableDataList.push({
@@ -264,6 +292,17 @@ export default {
         }
       }
     },
+
+    onSubmitErrorReason(worker_id, row) {
+      // 发送ajax, 更新后台
+      markErrorPositionReason(worker_id, this.errorReason.reason, this.host).then(response => {
+        // 更新UI
+        console.log(response.results)
+        row.status = 'mark'
+        row.reason = this.errorReason.reason
+      })
+    },
+
     arraySpanMethod({ row, column, rowIndex, columnIndex }) {
       if (row.summary){
         if (columnIndex % 4 === 0){

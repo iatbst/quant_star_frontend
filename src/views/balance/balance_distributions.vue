@@ -200,8 +200,8 @@ export default {
                         this.totalUsdtAmount += usdtAmount
 
                         // 币种分布
-                        // 特例: 负USD转化为USDT(Eg. FTX)
-                        if (asset === 'USD' && usdtAmount < 0){
+                        // 特例: USD转化为USDT(Eg. FTX使用USD临时记录收益)
+                        if (asset === 'USD'){
                             asset = 'USDT'
                         }
                         if (asset in this.balancesByCoins){

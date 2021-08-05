@@ -36,6 +36,7 @@ export default {
 
     data() {
         return {
+            totalProfit: 0,
             dailyTotalProfitOptions: {
                 chart: {
                     type: 'column'
@@ -98,6 +99,7 @@ export default {
         parseData() {
             var totalProfitHistory = {}
             var dailyTotalProfit = []
+            var totalProfit = 0
             for(var i = 0; i < this.pfoDatas.length; i++){
                 const perf = this.pfoDatas[i][0].performance
                 for(let date in perf.history_values.usd_profit){
@@ -107,6 +109,7 @@ export default {
                         totalProfitHistory[date] = perf.history_values.usd_profit[date]
                     }
                 }
+                totalProfit += perf.data.usd_profit
             }
             var day_profit = null
             for(let date in totalProfitHistory){
@@ -119,6 +122,17 @@ export default {
                         color: day_profit >= 0 ? 'green' : 'red'
                     })
                 }
+            }
+            
+            // 添加今日
+            var today = moment().format('YYYY-MM-DD')
+            var day_diff = totalProfit - totalProfitHistory[today]
+            if (totalProfitHistory.hasOwnProperty(today)){
+                dailyTotalProfit.push({
+                    x: today,
+                    y: parseInt(day_diff),
+                    color: day_diff >= 0 ? 'green' : 'red'
+                })               
             }
 
             // 渲染Line Chart

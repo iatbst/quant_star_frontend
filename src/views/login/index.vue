@@ -110,10 +110,10 @@ export default {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           })
-            .catch((err) => {
-            alert(err.message)
-            this.loading = false
-          })
+          //   .catch((err) => {
+          //   alert(err.message)
+          //   this.loading = false
+          // })
         } else {
           console.log('error submit!!')
           return false

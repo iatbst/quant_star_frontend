@@ -218,9 +218,11 @@ export default {
       this.portfolioList = []
       for (var i = 0; i < config.pfoHosts.length; i++){
         getPortfolios(config.pfoHosts[i]).then(response => {
+          response.results[0]['sort_id'] = config.pfoSortWeights[response.results[0]['name']]
           this.portfolioList = this.portfolioList.concat(response.results)
           if (this.portfolioList.length == config.pfoHosts.length){
             // pfo加载完成
+            this.portfolioList.sort((a, b) => a.sort_id - b.sort_id)
             this.portfolioListLoading = false
             this.choosePortfolio(this.portfolioList[0])
           }

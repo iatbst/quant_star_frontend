@@ -296,7 +296,7 @@ export default {
     statusIcon(status) {
       if (status === 'completed'){
         return "<i style=\"font-size:20px; color: lightgreen \" class=\"el-icon-success\"></i>"
-      } else if (status === 'canceled' || status === 'rejected' || status === 'expired') {
+      } else if (status === 'canceled' || status === 'rejected' || status === 'expired' || status === 'partial_canceled') {
         return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-warning\"></i>"
       } else {
         return "<i style=\"font-size:20px; color: gray \" class=\"el-icon-loading\"></i>"
@@ -307,9 +307,11 @@ export default {
       this.portfolioList = []
       for (var i = 0; i < this.pfo_hosts.length; i++){
         getPortfolios(this.pfo_hosts[i]).then(response => {
+          response.results[0]['sort_id'] = config.pfoSortWeights[response.results[0]['name']]
           this.portfolioList = this.portfolioList.concat(response.results)
           if (this.portfolioList.length == this.pfo_hosts.length){
             // pfo加载完成
+            this.portfolioList.sort((a, b) => a.sort_id - b.sort_id)
             this.portfolioListLoading = false
             this.choosePortfolio(this.portfolioList[0])
           }
@@ -323,6 +325,7 @@ export default {
     fetchWorkersByPfo(pfo) {
       this.workerListLoading = true
       getWorkersByPfo(pfo).then(response => {
+        response.results.sort(function(a,b){return a.name.localeCompare(b.name)})
         this.workerList = response.results
         this.workerListLoading = false
         this.fetchSignalPointsByWorker(this.workerList[0])

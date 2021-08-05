@@ -22,10 +22,149 @@
         </div>
       </el-col>
 
-      <!-- Strategy Feeds -->
       <el-col :span="20" v-loading="monitorStatListLoading">
         <div class="grid-content" style="margin-top: 20px" >
+          <!-- Processes -->
           <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px; margin-top: 45px">
+            <div class="text item">
+              <el-row :gutter="15" class="el-row" style="margin-top: 10px; margin-bottom: 10px">
+                <el-col :span="5" align="left">   
+                  <span style="font-size: 15px">主进程状态</span>
+                  <span style="color:red" v-if="moment().unix() - monitorStatProcessData.data.ts > updateTimeout">
+                  ({{ monitorStatProcessData.data.ts | epochToTimestamp }})  
+                  </span> 
+                  <span v-else>
+                  ({{ monitorStatProcessData.data.ts | epochToTimestamp }})  
+                  </span>                           
+                </el-col>
+                <el-col :span="8" align="left">   
+                  <span v-html="statusIcon(getStatus(monitorStatProcessData))"> </span>
+                </el-col>
+                <el-col :span="10" align="right">   
+                  <el-link type="text" @click="showJsonDialog(monitorStatProcessData)">JSON</el-link>
+                </el-col>
+              </el-row>              
+            </div>
+          </el-card>
+
+          <!-- Threads -->
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px">
+            <div class="text item">
+              <el-row :gutter="15" class="el-row" style="margin-top: 10px; margin-bottom: 10px">
+                <el-col :span="5" align="left">   
+                  <span style="font-size: 15px">子线程状态</span>
+                  <span style="color:red" v-if="moment().unix() - monitorStatThreadData.data.ts > updateTimeout">
+                    ({{ monitorStatThreadData.data.ts | epochToTimestamp }})  
+                  </span> 
+                  <span v-else>
+                    ({{ monitorStatThreadData.data.ts | epochToTimestamp }})  
+                  </span>  
+                </el-col>
+                <el-col :span="8" align="left">   
+                  <span v-html="statusIcon(getStatus(monitorStatThreadData))"> </span>
+                </el-col>
+                <el-col :span="10" align="right">   
+                  <el-link type="text" @click="showJsonDialog(monitorStatThreadData)">JSON</el-link>
+                </el-col>
+              </el-row>              
+            </div>
+          </el-card>
+
+          <!-- OS -->
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px">
+            <div class="text item">
+              <el-row :gutter="15" class="el-row" style="margin-top: 10px; margin-bottom: 10px">
+                <el-col :span="5" align="left">   
+                  <span style="font-size: 15px">云主机状态</span>
+                  <span style="color:red" v-if="moment().unix() - monitorStatOSData.data.ts > updateTimeout">
+                    ({{ monitorStatOSData.data.ts | epochToTimestamp }})
+                  </span>
+                  <span  v-else>
+                    ({{ monitorStatOSData.data.ts | epochToTimestamp }})
+                  </span>                  
+                </el-col>
+                <el-col :span="1" align="left">   
+                  <span v-html="statusIcon(getStatus(monitorStatOSData))"> </span>
+                </el-col>
+                <el-col :span="4" align="right">  
+                  磁盘:{{monitorStatOSData == null ? 'N/A' : monitorStatOSData.data.disk_usage}}
+                </el-col>
+                <el-col :span="4" align="right">  
+                  内存:{{monitorStatOSData == null ? 'N/A' : monitorStatOSData.data.mem_usage}}
+                </el-col>
+                <el-col :span="4" align="right">  
+                  DB连接:{{monitorStatOSData == null ? 'N/A' : monitorStatOSData.data.db_conn}}
+                </el-col>
+                <el-col :span="5" align="right">   
+                  <el-link type="text" @click="showJsonDialog(monitorStatOSData)">JSON</el-link>
+                </el-col>
+              </el-row>              
+            </div>
+          </el-card>
+
+          <!-- Gateways -->
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px">
+            <div slot="header" class="clearfix" style="">
+              <el-row :gutter="15" class="el-row">
+                <el-col :span="12" align="left">   
+                  Gateways状态        
+                </el-col>
+                <el-col :span="6" align="left">   
+                  此时: <b style="color: green">{{ gwHourSuccess }}</b>
+                  /
+                  <b> {{ gwHourCount }} </b> 
+                </el-col>
+                <el-col :span="6" align="left">   
+                  今日: <b style="color: green">{{ gwDaySuccess }}</b>   
+                  /
+                  <b> {{ gwDayCount }} </b>
+                </el-col>
+              </el-row>
+            </div>
+
+            <div class="text item">
+              <template v-for="data in monitorStatGatewayData">
+                <!-- gateway -->
+                <el-row :gutter="15" class="el-row" style="margin-top: 5px; margin-bottom: 0px">
+                  <el-col :span="5" align="left"> 
+                    {{ getGatewayFromMonitorID(data.monitor_id).toUpperCase() }}       
+                  </el-col>
+
+                  <el-col :span="2" align="left">
+                    <span v-html="statusIcon(getGatewayStatus(data))" > </span>   
+                  </el-col>
+
+                  <el-col :span="5" align="left">
+                    <span style="color:red" v-if="moment().unix() - data.data.ts > updateTimeout">
+                      {{ data.data.ts | epochToTimestamp }}
+                    </span>
+                    <span v-else>
+                      {{ data.data.ts | epochToTimestamp }}
+                    </span>                    
+                  </el-col>
+
+                  <el-col :span="6" align="left"> 
+                    此时:<span style="color: green">{{ data.data.api_stat['1h'].total.success}}</span>
+                    /
+                    {{ data.data.api_stat['1h'].total.count}}
+                  </el-col>
+
+                  <el-col :span="4" align="left"> 
+                    今日:<span style="color: green">{{ data.data.api_stat['1d'].total.success}}</span>
+                    /
+                    {{ data.data.api_stat['1d'].total.count}}
+                  </el-col>
+
+                  <el-col :span="2" align="left"> 
+                    <el-link type="text" @click="showJsonDialog(data)">JSON</el-link>
+                  </el-col>
+                </el-row>
+              </template>
+            </div>
+          </el-card>
+
+          <!-- Strategy Feeds -->
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px;">
             <div slot="header" class="clearfix" style="">
               <el-row :gutter="15" class="el-row">
                 <el-col :span="12" align="left">
@@ -47,8 +186,9 @@
               <el-table
                   :data="Object.keys(monitorStatStyFeedData)"
                   element-loading-text="Loading"
+                  :row-style="tableRowStyle"                  
               >
-                <el-table-column label="标的" min-width="20%" align="center">
+                <el-table-column label="标的" min-width="20%" align="center" style="font-color: black">
                   <template slot-scope="scope">
                     {{ scope.row }}
                   </template>
@@ -68,7 +208,12 @@
 
                 <el-table-column label="更新时间" min-width="20%" align="center">
                   <template slot-scope="scope">
-                    {{ Object.values(monitorStatStyFeedData[scope.row])[0].data.ts | epochToTimestamp}}
+                    <span style="color:red" v-if="moment().unix() - Object.values(monitorStatStyFeedData[scope.row])[0].data.ts > tickTimeout">
+                      {{ Object.values(monitorStatStyFeedData[scope.row])[0].data.ts | epochToTimestamp}}
+                    </span>
+                    <span v-else>
+                      {{ Object.values(monitorStatStyFeedData[scope.row])[0].data.ts | epochToTimestamp}}
+                    </span>                    
                   </template>
                 </el-table-column>
 
@@ -87,107 +232,16 @@
 
                 <el-table-column label="更新时间" min-width="20%" align="center">
                   <template slot-scope="scope">
-                    {{ Object.values(monitorStatStyFeedData[scope.row])[1].data.ts | epochToTimestamp}}
+                    <span style="color:red" v-if="moment().unix() - Object.values(monitorStatStyFeedData[scope.row])[1].data.ts > barTimeout">
+                      {{ Object.values(monitorStatStyFeedData[scope.row])[1].data.ts | epochToTimestamp}}
+                    </span>
+                    <span v-else>
+                      {{ Object.values(monitorStatStyFeedData[scope.row])[1].data.ts | epochToTimestamp}}
+                    </span>
                   </template>
                 </el-table-column>
 
               </el-table>
-            </div>
-          </el-card>
-
-          <!-- Gateways -->
-          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px">
-            <div slot="header" class="clearfix" style="">
-              <el-row :gutter="15" class="el-row">
-                <el-col :span="8" align="left">   
-                  Gateways状态        
-                </el-col>
-                <el-col :span="8" align="left">   
-                  此时: <b style="color: green">{{ gwHourSuccess }}</b>
-                  /
-                  <b> {{ gwHourCount }} </b> 
-                </el-col>
-                <el-col :span="8" align="left">   
-                  今日: <b style="color: green">{{ gwDaySuccess }}</b>   
-                  /
-                  <b> {{ gwDayCount }} </b>
-                </el-col>
-              </el-row>
-            </div>
-
-            <div class="text item">
-              <template v-for="data in monitorStatGatewayData">
-                <!-- gateway -->
-                <el-row :gutter="15" class="el-row" style="margin-top: 5px; margin-bottom: 0px">
-                  <el-col :span="5" align="left"> 
-                    {{ getGatewayFromMonitorID(data.monitor_id).toUpperCase() }}       
-                  </el-col>
-
-                  <el-col :span="3" align="left">
-                    <span v-html="statusIcon(getGatewayStatus(data))" > </span>   
-                  </el-col>
-
-
-                  <el-col :span="8" align="left"> 
-                    此时:<span style="color: green">{{ data.data.api_stat['1h'].total.success}}</span>
-                    /
-                    {{ data.data.api_stat['1h'].total.count}}
-                  </el-col>
-
-                  <el-col :span="6" align="left"> 
-                    今日:<span style="color: green">{{ data.data.api_stat['1d'].total.success}}</span>
-                    /
-                    {{ data.data.api_stat['1d'].total.count}}
-                  </el-col>
-
-                  <el-col :span="2" align="left"> 
-                    <el-link type="text" @click="showJsonDialog(data)">JSON</el-link>
-                  </el-col>
-                </el-row>
-              </template>
-            </div>
-          </el-card>
-
-          <!-- Threads -->
-          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px">
-            <div class="text item">
-              <el-row :gutter="15" class="el-row" style="margin-top: 10px; margin-bottom: 10px">
-                <el-col :span="5" align="left">   
-                  子线程状态        
-                </el-col>
-                <el-col :span="8" align="left">   
-                  <span v-html="statusIcon(getStatus(monitorStatThreadData))"> </span>
-                </el-col>
-                <el-col :span="10" align="right">   
-                  <el-link type="text" @click="showJsonDialog(monitorStatThreadData)">JSON</el-link>
-                </el-col>
-              </el-row>              
-            </div>
-          </el-card>
-
-          <!-- OS -->
-          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px">
-            <div class="text item">
-              <el-row :gutter="15" class="el-row" style="margin-top: 10px; margin-bottom: 10px">
-                <el-col :span="5" align="left">   
-                  云主机状态 
-                </el-col>
-                <el-col :span="1" align="left">   
-                  <span v-html="statusIcon(getStatus(monitorStatOSData))"> </span>
-                </el-col>
-                <el-col :span="4" align="right">  
-                  磁盘:{{monitorStatOSData == null ? 'N/A' : monitorStatOSData.data.disk_usage}}
-                </el-col>
-                <el-col :span="4" align="right">  
-                  内存:{{monitorStatOSData == null ? 'N/A' : monitorStatOSData.data.mem_usage}}
-                </el-col>
-                <el-col :span="4" align="right">  
-                  DB连接:{{monitorStatOSData == null ? 'N/A' : monitorStatOSData.data.db_conn}}
-                </el-col>
-                <el-col :span="5" align="right">   
-                  <el-link type="text" @click="showJsonDialog(monitorStatOSData)">JSON</el-link>
-                </el-col>
-              </el-row>              
             </div>
           </el-card>
 
@@ -241,6 +295,9 @@ export default {
       monitorStatList: null,
       monitorStatListLoading: false,
 
+      // Process
+      monitorStatProcessData: null,
+
       // OS
       monitorStatOSData: null,
 
@@ -262,6 +319,11 @@ export default {
       jsonData: null,
       dialogJsonVisible: false,
 
+      // 时间戳过期
+      updateTimeout: 700,
+      tickTimeout: 180,
+      barTimeout: 3660  // 小时K线
+
     }
   },
   created() {
@@ -269,6 +331,12 @@ export default {
 
   },
   methods: {
+    moment: moment,
+
+   tableRowStyle({ row, rowIndex }) {
+      return {'color': 'black'}
+    },
+
     statusIcon(status) {
       if (status === 'success'){
         return "<i style=\"font-size:20px; color: lightgreen \" class=\"el-icon-success\"></i>"
@@ -287,9 +355,11 @@ export default {
       this.portfolioList = []
       for (var i = 0; i < config.pfoHosts.length; i++){
         getPortfolios(config.pfoHosts[i]).then(response => {
+          response.results[0]['sort_id'] = config.pfoSortWeights[response.results[0]['name']]
           this.portfolioList = this.portfolioList.concat(response.results)
           if (this.portfolioList.length == config.pfoHosts.length){
             // pfo加载完成
+            this.portfolioList.sort((a, b) => a.sort_id - b.sort_id)
             this.portfolioListLoading = false
             this.choosePortfolio(this.portfolioList[0])
           }
@@ -344,6 +414,7 @@ export default {
       this.styFeedSuccess = 0
       this.monitorStatStyFeedData = {}
       this.monitorStatGatewayData = []
+      this.monitorStatProcessData = null
       this.monitorStatThreadData = null
       this.monitorStatOSData = null
       this.gwDayCount = 0
@@ -357,6 +428,9 @@ export default {
         } else if (this.monitorStatList[i].type == 'mt_thread'){
           // 监控Threads
           this.monitorStatThreadData = this.monitorStatList[i]
+        } else if (this.monitorStatList[i].type == 'mt_process'){
+          // 监控Processs
+          this.monitorStatProcessData = this.monitorStatList[i]
         } else if (this.monitorStatList[i].type == 'event_mt_gateway'){
           // 监控Gateways
           var data = this.monitorStatList[i]

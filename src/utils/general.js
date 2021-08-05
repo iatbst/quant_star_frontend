@@ -5,6 +5,12 @@ export function toThousands(num) {
     return (num || 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
 }
 
+// 统计小数位数
+export function countDecimals(value) {
+    if(Math.floor(value) === value) return 0;
+    return value.toString().split(".")[1].length || 0; 
+}
+
 // 如果quote是usd的稳定币, 转为USD(eg, USDT )
 export function quoteToUSD(symbol) {
     var quote = symbol.split('/')[1]

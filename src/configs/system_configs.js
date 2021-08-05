@@ -28,6 +28,14 @@ const cryptoPfo2 = 'crypto_cta_pr_top_altcoin'
 const cryptoPfo3 = 'crypto_cta_pr_altcoin'
 const cryptoPfo4 = 'crypto_cta_pr_altbtc'
 
+// Pfo的展示顺序
+const pfoSortWeights = {
+    crypto_cta_pr_btcusd: 1,
+    crypto_cta_pr_top_altcoin: 2,
+    crypto_cta_pr_altcoin: 3,
+    crypto_cta_pr_altbtc: 4
+}
+
 // 不同Asset的Round Level
 const assetRoundLevel = {
     USDT: 0,
@@ -74,6 +82,7 @@ export default {
     pfoInitUSD,
     totalInitUSD,
     totalPfoCount,
+    pfoSortWeights
 }
 
 
