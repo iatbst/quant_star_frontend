@@ -49,9 +49,9 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: '系统首页',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '系统首页', icon: 'dashboard' }
     }]
   },
 
@@ -66,7 +66,7 @@ export const constantRoutes = [
         path: 'summary',
         name: 'Summary',
         component: () => import('@/views/balance/index'),
-        meta: { title: '资金总览', icon: 'table' }
+        meta: { title: '资金管理', icon: 'el-icon-money' }
       }
     ]
   },
@@ -75,14 +75,14 @@ export const constantRoutes = [
     path: '/positions',
     component: Layout,
     redirect: '/positions/summary',
-    name: '仓位总览',
-    meta: { title: '仓位总览', icon: 'el-icon-s-help' },
+    name: '仓位水平',
+    meta: { title: '仓位水平', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'summary',
         name: 'Summary',
         component: () => import('@/views/position/index'),
-        meta: { title: '仓位总览', icon: 'table' }
+        meta: { title: '仓位水平', icon: 'el-icon-s-data' }
       }
     ]
   },
@@ -98,7 +98,7 @@ export const constantRoutes = [
         path: 'summary',
         name: 'Summary',
         component: () => import('@/views/performance/index'),
-        meta: { title: '表现总览', icon: 'table' }
+        meta: { title: '策略表现', icon: 'el-icon-data-analysis' }
       }
     ]
   },
@@ -114,7 +114,23 @@ export const constantRoutes = [
         path: 'worker-runs',
         name: 'WorkerRuns',
         component: () => import('@/views/worker_run/index'),
-        meta: { title: '策略运行', icon: 'table' }
+        meta: { title: '策略运行', icon: 'el-icon-loading' }
+      }
+    ]
+  },
+
+  {
+    path: '/bars',
+    component: Layout,
+    redirect: '/bars',
+    name: '历史K线',
+    meta: { title: '历史K线', icon: 'el-icon-check' },
+    children: [
+      {
+        path: 'bars',
+        name: 'Bars',
+        component: () => import('@/views/bar/index'),
+        meta: { title: '历史K线', icon: 'el-icon-s-marketing' }
       }
     ]
   },
@@ -124,25 +140,25 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/monitors/basics',
     name: '系统监控',
-    meta: { title: '系统监控', icon: 'el-icon-s-help' },
+    meta: { title: '系统监控', icon: 'el-icon-odometer' },
     children: [
       {
         path: 'basics',
         name: 'Basics',
         component: () => import('@/views/monitor/basic/index'),
-        meta: { title: '基础监控', icon: 'table' }
+        meta: { title: '系统运行', icon: 'el-icon-view' }
       },
       {
         path: 'positions_signals',
         name: 'Positions_Signals',
         component: () => import('@/views/monitor/position_signal/index'),
-        meta: { title: '仓位/信号', icon: 'table' }
+        meta: { title: '仓位/信号', icon: 'el-icon-bell' }
       },
       {
         path: 'errors',
         name: 'Errors',
         component: () => import('@/views/monitor/error/index'),
-        meta: { title: '警报事件', icon: 'table' }
+        meta: { title: '警报事件', icon: 'el-icon-warning' }
       }
     ]
   },

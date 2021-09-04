@@ -1,3 +1,6 @@
+// Master的Host地址
+const masterHost = 'http://ec2-54-169-201-152.ap-southeast-1.compute.amazonaws.com:8000/api'
+
 // 当前投资组合的Hosts地址
 const pfoHosts = [
     'http://ec2-54-255-223-240.ap-southeast-1.compute.amazonaws.com:8000/api',
@@ -5,6 +8,9 @@ const pfoHosts = [
     'http://ec2-13-213-63-220.ap-southeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-141-185-127.ap-southeast-1.compute.amazonaws.com:8000/api',
 ]
+
+// Backtest Host地址(存储K线的Host)
+const backtestHost = 'http://localhost:8000/api'
 
 // 当前投资组合的初始资金
 const pfoInitUSD = {
@@ -14,10 +20,6 @@ const pfoInitUSD = {
     altbtc: 750000,
 }
 const totalInitUSD = 3127000
-
-// Master的Host地址
-const masterHost = 'http://ec2-54-169-201-152.ap-southeast-1.compute.amazonaws.com:8000/api'
-const totalPfoCount = 5 // 算上总pfo
 
 // Crypto父pfo的名称
 const cryptoParentPfo = 'crypto_pfo'
@@ -72,6 +74,7 @@ const usdStableCoins = [
 export default {
     pfoHosts,
     masterHost,
+    backtestHost,
     cryptoParentPfo,
     cryptoPfo1,
     cryptoPfo2,
@@ -81,7 +84,6 @@ export default {
     usdStableCoins,
     pfoInitUSD,
     totalInitUSD,
-    totalPfoCount,
     pfoSortWeights
 }
 

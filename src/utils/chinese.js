@@ -2,6 +2,7 @@ export function chineseString(s) {
     var cs = null
 
     switch (s) {
+        case 'crypto': cs = '数字货币';break;
         case 'swap': cs = '永续合约';break;
         case 'margin': cs = '杠杆现货';break;
         case 'coin': cs = '币本位';break;

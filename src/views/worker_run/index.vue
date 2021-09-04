@@ -212,14 +212,6 @@ import moment from 'moment'
 
 export default {
   filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
     formatTimestamp(ts) {
       if (ts) {
         const stillUtc = moment.utc(ts).toDate()
@@ -298,6 +290,8 @@ export default {
         return "<i style=\"font-size:20px; color: lightgreen \" class=\"el-icon-success\"></i>"
       } else if (status === 'canceled' || status === 'rejected' || status === 'expired' || status === 'partial_canceled') {
         return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-warning\"></i>"
+      } else if (status === 'deleted') {
+        return "<i style=\"font-size:20px; color: red \" class=\"el-icon-error\"></i>"
       } else {
         return "<i style=\"font-size:20px; color: gray \" class=\"el-icon-loading\"></i>"
       }

@@ -1,4 +1,18 @@
 import config from '@/configs/system_configs'
+import moment from 'moment'
+
+
+// epoch转换为时间戳(ts为10位数字)
+export function formatTimestamp(ts) {
+    if (ts) {
+      const stillUtc = moment.utc(ts*1000).toDate()
+      return moment(stillUtc)
+      .local()
+      .format('YYYY-MM-DD HH:mm:ss')
+    } else {
+      return '--'
+    }
+}
 
 // 加入千位逗号(eg, 1000000 -> 1,000,000)
 export function toThousands(num) {
@@ -30,4 +44,14 @@ export function quoteToUSD(symbol) {
 //  不能解决循环引用的对象
 export function deepCopy(obj) {
     return JSON.parse(JSON.stringify(obj))
+}
+
+// 根据bar_level返回秒数
+export function barLevelSeconds(barLevel) {
+    const mp = {
+        '1m': 60,
+        '5m': 300,
+        '1h': 3600
+    }
+    return mp[barLevel]
 }
