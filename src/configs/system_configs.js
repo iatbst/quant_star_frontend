@@ -19,18 +19,13 @@ const totalInitUSD = 3127000
 // Crypto父pfo的名称
 const cryptoParentPfo = 'crypto_pfo'
 
-// Crypto子pfo的名称
-const cryptoPfo1 = 'crypto_cta_pr_btcusd'
-const cryptoPfo2 = 'crypto_cta_pr_top_altcoin'
-const cryptoPfo3 = 'crypto_cta_pr_altcoin'
-const cryptoPfo4 = 'crypto_cta_pr_altbtc'
-
 // Pfo的展示顺序
 const pfoSortWeights = {
-    crypto_cta_pr_btcusd: 1,
-    crypto_cta_pr_top_altcoin: 2,
-    crypto_cta_pr_altcoin: 3,
-    crypto_cta_pr_altbtc: 4
+    crypto_cta_pr_binance: 1,
+    crypto_cta_pr_huobi: 2,
+    crypto_cta_pr_okex: 3,
+    crypto_cta_pr_ftx: 4,
+    crypto_cta_pr_altbtc: 5,
 }
 
 // 不同Asset的Round Level
@@ -71,10 +66,6 @@ pfoHosts,
     masterHost,
     backtestHost,
     cryptoParentPfo,
-    cryptoPfo1,
-    cryptoPfo2,
-    cryptoPfo3,
-    cryptoPfo4,
     assetRoundLevel,
     usdStableCoins,
     pfoInitUSD,

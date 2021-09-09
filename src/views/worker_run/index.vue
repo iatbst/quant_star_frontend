@@ -300,7 +300,6 @@ export default {
       this.portfolioListLoading = true
       this.portfolioList = []
       var request_count = 0
-      debugger;
       for (var i = 0; i < this.pfo_hosts.length; i++){
         getPortfolios(this.pfo_hosts[i]).then(response => {
           response.results[0]['sort_id'] = config.pfoSortWeights[response.results[0]['name']]
