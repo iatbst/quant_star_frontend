@@ -1,13 +1,8 @@
 // Master的Host地址
 const masterHost = 'http://ec2-54-169-201-152.ap-southeast-1.compute.amazonaws.com:8000/api'
 
-// 当前投资组合的Hosts地址
-const pfoHosts = [
-    'http://ec2-54-255-223-240.ap-southeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-13-250-43-118.ap-southeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-13-213-63-220.ap-southeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-141-185-127.ap-southeast-1.compute.amazonaws.com:8000/api',
-]
+// 当前投资组合的Hosts地址(由环境变量VUE_APP_PFO_HOSTS决定)
+const pfoHosts = process.env.VUE_APP_PFO_HOSTS.split(',')
 
 // Backtest Host地址(存储K线的Host)
 const backtestHost = 'http://localhost:8000/api'
@@ -72,7 +67,7 @@ const usdStableCoins = [
 ]
 
 export default {
-    pfoHosts,
+pfoHosts,
     masterHost,
     backtestHost,
     cryptoParentPfo,

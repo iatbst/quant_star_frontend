@@ -288,9 +288,9 @@ export default {
     statusIcon(status) {
       if (status === 'completed'){
         return "<i style=\"font-size:20px; color: lightgreen \" class=\"el-icon-success\"></i>"
-      } else if (status === 'canceled' || status === 'rejected' || status === 'expired' || status === 'partial_canceled') {
+      } else if (status === 'canceled' || status === 'expired' || status === 'partial_canceled') {
         return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-warning\"></i>"
-      } else if (status === 'deleted') {
+      } else if (status === 'deleted' || status === 'rejected') {
         return "<i style=\"font-size:20px; color: red \" class=\"el-icon-error\"></i>"
       } else {
         return "<i style=\"font-size:20px; color: gray \" class=\"el-icon-loading\"></i>"
@@ -299,11 +299,14 @@ export default {
     fetchPortfolios() {
       this.portfolioListLoading = true
       this.portfolioList = []
+      var request_count = 0
+      debugger;
       for (var i = 0; i < this.pfo_hosts.length; i++){
         getPortfolios(this.pfo_hosts[i]).then(response => {
           response.results[0]['sort_id'] = config.pfoSortWeights[response.results[0]['name']]
           this.portfolioList = this.portfolioList.concat(response.results)
-          if (this.portfolioList.length == this.pfo_hosts.length){
+          request_count += 1
+          if (request_count == this.pfo_hosts.length){
             // pfo加载完成
             this.portfolioList.sort((a, b) => a.sort_id - b.sort_id)
             this.portfolioListLoading = false
