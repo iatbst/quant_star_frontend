@@ -7,7 +7,7 @@
           <el-table
             v-loading="portfolioListLoading"
             :data="portfolioList"
-            style="width: 100%"
+            style="width: 14%; position: fixed;"
             height="750"
           >
             <el-table-column align="center" label="投资组合">
@@ -23,14 +23,15 @@
 
 
       <el-col :span="20">
-        <div class="grid-content" style="margin-top: 20px">
+        <div class="grid-content bg-purple" style="margin-top: 20px">
           <!-- 总表 -->
           <el-table
             v-loading="summaryTableLoading"
             :data="Object.values(positionMonitorStat)"
-            style="width: 100%; margin-bottom: 20px; margin-top: 45px"
-            :header-cell-style="{ background: 'lightgray' }"
+            style="width: 100%; margin-bottom: 20px; margin-top: 45px;"
+            header-cell-style="background: lightgray; padding:5px"
             border
+            cell-style="padding:5px"
           >
             <el-table-column align="center" label="交易所">
               <template slot-scope="scope">
@@ -81,10 +82,11 @@
           <el-table
             v-loading="detailTableLoading"
             :data="detailTableDataList"
-            style="width: 100%"
+            style="width: 100%;"
+            cell-style="padding:0"
             :span-method="arraySpanMethod"
             :row-style="rowStyle"
-            :header-cell-style="{ background: 'lightgray' }"
+            header-cell-style="background: lightgray; padding:5px"
             border=""
           >
             <el-table-column align="center" label="交易所" prop="exchange" min-width="10%">
@@ -255,7 +257,9 @@ export default {
         this.summaryTableLoading = false
         this.detailTableLoading = false
         this.parsePositionMonitorStat()
+        document.body.scrollTop = document.documentElement.scrollTop = 0;
       })
+      // document.body.scrollTop = document.documentElement.scrollTop = 0
     },
     parsePositionMonitorStat(){
       // Summary Table
@@ -327,4 +331,5 @@ export default {
 .el-table tbody tr:hover>td { 
     background-color:#ffffff!important
 }
+
 </style>
