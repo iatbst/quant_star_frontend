@@ -112,6 +112,11 @@ export default {
             // 获取所有pfo的wallet data
             getPortfolioDatas(config.masterHost, 'portfolio,wallet').then(response => {
                     this.pfoDatas = response.results
+                    // 排序
+                    for(var i = 0; i < this.pfoDatas.length; i++){
+                        this.pfoDatas[i]['sort_id'] = config.pfoSortWeights[this.pfoDatas[i].portfolio.name]
+                    }
+                    this.pfoDatas.sort((a, b) => a.sort_id - b.sort_id)
                     this.pfoDatasAvailable = true
                 }
             )

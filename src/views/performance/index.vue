@@ -99,7 +99,13 @@ export default {
             this.pfoDatas = []
             for(var i = 0; i < this.pfoHosts.length; i++){
                 getPortfolioDatas(this.pfoHosts[i], 'portfolio,performance').then(response => {
-                        this.pfoDatas.push(response.results)
+                        var data = response.results
+                        data['sort_id'] = config.pfoAliasSortWeights[data[0].portfolio.alias]
+                        this.pfoDatas.push(data)
+                        if (this.pfoDatas.length === this.pfoHosts.length ){
+                            // pfo排序
+                            this.pfoDatas.sort((a, b) => a.sort_id - b.sort_id)
+                        }
                     }
                 )
             }

@@ -28,55 +28,26 @@
                             </h2>                                                 
                         </el-col>                        
                     </el-row>
-                    <el-row :gutter="0" type="flex" align="middle">
-                        <el-col :span="12" align="center">
-                            <h3>
-                                BTCUSD:
-                                <span style="color: green" v-if="pfoProfits['btcusd'] >= 0">
-                                    {{ (pfoProfits['btcusd'] * 100/pfoInitUSD['btcusd']).toFixed(2) }}%
-                                </span>
-                                <span style="color: red" v-else>
-                                    {{ (pfoProfits['btcusd'] * 100/pfoInitUSD['btcusd']).toFixed(2) }}%
-                                </span>                                
-                            </h3>                          
-                        </el-col>
-                        <el-col :span="12" align="center">
-                            <h3>
-                                TOP_ALTCOIN:
-                                <span style="color: green" v-if="pfoProfits['top_altcoin'] >= 0">
-                                    {{ (pfoProfits['top_altcoin'] * 100/pfoInitUSD['top_altcoin']).toFixed(2) }}%
-                                </span>
-                                <span style="color: red" v-else>
-                                    {{ (pfoProfits['top_altcoin'] * 100/pfoInitUSD['top_altcoin']).toFixed(2) }}%
-                                </span>                                
-                            </h3>   
-                        </el-col>                    
-                    </el-row> 
 
-                    <el-row :gutter="0" type="flex" align="middle">
-                        <el-col :span="12" align="center">
-                            <h3>
-                                ALTCOIN:
-                                <span style="color: green" v-if="pfoProfits['altcoin'] >= 0">
-                                    {{ (pfoProfits['altcoin'] * 100/pfoInitUSD['altcoin']).toFixed(2) }}%
-                                </span>
-                                <span style="color: red" v-else>
-                                    {{ (pfoProfits['altcoin'] * 100/pfoInitUSD['altcoin']).toFixed(2) }}%
-                                </span>                                
-                            </h3>                          
-                        </el-col>
-                        <el-col :span="12" align="center">
-                            <h3>
-                                ALTBTC:
-                                <span style="color: green" v-if="pfoProfits['altbtc'] >= 0">
-                                    {{ (pfoProfits['altbtc'] * 100/pfoInitUSD['altbtc']).toFixed(2) }}%
-                                </span>
-                                <span style="color: red" v-else>
-                                    {{ (pfoProfits['altbtc'] * 100/pfoInitUSD['altbtc']).toFixed(2) }}%
-                                </span>                                
-                            </h3>   
-                        </el-col>                    
-                    </el-row>                                        
+                     <div>
+                        <!-- N行展示pfoRowCount个pfo的数据 -->
+                        <div v-for="row_ix in Math.ceil(pfoAlias.length/pfoRowCount)">
+                            <el-row :gutter="0" type="flex" align="middle">
+                                <el-col :span="24/pfoRowCount" align="center" v-for="col_ix in pfoRowCount">
+                                    <h3 v-if="(row_ix - 1)*pfoRowCount + col_ix - 1 < pfoAlias.length">
+                                        {{ pfoAlias[(row_ix - 1)*pfoRowCount + col_ix - 1].toUpperCase() }}:
+                                        <span style="color: green" v-if="pfoProfits[pfoAlias[(row_ix - 1)*pfoRowCount + col_ix - 1]] >= 0">
+                                            {{ (pfoProfits[pfoAlias[(row_ix - 1)*pfoRowCount + col_ix - 1]] * 100/pfoInitUSD[pfoAlias[(row_ix - 1)*pfoRowCount + col_ix - 1]]).toFixed(2) }}%
+                                        </span>
+                                        <span style="color: red" v-else>
+                                            {{ (pfoProfits[pfoAlias[(row_ix - 1)*pfoRowCount + col_ix - 1]] * 100/pfoInitUSD[pfoAlias[(row_ix - 1)*pfoRowCount + col_ix - 1]]).toFixed(2) }}%
+                                        </span>                                
+                                    </h3>                          
+                                </el-col>                  
+                            </el-row> 
+                        </div>
+                    </div>
+
                 </div>
             </el-card>
         </el-col> 
@@ -113,6 +84,8 @@ export default {
         return {
             // 历史总收益
             totalProfitHistory: null,
+            pfoRowCount: 3,
+            pfoAlias: config.pfoAlias,
 
             totalProfit: 0,
             pfoProfits: null,
@@ -182,7 +155,6 @@ export default {
             // 渲染Line Chart
             addSingleLine('总收益', totalProfitHistory, this.totalProfitOptions)
         },
-        
         toThousands: toThousands     
     }
 }

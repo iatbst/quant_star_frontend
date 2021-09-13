@@ -4,15 +4,25 @@ const masterHost = 'http://ec2-54-169-201-152.ap-southeast-1.compute.amazonaws.c
 // 当前投资组合的Hosts地址(由环境变量VUE_APP_PFO_HOSTS决定)
 const pfoHosts = process.env.VUE_APP_PFO_HOSTS.split(',')
 
+// 当前投资组合的别名(product)
+const pfoAlias = [
+    'binance',
+    'huobi',
+    'okex',
+    'ftx',
+    'altbtc'
+]
+
 // Backtest Host地址(存储K线的Host)
 const backtestHost = 'http://localhost:8000/api'
 
 // 当前投资组合的初始资金
 const pfoInitUSD = {
-    btcusd: 750000,
-    top_altcoin: 877000,
-    altcoin: 750000,
-    altbtc: 750000,
+    binance: 1436000,
+    huobi: 874000,
+    okex: 641000,
+    ftx: 673000,
+    altbtc: 400000,
 }
 const totalInitUSD = 3127000
 
@@ -26,6 +36,13 @@ const pfoSortWeights = {
     crypto_cta_pr_okex: 3,
     crypto_cta_pr_ftx: 4,
     crypto_cta_pr_altbtc: 5,
+}
+const pfoAliasSortWeights = {
+    binance: 1,
+    huobi: 2,
+    okex: 3,
+    ftx: 4,
+    altbtc: 5,
 }
 
 // 不同Asset的Round Level
@@ -62,15 +79,17 @@ const usdStableCoins = [
 ]
 
 export default {
-pfoHosts,
     masterHost,
+    pfoHosts,
+    pfoAlias,
     backtestHost,
     cryptoParentPfo,
     assetRoundLevel,
     usdStableCoins,
     pfoInitUSD,
     totalInitUSD,
-    pfoSortWeights
+    pfoSortWeights,
+    pfoAliasSortWeights
 }
 
 

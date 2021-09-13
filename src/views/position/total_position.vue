@@ -28,55 +28,26 @@
                             </h1>                                                 
                         </el-col>                        
                     </el-row>
-                    <el-row :gutter="0" type="flex" align="middle">
-                        <el-col :span="12" align="center">
-                            <h3>
-                                BTCUSD:
-                                <span style="color: green" v-if="positionSummaryByPfos['btcusd'] >= 0">
-                                    {{ toThousands(Math.round(positionSummaryByPfos['btcusd'])) }}
-                                </span>
-                                <span style="color: red" v-else>
-                                    {{ toThousands(Math.round(-positionSummaryByPfos['btcusd'])) }}
-                                </span>                                
-                            </h3>                          
-                        </el-col>
-                        <el-col :span="12" align="center">
-                            <h3>
-                                TOP_ALTCOIN:
-                                <span style="color: green" v-if="positionSummaryByPfos['top_altcoin'] >= 0">
-                                    {{ toThousands(Math.round(positionSummaryByPfos['top_altcoin'])) }}
-                                </span>
-                                <span style="color: red" v-else>
-                                    {{ toThousands(Math.round(-positionSummaryByPfos['top_altcoin'])) }}
-                                </span>                                
-                            </h3>   
-                        </el-col>                    
-                    </el-row> 
 
-                    <el-row :gutter="0" type="flex" align="middle">
-                        <el-col :span="12" align="center">
-                            <h3>
-                                ALTCOIN:
-                                <span style="color: green" v-if="positionSummaryByPfos['altcoin'] >= 0">
-                                    {{ toThousands(Math.round(positionSummaryByPfos['altcoin'])) }}
-                                </span>
-                                <span style="color: red" v-else>
-                                    {{ toThousands(Math.round(-positionSummaryByPfos['altcoin'])) }}
-                                </span>                                
-                            </h3>                          
-                        </el-col>
-                        <el-col :span="12" align="center">
-                            <h3>
-                                ALTBTC:
-                                <span style="color: green" v-if="positionSummaryByPfos['altbtc'] >= 0">
-                                    {{ toThousands(Math.round(positionSummaryByPfos['altbtc'])) }}
-                                </span>
-                                <span style="color: red" v-else>
-                                    {{ toThousands(Math.round(-positionSummaryByPfos['altbtc'])) }}
-                                </span>                                
-                            </h3>   
-                        </el-col>                    
-                    </el-row>                                        
+                    <div>
+                        <!-- N行展示pfoRowCount个pfo的数据 -->
+                        <div v-for="row_ix in Math.ceil(pfoAlias.length/pfoRowCount)">
+                            <el-row :gutter="0" type="flex" align="middle">
+                                <el-col :span="24/pfoRowCount" align="center" v-for="col_ix in pfoRowCount">
+                                    <h3 v-if="(row_ix - 1)*pfoRowCount + col_ix - 1 < pfoAlias.length">
+                                        {{ pfoAlias[(row_ix - 1)*pfoRowCount + col_ix - 1].toUpperCase() }}:
+                                        <span style="color: green" v-if="positionSummaryByPfos[pfoAlias[(row_ix - 1)*pfoRowCount + col_ix - 1]] >= 0">
+                                            {{ toThousands(Math.round(positionSummaryByPfos[pfoAlias[(row_ix - 1)*pfoRowCount + col_ix - 1]])) }}
+                                        </span>
+                                        <span style="color: red" v-else>
+                                            {{ toThousands(Math.round(-positionSummaryByPfos[pfoAlias[(row_ix - 1)*pfoRowCount + col_ix - 1]])) }}
+                                        </span>                                
+                                    </h3>                          
+                                </el-col>                  
+                            </el-row> 
+                        </div>
+                    </div>
+                                       
                 </div>
             </el-card>
         </el-col> 
@@ -117,6 +88,8 @@ export default {
             totalLongAmount: null,
             totalShortAmount: null,
             positionSummaryByPfos: null,
+            pfoRowCount: 3, // 右侧框下部每行展示几个pfo
+            pfoAlias: config.pfoAlias,
 
             // 总分布: USDT vs BTC, Long vs Short
             totalPositionOptions: {
@@ -168,7 +141,7 @@ export default {
     },
 
     methods: {
-        // 处理父组件建传入data: pfoDatas
+        // 处理父组件建传入data: subaccountDatas
         parseData() {   
             this.positionsByCoins = {}
             this.positionSummaryByPfos = {}    

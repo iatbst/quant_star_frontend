@@ -1,26 +1,14 @@
 <template>
-    <el-row :gutter="0" type="flex">
-        <!-- Pfo仓位 -->
-        <el-col :span="6">
-            <!-- pfo1 -->
-            <highcharts :options="pfo1PositionOptions"></highcharts>
-        </el-col>
-
-        <el-col :span="6">
-            <!-- pfo2 -->
-            <highcharts :options="pfo2PositionOptions"></highcharts>
-        </el-col>  
-
-        <el-col :span="6">
-            <!-- pfo3 -->
-            <highcharts :options="pfo3PositionOptions"></highcharts>
-        </el-col>
-        
-        <el-col :span="6">
-            <!-- pfo4 -->
-            <highcharts :options="pfo4PositionOptions"></highcharts>
-        </el-col>                   
-    </el-row>
+    <!-- N行展示pfoRowCount个pfo的数据 -->
+    <div>
+        <div v-for="row_ix in Math.ceil(pfoOptions.length/pfoRowCount)">
+            <el-row :gutter="0" type="flex" align="middle">
+                <el-col :span="24/pfoRowCount" align="center" v-for="col_ix in pfoRowCount">
+                    <highcharts :options="pfoOptions[(row_ix - 1)*pfoRowCount + col_ix - 1]" v-if="(row_ix - 1)*pfoRowCount + col_ix - 1 < pfoOptions.length"></highcharts>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -28,6 +16,7 @@ import {Chart} from 'highcharts-vue'
 import {deepCopy} from '@/utils/general'
 import {fillPieByArray} from '@/utils/chart'
 import config from '@/configs/system_configs'
+import { options } from '_runjs@4.3.2@runjs'
 
 
 export default {
@@ -55,10 +44,12 @@ export default {
         return {
             // Pfo分布: USDT vs BTC, Long vs Short
             positionsByPfos: null,
-            pfo1PositionOptions: null,
-            pfo2PositionOptions: null,
-            pfo3PositionOptions: null,
-            pfo4PositionOptions: null,
+            pfoRowCount: 3,
+            // pfo1PositionOptions: null,
+            // pfo2PositionOptions: null,
+            // pfo3PositionOptions: null,
+            // pfo4PositionOptions: null,
+            pfoOptions: [],
             pfoPositionOptions: {
                 chart: {
                     plotBackgroundColor: null,
@@ -143,24 +134,31 @@ export default {
 
             // Pfo Pie图(Refactor!)
             for (let pfo in this.positionsByPfos){
-                if (pfo === 'btcusd'){
-                    this.pfo1PositionOptions = deepCopy(this.pfoPositionOptions)
-                    this.pfo1PositionOptions.title.text = pfo
-                    fillPieByArray(Object.values(this.positionsByPfos[pfo]), this.pfo1PositionOptions)
-                } else if (pfo === 'top_altcoin'){
-                    this.pfo2PositionOptions = deepCopy(this.pfoPositionOptions)
-                    this.pfo2PositionOptions.title.text = pfo
-                    fillPieByArray(Object.values(this.positionsByPfos[pfo]), this.pfo2PositionOptions)
-                } else if (pfo === 'altcoin'){
-                    this.pfo3PositionOptions = deepCopy(this.pfoPositionOptions)
-                    this.pfo3PositionOptions.title.text = pfo
-                    fillPieByArray(Object.values(this.positionsByPfos[pfo]), this.pfo3PositionOptions)
-                } else if (pfo === 'altbtc'){
-                    this.pfo4PositionOptions = deepCopy(this.pfoPositionOptions)
-                    this.pfo4PositionOptions.title.text = pfo
-                    fillPieByArray(Object.values(this.positionsByPfos[pfo]), this.pfo4PositionOptions)
-                }
+                var option = deepCopy(this.pfoPositionOptions)
+                option.title.text = pfo
+                option.sort_id = config.pfoAliasSortWeights[pfo]
+                fillPieByArray(Object.values(this.positionsByPfos[pfo]), option)
+                this.pfoOptions.push(option)
+
+                // if (pfo === 'btcusd'){
+                //     this.pfo1PositionOptions = deepCopy(this.pfoPositionOptions)
+                //     this.pfo1PositionOptions.title.text = pfo
+                //     fillPieByArray(Object.values(this.positionsByPfos[pfo]), this.pfo1PositionOptions)
+                // } else if (pfo === 'top_altcoin'){
+                //     this.pfo2PositionOptions = deepCopy(this.pfoPositionOptions)
+                //     this.pfo2PositionOptions.title.text = pfo
+                //     fillPieByArray(Object.values(this.positionsByPfos[pfo]), this.pfo2PositionOptions)
+                // } else if (pfo === 'altcoin'){
+                //     this.pfo3PositionOptions = deepCopy(this.pfoPositionOptions)
+                //     this.pfo3PositionOptions.title.text = pfo
+                //     fillPieByArray(Object.values(this.positionsByPfos[pfo]), this.pfo3PositionOptions)
+                // } else if (pfo === 'altbtc'){
+                //     this.pfo4PositionOptions = deepCopy(this.pfoPositionOptions)
+                //     this.pfo4PositionOptions.title.text = pfo
+                //     fillPieByArray(Object.values(this.positionsByPfos[pfo]), this.pfo4PositionOptions)
+                // }
             }
+            this.pfoOptions.sort((a, b) => a.sort_id - b.sort_id)
         },
 
         chineseString(s) {

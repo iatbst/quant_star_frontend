@@ -137,6 +137,11 @@ export default {
             getPortfolioDatas(config.masterHost, 'portfolio,wallet').then(response => {
                     this.pfoWalletDatas = response.results
                     this.pfoWalletDatasAvailable = true
+                    // 排序
+                    for(var i = 0; i < this.pfoWalletDatas.length; i++){
+                        this.pfoWalletDatas[i]['sort_id'] = config.pfoSortWeights[this.pfoWalletDatas[i].portfolio.name]
+                    }
+                    this.pfoWalletDatas.sort((a, b) => a.sort_id - b.sort_id)                   
                 }
             )
         },
@@ -156,7 +161,13 @@ export default {
             this.pfoPerfDatas = []
             for(var i = 0; i < this.pfoHosts.length; i++){
                 getPortfolioDatas(this.pfoHosts[i], 'portfolio,performance').then(response => {
-                        this.pfoPerfDatas.push(response.results)
+                        var data = response.results
+                        data['sort_id'] = config.pfoAliasSortWeights[data[0].portfolio.alias]
+                        this.pfoPerfDatas.push(data)
+                        if (this.pfoPerfDatas.length === this.pfoHosts.length ){
+                            // pfo排序
+                            this.pfoPerfDatas.sort((a, b) => a.sort_id - b.sort_id)
+                        }
                     }
                 )
             }
