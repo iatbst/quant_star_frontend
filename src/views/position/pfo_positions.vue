@@ -1,9 +1,9 @@
 <template>
     <!-- N行展示pfoRowCount个pfo的数据 -->
     <div>
-        <div v-for="row_ix in Math.ceil(pfoOptions.length/pfoRowCount)">
+        <div v-for="row_ix in Math.ceil(pfoOptions.length/pfoRowCount)" :key="row_ix">
             <el-row :gutter="0" type="flex" align="middle">
-                <el-col :span="24/pfoRowCount" align="center" v-for="col_ix in pfoRowCount">
+                <el-col :span="24/pfoRowCount" align="center" v-for="col_ix in pfoRowCount" :key="col_ix">
                     <highcharts :options="pfoOptions[(row_ix - 1)*pfoRowCount + col_ix - 1]" v-if="(row_ix - 1)*pfoRowCount + col_ix - 1 < pfoOptions.length"></highcharts>
                 </el-col>
             </el-row>
@@ -98,6 +98,7 @@ export default {
         // 处理父组件建传入data: pfoDatas
         parseData() {         
             this.positionsByPfos = {}   
+            this.pfoOptions = []
             for(var i = 0; i < this.subaccountDatas.length; i++){
                 for(let symbol in this.subaccountDatas[i].positions.data){
                     var usdtAmount = this.subaccountDatas[i].positions.data[symbol]

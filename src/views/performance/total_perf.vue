@@ -31,9 +31,9 @@
 
                      <div>
                         <!-- N行展示pfoRowCount个pfo的数据 -->
-                        <div v-for="row_ix in Math.ceil(pfoAlias.length/pfoRowCount)">
+                        <div v-for="row_ix in Math.ceil(pfoAlias.length/pfoRowCount)" :key="row_ix">
                             <el-row :gutter="0" type="flex" align="middle">
-                                <el-col :span="24/pfoRowCount" align="center" v-for="col_ix in pfoRowCount">
+                                <el-col :span="24/pfoRowCount" align="center" v-for="col_ix in pfoRowCount" :key="col_ix">
                                     <h3 v-if="(row_ix - 1)*pfoRowCount + col_ix - 1 < pfoAlias.length">
                                         {{ pfoAlias[(row_ix - 1)*pfoRowCount + col_ix - 1].toUpperCase() }}:
                                         <span style="color: green" v-if="pfoProfits[pfoAlias[(row_ix - 1)*pfoRowCount + col_ix - 1]] >= 0">
