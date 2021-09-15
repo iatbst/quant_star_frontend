@@ -13,19 +13,19 @@
                 style="width: 100%; margin-bottom: 20px; margin-top: 45px"
                 :header-cell-style="{ background: '#f2f2f2' }"
             >
-                <el-table-column label="投资组合" min-width="20%" align="center">
+                <el-table-column label="投资组合" min-width="16%" align="center">
                   <template slot-scope="scope">
                     {{ scope.row.pfo }}
                   </template>
                 </el-table-column>
 
-                <el-table-column label="资金" min-width="20%" align="center">
+                <el-table-column label="资金" min-width="16%" align="center">
                   <template slot-scope="scope">
                     {{ toThousands(Math.round(scope.row.usdt_amount)) }}
                   </template>
                 </el-table-column>
 
-                <el-table-column label="今日变动" min-width="20%" align="center">
+                <el-table-column label="今日变动" min-width="16%" align="center">
                   <template slot-scope="scope">
                       <span style="color: green" v-if="scope.row.day_diff >= 0">
                           {{ toThousands(Math.round(scope.row.day_diff)) }}
@@ -36,17 +36,32 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column label="当前回撤" min-width="20%" align="center">
+                <el-table-column label="当前回撤" min-width="16%" align="center">
                   <template slot-scope="scope">
                     {{ (scope.row.drawdown*100).toFixed(2) }}%
                   </template>
                 </el-table-column>
 
-                <el-table-column label="最大回撤" min-width="20%" align="center">
+                <el-table-column label="最大回撤" min-width="16%" align="center">
                   <template slot-scope="scope">
                     {{ (scope.row.max_drawdown*100).toFixed(2) }}%
                   </template>
                 </el-table-column>
+
+                <el-table-column label="理论资金差" min-width="20%" align="center">
+                  <template slot-scope="scope">
+                      <div v-if="scope.row.theory_usdt_amount">
+                        <span style="color: green" v-if="scope.row.theory_usdt_amount >= scope.row.usdt_amount">
+                            {{ toThousands(Math.round(scope.row.theory_usdt_amount - scope.row.usdt_amount)) }}
+                            ({{ ((scope.row.theory_usdt_amount - scope.row.usdt_amount)*100/scope.row.theory_usdt_amount).toFixed(1) }}%)
+                        </span>
+                        <span style="color: red" v-else>
+                            {{ toThousands(Math.round(scope.row.theory_usdt_amount - scope.row.usdt_amount)) }}
+                            ({{ ((scope.row.theory_usdt_amount - scope.row.usdt_amount)*100/scope.row.theory_usdt_amount).toFixed(1) }}%)
+                        </span>                        
+                      </div>                   
+                  </template>
+                </el-table-column>               
             </el-table>          
         </el-col> 
     </el-row>    
