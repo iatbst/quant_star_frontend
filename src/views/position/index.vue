@@ -22,27 +22,28 @@
         <position-ranks v-bind:subaccount-datas="subaccountDatas" v-if="subaccountDatasAvailable"></position-ranks> 
     </div>
 
-    <!-- Pfo仓位 -->
-    <div style="background-color: white; margin-bottom: 20px">
-        <el-row :gutter="0" type="flex">
-            <el-col :span="24" align="center">
-                <h2>              
-                </h2>    
-            </el-col>
-        </el-row>
-        <pfo-positions v-bind:subaccount-datas="subaccountDatas" v-if="subaccountDatasAvailable"></pfo-positions> 
-    </div>
-
-    <!-- 仓位详情 -->
+    <!-- 仓位详情1 -->
     <div style="background-color: white; margin-bottom: 20px">
         <el-row :gutter="0" type="flex">
             <el-col :span="24" align="center">
                 <h3>
-                    仓位明细              
+                    仓位明细1           
                 </h3>    
             </el-col>
         </el-row>
         <position-details v-bind:subaccount-datas="subaccountDatas" v-if="subaccountDatasAvailable"></position-details> 
+    </div>
+
+    <!-- 仓位详情2 -->
+    <div style="background-color: white; margin-bottom: 20px">
+        <el-row :gutter="0" type="flex">
+            <el-col :span="24" align="center">
+                <h3>
+                    仓位明细2           
+                </h3>    
+            </el-col>
+        </el-row>
+        <position-map v-bind:positions="positions" v-if="positionsAvailable"></position-map> 
     </div>
   </div>
 
@@ -53,30 +54,36 @@
 <script>
 import totalPosition from '@/views/position/total_position'
 import positionRanks from '@/views/position/position_ranks'
-import pfoPositions from '@/views/position/pfo_positions'
 import positionDetails from '@/views/position/position_details'
+import positionMap from '@/views/position/position_map'
 import config from '@/configs/system_configs'
 import { getSubAccountDatas } from '@/api/subaccount'
-
+import { getPositions } from '@/api/position'
 
 export default {
     components: {
         totalPosition,
         positionRanks,
-        pfoPositions,
-        positionDetails
+        positionDetails,
+        positionMap
     },
 
     data() {
         return {
+            pfoHosts: config.pfoHosts,
+
             subaccountDatas: null,
-            subaccountDatasAvailable: false,                                                    
+            subaccountDatasAvailable: false,      
+            
+            positions: null,
+            positionsAvailable: false,
         }
     },
 
     created() {
         this.subaccountDatas = []
         this.fetchSubAccountPositionDatas()
+        this.fetchPositions()
     },
 
     methods: {
@@ -86,6 +93,22 @@ export default {
                     this.subaccountDatasAvailable = true
                 }
             )
+        },
+        fetchPositions() {
+            this.positions = []
+            var count = 0
+            for(var i = 0; i < this.pfoHosts.length; i++){
+                getPositions(this.pfoHosts[i]).then(response => {
+                        count += 1
+                        this.positions = this.positions.concat(response.results)
+                        if (count === this.pfoHosts.length ){
+                            // 排序
+                            // this.positions.sort((a, b) => a.worker - b.worker)
+                            this.positionsAvailable = true
+                        }
+                    }
+                )
+            }
         },
     }
 }

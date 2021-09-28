@@ -1,20 +1,41 @@
 <template>
-    <el-row :gutter="0" type="flex">
-        <!-- 仓位排名 -->
-         <el-col :span="24">
-            <highcharts :options="positionRanksOptions"></highcharts>
-        </el-col>   
-    </el-row>   
+    <div>
+        <el-row :gutter="0" type="flex" v-bind:key="colOption.title.text" v-for="colOption in optionList">
+            <!-- 仓位排名 -->
+            <el-col :span="24">
+                <highcharts :options="colOption"></highcharts>
+            </el-col>   
+        </el-row>  
+
+        <!-- Diaglog: 经典三联组件 -->
+        <el-dialog title="" :visible.sync="dialog3CmpVisible" width="60%" >
+            <pfo-worker-sp
+            v-bind:portfolios="portfolios"
+            v-bind:portfolios-loading="portfoliosLoading"
+            v-bind:workers="workers"
+            v-bind:workers-loading="workersLoading"
+            v-bind:signal-points="signalPoints"
+            v-bind:signal-points-loading="signalPointsLoading"
+            v-bind:current-worker="currentWorker"
+            v-bind:host="host"
+            @onClickPfo="onClickPfo"
+            @onClickWorker="onClickWorker"
+            ></pfo-worker-sp>
+        </el-dialog>
+    </div> 
 </template>
 
 <script>
 import {Chart} from 'highcharts-vue'
 import {addSingleColumn} from '@/utils/chart'
 import {quoteToUSD} from '@/utils/general'
+import {deepCopy} from '@/utils/general'
+import pfoWorkerSp from '@/views/pfo_worker_sp/_pfo_worker_sp'
 
 export default {
     components: {
-        highcharts: Chart
+        highcharts: Chart,
+        pfoWorkerSp
     },
 
     props: {
@@ -35,12 +56,15 @@ export default {
 
     data() {
         return {
-            ranks: 20,
+            colsPerRow: 35,     // 根据具体symbol数量调节, 防止最后一行col太少!
             positionRanks: null,
-            positionRanksOptions: {
+            optionList: [],
+            positionOptions: {
                 chart: {
-                    type: 'column'
+                    type: 'column',
+                    height: 300
                 },
+
                 title: {
                     text: null,
                 },
@@ -86,6 +110,21 @@ export default {
                     data: [],
                 }],
             },
+
+            dialog3CmpVisible: false,
+
+            // Dialog: 点击某个symbol column之后, 展示对应经典三联
+            host: null,
+            currentWorker: null,
+
+            portfolios: null,
+            portfoliosLoading: true,
+
+            workers: null,
+            workersLoading: true,
+
+            signalPoints: null,
+            signalPointsLoading: false,
         }
     },
 
@@ -95,6 +134,23 @@ export default {
     },
 
     methods: {
+        // 点击column后的处理函数
+        onClickPosition(portfolios, symbol){
+            this.portfolios = portfolios
+            this.dialog3CmpVisible = true
+            if (portfolios.length > 0){
+                this.onClickPfo(portfolios[0], symbol)
+            }
+        },
+
+        onClickPfo(pfo, symbol) {
+            this.host = pfo.host
+        },
+
+        onClickWorker(worker) {
+
+        },
+
         // 处理父组件建传入data: pfoDatas
         parseData() {    
             this.positionRanks = {}        
@@ -121,10 +177,22 @@ export default {
                 }
             }
 
-            var sortedPositionRanks = Object.values(this.positionRanks).sort((a, b) => Math.abs(b.y) - Math.abs(a.y)).slice(0, this.ranks)
-
-            addSingleColumn(sortedPositionRanks, this.positionRanksOptions)     
-            this.positionRanksOptions.title.text = '前' + this.ranks + '仓位'
+            // 按行呈现
+            this.optionList = []
+            var sortedPositionRanks = Object.values(this.positionRanks).filter(function(val){
+                return Math.abs(val.y) >= 10;   // USD < 10不呈现!
+            }).sort((a, b) => Math.abs(b.y) - Math.abs(a.y))
+            for(var i = 0; i < Math.ceil(sortedPositionRanks.length/this.colsPerRow); i++){
+                var option = deepCopy(this.positionOptions)
+                var start = i*this.colsPerRow+1
+                var end = (i+1)*this.colsPerRow
+                if (end > sortedPositionRanks.length){
+                    end = sortedPositionRanks.length
+                }
+                option.title.text = start + ' - ' + end
+                this.optionList.push(option)
+                addSingleColumn(sortedPositionRanks.slice(i*this.colsPerRow, (i+1)*this.colsPerRow), option)
+            }     
         },
     }
 }

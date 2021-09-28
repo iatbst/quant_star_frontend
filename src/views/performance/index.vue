@@ -22,17 +22,6 @@
         <pfo-perfs v-bind:pfo-datas="pfoDatas" v-if="pfoDatas.length === pfoHosts.length"></pfo-perfs>
     </div>
 
-    <!-- 日收益 -->
-    <div style="background-color: white; margin-bottom: 20px">
-        <el-row :gutter="0" type="flex">
-            <el-col :span="24" align="center">
-                <h2>              
-                </h2>    
-            </el-col>
-        </el-row>
-        <daily-profit v-bind:pfo-datas="pfoDatas" v-if="pfoDatas.length === pfoHosts.length"></daily-profit>
-    </div>
-
     <!-- 收益排名 -->
     <div style="background-color: white; margin-bottom: 20px">
         <el-row :gutter="0" type="flex">
@@ -63,7 +52,6 @@
 // Components
 import totalPerf from './total_perf'
 import pfoPerfs from './pfo_perfs'
-import dailyProfit from './daily_profit'
 import profitRanks from './profit_ranks'
 import perfDetails from './perf_details'
 

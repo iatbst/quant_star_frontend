@@ -18,8 +18,7 @@
 <script>
 import config from '@/configs/system_configs'
 import { getPortfolios } from '@/api/portfolio'
-import { getWorkersByPfo } from '@/api/worker'
-import { getSignalPointsByWorker } from '@/api/signal_point'
+import { getSignalPointsByWorker, getSignalPointsByFinalState } from '@/api/signal_point'
 import pfoWorkerSp from '@/views/pfo_worker_sp/_pfo_worker_sp'
 
 export default {
@@ -43,13 +42,10 @@ export default {
       signalPointsLoading: false,
     }
   },
-
   created() {
     this.init()
   },
-
-  methods: { 
-    // 初始化: 展示所有pfo;展示默认pfo的所有workers; 展示默认worker的所有sp 
+  methods: {  
     init() {
       this.portfoliosLoading = true
       this.portfolios = []
@@ -74,7 +70,7 @@ export default {
     // 选择Pfo时: 更新Workers/SignalPoints
     onClickPfo(pfo){
       this.host = pfo.host
-      this.fetchWorkersByPfo(pfo, this.onClickWorker)
+      this.fetchWorkersBySp('warn', this.onClickWorker)
     },
 
     // 选择Worker时: 更新SignalPoints
@@ -83,19 +79,28 @@ export default {
       this.fetchSignalPointsByWorker(worker)
     },
 
-    fetchWorkersByPfo(pfo, onWorkers) {
-      this.workersLoading = true
-      getWorkersByPfo(pfo).then(response => {
-        response.results.sort(function(a,b){return a.name.localeCompare(b.name)})
-        this.workers = response.results
-        this.workersLoading = false
-        if (this.workers.length > 0){
-          // 回调
-          onWorkers(this.workers[0])
-        } else {
-          this.signalPoints = []
-        }
-      })
+    // 获取指定pfo的所有warn workers(有warn sp的workers)
+    fetchWorkersBySp(sp_state, onWorkers) {
+        this.workersLoading = true
+        this.workers = []
+        this.workerIDs = new Set()
+        getSignalPointsByFinalState(sp_state, this.host).then(response => {
+          var signalPointList = response.results
+          for (var i=0; i < signalPointList.length; i++){
+              if (!this.workerIDs.has(signalPointList[i].worker.id)){
+                // 新worker
+                this.workerIDs.add(signalPointList[i].worker.id)
+                this.workers.push(signalPointList[i].worker)
+              }
+          }
+          this.workersLoading = false
+          if (this.workers.length > 0){
+            // 回调
+            onWorkers(this.workers[0])
+          } else {
+            this.signalPoints = []
+          }
+        })
     },
 
     fetchSignalPointsByWorker(worker) {
@@ -108,43 +113,3 @@ export default {
   }
 }
 </script>
-
-<style>
-  .el-row {
-    margin-bottom: -40px;
-    &:last-child {
-      margin-bottom: 0;
-    };
-    &:first-child {
-      margin-top: 0px;
-    };
-    padding: 0px;
-  }
-  .el-col {
-    border-radius: 4px;
-  }
-  .bg-purple-dark {
-    background: #99a9bf;
-  }
-  .bg-purple {
-    background: #d3dce6;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-  }
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-  }
-  .el-table__row>td{
-    border: none;
-    padding: 5px;
-  }
-  .el-table::before {
-    height: 0px;
-  }
-</style>

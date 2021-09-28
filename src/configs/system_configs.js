@@ -13,6 +13,15 @@ const pfoAlias = [
     'altbtc'
 ]
 
+// 当前子账户(subaccount)对应pfo的别名(product)
+const subacctPfoAlias = [
+    'binance',
+    'huobi',
+    'okex',
+    'ftx',
+    'altbtc'
+]
+
 // Backtest Host地址(存储K线的Host)
 const backtestHost = 'http://localhost:8000/api'
 
@@ -25,6 +34,17 @@ const pfoInitUSD = {
     altbtc: 400000,
 }
 const totalInitUSD = 3127000
+const initFundUSD = 1000000     // 基金初始本金
+
+// SP错误类型: 如果是常见错误, 有固定分类, 否则为其他
+const spErrorTypes = [
+    '杠杆借贷额度限制',
+    '合约持仓额度限制',
+    '其他'
+]
+
+// 当前风险系数
+const riskRatio = 0.4
 
 // Crypto父pfo的名称
 const cryptoParentPfo = 'crypto_pfo'
@@ -63,7 +83,14 @@ const assetRoundLevel = {
     UNI: 1,
     DOGE: 0,
     LINK: 1,
-    SUSHI: 1
+    SUSHI: 1,
+    BNB: 2,
+    CHZ: 0,
+    MATIC: 0,
+    VET: 0,
+    XLM: 0,
+    THETA: 1,
+    SOL: 2,
 }
 
 // USD 稳定币
@@ -88,8 +115,12 @@ export default {
     usdStableCoins,
     pfoInitUSD,
     totalInitUSD,
+    initFundUSD,
     pfoSortWeights,
-    pfoAliasSortWeights
+    pfoAliasSortWeights,
+    riskRatio,
+    subacctPfoAlias,
+    spErrorTypes
 }
 
 

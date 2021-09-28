@@ -122,20 +122,32 @@
               </template>
             </el-table-column>   
 
-            <el-table-column align="center" label="状态说明" prop="message" min-width="30%">
+            <el-table-column align="center" label="状态说明" prop="message" min-width="20%">
             </el-table-column>        
 
-            <el-table-column align="center" label="原因" prop="reason" min-width="20%">
+            <el-table-column align="center" label="原因" prop="reason" min-width="30%">
               <template slot-scope="scope">
                 <div v-if="scope.row.status !== 'success' && scope.row.reason === undefined">
-                  <el-form :inline="true" :model="errorReason" class="demo-form-inline" size="mini">
+                  <el-form :inline="true" :model="spState" class="demo-form-inline" size="mini">
                     <el-form-item label="">
-                      <el-input v-model="errorReason.reason" placeholder="原因"></el-input>
+                      <el-select v-model="spState.final_state" placeholder="最终状态">
+                        <el-option label="error" value="error"></el-option>
+                        <el-option label="success" value="success"></el-option>
+                        <el-option label="manual" value="manual"></el-option>
+                      </el-select>
+                    </el-form-item>  
+                    <el-form-item label="" v-if="spState.final_state == 'error'">
+                      <el-select v-model="spState.error_type" placeholder="错误类型">
+                        <el-option :label="type" :value="type" v-bind:key="type" v-for="type in spErrorTypes"></el-option>
+                      </el-select>
+                    </el-form-item>                     
+                    <el-form-item label="">
+                      <el-input v-model="spState.note" placeholder="原因"></el-input>
                     </el-form-item>
                     <el-form-item>
-                      <el-button type="primary" @click="onSubmitErrorReason(scope.row.worker_id, scope.row)">标记</el-button>
+                      <el-button type="primary" @click="onSubmitSpState(scope.row.worker_id, scope.row)">标记</el-button>
                     </el-form-item>
-                  </el-form>      
+                  </el-form>    
                 </div>
                 <div v-else>
                   {{ scope.row.reason }}
@@ -161,7 +173,7 @@
 import config from '@/configs/system_configs'
 import { getPortfolios } from '@/api/portfolio'
 import { getPositionMonitorStatsByPortfolio } from '@/api/monitor_stat'
-import { markErrorPositionReason } from '@/api/signal_point'
+import { markCurrentSpFinalState } from '@/api/signal_point'
 import moment from 'moment'
 import { countDecimals } from '@/utils/general'
 
@@ -204,9 +216,12 @@ export default {
       jsonData: null,
       dialogJsonVisible: false,
 
-      errorReason: {
-        reason: null,
-      }
+      spState: {
+        final_state: null,
+        error_type: null,   // final_state = 'error'
+        note: null,
+      },
+      spErrorTypes: config.spErrorTypes,
     }
   },
   created() {
@@ -297,13 +312,20 @@ export default {
       }
     },
 
-    onSubmitErrorReason(worker_id, row) {
+    onSubmitSpState(worker_id, row) {
       // 发送ajax, 更新后台
-      markErrorPositionReason(worker_id, this.errorReason.reason, this.host).then(response => {
+      markCurrentSpFinalState(worker_id, this.spState, this.host).then(response => {
         // 更新UI
         console.log(response.results)
         row.status = 'mark'
-        row.reason = this.errorReason.reason
+        var reason = '[' + this.spState.final_state + ']'
+        if (this.spState.error_type){
+          reason += '(' + this.spState.error_type + ')'
+        }
+        if (this.spState.note){
+          reason += '(' + this.spState.note + ')'
+        }
+        row.reason = reason
       })
     },
 

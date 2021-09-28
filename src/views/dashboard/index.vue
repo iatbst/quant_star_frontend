@@ -1,5 +1,12 @@
 <template>
   <div class="app-container" style="background-color: lightgray">
+    <!----------------------------------- 总表 --------------------------------------->
+    <div style="background-color: white; margin-bottom: 20px">
+        <summary-table 
+        v-bind:summary-datas="[pfoWalletDatas, subaccountDatas, pfoDatas]" 
+        v-if="pfoWalletDatasAvailable && subaccountDatasAvailable && pfoDatasAvailable" style="margin-bottom: 20px"></summary-table>
+    </div>
+
     <!----------------------------------- 资产 --------------------------------------->
     <!-- 总资产 -->
     <div style="background-color: white; margin-bottom: 20px">
@@ -12,12 +19,27 @@
         </el-row>
         <!-- 总资产 -->
         <total-balance v-bind:pfo-datas="pfoWalletDatas" v-if="pfoWalletDatasAvailable" style="margin-bottom: 20px"></total-balance>
-        <!-- 日收益 -->
-        <daily-profit v-bind:pfo-datas="pfoWalletDatas" v-if="pfoWalletDatasAvailable"></daily-profit> 
         <!-- Pfo资产 -->
         <pfo-balances v-bind:pfo-datas="pfoWalletDatas" v-if="pfoWalletDatasAvailable"></pfo-balances> 
         <!-- 资产分布 -->
         <balance-distributions v-bind:subaccount-datas="subaccountDatas" v-if="subaccountDatasAvailable" style="background-color: white; margin-bottom: 20px"></balance-distributions>
+    </div>
+
+    <!----------------------------------- 策略(表现) --------------------------------------->
+    <div style="background-color: white; margin-bottom: 20px">
+        <el-row :gutter="0" type="flex">
+            <el-col :span="24" align="center">
+                <h2>
+                    策略
+                </h2>    
+            </el-col>
+        </el-row>
+        <!-- 总收益 -->
+        <total-perf v-bind:pfo-datas="pfoDatas" v-if="pfoDatasAvailable" style="margin-bottom: 20px"></total-perf>
+        <!-- Pfo收益 -->
+        <pfo-perfs v-bind:pfo-datas="pfoDatas" v-if="pfoDatasAvailable" style="margin-bottom: 20px"></pfo-perfs>
+        <!-- 收益排名 -->
+        <profit-ranks v-bind:delegate-worker-datas="delegateWorkerDatas" v-if="delegateWorkerDatas.length === pfoHosts.length"></profit-ranks>
     </div>
 
     <!----------------------------------- 仓位 --------------------------------------->
@@ -33,78 +55,67 @@
         <total-position v-bind:subaccount-datas="subaccountDatas" v-if="subaccountDatasAvailable" style="margin-bottom: 20px"></total-position> 
         <!-- 仓位排名 -->
         <position-ranks v-bind:subaccount-datas="subaccountDatas" v-if="subaccountDatasAvailable"></position-ranks> 
-        <!-- Pfo仓位 -->
-        <pfo-positions v-bind:subaccount-datas="subaccountDatas" v-if="subaccountDatasAvailable"></pfo-positions>
-    </div>
-
-    <!----------------------------------- 策略(表现) --------------------------------------->
-    <div style="background-color: white; margin-bottom: 20px">
-        <el-row :gutter="0" type="flex">
-            <el-col :span="24" align="center">
-                <h2>
-                    策略
-                </h2>    
-            </el-col>
-        </el-row>
-        <!-- 总收益 -->
-        <total-perf v-bind:pfo-datas="pfoPerfDatas" v-if="pfoPerfDatas.length === pfoHosts.length" style="margin-bottom: 20px"></total-perf>
-        <!-- Pfo收益 -->
-        <pfo-perfs v-bind:pfo-datas="pfoPerfDatas" v-if="pfoPerfDatas.length === pfoHosts.length" style="margin-bottom: 20px"></pfo-perfs>
-        <!-- 日收益 -->
-        <daily-total-profit v-bind:pfo-datas="pfoPerfDatas" v-if="pfoPerfDatas.length === pfoHosts.length" style="margin-bottom: 20px"></daily-total-profit>
-        <!-- 收益排名 -->
-        <profit-ranks v-bind:delegate-worker-datas="delegateWorkerDatas" v-if="delegateWorkerDatas.length === pfoHosts.length"></profit-ranks>
+        <!-- 仓位详情 -->
+        <position-map v-bind:positions="positions" v-if="positionsAvailable"></position-map> 
     </div>
   </div>
 </template>
 
 <script>
 // Components
+import summaryTable from '@/views/dashboard/summary_table'
 import totalBalance from '@/views/balance/total_balance'
-import dailyProfit from '@/views/balance/daily_profit'
 import pfoBalances from '@/views/balance/pfo_balances'
 import balanceDistributions from '@/views/balance/balance_distributions'
 import totalPosition from '@/views/position/total_position'
 import positionRanks from '@/views/position/position_ranks'
-import pfoPositions from '@/views/position/pfo_positions'
 import totalPerf from '@/views/performance/total_perf'
 import pfoPerfs from '@/views/performance/pfo_perfs'
-import dailyTotalProfit from '@/views/performance/daily_profit'
 import profitRanks from '@/views/performance/profit_ranks'
+import positionMap from '@/views/position/position_map'
 
 import config from '@/configs/system_configs'
 import { getPortfolioDatas } from '@/api/portfolio' 
 import { getSubAccountDatas} from '@/api/subaccount'
 import { getDelegateWorkerDatas } from '@/api/worker'
+import { getPositions } from '@/api/position'
 
 export default {
     components: {
+        summaryTable,
+
         totalBalance,
-        dailyProfit,
         pfoBalances,
         balanceDistributions,
 
         totalPosition,
         positionRanks,
-        pfoPositions,
+        positionMap,
 
         pfoPerfs,
         totalPerf,
-        dailyTotalProfit,
         profitRanks,
     },
 
     data() {
         return {
+            pfoHosts: config.pfoHosts,
+
+            summaryDatas: [],
+
+            pfoDatas: [],
+            pfoDatasAvailable: false,
+
             pfoWalletDatas: [],     
             pfoWalletDatasAvailable: false,
 
             subaccountDatas: [],
             subaccountDatasAvailable: false,
 
-            pfoHosts: config.pfoHosts,
-            pfoPerfDatas: [],
             delegateWorkerDatas: [],
+
+            positions: [],
+            positionsAvailable: false,
             
             refreshInterval: 300000,
             intervalId: null
@@ -119,16 +130,38 @@ export default {
     methods: {
         // 获取所有数据
         fetchDatas(){
-            // 1: 获取Balance Data (Master)
+            // 获取Pfo Datas (Pfo)
+            this.fetchPfoDatas()
+
+            // 获取Pfo Wallet Data (Master)
             this.fetchPfoWalletDatas()
+
+            // 获取Subaccount Datas (Master)
             this.fetchSubAccountDatas()
-
-            // 2: 获取Position Data (Master)
-
-            // 3: 获取Perf Data (Pfo)
-            this.fetchPfoPerfDatas()
-            // 获取WorkerDatas
+            
+            // 获取WorkerDatas (Pfo)
             this.fetchDelegateWorkerDatas()
+
+            // 获取Positions (Pfo)
+            this.fetchPositions()
+        },
+
+        // 从Pfo获取所有pfo data
+        fetchPfoDatas() {
+            this.pfoDatas = []
+            for(var i = 0; i < this.pfoHosts.length; i++){
+                getPortfolioDatas(this.pfoHosts[i]).then(response => {
+                        var data = response.results
+                        data['sort_id'] = config.pfoAliasSortWeights[data[0].portfolio.alias]
+                        this.pfoDatas.push(data)
+                        if (this.pfoDatas.length === this.pfoHosts.length ){
+                            // pfo排序
+                            this.pfoDatas.sort((a, b) => a.sort_id - b.sort_id)
+                            this.pfoDatasAvailable = true
+                        }
+                    }
+                )
+            }
         },
 
         // 从Master获取所有pfo的wallet data
@@ -156,17 +189,23 @@ export default {
             )
         },
 
-        // 从Pfo获取所有pfo performance data
-        fetchPfoPerfDatas() {
-            this.pfoPerfDatas = []
+        // 从Pfo获取所有positions
+        fetchPositions() {
+            this.positions = []
+            var count = 0
             for(var i = 0; i < this.pfoHosts.length; i++){
-                getPortfolioDatas(this.pfoHosts[i], 'portfolio,performance').then(response => {
-                        var data = response.results
-                        data['sort_id'] = config.pfoAliasSortWeights[data[0].portfolio.alias]
-                        this.pfoPerfDatas.push(data)
-                        if (this.pfoPerfDatas.length === this.pfoHosts.length ){
-                            // pfo排序
-                            this.pfoPerfDatas.sort((a, b) => a.sort_id - b.sort_id)
+                getPositions(this.pfoHosts[i]).then(response => {
+                        count += 1
+                        var pfoPositions = response.results
+                        // 每个position添加host信息
+                        for (let j = 0; j < pfoPositions.length; j++){
+                            pfoPositions[j]['host'] = response.config.baseURL
+                        }
+                        this.positions = this.positions.concat(pfoPositions)
+                        if (count === this.pfoHosts.length ){
+                            // 排序
+                            // this.positions.sort((a, b) => a.worker - b.worker)
+                            this.positionsAvailable = true
                         }
                     }
                 )

@@ -5,12 +5,14 @@ import moment from 'moment'
 // epoch转换为时间戳(ts为10位数字)
 export function formatTimestamp(ts) {
     if (ts) {
-      const stillUtc = moment.utc(ts*1000).toDate()
-      return moment(stillUtc)
-      .local()
-      .format('YYYY-MM-DD HH:mm:ss')
+        // 转化为13位
+        if (ts < 10000000000){
+            ts *= 1000
+        }
+        const stillUtc = moment.utc(ts).toDate()
+        return moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss')
     } else {
-      return '--'
+        return '--'
     }
 }
 

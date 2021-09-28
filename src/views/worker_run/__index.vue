@@ -1,17 +1,39 @@
 <template>
-  <!-- 经典3组件(pfo/worker/sp) -->
-  <pfo-worker-sp
-  v-bind:portfolios="portfolios"
-  v-bind:portfolios-loading="portfoliosLoading"
-  v-bind:workers="workers"
-  v-bind:workers-loading="workersLoading"
-  v-bind:signal-points="signalPoints"
-  v-bind:signal-points-loading="signalPointsLoading"
-  v-bind:current-worker="currentWorker"
-  v-bind:host="host"
-  @onClickPfo="onClickPfo"
-  @onClickWorker="onClickWorker"
-  ></pfo-worker-sp>
+  <div class="app-container" >
+    <el-row :gutter="0" type="flex"  style="margin-bottom: 50px">
+      <el-col :span="4">
+        <div class="grid-content bg-purple">
+          <!-- 所有的Portfolios -->
+          <portfolios 
+          v-bind:portfolios="portfolios"
+          v-bind:portfolios-loading="portfoliosLoading"
+          @onClickPfo="onClickPfo"></portfolios>
+        </div>
+      </el-col>
+
+      <el-col :span="4">
+        <div class="grid-content bg-purple">
+          <!-- 指定portfolio的所有workers -->
+          <workers 
+          v-bind:workers="workers"
+          v-bind:workers-loading="workersLoading"
+          @onClickWorker="onClickWorker"></workers>
+        </div>
+      </el-col>
+
+      <el-col :span="16">
+        <div class="grid-content bg-purple">
+          <!-- 指定worker的runs -->
+          <signal-points 
+          v-bind:signal-points="signalPoints"
+          v-bind:current-worker="currentWorker"
+          v-bind:host="host"
+          v-bind:signal-points-loading="signalPointsLoading"
+          ></signal-points>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 
@@ -20,11 +42,15 @@ import config from '@/configs/system_configs'
 import { getPortfolios } from '@/api/portfolio'
 import { getWorkersByPfo } from '@/api/worker'
 import { getSignalPointsByWorker } from '@/api/signal_point'
-import pfoWorkerSp from '@/views/pfo_worker_sp/_pfo_worker_sp'
+import signalPoints from '@/views/signal_point/_worker_sps'
+import workers from '@/views/worker/_workers'
+import portfolios from '@/views/portfolio/_portfolios'
 
 export default {
   components: {
-    pfoWorkerSp
+    signalPoints,
+    workers,
+    portfolios,
   },
 
   data() {
@@ -43,14 +69,11 @@ export default {
       signalPointsLoading: false,
     }
   },
-
   created() {
-    this.init()
+    this.fetchPortfolios()
   },
-
-  methods: { 
-    // 初始化: 展示所有pfo;展示默认pfo的所有workers; 展示默认worker的所有sp 
-    init() {
+  methods: {  
+    fetchPortfolios() {
       this.portfoliosLoading = true
       this.portfolios = []
       var request_count = 0

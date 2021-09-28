@@ -155,6 +155,24 @@ export const constantRoutes = [
         meta: { title: '仓位/信号', icon: 'el-icon-bell' }
       },
       {
+        path: 'warn',
+        component: () => import('@/views/monitor/signal_point/warn'),
+        name: 'Warn',
+        meta: { title: '警告交易', icon: 'el-icon-warning-outline' },
+      },
+      {
+        path: 'unchecked_error',
+        component: () => import('@/views/monitor/signal_point/unchecked_error'),
+        name: 'Unchecked_Error',
+        meta: { title: '未检验错误交易', icon: 'el-icon-circle-close' },                     
+      },
+      {
+        path: 'checked_error',
+        component: () => import('@/views/monitor/signal_point/checked_error'),
+        name: 'Checked_Error',
+        meta: { title: '已检验错误交易', icon: 'el-icon-error' },                     
+      },           
+      {
         path: 'errors',
         name: 'Errors',
         component: () => import('@/views/monitor/error/index'),

@@ -10,17 +10,6 @@
         </el-row>
         <total-balance v-bind:pfo-datas="pfoDatas" v-if="pfoDatasAvailable"></total-balance> 
     </div>
-    
-    <!-- 日资产变化 -->
-    <div style="background-color: white; margin-bottom: 20px">
-        <el-row :gutter="0" type="flex">
-            <el-col :span="24" align="center">
-                <h2>          
-                </h2>    
-            </el-col>
-        </el-row>
-        <daily-profit v-bind:pfo-datas="pfoDatas" v-if="pfoDatasAvailable"></daily-profit> 
-    </div>
 
     <!-- Pfo资产 -->
     <div style="background-color: white; margin-bottom: 20px">
@@ -61,7 +50,6 @@
 
 <script>
 import totalBalance from '@/views/balance/total_balance'
-import dailyProfit from '@/views/balance/daily_profit'
 import pfoBalances from '@/views/balance/pfo_balances'
 import balanceDistributions from '@/views/balance/balance_distributions'
 import balanceDetails from '@/views/balance/balance_details'

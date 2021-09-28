@@ -51,6 +51,10 @@ service.interceptors.response.use(
     }
     // const new_res = { token: res.auth_token }
     // alert(JSON.stringify(res))
+    
+    // 添加config信息(否则并行request的response回调无法确定初始调用信息, eg， 无法确认初始url)
+    res['config'] = response.config
+    
     return res
     // if the custom code is not 20000, it is judged as an error.
     // if (res.code !== 20000) {
