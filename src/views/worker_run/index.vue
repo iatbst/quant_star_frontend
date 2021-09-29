@@ -3,12 +3,15 @@
   <pfo-worker-sp
   v-bind:portfolios="portfolios"
   v-bind:portfolios-loading="portfoliosLoading"
+  v-bind:currentPfo="currentPfo"
+
   v-bind:workers="workers"
   v-bind:workers-loading="workersLoading"
+  v-bind:current-worker="currentWorker"
+
   v-bind:signal-points="signalPoints"
   v-bind:signal-points-loading="signalPointsLoading"
-  v-bind:current-worker="currentWorker"
-  v-bind:host="host"
+
   @onClickPfo="onClickPfo"
   @onClickWorker="onClickWorker"
   ></pfo-worker-sp>
@@ -34,6 +37,7 @@ export default {
 
       portfolios: null,
       portfoliosLoading: true,
+      currentPfo: null,
 
       workers: null,
       workersLoading: true,
@@ -73,7 +77,7 @@ export default {
 
     // 选择Pfo时: 更新Workers/SignalPoints
     onClickPfo(pfo){
-      this.host = pfo.host
+      this.currentPfo = pfo
       this.fetchWorkersByPfo(pfo, this.onClickWorker)
     },
 
@@ -100,7 +104,7 @@ export default {
 
     fetchSignalPointsByWorker(worker) {
       this.signalPointsLoading = true
-      getSignalPointsByWorker(worker, this.host).then(response => {
+      getSignalPointsByWorker(worker, this.currentPfo.host).then(response => {
         this.signalPoints = response.results
         this.signalPointsLoading = false
       })

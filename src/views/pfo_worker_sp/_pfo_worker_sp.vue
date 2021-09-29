@@ -19,6 +19,7 @@
           <portfolios 
           v-bind:portfolios="portfolios"
           v-bind:portfolios-loading="portfoliosLoading"
+          v-bind:current-pfo="currentPfo"
           @onClickPfo="onClickPfo"></portfolios>
         </div>
       </el-col>
@@ -29,6 +30,7 @@
           <workers 
           v-bind:workers="workers"
           v-bind:workers-loading="workersLoading"
+          v-bind:current-worker="currentWorker"
           @onClickWorker="onClickWorker"></workers>
         </div>
       </el-col>
@@ -39,7 +41,7 @@
           <signal-points 
           v-bind:signal-points="signalPoints"
           v-bind:current-worker="currentWorker"
-          v-bind:host="host"
+          v-bind:current-pfo="currentPfo"
           v-bind:signal-points-loading="signalPointsLoading"
           ></signal-points>
         </div>
@@ -70,6 +72,11 @@ export default {
         type: Boolean,
         default: true
     },
+    currentPfo: {
+        type: Object,
+        default: {}
+    },
+
     workers: {
         type:Array,
         default:[]
@@ -78,6 +85,11 @@ export default {
         type: Boolean,
         default: true
     },
+    currentWorker: {
+        type: Object,
+        default: {}
+    },
+
     signalPoints: {
         type:Array,
         default:[]
@@ -86,14 +98,6 @@ export default {
         type: Boolean,
         default: true
     },
-    currentWorker: {
-        type: Object,
-        default: {}
-    },
-    host: {
-        type: String,
-        default: ''
-    }
   },
 
   methods: {  

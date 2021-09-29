@@ -234,9 +234,9 @@ export default {
             type: Object,
             default: {}
         },
-        host: {
-            type: String,
-            default: ''
+        currentPfo: {
+            type: Object,
+            default: {}
         }
     },
 
@@ -299,7 +299,7 @@ export default {
         fetchSubOrdersByParentOrder(order) {
             this.subOrdersLoading = true
             this.dialogSubOrdersVisible = true
-            getSubOrdersByParentOrder(order, this.host).then(response => {
+            getSubOrdersByParentOrder(order, this.currentPfo.host).then(response => {
                 this.subOrders = response.results
                 this.subOrdersLoading = false
             })
@@ -322,7 +322,7 @@ export default {
             max_ts = new Date(max_ts)
             min_ts = moment(min_ts).format("YYYY-MM-DD HH:mm:ss")
             max_ts = moment(max_ts).format("YYYY-MM-DD HH:mm:ss")
-            getLogsByWorkerAndTs(worker, min_ts, max_ts, this.host).then(response => {
+            getLogsByWorkerAndTs(worker, min_ts, max_ts, this.currentPfo.host).then(response => {
                 this.logs = response.results
                 this.logsLoading = false
             })
@@ -330,7 +330,7 @@ export default {
 
         onSubmitSpState(sp_id, row) {
             // 发送ajax, 更新后台
-            markSpFinalState(sp_id, this.spState, this.host).then(response => {
+            markSpFinalState(sp_id, this.spState, this.currentPfo.host).then(response => {
                 // 更新UI
                 console.log(response)
                 if (response.ok){

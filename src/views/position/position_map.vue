@@ -40,7 +40,7 @@
           <signal-points 
           v-bind:signal-points="signalPoints"
           v-bind:current-worker="currentWorker"
-          v-bind:host="host"
+          v-bind:current-pfo="currentPfo"
           v-bind:signal-points-loading="signalPointsLoading"
           ></signal-points>
         </el-dialog>
@@ -81,7 +81,7 @@ export default {
             signalPoints: null,
             signalPointsLoading: false,
             currentWorker: null,
-            host: null,
+            currentPfo: null,
 
             positionList: null,
             positionLoading: true,
@@ -134,9 +134,9 @@ export default {
         showSignalPoints(host, worker){
             this.dialogSpVisible = true
             this.signalPointsLoading = true
-            this.host = host
+            this.currentPfo = {host: host}
             this.currentWorker = worker
-            getSignalPointsByWorker(worker, this.host).then(response => {
+            getSignalPointsByWorker(worker, this.currentPfo.host).then(response => {
                 this.signalPoints = response.results
                 this.signalPointsLoading = false
             })

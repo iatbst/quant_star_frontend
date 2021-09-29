@@ -3,12 +3,15 @@
   <pfo-worker-sp
   v-bind:portfolios="portfolios"
   v-bind:portfolios-loading="portfoliosLoading"
+  v-bind:currentPfo="currentPfo"
+
   v-bind:workers="workers"
   v-bind:workers-loading="workersLoading"
+  v-bind:current-worker="currentWorker"
+
   v-bind:signal-points="signalPoints"
   v-bind:signal-points-loading="signalPointsLoading"
-  v-bind:current-worker="currentWorker"
-  v-bind:host="host"
+
   @onClickPfo="onClickPfo"
   @onClickWorker="onClickWorker"
   ></pfo-worker-sp>
@@ -28,11 +31,11 @@ export default {
 
   data() {
     return {
-      host: null,
       pfo_hosts: config.pfoHosts,
 
       portfolios: null,
       portfoliosLoading: true,
+      currentPfo: null,
 
       workers: null,
       workersLoading: true,
@@ -69,7 +72,7 @@ export default {
 
     // 选择Pfo时: 更新Workers/SignalPoints
     onClickPfo(pfo){
-      this.host = pfo.host
+      this.currentPfo = pfo
       this.fetchWorkersBySp('error', this.onClickWorker)
     },
 
@@ -84,7 +87,7 @@ export default {
         this.workersLoading = true
         this.workers = []
         this.workerIDs = new Set()
-        getSignalPointsByFinalState(sp_state, this.host).then(response => {
+        getSignalPointsByFinalState(sp_state, this.currentPfo.host).then(response => {
           var signalPointList = response.results
           for (var i=0; i < signalPointList.length; i++){
               if (!this.workerIDs.has(signalPointList[i].worker.id)){
@@ -105,7 +108,7 @@ export default {
 
     fetchSignalPointsByWorker(worker) {
       this.signalPointsLoading = true
-      getSignalPointsByWorker(worker, this.host).then(response => {
+      getSignalPointsByWorker(worker, this.currentPfo.host).then(response => {
         this.signalPoints = response.results
         this.signalPointsLoading = false
       })

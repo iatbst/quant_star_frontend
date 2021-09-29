@@ -12,6 +12,17 @@ export function getWorkersByPfo(pfo) {
   return request(req_obj)
 }
 
+export function getWorkersBySymbol(symbol, host=null) {
+  var req_obj = {
+    url: '/workers/?status=normal&search=' + symbol,
+    method: 'get'
+  }
+  if (host) {
+    req_obj['baseURL'] = host
+  }
+  return request(req_obj)
+}
+
 export function getWorkerDatas(host=null, fields=null) {
   var url = '/worker-datas/'
   if (fields != null){

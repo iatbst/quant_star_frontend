@@ -11,7 +11,7 @@
     >
     <el-table-column align="center" label="投资组合">
         <template slot-scope="scope">
-        <el-button style="width: 100%" type="primary" v-on:click="onClickPfo(scope.row)" plain>
+        <el-button style="width: 100%" v-bind:class="{currentPfo: currentPfo.name == scope.row.name}" type="primary" v-on:click="onClickPfo(scope.row)" plain>
             {{ scope.row.name }}
         </el-button>
         </template>
@@ -36,6 +36,10 @@ export default {
           type: Boolean,
           default: true
       },
+      currentPfo: {
+          type: Object,
+          defautl: {}
+      }
   },
 
   methods: {
@@ -45,3 +49,14 @@ export default {
   }
 }
 </script>
+
+<style>
+
+.currentPfo {
+  color: #FFF !important;
+  background-color:#409EFF !important;
+  border-color: #409EFF !important;
+}
+
+
+</style>

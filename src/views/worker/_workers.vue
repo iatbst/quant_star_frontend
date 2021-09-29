@@ -11,7 +11,7 @@
     >
       <el-table-column align="center" label="策略机器人">
         <template slot-scope="scope">
-          <el-button style="width: 100%" type="primary" v-on:click="onClickWorker(scope.row)" plain>
+          <el-button style="width: 100%" v-bind:class="{currentWorker: currentWorker.id == scope.row.id}" type="primary" v-on:click="onClickWorker(scope.row)" plain>
             {{ scope.row.name }}
           </el-button>
         </template>
@@ -34,6 +34,10 @@ export default {
       workersLoading: {
           type: Boolean,
           default: true
+      },
+      currentWorker: {
+          type: Object,
+          default: {}
       }
   },
 
@@ -44,3 +48,13 @@ export default {
   }
 }
 </script>
+
+<style>
+
+.currentWorker {
+  color: #FFF !important;
+  background-color:#409EFF !important;
+  border-color: #409EFF !important;
+}
+
+</style>

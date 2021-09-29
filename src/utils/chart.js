@@ -62,6 +62,31 @@ export function addSingleColumn(data_list, options) {
     }
 }
 
+// 添加clickable column
+export function addSingleClickableColumn(data_list, options, onClick, onClickData='onClickData') {
+    options.xAxis.categories = []
+    options.series[0].data = []
+    for (var i = 0; i < data_list.length; i++){
+        options.series[0].data.push({
+            y: data_list[i].y,
+            color: data_list[i].color,
+            onClickData: data_list[i][onClickData]
+        })  
+        options.xAxis.categories.push(data_list[i].x)           
+    }
+    options.plotOptions['series'] = {
+        cursor: 'pointer',
+        point: {
+            events: {
+                click: function (){
+                    // alert(JSON.stringify(this.pfoDatas, null, 4));
+                    onClick(this.onClickData)
+                }
+            }
+        }
+    }
+}
+
 // ---------------------------- Pie Chart ------------------------------------------ //
 
 // 填充Pie Chart
