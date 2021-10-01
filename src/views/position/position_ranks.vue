@@ -62,7 +62,7 @@ export default {
 
     data() {
         return {
-            colsPerRow: 36,     // 根据具体symbol数量调节, 防止最后一行col太少!
+            colsPerRow: 38,     // 根据具体symbol数量调节, 防止最后一行col太少!
             positionRanks: null,
             optionList: [],
             positionOptions: {
