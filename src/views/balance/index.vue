@@ -62,7 +62,7 @@ import { getPortfolioDatas } from '@/api/portfolio'
 export default {
     components: {
         totalBalance,
-        dailyProfit,
+        // dailyProfit,
         pfoBalances,
         balanceDistributions,
         balanceDetails

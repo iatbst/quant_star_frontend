@@ -239,13 +239,13 @@
             <el-table-column label="总杠杆率" min-width="10%" align="center">
                 <template slot-scope="scope">
                    <span v-if="scope.row.leverage < 2">
-                        {{scope.row.leverage}}
+                        {{scope.row.leverage}}X
                     </span>
                    <span style="color: orange" v-else-if="scope.row.leverage < 2.5">
-                        {{scope.row.leverage}}
+                        {{scope.row.leverage}}X
                     </span> 
                    <span style="color: red" v-else>
-                        <b>{{scope.row.leverage}}</b>
+                        <b>{{scope.row.leverage}}X</b>
                     </span>                  
                 </template>
             </el-table-column>
@@ -253,13 +253,13 @@
             <el-table-column label="USD杠杆率" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span v-if="scope.row.usdtLeverage < 2">
-                        {{scope.row.usdtLeverage}}
+                        {{scope.row.usdtLeverage}}X
                     </span>
                    <span style="color: orange" v-else-if="scope.row.usdtLeverage < 2.5">
-                        {{scope.row.usdtLeverage}}
+                        {{scope.row.usdtLeverage}}X
                     </span> 
                    <span style="color: red" v-else>
-                        <b>{{scope.row.usdtLeverage}}</b>
+                        <b>{{scope.row.usdtLeverage}}X</b>
                     </span>             
                 </template>
             </el-table-column>
@@ -267,13 +267,13 @@
             <el-table-column label="BTC杠杆率" min-width="10%" align="center">
                 <template slot-scope="scope">
                    <span v-if="scope.row.btcLeverage < 2">
-                        {{scope.row.btcLeverage}}
+                        {{scope.row.btcLeverage}}X
                     </span>
                    <span style="color: orange" v-else-if="scope.row.btcLeverage < 2.5">
-                        {{scope.row.btcLeverage}}
+                        {{scope.row.btcLeverage}}X
                     </span> 
                    <span style="color: red" v-else>
-                        <b>{{scope.row.btcLeverage}}</b>
+                        <b>{{scope.row.btcLeverage}}X</b>
                     </span>             
                 </template>
             </el-table-column>
@@ -281,13 +281,13 @@
             <el-table-column :label="'资金池-' + subacct.toUpperCase()" min-width="10%" v-bind:key="subacct" align="center" v-for="subacct in subacctPfoAlias">    
                 <template slot-scope="scope">
                    <span v-if="scope.row[subacct] < 2">
-                        {{scope.row[subacct]}}
+                        {{scope.row[subacct]}}X
                     </span>
                    <span style="color: orange" v-else-if="scope.row[subacct] < 2.5">
-                        {{scope.row[subacct]}}
+                        {{scope.row[subacct]}}X
                     </span> 
                    <span style="color: red" v-else>
-                        <b>{{scope.row[subacct]}}</b>
+                        <b>{{scope.row[subacct]}}X</b>
                     </span>             
                 </template>  
             </el-table-column>

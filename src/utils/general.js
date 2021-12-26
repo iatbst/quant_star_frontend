@@ -57,3 +57,12 @@ export function barLevelSeconds(barLevel) {
     }
     return mp[barLevel]
 }
+
+// 把undefined转化为empty string
+export function toString2(str) {
+    if (str === undefined){
+        return ''
+    } else {
+        return str
+    }
+}

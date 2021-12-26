@@ -63,7 +63,6 @@ export default {
     components: {
         pfoPerfs,
         totalPerf,
-        dailyProfit,
         profitRanks,
         perfDetails,
     },

@@ -196,47 +196,47 @@
 
                 <el-table-column label="" min-width="5%">
                   <template slot-scope="scope">
-                    {{ Object.values(monitorStatStyFeedData[scope.row])[0].data.bar_level }}
+                    {{ barLevel1 }}
                   </template>
                 </el-table-column>
 
                 <el-table-column label="状态" min-width="10%" align="center">
                   <template slot-scope="scope">
-                    <span v-html="statusIcon(Object.values(monitorStatStyFeedData[scope.row])[0].status)"> </span>
+                    <span v-html="statusIcon(monitorStatStyFeedData[scope.row][barLevel1].status)"> </span>
                   </template>
                 </el-table-column>
 
                 <el-table-column label="更新时间" min-width="20%" align="center">
                   <template slot-scope="scope">
-                    <span style="color:red" v-if="moment().unix() - Object.values(monitorStatStyFeedData[scope.row])[0].data.ts > tickTimeout">
-                      {{ Object.values(monitorStatStyFeedData[scope.row])[0].data.ts | epochToTimestamp}}
+                    <span style="color:red" v-if="moment().unix() - monitorStatStyFeedData[scope.row][barLevel1].data.ts > barLevel1Timeout">
+                      {{ monitorStatStyFeedData[scope.row][barLevel1].data.ts | epochToTimestamp}}
                     </span>
                     <span v-else>
-                      {{ Object.values(monitorStatStyFeedData[scope.row])[0].data.ts | epochToTimestamp}}
+                      {{ monitorStatStyFeedData[scope.row][barLevel1].data.ts | epochToTimestamp}}
                     </span>                    
                   </template>
                 </el-table-column>
 
                 <el-table-column label="" min-width="5%">
                   <template slot-scope="scope">
-                    {{ Object.values(monitorStatStyFeedData[scope.row])[1].data.bar_level }}
+                    {{ barLevel2 }}
                   </template>
                 </el-table-column>
 
                 <el-table-column label="状态" min-width="10%" align="center">
                   <template slot-scope="scope">
-                    <span v-html="statusIcon(Object.values(monitorStatStyFeedData[scope.row])[1].status)"> </span>
+                    <span v-html="statusIcon(monitorStatStyFeedData[scope.row][barLevel2].status)"> </span>
                   </template>
                 </el-table-column>
 
 
                 <el-table-column label="更新时间" min-width="20%" align="center">
                   <template slot-scope="scope">
-                    <span style="color:red" v-if="moment().unix() - Object.values(monitorStatStyFeedData[scope.row])[1].data.ts > barTimeout">
-                      {{ Object.values(monitorStatStyFeedData[scope.row])[1].data.ts | epochToTimestamp}}
+                    <span style="color:red" v-if="moment().unix() - monitorStatStyFeedData[scope.row][barLevel2].data.ts > barLevel2Timeout">
+                      {{ monitorStatStyFeedData[scope.row][barLevel2].data.ts | epochToTimestamp}}
                     </span>
                     <span v-else>
-                      {{ Object.values(monitorStatStyFeedData[scope.row])[1].data.ts | epochToTimestamp}}
+                      {{ monitorStatStyFeedData[scope.row][barLevel2].data.ts | epochToTimestamp}}
                     </span>
                   </template>
                 </el-table-column>
@@ -312,6 +312,8 @@ export default {
       gwHourSuccess: 0,
 
       // Strategy Feed
+      barLevel1: '1h',  
+      barLevel2: 'tick',
       monitorStatStyFeedData: {},
       styFeedCount: 0,
       styFeedSuccess: 0,
@@ -321,8 +323,8 @@ export default {
 
       // 时间戳过期
       updateTimeout: 700,
-      tickTimeout: 180,
-      barTimeout: 3660  // 小时K线
+      barLevel2Timeout: 180,  // Tick
+      barLevel1Timeout: 3660  // 小时K线
 
     }
   },

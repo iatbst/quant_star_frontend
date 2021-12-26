@@ -4,6 +4,9 @@ const masterHost = 'http://ec2-54-169-201-152.ap-southeast-1.compute.amazonaws.c
 // 当前投资组合的Hosts地址(由环境变量VUE_APP_PFO_HOSTS决定)
 const pfoHosts = process.env.VUE_APP_PFO_HOSTS.split(',')
 
+// Backtest Host地址(存储K线的Host)
+const backtestHost = 'http://localhost:8000/api'
+
 // 当前投资组合的别名(product)
 const pfoAlias = [
     'binance',
@@ -21,9 +24,6 @@ const subacctPfoAlias = [
     'ftx',
     'altbtc'
 ]
-
-// Backtest Host地址(存储K线的Host)
-const backtestHost = 'http://localhost:8000/api'
 
 // 当前投资组合的初始资金
 const pfoInitUSD = {

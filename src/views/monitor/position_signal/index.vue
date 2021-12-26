@@ -33,46 +33,67 @@
             border
             cell-style="padding:5px"
           >
-            <el-table-column align="center" label="交易所">
+            <el-table-column align="center" label="交易所" min-width="8%">
               <template slot-scope="scope">
                 {{ scope.row.exchange }}
               </template>
             </el-table-column>
 
-            <el-table-column align="center" label="账号">
+            <el-table-column align="center" label="账号" min-width="19%">
               <template slot-scope="scope">
                 {{ scope.row.username }}
               </template>
             </el-table-column>
 
-            <el-table-column align="center" label="类型">
+            <el-table-column align="center" label="类型" min-width="8%">
               <template slot-scope="scope">
                 {{ scope.row.sub_type }}
               </template>
             </el-table-column>
 
-            <el-table-column align="center" label="平台仓位不一致">
+            <el-table-column align="center" label="持仓率" min-width="5%">
               <template slot-scope="scope">
-                <div v-if="scope.row.status == 'success'">
+                {{ positionRate }}%
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="平台仓位相等" min-width="20%">
+              <template slot-scope="scope">
+                <div v-if="scope.row.position_fail == 0">
                   <i style="font-size:20px; color: lightgreen " class="el-icon-success"></i>
                 </div>
                 <div v-else>
                   <span style="color: red">
-                    {{ scope.row.fail }}
+                    {{ scope.row.position_fail }}
                   </span>              
                 </div>
               </template>            
             </el-table-column>
 
-            <el-table-column align="center" label="信号仓位不一致">
+            <el-table-column align="center" label="信号仓位一致" min-width="20%">
               <template slot-scope="scope">
                 <div v-if="scope.row.signal_fail == 0">
                   <i style="font-size:20px; color: lightgreen " class="el-icon-success"></i>
+                  ({{ signalSuccessRate}}%)
                 </div>
                 <div v-else>
                   <span style="color: red">
                     {{ scope.row.signal_fail }}
-                  </span>              
+                  </span>({{ signalSuccessRate}}%)              
+                </div>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="回测信号一致" min-width="20%">
+              <template slot-scope="scope">
+                <div v-if="scope.row.backtest_fail == 0">
+                  <i style="font-size:20px; color: lightgreen " class="el-icon-success"></i>
+                  ({{ backtestSuccessRate}}%)
+                </div>
+                <div v-else>
+                  <span style="color: red">
+                    {{ scope.row.backtest_fail }}
+                  </span>({{ backtestSuccessRate}}%)             
                 </div>
               </template>
             </el-table-column>
@@ -89,17 +110,12 @@
             header-cell-style="background: lightgray; padding:5px"
             border=""
           >
-            <el-table-column align="center" label="交易所" prop="exchange" min-width="10%">
-            </el-table-column>
-
-            <el-table-column align="center" label="类型" prop="sub_type" min-width="10%">
-            </el-table-column>   
 
             <el-table-column align="center" label="子策略" prop="strategy" min-width="10%">
             </el-table-column>        
 
 
-            <el-table-column align="center" label="周期" prop="sig_type" min-width="5%">
+            <el-table-column align="center" label="信号" prop="sig_type" min-width="5%">
               <template slot-scope="scope">
                 <span style="color:green" v-if="scope.row.sig_type == 'long'">
                   多
@@ -113,44 +129,51 @@
               </template>
             </el-table-column>
 
-            <el-table-column align="center" label="仓位" prop="position" min-width="10%">
+            <el-table-column align="center" label="仓位" prop="position" min-width="5%">
             </el-table-column>
 
-            <el-table-column align="center" label="状态" prop="status" min-width="5%">
+            <el-table-column align="center" label="信号仓位" prop="signal_status" min-width="5%">
               <template slot-scope="scope">
-                <span v-html="statusIcon(scope.row.status)"> </span>
+                <span v-html="statusIcon(scope.row.signal_status)"> </span>
               </template>
             </el-table-column>   
 
-            <el-table-column align="center" label="状态说明" prop="message" min-width="20%">
-            </el-table-column>        
+            <el-table-column align="center" label="信号仓位状态说明" prop="signal_message" min-width="20%">
+            </el-table-column>   
 
-            <el-table-column align="center" label="原因" prop="reason" min-width="30%">
+            <el-table-column align="center" label="回测信号" prop="backtest_status" min-width="5%">
               <template slot-scope="scope">
-                <div v-if="scope.row.status !== 'success' && scope.row.reason === undefined">
+                <span v-html="statusIcon(scope.row.backtest_status)"> </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="回测信号状态说明" prop="backtest_message" min-width="25%">
+            </el-table-column>   
+
+            <el-table-column align="center" label="" min-width="25%">
+              <template slot-scope="scope">
+                <div v-if="(scope.row.signal_status === 'fail' || scope.row.signal_status === 'warn') || (scope.row.backtest_status === 'fail' || scope.row.backtest_status === 'warn')">
                   <el-form :inline="true" :model="spState" class="demo-form-inline" size="mini">
-                    <el-form-item label="">
-                      <el-select v-model="spState.final_state" placeholder="最终状态">
+                    <el-form-item label="" style="width: 70px; height: 10px">
+                      <el-select v-model="spState.final_state" placeholder="最终状态" size="mini">
                         <el-option label="error" value="error"></el-option>
                         <el-option label="success" value="success"></el-option>
                         <el-option label="manual" value="manual"></el-option>
+                        <el-option label="none" value="none"></el-option>
                       </el-select>
                     </el-form-item>  
-                    <el-form-item label="" v-if="spState.final_state == 'error'">
-                      <el-select v-model="spState.error_type" placeholder="错误类型">
+                    <el-form-item label="" style="width: 70px; height: 10px">
+                      <el-select v-model="spState.mismatch_type" placeholder="错误类型">
                         <el-option :label="type" :value="type" v-bind:key="type" v-for="type in spErrorTypes"></el-option>
                       </el-select>
                     </el-form-item>                     
-                    <el-form-item label="">
+                    <el-form-item label="" style="width: 70px; height: 10px">
                       <el-input v-model="spState.note" placeholder="原因"></el-input>
                     </el-form-item>
                     <el-form-item>
-                      <el-button type="primary" @click="onSubmitSpState(scope.row.worker_id, scope.row)">标记</el-button>
+                      <el-button type="primary" size="mini" @click="onSubmitSpState(scope.row.worker_id, scope.row)">标记</el-button>
                     </el-form-item>
                   </el-form>    
-                </div>
-                <div v-else>
-                  {{ scope.row.reason }}
                 </div>
               </template>    
             </el-table-column>
@@ -175,8 +198,7 @@ import { getPortfolios } from '@/api/portfolio'
 import { getPositionMonitorStatsByPortfolio } from '@/api/monitor_stat'
 import { markCurrentSpFinalState } from '@/api/signal_point'
 import moment from 'moment'
-import { countDecimals } from '@/utils/general'
-
+import { countDecimals, toString2 } from '@/utils/general'
 
 export default {
   filters: {
@@ -205,9 +227,12 @@ export default {
       host: null,
       portfolioList: null,
       portfolioListLoading: true,
+      positionRate: null,   // 入池率
 
       positionMonitorStat: null,
       summaryTableLoading: true,
+      signalSuccessRate: null,  // 信号成功率
+      backtestSuccessRate: null,  // 回测成功率
       //summaryTableDataList: [],
       detailTableLoading: true,
       detailTableDataList: [],
@@ -218,10 +243,10 @@ export default {
 
       spState: {
         final_state: null,
-        error_type: null,   // final_state = 'error'
+        mismatch_type: null,   // final_state = 'error'
         note: null,
       },
-      spErrorTypes: config.spErrorTypes,
+      spErrorTypes: ['signal_mismatch', 'backtest_mismatch'],
     }
   },
   created() {
@@ -235,8 +260,10 @@ export default {
         return "<i style=\"font-size:20px; color: red \" class=\"el-icon-error\"></i>"
       } else if (status === 'mark') {
         return "<i style=\"font-size:20px; color: lightgray \" class=\"el-icon-info\"></i>"
-      } else {
+      } else if (status === 'warn') {
         return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-warning\"></i>"
+      } else {
+        return status
       }
     },
     showJsonDialog(data) {
@@ -278,7 +305,10 @@ export default {
     },
     parsePositionMonitorStat(){
       // Summary Table
-      
+      var workerCount = 0
+      var positionWorkerCount = 0
+      var signalSuccessCount = 0
+      var backtestSuccessCount = 0
 
       // Detail Table
       this.detailTableDataList = []
@@ -296,36 +326,54 @@ export default {
               strategy: symbol + '_' + __data.worker_tag,
               position: countDecimals(__data.position) > 3 ? __data.position.toFixed(3) : __data.position,
               sig_type: __data.signal_position_check.sig_type,
-              status: __data.signal_position_check.status,
-              message: __data.signal_position_check.message,
-              reason: __data.signal_position_check.reason,
+              signal_status: __data.signal_position_check.status,
+              signal_message: __data.signal_position_check.message,
+              backtest_status: __data.backtest_check.status,
+              backtest_message: __data.backtest_check.message,
+              // message: toString2(__data.signal_position_check.message) + toString2(__data.backtest_check.message),
+              // reason: __data.reason,
+              // sp_marked: __data.sp_marked,
               worker_id: __data.worker_id
             })
+
+            workerCount += 1
+            if (__data.position != 0){
+              positionWorkerCount += 1  // 统计入池率
+            }
+            if (__data.signal_position_check.status == 'success'){
+              signalSuccessCount += 1   // 信号成功率
+            }
+            if (__data.backtest_check.status == 'success'){
+              backtestSuccessCount += 1   // 回测成功率
+            }            
           }
           this.detailTableDataList.push({
-            exchange: '策略合计: ' + _data.position, 
-            position: '平台合计: ' + _data.exchange_position, 
+            strategy: '策略合计: ' + _data.position, 
+            signal_message: '平台合计: ' + _data.exchange_position, 
             summary: true,
             fail: _data.status === 'fail',
           })
         }
       }
+
+      this.positionRate = parseInt((positionWorkerCount * 100)/workerCount)
+      this.signalSuccessRate = parseInt((signalSuccessCount * 100)/workerCount)
+      this.backtestSuccessRate = parseInt((backtestSuccessCount * 100)/workerCount)
     },
 
     onSubmitSpState(worker_id, row) {
       // 发送ajax, 更新后台
       markCurrentSpFinalState(worker_id, this.spState, this.host).then(response => {
         // 更新UI
-        console.log(response.results)
-        row.status = 'mark'
-        var reason = '[' + this.spState.final_state + ']'
-        if (this.spState.error_type){
-          reason += '(' + this.spState.error_type + ')'
+        console.log(response)
+
+        if (this.spState.mismatch_type == 'signal_mismatch'){
+          row.signal_status = 'mark'
+          row.signal_message += '(' + this.spState.note + ')'
+        } else {
+          row.backtest_status = 'mark'
+          row.backtest_message += '(' + this.spState.note + ')'
         }
-        if (this.spState.note){
-          reason += '(' + this.spState.note + ')'
-        }
-        row.reason = reason
       })
     },
 
@@ -339,10 +387,12 @@ export default {
       }
     },
     rowStyle({ row, rowIndex}){
-      if ( row.fail ) {
-        return {'color': 'red'}
-      } else {
-        return ''
+      if (row.summary){
+        if ( row.fail ) {
+          return {'font-weight': 'bold', 'background-color': '#f7f7f7', 'color': 'red'}
+        } else {
+          return {'background-color': '#f7f7f7'}
+        }
       }
     },
   }
