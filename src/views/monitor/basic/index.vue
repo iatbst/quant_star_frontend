@@ -433,7 +433,7 @@ export default {
         } else if (this.monitorStatList[i].type == 'mt_process'){
           // 监控Processs
           this.monitorStatProcessData = this.monitorStatList[i]
-        } else if (this.monitorStatList[i].type == 'event_mt_gateway'){
+        } else if (this.monitorStatList[i].type == 'mt_gateway'){
           // 监控Gateways
           var data = this.monitorStatList[i]
           this.monitorStatGatewayData.push(this.monitorStatList[i])
@@ -442,7 +442,7 @@ export default {
           this.gwHourCount += data.data.api_stat['1h'].total.count
           this.gwHourSuccess +=  data.data.api_stat['1h'].total.success
 
-        } else if (this.monitorStatList[i].type == 'event_mt_sty_feed'){
+        } else if (this.monitorStatList[i].type == 'mt_sty_feed'){
           // 监控Strategy Feeds
           this.styFeedCount += 1
           var status = this.monitorStatList[i].status
