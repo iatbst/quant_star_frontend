@@ -51,13 +51,19 @@
               </template>
             </el-table-column>
 
-            <el-table-column align="center" label="持仓率" min-width="5%">
+            <el-table-column align="center" label="数量" min-width="5%">
+              <template slot-scope="scope">
+                {{ symbolCount }}
+              </template>ß
+            </el-table-column>
+
+            <el-table-column align="center" label="持仓" min-width="5%">
               <template slot-scope="scope">
                 {{ positionRate }}%
               </template>
             </el-table-column>
 
-            <el-table-column align="center" label="平台仓位相等" min-width="20%">
+            <el-table-column align="center" label="平台仓位相等" min-width="15%">
               <template slot-scope="scope">
                 <div v-if="scope.row.position_fail == 0">
                   <i style="font-size:20px; color: lightgreen " class="el-icon-success"></i>
@@ -228,6 +234,8 @@ export default {
       portfolioList: null,
       portfolioListLoading: true,
       positionRate: null,   // 入池率
+      
+      symbolCount: 0,       // Symbol数量
 
       positionMonitorStat: null,
       summaryTableLoading: true,
@@ -312,11 +320,12 @@ export default {
 
       // Detail Table
       this.detailTableDataList = []
+      this.symbolCount = 0
       for (var key1 in this.positionMonitorStat){
         var data = this.positionMonitorStat[key1]
         for (var symbol in data.worker_groups){
+          this.symbolCount += 1
           var _data = data.worker_groups[symbol]
-          // debugger;
           _data.workers.sort((a, b) => parseInt(a.worker_tag) - parseInt(b.worker_tag))
           for (var ix in _data.workers){
             var __data = _data.workers[ix]

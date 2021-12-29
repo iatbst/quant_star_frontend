@@ -336,6 +336,7 @@ export default {
                 if (response.ok){
                     row.final_state = this.spState.final_state
                     row.flags.final_state_note = this.spState.note
+                    debugger;
                 } else {
                     alert('更新SP(' + sp_id + ')的final_state失败!')
                 }
