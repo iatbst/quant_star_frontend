@@ -135,7 +135,7 @@
                   </el-col>
 
                   <el-col :span="5" align="left">
-                    <span style="color:red" v-if="moment().unix() - data.data.ts > updateTimeout">
+                    <span style="color:red" v-if="moment().unix() - data.data.ts > gatewayTimeout">
                       {{ data.data.ts | epochToTimestamp }}
                     </span>
                     <span v-else>
@@ -208,11 +208,11 @@
 
                 <el-table-column label="更新时间" min-width="20%" align="center">
                   <template slot-scope="scope">
-                    <span style="color:red" v-if="moment().unix() - monitorStatStyFeedData[scope.row][barLevel1].data.ts > barLevel1Timeout">
-                      {{ monitorStatStyFeedData[scope.row][barLevel1].data.ts | epochToTimestamp}}
+                    <span style="color:red" v-if="moment().unix() - monitorStatStyFeedData[scope.row][barLevel1].data.data_ts > barLevel1Timeout">
+                      {{ monitorStatStyFeedData[scope.row][barLevel1].data.data_ts | epochToTimestamp}}
                     </span>
                     <span v-else>
-                      {{ monitorStatStyFeedData[scope.row][barLevel1].data.ts | epochToTimestamp}}
+                      {{ monitorStatStyFeedData[scope.row][barLevel1].data.data_ts | epochToTimestamp}}
                     </span>                    
                   </template>
                 </el-table-column>
@@ -232,11 +232,11 @@
 
                 <el-table-column label="更新时间" min-width="20%" align="center">
                   <template slot-scope="scope">
-                    <span style="color:red" v-if="moment().unix() - monitorStatStyFeedData[scope.row][barLevel2].data.ts > barLevel2Timeout">
-                      {{ monitorStatStyFeedData[scope.row][barLevel2].data.ts | epochToTimestamp}}
+                    <span style="color:red" v-if="moment().unix() - monitorStatStyFeedData[scope.row][barLevel2].data.data_ts > barLevel2Timeout">
+                      {{ monitorStatStyFeedData[scope.row][barLevel2].data.data_ts | epochToTimestamp}}
                     </span>
                     <span v-else>
-                      {{ monitorStatStyFeedData[scope.row][barLevel2].data.ts | epochToTimestamp}}
+                      {{ monitorStatStyFeedData[scope.row][barLevel2].data.data_ts | epochToTimestamp}}
                     </span>
                   </template>
                 </el-table-column>
@@ -323,8 +323,9 @@ export default {
 
       // 时间戳过期
       updateTimeout: 700,
+      gatewayTimeout: 3600,
       barLevel2Timeout: 180,  // Tick
-      barLevel1Timeout: 3660  // 小时K线
+      barLevel1Timeout: 3600*2  // 小时K线
 
     }
   },
@@ -448,7 +449,6 @@ export default {
           var status = this.monitorStatList[i].status
           var symbol = this.monitorStatList[i].data['symbol']
           var bar_level = this.monitorStatList[i].data['bar_level']
-          var ts = this.monitorStatList[i].data['ts']
           if (status == 'success'){ this.styFeedSuccess += 1 }
 
           if(symbol in this.monitorStatStyFeedData){
