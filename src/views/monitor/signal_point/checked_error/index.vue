@@ -82,7 +82,7 @@ export default {
       this.fetchSignalPointsByWorker(worker)
     },
 
-    // 获取指定pfo的所有warn workers(有warn sp的workers)
+    // 获取指定pfo的所有error workers(有error sp的workers)
     fetchWorkersBySp(sp_state, onWorkers) {
         this.workersLoading = true
         this.workers = []

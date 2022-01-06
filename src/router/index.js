@@ -56,15 +56,13 @@ export const constantRoutes = [
   },
 
   {
-    path: '/balances',
+    path: '/',
     component: Layout,
     redirect: '/balances/summary',
-    name: '资金管理',
-    meta: { title: '资金管理', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'summary',
-        name: 'Summary',
+        path: '/balances/summary',
+        name: '资金管理',
         component: () => import('@/views/balance/index'),
         meta: { title: '资金管理', icon: 'el-icon-money' }
       }
@@ -72,15 +70,13 @@ export const constantRoutes = [
   },
 
   {
-    path: '/positions',
+    path: '/',
     component: Layout,
     redirect: '/positions/summary',
-    name: '仓位水平',
-    meta: { title: '仓位水平', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'summary',
-        name: 'Summary',
+        path: '/positions/summary',
+        name: '仓位水平',
         component: () => import('@/views/position/index'),
         meta: { title: '仓位水平', icon: 'el-icon-s-data' }
       }
@@ -88,15 +84,13 @@ export const constantRoutes = [
   },
 
   {
-    path: '/performances',
+    path: '/',
     component: Layout,
     redirect: '/performances/summary',
-    name: '策略表现',
-    meta: { title: '策略表现', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'summary',
-        name: 'Summary',
+        path: '/performances/summary',
+        name: '策略表现',
         component: () => import('@/views/performance/index'),
         meta: { title: '策略表现', icon: 'el-icon-data-analysis' }
       }
@@ -104,15 +98,13 @@ export const constantRoutes = [
   },
 
   {
-    path: '/worker-runs',
+    path: '/',
     component: Layout,
     redirect: '/worker-runs',
-    name: '策略运行',
-    meta: { title: '策略运行', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'worker-runs',
-        name: 'WorkerRuns',
+        name: '策略运行',
         component: () => import('@/views/worker_run/index'),
         meta: { title: '策略运行', icon: 'el-icon-loading' }
       }
@@ -120,15 +112,27 @@ export const constantRoutes = [
   },
 
   {
-    path: '/bars',
+    path: '/',
+    component: Layout,
+    redirect: '/backtest',
+    children: [
+      {
+        path: 'backtest',
+        name: '策略回测',
+        component: () => import('@/views/backtest/index'),
+        meta: { title: '策略回测', icon: 'el-icon-s-marketing' }
+      }
+    ]
+  },
+  
+  {
+    path: '/',
     component: Layout,
     redirect: '/bars',
-    name: '历史K线',
-    meta: { title: '历史K线', icon: 'el-icon-check' },
     children: [
       {
         path: 'bars',
-        name: 'Bars',
+        name: '历史K线',
         component: () => import('@/views/bar/index'),
         meta: { title: '历史K线', icon: 'el-icon-s-marketing' }
       }

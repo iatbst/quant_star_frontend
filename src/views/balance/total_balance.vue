@@ -77,7 +77,8 @@ export default {
             // 总资产曲线图
             totalBalanceOptions: {
                 chart: {
-                    type: 'line'
+                    type: 'line',
+                    zoomType: 'x'
                 },
                 title: {
                     text: '',

@@ -331,12 +331,11 @@ export default {
         onSubmitSpState(sp_id, row) {
             // 发送ajax, 更新后台
             markSpFinalState(sp_id, this.spState, this.currentPfo.host).then(response => {
-                // 更新UI
+                // 更新UI TODO: 更新失败!
                 console.log(response)
                 if (response.ok){
                     row.final_state = this.spState.final_state
                     row.flags.final_state_note = this.spState.note
-                    debugger;
                 } else {
                     alert('更新SP(' + sp_id + ')的final_state失败!')
                 }
