@@ -57,8 +57,9 @@
                             <i style="font-size:20px; color: gray " class="el-icon-video-play"></i>
                         </el-button>
                     </div>
-                    <div v-else>
+                    <div v-else style="margin-left: 30px">
                         <i style="font-size:20px; color: #409eff" class="el-icon-loading"></i>
+                        <span style="font-size: 16px">{{ parseInt(scope.row.running_report_progress*100)}}%</span>
                     </div>
 
                 </template>

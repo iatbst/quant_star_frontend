@@ -25,9 +25,10 @@
             </template>
         </el-table-column>
 
-        <el-table-column align="center" label="状态" min-width="8%">
+        <el-table-column align="left" label="状态" min-width="8%">
             <template slot-scope="scope">
                 <span v-html="statusIcon(scope.row.task.status)"> </span>
+                <span v-if="scope.row.task.status === 'running'" style="font-size: 16px">{{ parseInt(scope.row.task.progress*100)}}%</span>
             </template>
         </el-table-column>
 

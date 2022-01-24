@@ -123,7 +123,7 @@ export default {
 
         // 更新plans
         loadPlans(page=null){
-            var plan_fields = 'id,name,created_ts,last_run_ts,description,report_count,running_report_count,latest_report_id'
+            var plan_fields = 'id,name,created_ts,last_run_ts,description,report_count,running_report_count,running_report_progress,latest_report_id'
             getBacktestPlans(config.backtestHost, plan_fields, page).then(response => {
                 this.plans = response.results
                 this.totalCount = response.count
