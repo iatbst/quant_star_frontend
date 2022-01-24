@@ -1,6 +1,34 @@
 import config from '@/configs/system_configs'
 import moment from 'moment'
 
+// 删除Array中指定元素
+export function deleteFromArray(array, item){
+    var ix = array.indexOf(item)
+    if (ix > -1){
+        array.splice(ix, 1)
+    }
+}
+
+// 转化秒数为: x小时x分钟x秒
+export function hourMinSecTimestamp(sec){
+    var ret = null
+    var min = null
+    var hour = null
+    if(sec <= 60){
+        ret = sec + '秒'
+    } else if (sec <= 3600){
+        min = parseInt(sec/60)
+        sec -= min*60
+        ret = min + '分' + sec + '秒'
+    } else {
+        hour = parseInt(sec/3600)
+        sec -= hour*3600
+        min = parseInt(sec/60)
+        sec -= min*60
+        ret = hour + '时' + min + '分' + sec + '秒'
+    }
+    return ret
+}
 
 // epoch转换为时间戳(ts为10位数字)
 export function formatTimestamp(ts) {
@@ -14,6 +42,28 @@ export function formatTimestamp(ts) {
     } else {
         return '--'
     }
+}
+
+// 简化时间戳(2022-01-12T06:20:39.626186 -> 2022-01-12 06:20:39)
+export function standardTimestamp(ts){
+    if(ts){
+        return ts.replace('T', ' ').slice(0, 19) 
+    }
+}
+
+// 把Date转化为string
+export function dateToString(date){
+    var year = date.getFullYear(); //获取完整的年份(4位,1970-????)
+    var month = date.getMonth() + 1; //获取当前月份(0-11,0代表1月)
+    var day = date.getDate(); //获取当前日(1-31)
+    if (month < 10) {
+        month = "0" + month;
+    }
+    if (day < 10) {
+        day = "0" + day;
+    }
+    var dateString =  year + "-" + month + "-" + day;
+    return dateString
 }
 
 // 加入千位逗号(eg, 1000000 -> 1,000,000)

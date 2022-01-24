@@ -189,12 +189,12 @@ export default {
             )
         },
 
-        // 从Pfo获取所有positions
+        // 从Pfo获取所有positions(normal workers)
         fetchPositions() {
             this.positions = []
             var count = 0
             for(var i = 0; i < this.pfoHosts.length; i++){
-                getPositions(this.pfoHosts[i]).then(response => {
+                getPositions(this.pfoHosts[i], 'normal').then(response => {
                         count += 1
                         var pfoPositions = response.results
                         // 每个position添加host信息

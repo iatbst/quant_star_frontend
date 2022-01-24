@@ -112,32 +112,52 @@ export const constantRoutes = [
   },
 
   {
-    path: '/',
+    path: '/backtest',
     component: Layout,
-    redirect: '/backtest',
+    redirect: '/backtest/runner',
+    name: '回测中心',
+    meta: { title: '回测中心', icon: 'el-icon-s-opportunity' },
     children: [
       {
-        path: 'backtest',
-        name: '策略回测',
-        component: () => import('@/views/backtest/index'),
-        meta: { title: '策略回测', icon: 'el-icon-s-marketing' }
-      }
-    ]
-  },
-  
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/bars',
-    children: [
+        path: 'runner',
+        name: '回测',
+        component: () => import('@/views/backtest/runner/index'),
+        meta: { title: '回测', icon: 'el-icon-video-play' }
+      },
+      {
+        path: 'plans',
+        name: '回测方案',
+        component: () => import('@/views/backtest/plans/index'),
+        meta: { title: '回测方案', icon: 'el-icon-date' }
+      },
+      {
+        path: 'reports',
+        name: '回测报告',
+        component: () => import('@/views/backtest/reports/index'),
+        meta: { title: '回测报告', icon: 'el-icon-document' }
+      },
       {
         path: 'bars',
         name: '历史K线',
         component: () => import('@/views/bar/index'),
         meta: { title: '历史K线', icon: 'el-icon-s-marketing' }
-      }
+      },
     ]
   },
+  
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/bars',
+  //   children: [
+  //     {
+  //       path: 'bars',
+  //       name: '历史K线',
+  //       component: () => import('@/views/bar/index'),
+  //       meta: { title: '历史K线', icon: 'el-icon-s-marketing' }
+  //     }
+  //   ]
+  // },
 
   {
     path: '/monitors',

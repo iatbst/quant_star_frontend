@@ -162,7 +162,8 @@ export default {
     fetchData() {
       this.listLoading = true
       this.summarylist = null
-      getBarSummaries(config.backtestHost).then(response => {
+      var productFilter = 'sub_type=margin&quote_currency=USDT' // 默认只获取margin/USDT的bars(回测中心专用) 
+      getBarSummaries(config.backtestHost, productFilter).then(response => {
         if (response.ok){
           // 成功
           this.summarylist = response.data
