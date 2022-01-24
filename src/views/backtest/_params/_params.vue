@@ -72,7 +72,7 @@
         <div style="margin-top: 20px; margin-bottom: 20px">
           <el-switch @change="productsToDateChange" v-model="setToDate"
             inactive-text="今日为结束日期"
-            active-text="自定义结束日期" height="60"></el-switch>
+            active-text="自定义" height="60"></el-switch>
         </div>
 
         <div style="margin-bottom: 20px" v-if="setToDate">
