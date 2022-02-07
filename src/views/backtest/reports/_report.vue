@@ -39,9 +39,14 @@
         style="width: 90%"
         :header-cell-style="{background: '#e5e9f2'}"
         >
-            <el-table-column align="center" label="收益率" min-width="15%">
+            <el-table-column align="center" label="收益率" min-width="8%">
                 <template slot-scope="scope">
-                {{ scope.row.pnl_ptg }}%
+                    <b style="color: green" v-if="scope.row.pnl_ptg >= 0">
+                        {{ scope.row.pnl_ptg }}%
+                    </b>
+                    <b style="color: red" v-else>
+                        {{ scope.row.pnl_ptg }}%
+                    </b>
                 </template>
             </el-table-column>
 
@@ -53,25 +58,59 @@
 
             <el-table-column align="center" label="胜率" min-width="8%">
                 <template slot-scope="scope">
-                {{ scope.row.win_ratio }}
+                {{ scope.row.win_ratio }}%
                 </template>
             </el-table-column>
 
             <el-table-column align="center" label="平均盈利率" min-width="8%">
                 <template slot-scope="scope">
-                {{ scope.row.win_avg_pnl_ptg }}
+                {{ scope.row.win_avg_pnl_ptg }}%
                 </template>
             </el-table-column>
 
             <el-table-column align="center" label="平均亏损率" min-width="8%">
                 <template slot-scope="scope">
-                {{ scope.row.lose_avg_pnl_ptg }}
+                {{ scope.row.lose_avg_pnl_ptg }}%
                 </template>
             </el-table-column>
 
             <el-table-column align="center" label="平均收益率" min-width="8%">
                 <template slot-scope="scope">
-                {{ scope.row.avg_pnl_ptg }}
+                    <span style="color: green" v-if="scope.row.avg_pnl_ptg >= 0">
+                        {{ scope.row.avg_pnl_ptg }}%
+                    </span>
+                    <span style="color: red" v-else>
+                        {{ scope.row.avg_pnl_ptg }}%
+                    </span>
+                </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="盈亏率比" min-width="8%">
+                <template slot-scope="scope">
+                {{ scope.row.win_lose_ratio_ptg }}
+                </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="平均盈利($)" min-width="8%">
+                <template slot-scope="scope">
+                {{ scope.row.win_avg_pnl }}
+                </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="平均亏损($)" min-width="8%">
+                <template slot-scope="scope">
+                {{ scope.row.lose_avg_pnl }}
+                </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="平均收益($)" min-width="8%">
+                <template slot-scope="scope">
+                    <span style="color: green" v-if="scope.row.avg_pnl >= 0">
+                        {{ scope.row.avg_pnl }}
+                    </span>
+                    <span style="color: red" v-else>
+                        {{ scope.row.avg_pnl }}
+                    </span>                   
                 </template>
             </el-table-column>
 
@@ -243,7 +282,20 @@ export default {
 
         // 加载basic stats
         reloadBasicStats(){
-            this.basicStats[0].pnl_ptg = (this.report.analyzer_rets.value.value_ptg*100).toFixed(1)  // value analyzer
+            this.basicStats[0].pnl_ptg = ((this.report.analyzer_rets.value.value_ptg - 1)*100).toFixed(1)  // value analyzer
+
+            // trade stats analyzer
+            this.basicStats[0].count = this.report.analyzer_rets.trade_stats.count
+            this.basicStats[0].win_ratio = (this.report.analyzer_rets.trade_stats.win_ratio*100).toFixed(1)
+            this.basicStats[0].win_avg_pnl_ptg = (this.report.analyzer_rets.trade_stats.win_avg_pnl_ptg*100).toFixed(1)
+            this.basicStats[0].lose_avg_pnl_ptg = (this.report.analyzer_rets.trade_stats.lose_avg_pnl_ptg*100).toFixed(1)
+            this.basicStats[0].avg_pnl_ptg = (this.report.analyzer_rets.trade_stats.avg_pnl_ptg*100).toFixed(1)
+            this.basicStats[0].win_lose_ratio_ptg = (this.basicStats[0].win_avg_pnl_ptg / -this.basicStats[0].lose_avg_pnl_ptg).toFixed(2)
+            this.basicStats[0].win_avg_pnl = (this.report.analyzer_rets.trade_stats.win_avg_pnl).toFixed(0)
+            this.basicStats[0].lose_avg_pnl = (this.report.analyzer_rets.trade_stats.lose_avg_pnl).toFixed(0)
+            this.basicStats[0].avg_pnl = (this.report.analyzer_rets.trade_stats.avg_pnl).toFixed(0)
+            this.basicStats[0].win_lose_ratio = (this.basicStats[0].win_avg_pnl / -this.basicStats[0].lose_avg_pnl).toFixed(2)
+
             this.basicStats[0].max_drawdown = (this.report.analyzer_rets.drawdown.max_drawdown*100).toFixed(1)   // drawdown analyzer
         },
         standardTimestamp:standardTimestamp,

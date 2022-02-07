@@ -112,12 +112,12 @@
         </el-table>  
 
         <!-- Diaglog: 订单Json -->
-        <el-dialog title="订单详情" :visible.sync="dialogOrderJsonVisible">
+        <el-dialog title="订单详情" :visible.sync="dialogOrderJsonVisible" append-to-body>
             <pre>{{ orderJson }}</pre>
         </el-dialog>
 
         <!-- Diaglog: 父子订单 -->
-        <el-dialog title="算法订单(父/子订单)" :visible.sync="dialogSubOrdersVisible" width="65%">
+        <el-dialog title="算法订单(父/子订单)" :visible.sync="dialogSubOrdersVisible" width="65%" append-to-body>
             <hr />
             <el-table :data="[parentOrder]" style="width: 100%;" :show-header="false">
                 <el-table-column min-width="10%">
@@ -189,7 +189,7 @@
         </el-dialog>
 
         <!-- Diaglog: 日志 -->
-        <el-dialog title="日志" :visible.sync="dialogLogVisible" width="80%" >
+        <el-dialog title="日志" :visible.sync="dialogLogVisible" width="80%" append-to-body>
             <div v-loading="logsLoading">
                 <div v-for="log in logs" :key="log.ts" class="text item" >
                     <!-- log -->

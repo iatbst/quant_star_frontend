@@ -55,7 +55,7 @@
         </el-table-column>
 
         <!-- 调试 -->
-        <el-table-column align="center" label="" min-width="8%" v-if="false">
+        <el-table-column align="center" label="" min-width="8%" v-if="true">
             <template slot-scope="scope">
                 <el-button style="margin-top: -6px" type="text" @click="showJsonDialog(scope.row.id, null)">JSON</el-button>
             </template>

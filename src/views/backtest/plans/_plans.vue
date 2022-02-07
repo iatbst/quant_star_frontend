@@ -75,7 +75,7 @@
         </el-table>  
 
         <!-- Diaglog: Reports -->
-        <el-dialog width="85%" title="方案所有报告" :visible.sync="dialogReportsVisible">
+        <el-dialog width="85%" title="方案所有回测" :visible.sync="dialogReportsVisible">
             <reports
             v-loading="reportsLoading"
             v-bind:reports="reports">
