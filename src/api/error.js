@@ -1,8 +1,13 @@
 import request from '@/utils/request'
 
-export function getErrorsByPortfolio(pfo) {
+export function getErrorsByPortfolio(pfo, page=null) {
+  var url = '/errors/?'
+  if (page != null){
+    // 指定page
+    url += '&page=' + page
+  }
   var req_obj = {
-    url: '/errors/',
+    url: url,
     method: 'get'
   }
   if (pfo.host) { req_obj['baseURL'] = pfo.host }

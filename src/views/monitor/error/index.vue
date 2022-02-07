@@ -12,7 +12,7 @@
           >
             <el-table-column align="center" label="投资组合">
               <template slot-scope="scope">
-                <el-button style="width: 100%" type="primary"  v-on:click="fetchErrorsByPortfolio(scope.row)" plain>
+                <el-button style="width: 100%" type="primary"  v-on:click="choosePortfolio(scope.row)" plain>
                   {{ scope.row.name }}
                 </el-button>
               </template>
@@ -100,6 +100,16 @@
           </el-table>
   
         </div>
+
+        <div align="center">
+            <el-pagination
+                layout="prev, pager, next"
+                :page-size="500"
+                :current-page.sync="currentPage"
+                @current-change="fetchErrorsByPage"
+                :total="totalCount">
+            </el-pagination>
+        </div>
       </el-col>
     </el-row>
 
@@ -160,6 +170,7 @@ export default {
       host: null,
       portfolioList: null,
       portfolioListLoading: true,
+      currentPfo: null,
 
 
       errorTableLoading: true,
@@ -172,6 +183,8 @@ export default {
       tsList: null,
       dialogTsVisible: false,
 
+      totalCount: null,
+      currentPage: null
     }
   },
   created() {
@@ -201,17 +214,22 @@ export default {
       this.tsList = list
       this.dialogTsVisible = true
     },
-    fetchErrorsByPortfolio(pfo) {
+    fetchErrorsByPortfolio(pfo, page=null) {
       this.errorTableLoading = true
-      getErrorsByPortfolio(pfo).then(response => {
+      getErrorsByPortfolio(pfo, page).then(response => {
         this.errorTableList = response.results
+        this.totalCount = response.count
         this.errorTableLoading = false
         this.parseErrorList()
       })
     },
+    fetchErrorsByPage(page) {
+      this.fetchErrorsByPortfolio(this.currentPfo, page)
+    },
     choosePortfolio(pfo) {
-      this.host = pfo.host
-      this.fetchErrorsByPortfolio(this.portfolioList[0])
+      this.currentPfo = pfo
+      this.currentPage = 1
+      this.fetchErrorsByPortfolio(pfo)
     },
     fetchPortfolios() {
       this.portfolioListLoading = true
