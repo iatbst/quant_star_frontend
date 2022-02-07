@@ -5,8 +5,8 @@ const masterHost = 'http://ec2-54-169-201-152.ap-southeast-1.compute.amazonaws.c
 const pfoHosts = process.env.VUE_APP_PFO_HOSTS.split(',')
 
 // Backtest Host地址(存储K线的Host)
-const backtestHost = 'http://localhost:8000/api'
-// const backtestHost = 'http://ec2-13-212-37-227.ap-southeast-1.compute.amazonaws.com:8000/api'
+// const backtestHost = 'http://localhost:8000/api'
+const backtestHost = 'http://ec2-13-212-37-227.ap-southeast-1.compute.amazonaws.com:8000/api'
 
 // 当前投资组合的别名(product)
 const pfoAlias = [
