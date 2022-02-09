@@ -317,7 +317,7 @@ export default {
             // TODO: 优化datetime的操作
             var ts_obj = new Date(ts)
             var min_ts = ts_obj.setHours(ts_obj.getHours() - 1)   // ts之前1个小时
-            var max_ts = ts_obj.setHours(ts_obj.getHours() + 2)   // ts之后1个小时
+            var max_ts = ts_obj.setHours(ts_obj.getHours() + 3)   // ts之后2个小时(可能tick错过信号导致1个小时延迟)
             min_ts = new Date(min_ts)
             max_ts = new Date(max_ts)
             min_ts = moment(min_ts).format("YYYY-MM-DD HH:mm:ss")
