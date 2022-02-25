@@ -35,6 +35,11 @@ export function chineseString(s) {
             case 'increase': cs = '补仓'; break;
             case 'decrease': cs = '减仓'; break;
             case 'rollback': cs = '回撤'; break;
+
+            // 费用
+            case 'trade': cs = '交易费'; break;
+            case 'swap_funding': cs = '永续资金费'; break;
+            case 'interest': cs = '借贷利息'; break;           
     
             default: cs = '翻译失败:' + s 
         }

@@ -1,6 +1,7 @@
 // ---------------------------- Line Chart ------------------------------------------ //
 
 // 添加单line
+// data_obj: key -> x axis, value -> y axis
 export function addSingleLine(name, data_obj, options){
     options.series = []
     var lineData = {name: name, data: []}
@@ -87,6 +88,34 @@ export function addSingleClickableColumn(data_list, options, onClick, onClickDat
     }
 }
 
+// 添加stacked column
+// types: series.names
+// data_obj: keys -> categories, values -> {type1: xxx, type2: xxx, type3: xxx ...}
+// 注意: values可能没有全部types, 对应的data需要填充0; keys需要sort
+export function addStackedColumn(data_obj, types, options) {
+    // 填充categories
+    var xDatas = Object.keys(data_obj).sort()
+    options.xAxis.categories = xDatas
+
+    // series初始化
+    for(let i = 0; i < types.length; i++){
+        options.series.push({
+            name: types[i],
+            data: []
+        })
+    }
+
+    for(let i = 0; i < xDatas.length; i++){
+        for(let j = 0; j < types.length; j++){
+            if (data_obj[xDatas[i]].hasOwnProperty(types[j])){
+                options.series[j].data.push(data_obj[xDatas[i]][types[j]])
+            } else {
+                options.series[j].data.push(null)  // 填充0
+            }
+        }       
+    }
+}
+
 // ---------------------------- Pie Chart ------------------------------------------ //
 
 // 填充Pie Chart
@@ -100,9 +129,9 @@ export function fillPie(data_obj, options) {
     }
 }
 
-export function fillPieByArray(data, options) {
+export function fillPieByArray(data_list, options) {
     options.series[0].data = []
-    for (var i = 0; i < data.length; i++){
-        options.series[0].data.push(data[i])
+    for (var i = 0; i < data_list.length; i++){
+        options.series[0].data.push(data_list[i])
     }
 }

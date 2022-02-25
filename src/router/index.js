@@ -64,7 +64,7 @@ export const constantRoutes = [
         path: '/balances/summary',
         name: '资金管理',
         component: () => import('@/views/balance/index'),
-        meta: { title: '资金管理', icon: 'el-icon-money' }
+        meta: { title: '资金管理', icon: 'el-icon-wallet' }
       }
     ]
   },
@@ -145,19 +145,27 @@ export const constantRoutes = [
     ]
   },
   
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/bars',
-  //   children: [
-  //     {
-  //       path: 'bars',
-  //       name: '历史K线',
-  //       component: () => import('@/views/bar/index'),
-  //       meta: { title: '历史K线', icon: 'el-icon-s-marketing' }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/fee',
+    component: Layout,
+    redirect: '/fee/fees',
+    name: '费用统计',
+    meta: { title: '费用统计', icon: 'el-icon-pie-chart' },
+    children: [
+      {
+        path: 'fees',
+        name: '交易费',
+        component: () => import('@/views/fee/fees/index'),
+        meta: { title: '交易费用', icon: 'el-icon-money' }
+      },
+      {
+        path: 'volumes',
+        name: '成交量',
+        component: () => import('@/views/fee/volumes/index'),
+        meta: { title: '成交量', icon: 'el-icon-data-line' }
+      },
+    ]
+  },
 
   {
     path: '/monitors',

@@ -71,6 +71,11 @@ export function toThousands(num) {
     return (num || 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
 }
 
+// 千位逗号转为Integer(eg, 1,000,000 -> 1000000)
+export function thousandsToInt(str) {
+    return  parseInt(str.replaceAll(',', ''))
+}
+
 // 统计小数位数
 export function countDecimals(value) {
     if(Math.floor(value) === value) return 0;
