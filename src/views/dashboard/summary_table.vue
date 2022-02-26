@@ -91,7 +91,10 @@
 
             <el-table-column label="总仓位" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: green">
+                    <span style="color: green" v-if="scope.row.totalPosition >= 0">
+                        {{toThousands(scope.row.totalPosition)}}
+                    </span>   
+                    <span style="color: red" v-else>
                         {{toThousands(scope.row.totalPosition)}}
                     </span>             
                 </template>   

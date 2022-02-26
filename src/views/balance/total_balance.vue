@@ -4,6 +4,26 @@
         <el-col :span="12">
             <!-- 曲线 -->
             <highcharts :options="totalBalanceOptions"></highcharts>
+            <div align="center">
+                <el-button style="margin-left: 0px" type="info" size="mini"  @click="parseData()">
+                    全部
+                </el-button> 
+                <el-button type="info" size="mini"  @click="parseData('thisYear')">
+                    今年
+                </el-button> 
+                <el-button type="info" size="mini"  @click="parseData('6M')">
+                    6个月
+                </el-button>   
+                <el-button type="info" size="mini"  @click="parseData('12M')">
+                    12个月
+                </el-button>  
+                <el-button type="info" size="mini"  @click="parseData('2Y')">
+                    2年
+                </el-button>  
+                <el-button type="info" size="mini"  @click="parseData('3Y')">
+                    3年
+                </el-button>  
+            </div>       
         </el-col>
 
         <el-col :span="10" :offset="1">
@@ -48,6 +68,7 @@ import config from '@/configs/system_configs'
 import {addSingleLine} from '@/utils/chart'
 import {Chart} from 'highcharts-vue'
 import {toThousands} from '@/utils/general'
+import moment from 'moment' 
 
 export default {
     components: {
@@ -113,20 +134,57 @@ export default {
 
     created() {
         // 分析Data
-        this.parseData()
+        this.parseData('6M')
     },
 
     methods: {
         // 处理父组件建传入data: pfoDatas
-        parseData() {
+        parseData(range=null) {
             this.totalBalanceInfo = {}
             this.totalBalanceOptions.series = []
             for(var i = 0; i < this.pfoDatas.length; i++){
                 if (this.pfoDatas[i].portfolio.name === config.cryptoParentPfo){
                     // Crypto父pfo
-                    addSingleLine('总资金', this.pfoDatas[i].wallet.history_values, this.totalBalanceOptions)
+                    addSingleLine('总资金', this.filterDates(this.pfoDatas[i].wallet.history_values, range), this.totalBalanceOptions)
                     this.totalBalanceInfo = this.pfoDatas[i].wallet
                 }               
+            }
+        },
+
+        filterDates(history_values, range){
+            if (range === null){
+                return history_values
+            } else {
+                var startDate = null
+                if (range === '6M'){
+                    // 过去6月
+                    startDate = moment(new Date()).subtract(6,'months').format('YYYY-MM-DD')
+                } else if (range == '12M') {
+                    // 过去12月
+                    startDate = moment(new Date()).subtract(12,'months').format('YYYY-MM-DD')
+                } else if (range == 'thisYear'){
+                    // 今年
+                    startDate = moment().year() + '-' + '01-01'
+                } else if (range == '2Y') {
+                    // 过去2年
+                    startDate = moment(new Date()).subtract(2,'years').format('YYYY-MM-DD')
+                } else if (range == '3Y') {
+                    // 过去3年
+                    startDate = moment(new Date()).subtract(3,'years').format('YYYY-MM-DD')
+                } else if (range == '4Y') {
+                    // 过去4年
+                    startDate = moment(new Date()).subtract(4,'years').format('YYYY-MM-DD')
+                } else {
+                    // 全部
+                    return history_values
+                }
+                var values = {}
+                for(let date in history_values){
+                    if (date >= startDate){
+                        values[date] = history_values[date]
+                    }
+                }  
+                return values             
             }
         },
 
