@@ -56,7 +56,13 @@
         <!-- 仓位排名 -->
         <position-ranks v-bind:subaccount-datas="subaccountDatas" v-if="subaccountDatasAvailable"></position-ranks> 
         <!-- 仓位详情 -->
-        <position-map v-bind:positions="positions" v-if="positionsAvailable"></position-map> 
+        <div style="width: 95%">
+            <position-map 
+            v-bind:positions="positions" 
+            v-bind:positions-loading="positionsLoading"
+            
+            ></position-map> 
+        </div>
     </div>
   </div>
 </template>
@@ -116,6 +122,7 @@ export default {
 
             positions: [],
             positionsAvailable: false,
+            positionsLoading: false,
             
             refreshInterval: 300000,
             intervalId: null
@@ -193,6 +200,7 @@ export default {
         fetchPositions() {
             this.positions = []
             var count = 0
+            this.positionsLoading = true
             for(var i = 0; i < this.pfoHosts.length; i++){
                 getPositions(this.pfoHosts[i], 'normal').then(response => {
                         count += 1
@@ -206,6 +214,7 @@ export default {
                             // 排序
                             // this.positions.sort((a, b) => a.worker - b.worker)
                             this.positionsAvailable = true
+                            this.positionsLoading = false
                         }
                     }
                 )

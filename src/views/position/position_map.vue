@@ -7,7 +7,7 @@
                 style="width: 100%; margin-bottom: 20px; margin-top: 45px"
                 :header-cell-style="{ background: '#f2f2f2' }"
                 border
-                v-loading="positionLoading"
+                v-loading="positionsLoading"
                 cell-style="padding:0px"
             >
                 <el-table-column align="center" prop="name"  label="标的名称">
@@ -62,6 +62,11 @@ export default {
         positions: {
             type:Array,
             default:[]
+        },
+
+        positionsLoading: {
+            type: Boolean,
+            default: false
         }
     },
 
@@ -84,7 +89,6 @@ export default {
             currentPfo: null,
 
             positionList: null,
-            positionLoading: true,
             tagList: [
                 '1',
                 '2',
@@ -127,7 +131,7 @@ export default {
                 this.positionList[workerGroup].size[posTag] = posSize
                 this.positionList[workerGroup].worker[posTag] = this.positions[i].worker
             }
-            this.positionLoading = false
+            // this.positionLoading = false
         },
 
         // 通过Dialog展示signalPoints(注意, worker只包含id和name)
