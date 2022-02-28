@@ -1,49 +1,51 @@
 <template>
-    <div>
-        <el-row :gutter="0" type="flex">
-            <!-- Positions -->
-            <el-table
-                :data="Object.keys(positionList).sort()"
-                style="width: 100%; margin-bottom: 20px; margin-top: 45px"
-                :header-cell-style="{ background: '#f2f2f2' }"
-                border
-                v-loading="positionsLoading"
-                cell-style="padding:0px"
-            >
-                <el-table-column align="center" prop="name"  label="标的名称">
-                    <template slot-scope="scope">
-                        {{ scope.row}}
-                    </template>
-                </el-table-column>
+    <div class="app-container" align="center" >
+        <div style="width: 95%; margin-top: 20px">
+            <el-row :gutter="0" type="flex">
+                <!-- Positions -->
+                <el-table
+                    :data="Object.keys(positionList).sort()"
+                    style="width: 95%; margin-bottom: 20px; margin-top: 45px"
+                    :header-cell-style="{ background: '#f2f2f2' }"
+                    border
+                    v-loading="positionsLoading"
+                    cell-style="padding:0px"
+                >
+                    <el-table-column align="center" prop="name"  label="标的名称">
+                        <template slot-scope="scope">
+                            {{ scope.row}}
+                        </template>
+                    </el-table-column>
 
-                <el-table-column align="center" :label="'策略' + tag + '仓位($)'" v-bind:key="tag" v-for="tag in tagList">
-                    <template slot-scope="scope">
-                        <div style="cursor: pointer;" @click="showSignalPoints(positionList[scope.row].host, positionList[scope.row].worker[tag])">
-                            <span style="color: green" v-if="positionList[scope.row].size[tag] > 0">
-                                {{ toThousands(positionList[scope.row].size[tag]) }}
-                            </span>
-                            <span style="color: red" v-else-if="positionList[scope.row].size[tag] < 0">
-                                {{ toThousands(positionList[scope.row].size[tag]) }}
-                            </span>
-                            <span v-else>
-                                {{ positionList[scope.row].size[tag] }}
-                            </span>  
-                        </div>                  
-                    </template>               
-                </el-table-column>
-            </el-table>
-        </el-row>
+                    <el-table-column align="center" :label="'策略' + tag + '仓位($)'" v-bind:key="tag" v-for="tag in tagList">
+                        <template slot-scope="scope">
+                            <div style="cursor: pointer;" @click="showSignalPoints(positionList[scope.row].host, positionList[scope.row].worker[tag])">
+                                <span style="color: green" v-if="positionList[scope.row].size[tag] > 0">
+                                    {{ toThousands(positionList[scope.row].size[tag]) }}
+                                </span>
+                                <span style="color: red" v-else-if="positionList[scope.row].size[tag] < 0">
+                                    {{ toThousands(positionList[scope.row].size[tag]) }}
+                                </span>
+                                <span v-else>
+                                    {{ positionList[scope.row].size[tag] }}
+                                </span>  
+                            </div>                  
+                        </template>               
+                    </el-table-column>
+                </el-table>
+            </el-row>
 
-        <!-- Diaglog: SignalPoints -->
-        <el-dialog title="" :visible.sync="dialogSpVisible" width="60%" >
-          <!-- 指定worker的runs -->
-          <signal-points 
-          v-bind:signal-points="signalPoints"
-          v-bind:current-worker="currentWorker"
-          v-bind:current-pfo="currentPfo"
-          v-bind:signal-points-loading="signalPointsLoading"
-          ></signal-points>
-        </el-dialog>
+            <!-- Diaglog: SignalPoints -->
+            <el-dialog title="" :visible.sync="dialogSpVisible" width="60%" >
+            <!-- 指定worker的runs -->
+            <signal-points 
+            v-bind:signal-points="signalPoints"
+            v-bind:current-worker="currentWorker"
+            v-bind:current-pfo="currentPfo"
+            v-bind:signal-points-loading="signalPointsLoading"
+            ></signal-points>
+            </el-dialog>
+        </div>
     </div>
 </template>
 

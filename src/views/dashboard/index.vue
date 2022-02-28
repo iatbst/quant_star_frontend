@@ -56,13 +56,11 @@
         <!-- 仓位排名 -->
         <position-ranks v-bind:subaccount-datas="subaccountDatas" v-if="subaccountDatasAvailable"></position-ranks> 
         <!-- 仓位详情 -->
-        <div style="width: 95%" align="center">
-            <position-map 
-            v-bind:positions="positions" 
-            v-bind:positions-loading="positionsLoading"
-            
-            ></position-map> 
-        </div>
+        <position-map 
+        v-bind:positions="positions" 
+        v-bind:positions-loading="positionsLoading"
+        
+        ></position-map> 
     </div>
   </div>
 </template>
