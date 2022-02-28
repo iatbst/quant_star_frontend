@@ -70,7 +70,7 @@ export default {
 
                 tooltip: {
                     headerFormat: '<b>{point.x}</b><br/>',
-                    pointFormat: '{series.name}: {point.y}$'
+                    pointFormat: '{series.name}: ${point.y}'
                 },
                 plotOptions: {
                     column: {

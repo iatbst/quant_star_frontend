@@ -16,14 +16,14 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column align="center" :label="'策略' + tag + '仓位'" v-bind:key="tag" v-for="tag in tagList">
+                <el-table-column align="center" :label="'策略' + tag + '仓位($)'" v-bind:key="tag" v-for="tag in tagList">
                     <template slot-scope="scope">
                         <div style="cursor: pointer;" @click="showSignalPoints(positionList[scope.row].host, positionList[scope.row].worker[tag])">
                             <span style="color: green" v-if="positionList[scope.row].size[tag] > 0">
-                                {{ positionList[scope.row].size[tag] }}
+                                {{ toThousands(positionList[scope.row].size[tag]) }}
                             </span>
                             <span style="color: red" v-else-if="positionList[scope.row].size[tag] < 0">
-                                {{ positionList[scope.row].size[tag] }}
+                                {{ toThousands(positionList[scope.row].size[tag]) }}
                             </span>
                             <span v-else>
                                 {{ positionList[scope.row].size[tag] }}
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import config from '@/configs/system_configs'
+import {toThousands} from '@/utils/general'
 import signalPoints from '@/views/signal_point/_worker_sps'
 import { getSignalPointsByWorker } from '@/api/signal_point'
 
@@ -110,14 +110,14 @@ export default {
                 var workerName = this.positions[i].worker.name
                 var workerGroup = workerName.split('_').slice(0, -1).join('_')
                 var posTag = workerName[workerName.length-1]
-                var posSize = this.positions[i].size
-                if (workerGroup.indexOf('margin') != -1){
-                    // Margin需要省略小数点后尾数
-                    var baseSymbol = workerGroup.split('_').slice(-1)[0].split('/')[0].toUpperCase()
-                    if (baseSymbol in config.assetRoundLevel){
-                        posSize = posSize.toFixed(config.assetRoundLevel[baseSymbol])
-                    }
-                }
+                var posSize = Math.round(this.positions[i].usdt_size)
+                // if (workerGroup.indexOf('margin') != -1){
+                //     // Margin需要省略小数点后尾数
+                //     var baseSymbol = workerGroup.split('_').slice(-1)[0].split('/')[0].toUpperCase()
+                //     if (baseSymbol in config.assetRoundLevel){
+                //         posSize = posSize.toFixed(config.assetRoundLevel[baseSymbol])
+                //     }
+                // }
                 if (!(workerGroup in this.positionList)){
                     this.positionList[workerGroup] = {
                         size: {}, 
@@ -140,7 +140,9 @@ export default {
                 this.signalPoints = response.results
                 this.signalPointsLoading = false
             })
-        }
+        },
+
+        toThousands: toThousands,
     }
 }
 </script>
