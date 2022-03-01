@@ -1,5 +1,14 @@
 import request from '@/utils/request'
 
+export function getBasicMonitorStats(host=null) {
+  var req_obj = {
+    url: '/monitor-stats/?cls=basic',
+    method: 'get'
+  }
+  if (host) { req_obj['baseURL'] = host }
+  return request(req_obj)
+}
+
 export function getBasicMonitorStatsByPortfolio(pfo) {
   var req_obj = {
     url: '/monitor-stats/' + '?portfolio_id=' + pfo.id + '&cls=basic',

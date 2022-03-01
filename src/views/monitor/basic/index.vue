@@ -5,6 +5,22 @@
       <el-col :span="4">
         <div class="grid-content bg-purple">
           <el-table
+            :data="masterList"
+            style="width: 100%"
+          >
+            <el-table-column align="center" label="Master主机">
+              <template slot-scope="scope">
+                <el-button style="width: 100%" type="primary" v-on:click="chooseMasterHost(scope.row)" plain>
+                  {{ scope.row.name }}
+                </el-button>
+              </template>
+            </el-table-column>
+
+
+          </el-table>
+        </div>
+        <div class="grid-content bg-purple">
+          <el-table
             v-loading="portfolioListLoading"
             :data="portfolioList"
             style="width: 100%"
@@ -48,7 +64,7 @@
           </el-card>
 
           <!-- Threads -->
-          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px">
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px" v-if="!masterHost">
             <div class="text item">
               <el-row :gutter="15" class="el-row" style="margin-top: 10px; margin-bottom: 10px">
                 <el-col :span="5" align="left">   
@@ -103,7 +119,7 @@
           </el-card>
 
           <!-- Gateways -->
-          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px">
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px" v-if="!masterHost">
             <div slot="header" class="clearfix" style="">
               <el-row :gutter="15" class="el-row">
                 <el-col :span="12" align="left">   
@@ -164,7 +180,7 @@
           </el-card>
 
           <!-- Strategy Feeds -->
-          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px;">
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px;" v-if="!masterHost">
             <div slot="header" class="clearfix" style="">
               <el-row :gutter="15" class="el-row">
                 <el-col :span="12" align="left">
@@ -261,7 +277,7 @@
 <script>
 import config from '@/configs/system_configs'
 import { getPortfolios } from '@/api/portfolio'
-import { getBasicMonitorStatsByPortfolio } from '@/api/monitor_stat'
+import { getBasicMonitorStatsByPortfolio, getBasicMonitorStats } from '@/api/monitor_stat'
 import moment from 'moment'
 
 export default {
@@ -289,6 +305,8 @@ export default {
   data() {
     return {
       host: null,
+      masterHost: true, // 当前是master hosts or pfo hosts
+      masterList: null,
       portfolioList: null,
       portfolioListLoading: false,
 
@@ -322,7 +340,7 @@ export default {
       dialogJsonVisible: false,
 
       // 时间戳过期
-      updateTimeout: 700,
+      updateTimeout: 1000,
       gatewayTimeout: 3600,
       barLevel2Timeout: 180,  // Tick
       barLevel1Timeout: 3600*2  // 小时K线
@@ -330,6 +348,7 @@ export default {
     }
   },
   created() {
+    this.fetchMasterHosts()
     this.fetchPortfolios()
 
   },
@@ -353,6 +372,18 @@ export default {
       this.jsonData = JSON.stringify(data,null,2)
       this.dialogJsonVisible = true
     },
+
+    fetchMasterHosts() {
+      this.masterList = [{
+        name: 'master',
+        hostRole: 'master'
+      }, {
+       name: 'backtest',
+        hostRole: 'backtest'
+      }]
+      this.fetchMasterMonitorStats()  // 默认展示master的monitorStats
+    },
+
     fetchPortfolios() {
       this.portfolioListLoading = true
       this.portfolioList = []
@@ -364,18 +395,24 @@ export default {
             // pfo加载完成
             this.portfolioList.sort((a, b) => a.sort_id - b.sort_id)
             this.portfolioListLoading = false
-            this.choosePortfolio(this.portfolioList[0])
+            // this.choosePortfolio(this.portfolioList[0])
           }
         })
       }
     },
-    choosePortfolio(pfo) {
-      this.host = pfo.host
-      this.fetchMonitorStatsByPortfolio(this.portfolioList[0])
+
+    chooseMasterHost(masterHost) {
+      if (masterHost.hostRole == 'master'){
+        this.fetchMasterMonitorStats()
+      } else if (masterHost.hostRole == 'backtest'){
+        this.fetchBacktestMonitorStats()
+      }
     },
+
     fetchMonitorStatsByPortfolio(pfo) {
       //this.clearMonitorStatData()
       this.monitorStatListLoading = true
+      this.masterHost = false
       getBasicMonitorStatsByPortfolio(pfo).then(response => {
         this.monitorStatList = response.results
         this.monitorStatListLoading = false
@@ -383,6 +420,29 @@ export default {
         console.log(this.monitorStatStyFeedData)
       })
     },
+
+    fetchMasterMonitorStats() {
+      //this.clearMonitorStatData()
+      this.monitorStatListLoading = true
+      this.masterHost = true
+      getBasicMonitorStats(config.masterHost).then(response => {
+        this.monitorStatList = response.results
+        this.monitorStatListLoading = false
+        this.parseMasterMonitorStatList()
+      })
+    },
+
+    fetchBacktestMonitorStats() {
+      //this.clearMonitorStatData()
+      this.monitorStatListLoading = true
+      this.masterHost = true
+      getBasicMonitorStats(config.backtestHost).then(response => {
+        this.monitorStatList = response.results
+        this.monitorStatListLoading = false
+        this.parseMasterMonitorStatList()
+      })
+    },
+
     getGatewayFromMonitorID(monitor_id) {
       return  monitor_id.split('_').slice(4).join('_')
     },
@@ -409,6 +469,20 @@ export default {
         return 'fail'
       } else {
         return 'warn'
+      }
+    },
+    parseMasterMonitorStatList(){
+      // 清零
+      this.monitorStatProcessData = null
+      this.monitorStatOSData = null
+      for(var i = 0; i < this.monitorStatList.length; i++ ){
+        if (this.monitorStatList[i].type == 'mt_os'){
+          // 监控OS
+          this.monitorStatOSData = this.monitorStatList[i]
+        } else if (this.monitorStatList[i].type == 'mt_process'){
+          // 监控Processs
+          this.monitorStatProcessData = this.monitorStatList[i]
+        }
       }
     },
     parseMonitorStatList(){

@@ -3,6 +3,22 @@
     <el-row :gutter="0" type="flex"  style="margin-bottom: 50px">
       <el-col :span="4">
         <div class="grid-content bg-purple">
+          <el-table
+            :data="masterList"
+            style="width: 100%"
+          >
+            <el-table-column align="center" label="Master主机">
+              <template slot-scope="scope">
+                <el-button style="width: 100%" type="primary" v-on:click="fetchErrors(scope.row.host)" plain>
+                  {{ scope.row.name }}
+                </el-button>
+              </template>
+            </el-table-column>
+
+
+          </el-table>
+        </div>
+        <div class="grid-content bg-purple">
           <!-- 所有的Portfolios -->
           <el-table
             v-loading="portfolioListLoading"
@@ -12,7 +28,7 @@
           >
             <el-table-column align="center" label="投资组合">
               <template slot-scope="scope">
-                <el-button style="width: 100%" type="primary"  v-on:click="choosePortfolio(scope.row)" plain>
+                <el-button style="width: 100%" type="primary"  v-on:click="fetchErrors(scope.row.host)" plain>
                   {{ scope.row.name }}
                 </el-button>
               </template>
@@ -129,7 +145,7 @@
 <script>
 import config from '@/configs/system_configs'
 import { getPortfolios } from '@/api/portfolio'
-import { getErrorsByPortfolio } from '@/api/error'
+import { getErrorsByPortfolio, getErrors } from '@/api/error'
 import moment from 'moment'
 
 export default {
@@ -168,10 +184,11 @@ export default {
   data() {
     return {
       host: null,
+      masterList: null,
       portfolioList: null,
       portfolioListLoading: true,
-      currentPfo: null,
-
+      // currentPfo: null,
+      currentHost: null,
 
       errorTableLoading: true,
       errorTableList: [],
@@ -188,6 +205,7 @@ export default {
     }
   },
   created() {
+    this.fetchMasterHosts()
     this.fetchPortfolios()
   },
   methods: {
@@ -214,9 +232,27 @@ export default {
       this.tsList = list
       this.dialogTsVisible = true
     },
-    fetchErrorsByPortfolio(pfo, page=null) {
+    fetchMasterHosts() {
+      this.masterList = [{
+        name: 'master',
+        hostRole: 'master',
+        host: config.masterHost,
+      }, {
+       name: 'backtest',
+        hostRole: 'backtest',
+        host: config.backtestHost
+      }]
+      this.fetchErrors(config.masterHost)  // 默认展示master的Errors
+    },
+    fetchErrors(host, page=null) {
+      this.currentHost = host
       this.errorTableLoading = true
-      getErrorsByPortfolio(pfo, page).then(response => {
+      if (page){
+        this.currentPage = page
+      } else {
+        this.currentPage = 1
+      }
+      getErrors(host, page).then(response => {
         this.errorTableList = response.results
         this.totalCount = response.count
         this.errorTableLoading = false
@@ -224,12 +260,7 @@ export default {
       })
     },
     fetchErrorsByPage(page) {
-      this.fetchErrorsByPortfolio(this.currentPfo, page)
-    },
-    choosePortfolio(pfo) {
-      this.currentPfo = pfo
-      this.currentPage = 1
-      this.fetchErrorsByPortfolio(pfo)
+      this.fetchErrors(this.currentHost, page)
     },
     fetchPortfolios() {
       this.portfolioListLoading = true
@@ -242,7 +273,6 @@ export default {
             // pfo加载完成
             this.portfolioList.sort((a, b) => a.sort_id - b.sort_id)
             this.portfolioListLoading = false
-            this.choosePortfolio(this.portfolioList[0])
           }
         })
       }

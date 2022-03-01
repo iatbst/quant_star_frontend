@@ -184,9 +184,9 @@ export default {
                     this.totalFees -= sum
 
                     // 确定当月值和当年值
+                    var currentYear = moment().format('YYYY')
+                    var currentMonth = moment().format('YYYY-MM')
                     for(let month in this.subaccountDatas[i].fees.types[type].month_records){
-                        var currentYear = moment().format('YYYY')
-                        var currentMonth = moment().format('YYYY-MM')
                         if (month == currentMonth){
                             this.currentMonthFees -= this.subaccountDatas[i].fees.types[type].month_records[month]
                         }
@@ -210,6 +210,18 @@ export default {
                             this.totalFeeLine[month] -= monthCumuDatas[month]
                         } else {
                             this.totalFeeLine[month] = -monthCumuDatas[month]
+                        }
+                    }
+                    
+                    // 修正: 刚进入新月份时monthCumuDatas可能没有对应值, 使用上月的值代替填充(否则totalFeeLine显示异常!) 
+                    if (!monthCumuDatas.hasOwnProperty(currentMonth)){
+                        var lastMonth = moment(new Date()).subtract(1,'months').format('YYYY-MM')
+                        if (monthCumuDatas.hasOwnProperty(lastMonth)){
+                            if(this.totalFeeLine.hasOwnProperty(currentMonth)){
+                                this.totalFeeLine[currentMonth] -= monthCumuDatas[lastMonth]
+                            } else {
+                                this.totalFeeLine[currentMonth] = -monthCumuDatas[lastMonth]
+                            }                           
                         }
                     }
                 }
