@@ -347,10 +347,17 @@ export default {
 </script>
 
 <style>
-pre {
-  display: inline;
-}
+  pre {
+    display: inline;
+  }
 
+  .el-table__row>td{
+    border: none;
+    padding: 5px;
+  }
+</style>
+
+<style scoped>
 .el-table tbody tr:hover>td { 
     background-color:#ffffff!important
 }
