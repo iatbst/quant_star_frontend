@@ -408,11 +408,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
   .el-table__row>td{
     border: none;
     padding: 5px;
   }
+</style>
+
+<style scoped>
 
   .el-table tbody tr:hover>td { 
       background-color:#ffffff!important
