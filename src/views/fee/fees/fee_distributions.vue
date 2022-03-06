@@ -202,7 +202,7 @@ export default {
             for(let type in this.feeTypeDist){
                 if (this.feeTypeDist[type] < 0){
                     // Pie图无法表示负值: 转化为柱状图
-                    alert('[' + type + ']的总费用为负值:' + this.feeTypeDist[type] + ', 需要转化为柱状图表示.')
+                    this.$message.error('[' + type + ']的总费用为负值:' + this.feeTypeDist[type] + ', 需要转化为柱状图表示.')
                 } else {
                     this.feeTypeDist[type] = this.feeTypeDist[type] * 100 / totalFees
                 }
@@ -233,7 +233,7 @@ export default {
             for(let subType in this.feeSubTypeDist){
                 if (this.feeSubTypeDist[subType] < 0){
                     // Pie图无法表示负值: 转化为柱状图
-                    alert('[' + subType + ']的总费用为负值:' + this.feeSubTypeDist[subType] + ', 需要转化为柱状图表示.')
+                    this.$message.error('[' + subType + ']的总费用为负值:' + this.feeSubTypeDist[subType] + ', 需要转化为柱状图表示.')
                 } else {
                     this.feeSubTypeDist[subType] = this.feeSubTypeDist[subType] * 100 / totalFees
                 }
@@ -264,7 +264,7 @@ export default {
             for(let exchange in this.feeExchangeDist){
                 if (this.feeExchangeDist[exchange] < 0){
                     // Pie图无法表示负值: 转化为柱状图
-                    alert('[' + exchange + ']的总费用为负值:' + this.feeExchangeDist[exchange] + ', 需要转化为柱状图表示.')
+                    this.$message.error('[' + exchange + ']的总费用为负值:' + this.feeExchangeDist[exchange] + ', 需要转化为柱状图表示.')
                 } else {
                     this.feeExchangeDist[exchange] = this.feeExchangeDist[exchange] * 100 / totalFees
                 }
