@@ -106,6 +106,13 @@ export default {
         }
     },
 
+    watch: {
+        subaccountDatas(val){
+            this.init()
+            this.parseData()
+        }
+    },
+
     data() {
         return {
             initFeeDatas: true,

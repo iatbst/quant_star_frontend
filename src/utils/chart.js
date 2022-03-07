@@ -98,6 +98,7 @@ export function addStackedColumn(data_obj, types, options) {
     options.xAxis.categories = xDatas
 
     // series初始化
+    options.series = []
     for(let i = 0; i < types.length; i++){
         options.series.push({
             name: types[i],
@@ -114,6 +115,11 @@ export function addStackedColumn(data_obj, types, options) {
             }
         }       
     }
+}
+
+export function clearStackedColumn(options) {
+    options.xAxis.categories = []
+    options.series = []
 }
 
 // ---------------------------- Pie Chart ------------------------------------------ //

@@ -107,6 +107,12 @@ export default {
         }
     },
 
+    watch: {
+        subaccountDatas(val){
+            this.parseData()
+        }
+    },
+
     data() {
         return {
             totalFeeLine: null,
@@ -212,7 +218,7 @@ export default {
                             this.totalFeeLine[month] = -monthCumuDatas[month]
                         }
                     }
-                    
+
                     // 修正: 刚进入新月份时monthCumuDatas可能没有对应值, 使用上月的值代替填充(否则totalFeeLine显示异常!) 
                     if (!monthCumuDatas.hasOwnProperty(currentMonth)){
                         var lastMonth = moment(new Date()).subtract(1,'months').format('YYYY-MM')

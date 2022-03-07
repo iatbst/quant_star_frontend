@@ -36,6 +36,12 @@ export default {
         }
     },
 
+    watch: {
+        subaccountDatas(val){
+            this.parseData()
+        }
+    },
+
     data() {
         return {
             volumeSubTypeDist: null,

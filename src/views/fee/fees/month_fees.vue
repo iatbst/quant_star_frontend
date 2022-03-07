@@ -11,7 +11,7 @@
 
 <script>
 import config from '@/configs/system_configs'
-import {addStackedColumn} from '@/utils/chart'
+import {addStackedColumn, clearStackedColumn} from '@/utils/chart'
 import {Chart} from 'highcharts-vue'
 import {toThousands} from '@/utils/general'
 
@@ -24,6 +24,13 @@ export default {
         subaccountDatas: {
             type:Array,
             default:[]
+        }
+    },
+
+    watch: {
+        subaccountDatas(val){
+            // clearStackedColumn(this.monthFeesOptions)
+            this.parseData()
         }
     },
 

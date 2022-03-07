@@ -43,6 +43,12 @@ export default {
         }
     },
 
+    watch: {
+        subaccountDatas(val){
+            this.parseData()
+        }
+    },
+    
     data() {
         return {
             feeTypeDist: null,

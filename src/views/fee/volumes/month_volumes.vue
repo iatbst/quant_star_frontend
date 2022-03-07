@@ -26,6 +26,12 @@ export default {
         }
     },
 
+    watch: {
+        subaccountDatas(val){
+            this.parseData()
+        }
+    },
+
     data() {
         return {
             // 格式:

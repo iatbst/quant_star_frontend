@@ -7,6 +7,11 @@
         v-if="subaccountDatasAvailable"
         >
         </month-volumes>
+        <div style="margin-right: 65px; margin-top: 0px" align="right">
+            <el-button style="" type="text" @click="fetchDatas()" >
+                <i style="font-size:30px; color: gray " v-bind:class="{'el-icon-refresh': iconRefreshActive, 'el-icon-loading': iconLoadingActive}"></i>
+            </el-button>   
+        </div> 
     </div>
 
     <!----------------------------------- 表2: 分布Pie图 --------------------------------------->
@@ -52,9 +57,14 @@ export default {
     methods: {
         // 获取原始volume datas
         fetchDatas() {
+            this.iconRefreshActive = false
+            this.iconLoadingActive = true
             getSubAccountDatas(config.masterHost, 'subaccount,volumes').then(response => {
                     this.subaccountDatas = response.results    
-                    this.subaccountDatasAvailable = true       
+                    this.subaccountDatasAvailable = true 
+                    this.$message.success('成交量数据已更新.')  
+                    this.iconRefreshActive = true
+                    this.iconLoadingActive = false      
                 }
             )
         }

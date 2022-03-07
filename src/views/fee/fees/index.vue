@@ -7,6 +7,11 @@
         v-if="subaccountDatasAvailable"
         >
         </total-fee>
+        <div style="margin-right: 65px; margin-top: 0px" align="right">
+            <el-button style="" type="text" @click="fetchDatas()" >
+                <i style="font-size:30px; color: gray " v-bind:class="{'el-icon-refresh': iconRefreshActive, 'el-icon-loading': iconLoadingActive}"></i>
+            </el-button>   
+        </div>    
     </div>
 
     <!----------------------------------- 表2: 月度柱状图 --------------------------------------->
@@ -74,6 +79,8 @@ export default {
         return {
             subaccountDatas: null,
             subaccountDatasAvailable: false,
+            iconRefreshActive: true,
+            iconLoadingActive: false
         }
     },
 
@@ -84,9 +91,19 @@ export default {
     methods: {
         // 获取原始fee datas
         fetchDatas() {
+            this.iconRefreshActive = false
+            this.iconLoadingActive = true
             getSubAccountDatas(config.masterHost, 'subaccount,fees,fee_rates').then(response => {
                     this.subaccountDatas = response.results    
-                    this.subaccountDatasAvailable = true       
+                    this.subaccountDatasAvailable = true     
+                    // this.$message.success('费用数据已更新.')  
+                    this.$message({
+                        message: '费用数据已更新.',
+                        type: 'success',
+                        offset: 100
+                    })
+                    this.iconRefreshActive = true
+                    this.iconLoadingActive = false
                 }
             )
         }
