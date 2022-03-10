@@ -45,7 +45,7 @@ const spErrorTypes = [
 ]
 
 // 当前风险系数
-const riskRatio = 0.4
+const riskRatio = 0.48
 
 // Crypto父pfo的名称
 const cryptoParentPfo = 'crypto_pfo'

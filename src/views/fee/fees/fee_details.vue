@@ -108,7 +108,7 @@ export default {
 
     watch: {
         subaccountDatas(val){
-            this.init()
+            // this.init()
             this.parseData()
         }
     },
