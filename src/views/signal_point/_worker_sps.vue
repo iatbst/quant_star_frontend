@@ -48,7 +48,6 @@
                     </div>
 
                     <div v-for="order in scope.row.orders" :key="order.sys_id">
-                        <el-row>
                             <!-- 算法订单 -->
                             <el-col :span="2" @click.native="showOrderJsonDialog(order)" style="cursor: pointer" v-html="orderStatusIcon(order.status)">
                             </el-col>
@@ -66,21 +65,17 @@
                             <el-button style="margin-top: -6px" type="text" @click="showOrderJsonDialog(order)" v-if="order.exec_algo == 'simple'">JSON</el-button>
                             <el-button style="margin-top: -6px" type="text" @click="fetchSubOrdersByParentOrder(order)" v-else>子订单</el-button>
                             </el-col>
-                            <el-col :span="1"></el-col>
-                        </el-row>          
+                            <el-col :span="1"></el-col>         
                     </div>
 
                     <div v-if="scope.row.flags.final_state_note">
-                        <el-row>
                         <el-col :span="24" align="left" style="color: red">
                             {{ scope.row.flags.final_state_note }}
                         </el-col>
-                        </el-row>
                     </div>
 
                     <div v-if="(scope.row.final_state == 'error' && scope.row.checked != true) || scope.row.final_state == 'warn'">
                         <!-- 填写并发送note(warn或者unchecked的error状态) -->
-                        <el-row>
                             <el-col :span="24" align="left">
                                 <el-form :inline="true" :model="spState" class="demo-form-inline" size="mini">
                                 <el-form-item label="">
@@ -103,8 +98,7 @@
                                     <el-button type="primary" @click="onSubmitSpState(scope.row.id, scope.row)">标记</el-button>
                                 </el-form-item>
                                 </el-form> 
-                            </el-col>
-                        </el-row>                           
+                            </el-col>                         
                   </div>
                 </el-card>
                 </template>

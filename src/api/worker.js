@@ -38,7 +38,7 @@ export function getWorkerDatas(host=null, fields=null) {
 }
 
 export function getDelegateWorkerDatas(host=null, fields=null) {
-  var url = '/worker-datas/?delegate=true'
+  var url = '/worker-datas/?worker__status=normal&delegate=true'
   if (fields != null){
     // 指定fields
     url += '&fields=' + fields

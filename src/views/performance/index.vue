@@ -30,7 +30,10 @@
                 </h2>    
             </el-col>
         </el-row>
-        <profit-ranks v-bind:delegate-worker-datas="delegateWorkerDatas" v-if="delegateWorkerDatas.length === pfoHosts.length"></profit-ranks>
+        <profit-ranks 
+        v-bind:delegate-worker-datas="delegateWorkerDatas"
+        v-bind:delegate-worker-datas-loading="delegateWorkerDatasLoading" 
+        ></profit-ranks>
     </div>
 
     <!-- 表现详情 -->
@@ -42,7 +45,10 @@
                 </h3>    
             </el-col>
         </el-row>
-        <perf-details v-bind:delegate-worker-datas="delegateWorkerDatas" v-if="delegateWorkerDatas.length === pfoHosts.length"></perf-details>
+        <perf-details 
+        v-bind:delegate-worker-datas="delegateWorkerDatas" 
+        v-bind:delegate-worker-datas-loading="delegateWorkerDatasLoading" 
+        ></perf-details>
     </div>
   </div>
 </template>
@@ -72,6 +78,7 @@ export default {
             pfoHosts: config.pfoHosts,
             pfoDatas: null,
             delegateWorkerDatas: null,
+            delegateWorkerDatasLoading: true,
         }
     },
     created() {
@@ -100,9 +107,13 @@ export default {
 
         fetchAllDelegateWorkerDatas() {
             this.delegateWorkerDatas = []
+            this.delegateWorkerDatasLoading = true
             for(var i = 0; i < this.pfoHosts.length; i++){
                 getDelegateWorkerDatas(this.pfoHosts[i], 'worker,performance').then(response => {
                         this.delegateWorkerDatas.push(response.results)
+                        if (this.delegateWorkerDatas.length === this.pfoHosts.length){
+                            this.delegateWorkerDatasLoading = false
+                        }
                     }
                 )
             }

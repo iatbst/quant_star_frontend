@@ -1,5 +1,7 @@
 <template>
-   <el-row :gutter="0" type="flex">
+   <el-row :gutter="0" type="flex"
+   v-loading="delegateWorkerDatasLoading"
+   >
         <!-- 收益排名柱状图 -->
         <el-col :span="24">
             <highcharts :options="profitRanksOptions"></highcharts>
@@ -21,13 +23,20 @@ export default {
         delegateWorkerDatas: {
             type:Array,
             default:[]
+        },
+
+        delegateWorkerDatasLoading: {
+            type:Boolean,
+            default:false     
         }
     },
 
     watch: {
         delegateWorkerDatas: {
             handler(val, oldVal){
-                this.parseData()
+                if (this.delegateWorkerDatasLoading === false){
+                  this.parseData()
+                }
             },
             deep: true
         }
