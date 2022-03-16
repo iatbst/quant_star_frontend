@@ -551,7 +551,7 @@ export default {
                 totalWinProfit += data.total_win_usd_profit
                 totalLossProfit += data.total_loss_usd_profit
                 usdVolume += data.usd_volume
-                totalWeightSlippage += data.total_weighted_slipage
+                totalWeightSlippage += data.total_weighted_slippage
             }
 
             this.perfDatas[0].totalProfit = parseInt(totalProfit)

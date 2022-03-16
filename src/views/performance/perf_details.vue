@@ -48,11 +48,11 @@
 
                 <el-table-column label="加权滑点(vol)" min-width="20%" align="center" sortable>
                   <template slot-scope="scope">
-                      <span style="color: green" v-if="scope.row.weighted_slipage >= 0">
-                          {{ (scope.row.weighted_slipage*100).toFixed(2) }}%
+                      <span style="color: green" v-if="scope.row.weighted_slippage >= 0">
+                          {{ (scope.row.weighted_slippage*100).toFixed(2) }}%
                       </span>
                       <span style="color: red" v-else>
-                          {{ (scope.row.weighted_slipage*100).toFixed(2) }}%
+                          {{ (scope.row.weighted_slippage*100).toFixed(2) }}%
                       </span> 
                   </template>
                 </el-table-column>
