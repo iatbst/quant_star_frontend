@@ -51,9 +51,16 @@
                             <!-- 算法订单 -->
                             <el-col :span="2" @click.native="showOrderJsonDialog(order)" style="cursor: pointer" v-html="orderStatusIcon(order.status)">
                             </el-col>
+
                             <el-col :span="3" align="left">
-                            {{ chineseString(order.order_type) }}:{{ chineseString(order.side) }} ({{ order.id }})
+                                <span style="text-decoration: underline;" v-if="order.exec_mode === 'manual'">
+                                    {{ chineseString(order.order_type) }}:{{ chineseString(order.side) }} ({{ order.id }})
+                                </span>
+                                <span v-else>
+                                    {{ chineseString(order.order_type) }}:{{ chineseString(order.side) }} ({{ order.id }})
+                                </span>
                             </el-col>
+
                             <el-col :span="5" align="left">
                             {{ formatTimestamp(order.created_ts) }}
                             </el-col>

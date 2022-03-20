@@ -89,7 +89,14 @@ export default {
 
     fetchWorkersByPfo(pfo, onWorkers) {
       this.workersLoading = true
-      getWorkersByPfo(pfo).then(response => {
+      if (this.$route.query.status === 'all'){
+        var status = null   // all 代表所有workers
+      } else if (this.$route.query.status === null) {
+        var status = 'normal' // 不指定只返回normal workers
+      } else {
+        var status = this.$route.query.status
+      }
+      getWorkersByPfo(pfo, status).then(response => {
         response.results.sort(function(a,b){return a.name.localeCompare(b.name)})
         this.workers = response.results
         this.workersLoading = false

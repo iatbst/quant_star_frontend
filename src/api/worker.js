@@ -1,9 +1,14 @@
 import request from '@/utils/request'
 
 
-export function getWorkersByPfo(pfo) {
+export function getWorkersByPfo(pfo, status='normal') {
+  if (status === null){
+    var url = '/workers/?portfolio_id=' + pfo.id
+  } else {
+    var url = '/workers/?status=' + status + '&portfolio_id=' + pfo.id
+  }
   var req_obj = {
-    url: '/workers/?status=normal&portfolio_id=' + pfo.id,
+    url: url,
     method: 'get'
   }
   if (pfo.host) {

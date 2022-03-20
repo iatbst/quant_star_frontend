@@ -39,7 +39,11 @@ export function chineseString(s) {
             // 费用
             case 'trade': cs = '交易费'; break;
             case 'swap_funding': cs = '永续资金费'; break;
-            case 'interest': cs = '借贷利息'; break;           
+            case 'interest': cs = '借贷利息'; break;    
+            
+            // Worker状态
+            case 'live': cs = '在线'; break;
+            case 'suspend': cs = '暂停'; break;
     
             default: cs = '翻译失败:' + s 
         }

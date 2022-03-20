@@ -168,6 +168,20 @@ export const constantRoutes = [
   },
 
   {
+    path: '/',
+    component: Layout,
+    redirect: '/market',
+    children: [
+      {
+        path: '/market',
+        name: '市场标的',
+        component: () => import('@/views/market/index'),
+        meta: { title: '市场标的', icon: 'el-icon-s-marketing' }
+      }
+    ]
+  },
+
+  {
     path: '/monitors',
     component: Layout,
     redirect: '/monitors/basics',
