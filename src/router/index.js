@@ -58,6 +58,18 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
+    redirect: '/dashboard/v2',
+    children: [{
+      path: '/dashboard/v2',
+      name: '系统首页V2',
+      component: () => import('@/views/dashboard/v2/index'),
+      meta: { title: '系统首页V2', icon: 'dashboard' }
+    }]
+  },
+
+  {
+    path: '/',
+    component: Layout,
     redirect: '/balances/summary',
     children: [
       {

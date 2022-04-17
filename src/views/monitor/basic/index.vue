@@ -103,7 +103,16 @@
                   <span v-html="statusIcon(getStatus(monitorStatOSData))"> </span>
                 </el-col>
                 <el-col :span="4" align="right">  
-                  磁盘:{{monitorStatOSData == null ? 'N/A' : monitorStatOSData.data.disk_usage}}
+                  磁盘:
+                  <span v-if="monitorStatOSData == null">
+                    N/A
+                  </span>
+                  <span style="color: red" v-else-if="Number(monitorStatOSData.data.disk_usage.slice(0, -1)) > 90">
+                    {{ monitorStatOSData.data.disk_usage }}
+                  </span>
+                  <span v-else>
+                    {{ monitorStatOSData.data.disk_usage }}
+                  </span>
                 </el-col>
                 <el-col :span="4" align="right">  
                   内存:{{monitorStatOSData == null ? 'N/A' : monitorStatOSData.data.mem_usage}}
