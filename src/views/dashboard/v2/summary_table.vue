@@ -59,6 +59,11 @@
             </el-table-column>
 
             <el-table-column prop="drawdownDays" label="回撤天数" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span>
+                        {{ scope.row.drawdownDays}}
+                    </span>
+                </template>
             </el-table-column>
 
             <el-table-column prop="maxDrawdown" label="最大回撤" min-width="10%" align="center">
@@ -203,7 +208,8 @@
             </el-table-column>
 
             <el-table-column label="交易币数" min-width="10%" align="center">
-                <template slot-scope="scope">          
+                <template slot-scope="scope">   
+                    {{ usdtSymbols.size }} + {{ btcSymbolsCount }}       
                 </template>       
             </el-table-column>
         </el-table>        
@@ -286,25 +292,28 @@ export default {
                 usdtSymbol: null,
                 btcSymbol: null,
             }],  
+            usdtSymbols: new Set(),
+            // btcSymbols: new Set(),
+            btcSymbolsCount: 18,    // 暂时手工统计btc交易数量
 
             // 风险
-            subacctPfoAlias: config.subacctPfoAlias, 
-            riskDatas: [{
-                riskRatio: null,
-                leverage: null,
-                usdtLeverage: null,
-                btcLeverage: null,
-            }],   
+            // subacctPfoAlias: config.subacctPfoAlias, 
+            // riskDatas: [{
+            //     riskRatio: null,
+            //     leverage: null,
+            //     usdtLeverage: null,
+            //     btcLeverage: null,
+            // }],   
 
             // 监控
-            pfoAlias: config.pfoAlias, 
-            monitorDatas: [{
-                totalTradeSuccessRate: null,
-                totalTradeErrorRate: null,
-                totalTradeManualRate: null,
-                allProcessStatus: null,
-                allHostStatus: null,
-            }],
+            // pfoAlias: config.pfoAlias, 
+            // monitorDatas: [{
+            //     totalTradeSuccessRate: null,
+            //     totalTradeErrorRate: null,
+            //     totalTradeManualRate: null,
+            //     allProcessStatus: null,
+            //     allHostStatus: null,
+            // }],
         }
     },
 
@@ -342,6 +351,7 @@ export default {
                     
                     this.balanceDatas[0].drawdown = (totalBalanceInfo.drawdown*100).toFixed(2)
                     this.balanceDatas[0].maxDrawdown = (totalBalanceInfo.max_drawdown*100).toFixed(2)
+                    this.balanceDatas[0].drawdownDays = totalBalanceInfo.drawdown_days
 
                     // 特例: 从master data中获取长短周期策略的仓位
                     this.longLevelPosition = 0
@@ -395,6 +405,17 @@ export default {
                     } else {
                         positionsByCoins[coinKey] = usdtAmount
                     } 
+
+                    // 统计币种数量(目前只统计quote是usdt和btc的交易对)
+                    var base = symbol.split('/')[0]
+                    if (quote === 'USD' && !this.usdtSymbols.has(base)){
+                            this.usdtSymbols.add(base)
+                    } 
+                    // else if(quote === 'BTC'){
+                    //     if (!this.btcSymbols.has(base)){
+                    //         this.btcSymbols.add(base)
+                    //     }
+                    // }
                 }
             }
             this.positionDatas[0].totalPosition = parseInt(this.totalPosition)

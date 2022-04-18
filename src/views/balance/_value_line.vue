@@ -50,7 +50,7 @@ export default {
     watch: {
         pfoDatas: {
             handler(val, oldVal){
-                this.parseData()
+                this.parseData('6M')
             },
             deep: true
         }
