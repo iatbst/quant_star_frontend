@@ -11,9 +11,27 @@
                     v-loading="positionsLoading"
                     cell-style="padding:0px"
                 >
-                    <el-table-column align="center" prop="name"  label="标的名称">
+                    <el-table-column align="center" prop="name"  label="币种">
                         <template slot-scope="scope">
-                            {{ scope.row}}
+                            {{ scope.row.split('_')[2].split('/')[0].toUpperCase() }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" prop="name"  label="币基">
+                        <template slot-scope="scope">
+                            {{ scope.row.split('_')[2].split('/')[1].toUpperCase()  }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" prop="name"  label="交易所">
+                        <template slot-scope="scope">
+                            {{ scope.row.split('_')[0].toUpperCase()  }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" prop="name"  label="风险权重">
+                        <template slot-scope="scope">
+                            {{ productVolumes[scope.row] }}
                         </template>
                     </el-table-column>
 
@@ -69,6 +87,11 @@ export default {
         positionsLoading: {
             type: Boolean,
             default: false
+        },
+
+        productVolumes: {
+           type: Object,
+           default: {} 
         }
     },
 

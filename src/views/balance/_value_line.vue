@@ -41,14 +41,18 @@ export default {
     },
 
     props: {
-        pfoDatas: {
-            type:Array,
-            default:[]
+        values: {
+            type:Object,
+            default:{}
+        },
+        title: {
+            type: String,
+            default: ''
         }
     },
 
     watch: {
-        pfoDatas: {
+        values: {
             handler(val, oldVal){
                 this.parseData('6M')
             },
@@ -105,12 +109,13 @@ export default {
         // 处理父组件建传入data: pfoDatas
         parseData(range=null) {
             this.totalBalanceOptions.series = []
-            for(var i = 0; i < this.pfoDatas.length; i++){
-                if (this.pfoDatas[i].portfolio.name === config.cryptoParentPfo){
-                    // Crypto父pfo
-                    addSingleLine('总资金', this.filterDates(this.pfoDatas[i].wallet.history_values, range), this.totalBalanceOptions)
-                }               
-            }
+            addSingleLine(this.title, this.filterDates(this.values, range), this.totalBalanceOptions)
+            // for(var i = 0; i < this.pfoDatas.length; i++){
+            //     if (this.pfoDatas[i].portfolio.name === config.cryptoParentPfo){
+            //         // Crypto父pfo
+            //         addSingleLine('总资金', this.filterDates(this.pfoDatas[i].wallet.history_values, range), this.totalBalanceOptions)
+            //     }               
+            // }
         },
 
         filterDates(history_values, range){

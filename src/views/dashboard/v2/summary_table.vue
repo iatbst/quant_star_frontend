@@ -170,7 +170,7 @@
             <el-table-column label="半年胜率" min-width="10%" align="center">
                 <template slot-scope="scope">
                    <span>
-                        {{scope.row.winRate}}%
+                        {{scope.row.winRatio}}%
                     </span>               
                 </template>
             </el-table-column>
@@ -194,7 +194,7 @@
             <el-table-column label="半年盈亏比率" min-width="10%" align="center">
                 <template slot-scope="scope"> 
                    <span>
-                        {{scope.row.plRate}}
+                        {{scope.row.plRatio}}
                     </span>           
                 </template>
             </el-table-column>
@@ -227,6 +227,11 @@ export default {
             type:Array,
             default:[]
         },
+
+        liveRets: {
+            type:Object,
+            default:{}         
+        }
     },
 
     watch: {
@@ -285,8 +290,8 @@ export default {
             perfDatas: [{
                 totalProfit: null,
                 totalCount: null,
-                winRate: null,
-                plRate: null,
+                winRatio: null,
+                plRatio: null,
                 slippage: null,
                 totalSty: null,
                 usdtSymbol: null,
@@ -371,7 +376,7 @@ export default {
                         }
                     }    
                     this.positionDatas[0].longLevelPosition = this.longLevelPosition 
-                    this.positionDatas[0].shortLevelPosition = this.shortLevelPosition                   
+                    this.positionDatas[0].shortLevelPosition = this.shortLevelPosition  
                 }        
             }  
             this.totalBalance = this.balanceDatas[0].totalBalance   // 计算总体杠杆率
@@ -456,12 +461,55 @@ export default {
 
             this.perfDatas[0].totalProfit = parseInt(totalProfit)
             this.perfDatas[0].totalCount = totalCount
-            this.perfDatas[0].winRate = (totalWinCount*100/totalCount).toFixed(2)
+            this.perfDatas[0].winRatio = (totalWinCount*100/totalCount).toFixed(2)
             this.perfDatas[0].winAvgPtg = (totalWinPtg*100 / totalWinCount).toFixed(2)
             this.perfDatas[0].loseAvgPtg = (totalLosePtg*100 / (totalCount - totalWinCount)).toFixed(2)
             this.perfDatas[0].avgPtg = (totalPtg*100 / totalCount).toFixed(2)
-            this.perfDatas[0].plRate = ( this.perfDatas[0].winAvgPtg / Math.abs(this.perfDatas[0].loseAvgPtg )).toFixed(2)
+            this.perfDatas[0].plRatio = ( this.perfDatas[0].winAvgPtg / Math.abs(this.perfDatas[0].loseAvgPtg )).toFixed(2)
             this.perfDatas[0].slippage = (totalWeightSlippage*100/totalUsdVolume).toFixed(2)
+
+            // 更新liveRets
+            this.liveRets.winRatio = this.perfDatas[0].winRatio
+            this.liveRets.plRatio = this.perfDatas[0].plRatio
+            this.liveRets.countPerSymbol = totalCount/(this.usdtSymbols.size + this.btcSymbolsCount)
+            for(var i = 0; i < this.pfoMasterDatas.length; i++){
+                if (this.pfoMasterDatas[i].portfolio.name === config.cryptoParentPfo){
+                    var valueLine = this.pfoMasterDatas[i].wallet.history_values
+                    var date = new Date()
+                    date.setMonth(date.getMonth() - 6)
+                    var firstDate = date.toISOString().slice(0, 10)
+                    this.liveRets.annualReturn = this._getAnnualReturn(valueLine, firstDate)
+                    this.liveRets.maxDrawdown = this._getMaxDrawdown(valueLine, firstDate)
+                }
+            }
+            this.liveRets.available = true
+        },
+
+        // 计算年化收益率
+        _getAnnualReturn(valueLine, firstDate){
+            var dates = Object.keys(valueLine).sort()
+            var lastDate = dates[dates.length - 1]
+            var profitPtg = valueLine[lastDate]/valueLine[firstDate]
+            var years = ((new Date(lastDate)).getTime() - (new Date(firstDate)).getTime())/(3600*24*365*1000)     
+            return (Math.pow(profitPtg, 1/years) - 1)
+        },
+
+        // 计算最大回撤
+        _getMaxDrawdown(valueLine, firstDate){
+            var maxValue = null
+            var mdd = 0
+            for(let date in valueLine){
+                if (date >= firstDate ){
+                    if (maxValue === null || valueLine[date] > maxValue){
+                        maxValue = valueLine[date]
+                    }
+                    var dd = 1 - valueLine[date]/maxValue
+                    if (dd > mdd){
+                        mdd = dd
+                    }
+                }
+            }
+            return mdd
         },
 
 

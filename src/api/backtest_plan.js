@@ -32,6 +32,20 @@ export function getBacktestPlanById(host=null, id, fields=null) {
   return request(req_obj)
 }
 
+export function getBacktestPlanByName(host=null, name, fields=null) {
+  var url = '/backtest-plans/?name=' + name
+  if (fields != null){
+      // 指定fields
+      url += '&fields=' + fields
+    }
+  var req_obj = {
+    url: url,
+    method: 'get'
+  }
+  if (host) { req_obj['baseURL'] = host }
+  return request(req_obj)
+}
+
 export function createBacktestPlan(host=nul, data) {
   var req_obj = {
     url: '/create_backtest_plan/',

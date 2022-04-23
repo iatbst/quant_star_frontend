@@ -6,6 +6,7 @@
         <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
             <summary-table 
             v-bind:summary-datas="[pfoMasterDatas, subaccountDatas, pfoDatas]" 
+            v-bind:live-rets="liveRets"
             v-if="pfoMasterDatasAvailable && subaccountDatasAvailable && pfoDatasAvailable" 
             style="margin-bottom: 20px">
             </summary-table>
@@ -28,8 +29,9 @@
       <el-col :span="16">
           <div style="margin-bottom: 20px">
             <value-line 
-            v-bind:pfo-datas="pfoMasterDatas" 
-            v-if="pfoMasterDatasAvailable" 
+            v-bind:values="totalBalanceValues" 
+            v-bind:title="liveValueName"
+            v-if="totalBalanceValuesAvailable" 
             style="margin-bottom: 20px">
             </value-line>
           </div>
@@ -45,6 +47,31 @@
           </div>
       </el-col>
     </el-row> 
+
+    <!---------------------------------- Benchbark 回测比较 ----------------------------------->
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+      <el-col :span="16">
+          <div style="margin-bottom: 20px">
+            <value-line 
+            v-bind:values="backtest2Rets.value_line" 
+            v-bind:title="btValueName"
+            v-if="backtest2RetsAvailable" 
+            style="margin-bottom: 20px">
+            </value-line>
+          </div>
+      </el-col>
+
+      <el-col :span="8">
+          <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
+            <live-backtest-stats
+            v-bind:live-backtest-stat-datas="liveBacktestStatDatas" 
+            v-bind:live-rets="liveRets"
+            v-if="liveRets.available && backtest1RetsAvailable && backtest2RetsAvailable" 
+            style="margin-bottom: 20px">
+            </live-backtest-stats>
+          </div>
+      </el-col>
+    </el-row> 
   </div>
 </template>
 
@@ -54,6 +81,7 @@ import summaryTable from '@/views/dashboard/v2/summary_table'
 import valueLine from '@/views/balance/_value_line'
 import strategyLevelPositions from '@/views/position/_strategy_level_positions'
 import exchangeBalanceDistributions from '@/views/balance/_exchange_balance_distributions'
+import liveBacktestStats from '@/views/dashboard/v2/live_backtest_stats'
 
 import totalBalance from '@/views/balance/total_balance'
 import pfoBalances from '@/views/balance/pfo_balances'
@@ -70,6 +98,9 @@ import { getPortfolioDatas } from '@/api/portfolio'
 import { getSubAccountDatas} from '@/api/subaccount'
 import { getDelegateWorkerDatas } from '@/api/worker'
 import { getPositions } from '@/api/position'
+import { getBacktestPlanByName } from '@/api/backtest_plan'
+import { getBacktestReportById } from '@/api/backtest_report'
+
 
 export default {
     components: {
@@ -81,7 +112,7 @@ export default {
 
         exchangeBalanceDistributions,
 
-
+        liveBacktestStats,
 
 
         totalBalance,
@@ -109,6 +140,8 @@ export default {
 
             pfoMasterDatas: [],     
             pfoMasterDatasAvailable: false,
+            totalBalanceValues: {},
+            totalBalanceValuesAvailable: false,
 
             subaccountDatas: [],
             subaccountDatasAvailable: false,
@@ -118,7 +151,50 @@ export default {
             positions: [],
             positionsAvailable: false,
             positionsLoading: false,
-            
+
+            liveValueName: '实盘资金',
+            btValueName: '15币回测资金',
+
+            backtest1Rets: {},  // top15-3y
+            backtest1RetsAvailable: false,
+            backtest2Rets: {},  // top15-6m
+            backtest2RetsAvailable: false,
+            liveRets: {
+                available: false,
+                annualReturn: null,
+                maxDrawdown: null,
+                countPerSymbol: null,
+                winRatio: null,
+                plRatio: null,
+            },
+
+            liveBacktestStatDatas: [{
+                stats: '年化收益率',
+                live: null,
+                btShortTerm: null,
+                btLongTerm: null
+            },{
+                stats: '最大回撤',
+                live: null,
+                btShortTerm: null,
+                btLongTerm: null              
+            },{
+                stats: '交易次数/币',
+                live: null,
+                btShortTerm: null,
+                btLongTerm: null                  
+            },{
+                stats: '胜率',
+                live: null,
+                btShortTerm: null,
+                btLongTerm: null                  
+            },{
+                stats: '盈亏比',
+                live: null,
+                btShortTerm: null,
+                btLongTerm: null                  
+            }],
+
             refreshInterval: 300000,
             intervalId: null
         }
@@ -140,12 +216,57 @@ export default {
 
             // 获取Subaccount Datas (Master)
             this.fetchSubAccountDatas()
+
+            // 获取Benchmark 回测数据 (Backtest)
+            this.fetchBacktestDatas()
             
             // 获取WorkerDatas (Pfo)
             // this.fetchDelegateWorkerDatas()
 
             // 获取Positions (Pfo)
             // this.fetchPositions()
+        },
+
+        // 从Backtest获取benchmark回测数据
+        fetchBacktestDatas(){
+            var btSymbols = 15
+            // pr策略_top15币种_6月
+            var planName = 'pr_top15_6m_backtest'
+            this.backtest1RetsAvailable = false
+            getBacktestPlanByName(config.backtestHost, planName).then(response => {
+                var plan = response.results[0]
+                getBacktestReportById(config.backtestHost, plan.latest_report_id).then(response => {
+                    var report = response.results[0]
+                    this.backtest1Rets = report.analyzer_rets
+                    
+                    this.liveBacktestStatDatas[0].btShortTerm = (this.backtest1Rets.value.annual_return*100).toFixed(2) + '%'
+                    this.liveBacktestStatDatas[1].btShortTerm = (this.backtest1Rets.drawdown.max_drawdown*100).toFixed(2) + '%'
+                    this.liveBacktestStatDatas[2].btShortTerm = (this.backtest1Rets.trade_stats.count/btSymbols).toFixed(0)
+                    this.liveBacktestStatDatas[3].btShortTerm = (this.backtest1Rets.trade_stats.win_ratio*100).toFixed(2) + '%'
+                    this.liveBacktestStatDatas[4].btShortTerm = (Math.abs(this.backtest1Rets.trade_stats.win_avg_pnl_ptg/this.backtest1Rets.trade_stats.lose_avg_pnl_ptg)).toFixed(2)
+
+                    this.backtest1RetsAvailable = true
+                })
+            })
+
+            // pr策略_top15币种_3年
+            var planName = 'pr_top15_3y_backtest'
+            getBacktestPlanByName(config.backtestHost, planName).then(response => {
+                var plan = response.results[0]
+                this.backtest2RetsAvailable = false
+                getBacktestReportById(config.backtestHost, plan.latest_report_id).then(response => {
+                    var report = response.results[0]
+                    this.backtest2Rets = report.analyzer_rets
+
+                    this.liveBacktestStatDatas[0].btLongTerm = (this.backtest2Rets.value.annual_return*100).toFixed(2) + '%'
+                    this.liveBacktestStatDatas[1].btLongTerm = (this.backtest2Rets.drawdown.max_drawdown*100).toFixed() + '%'
+                    this.liveBacktestStatDatas[2].btLongTerm = (this.backtest2Rets.trade_stats.count/btSymbols).toFixed(0)
+                    this.liveBacktestStatDatas[3].btLongTerm = (this.backtest2Rets.trade_stats.win_ratio*100).toFixed(2) + '%'
+                    this.liveBacktestStatDatas[4].btLongTerm = (Math.abs(this.backtest2Rets.trade_stats.win_avg_pnl_ptg/this.backtest2Rets.trade_stats.lose_avg_pnl_ptg)).toFixed(2)
+
+                    this.backtest2RetsAvailable = true
+                })
+            })
         },
 
         // 从Pfo获取所有pfo data
@@ -171,12 +292,17 @@ export default {
             this.pfoMasterDatas = []
             getPortfolioDatas(config.masterHost, 'portfolio,wallet,positions').then(response => {
                     this.pfoMasterDatas = response.results
-                    this.pfoMasterDatasAvailable = true
                     // 排序
                     for(var i = 0; i < this.pfoMasterDatas.length; i++){
                         this.pfoMasterDatas[i]['sort_id'] = config.pfoSortWeights[this.pfoMasterDatas[i].portfolio.name]
+                        if (this.pfoMasterDatas[i].portfolio.name === config.cryptoParentPfo){
+                            // Parent Pfo
+                            this.totalBalanceValues = this.pfoMasterDatas[i].wallet.history_values
+                            this.totalBalanceValuesAvailable = true
+                        }
                     }
-                    this.pfoMasterDatas.sort((a, b) => a.sort_id - b.sort_id)                   
+                    this.pfoMasterDatas.sort((a, b) => a.sort_id - b.sort_id)    
+                    this.pfoMasterDatasAvailable = true               
                 }
             )
         },

@@ -59,7 +59,7 @@
         <position-map 
         v-bind:positions="positions" 
         v-bind:positions-loading="positionsLoading"
-        
+        v-bind:product-volumes="productVolumes"
         ></position-map> 
     </div>
   </div>
@@ -83,6 +83,7 @@ import { getPortfolioDatas } from '@/api/portfolio'
 import { getSubAccountDatas} from '@/api/subaccount'
 import { getDelegateWorkerDatas } from '@/api/worker'
 import { getPositions } from '@/api/position'
+import { getProductDatas } from '@/api/product'
 
 export default {
     components: {
@@ -121,6 +122,9 @@ export default {
             positions: [],
             positionsAvailable: false,
             positionsLoading: false,
+
+            productVolumes: {},
+            productVolumesAvailable: false,
             
             refreshInterval: 300000,
             intervalId: null
@@ -149,7 +153,33 @@ export default {
 
             // 获取Positions (Pfo)
             this.fetchPositions()
+
+            // 获取Product Volumes (Pfo)
+            this.fetchProductVolumes()
         },
+
+        // 从Pfo获取所有的volume data
+        fetchProductVolumes(){
+            this.productVolumes = {}
+            var productVolumesCount = 0
+            this.productVolumesAvailable = false
+            for(var i = 0; i < this.pfoHosts.length; i++){
+                getProductDatas(this.pfoHosts[i], 'product,volumes').then(response => {
+                        for(var i=0; i < response.results.length; i++){
+                            var key = response.results[i].product.name.slice(1).join('_')   // 转化为: exchange_sub-type_symbol形式， eg binance_swap_btc/usdt
+                            this.productVolumes[key] = response.results[i].volumes.volume_weight
+                        }
+                        productVolumesCount += 1
+                        if (productVolumesCount === this.pfoHosts.length ){
+                            this.productVolumesAvailable = true
+                            if (this.positionsAvailable) {
+                               this.positionsLoading = false 
+                            }
+                        }
+                    }
+                )
+            }
+        },            
 
         // 从Pfo获取所有pfo data
         fetchPfoDatas() {
@@ -199,6 +229,7 @@ export default {
             this.positions = []
             var count = 0
             this.positionsLoading = true
+            this.positionsAvailable = false
             for(var i = 0; i < this.pfoHosts.length; i++){
                 getPositions(this.pfoHosts[i], 'normal').then(response => {
                         count += 1
@@ -212,7 +243,9 @@ export default {
                             // 排序
                             // this.positions.sort((a, b) => a.worker - b.worker)
                             this.positionsAvailable = true
-                            this.positionsLoading = false
+                            if (this.productVolumesAvailable){
+                               this.positionsLoading = false 
+                            }
                         }
                     }
                 )
