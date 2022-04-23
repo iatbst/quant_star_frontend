@@ -25,7 +25,7 @@
 
                     <el-table-column align="center" prop="name"  label="交易所">
                         <template slot-scope="scope">
-                            {{ scope.row.split('_')[0].toUpperCase()  }}
+                            {{ scope.row.split('_')[0] }}
                         </template>
                     </el-table-column>
 

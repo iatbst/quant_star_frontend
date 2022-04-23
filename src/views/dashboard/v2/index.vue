@@ -72,6 +72,16 @@
           </div>
       </el-col>
     </el-row> 
+
+    <!----------------------------------- 仓位 --------------------------------------->
+    <div style="background-color: white; margin-bottom: 20px; margin-top: 20px">
+        <!-- 仓位详情 -->
+        <position-map 
+        v-bind:positions="positions" 
+        v-bind:positions-loading="positionsLoading"
+        v-bind:product-volumes="productVolumes"
+        ></position-map> 
+    </div>
   </div>
 </template>
 
@@ -82,6 +92,7 @@ import valueLine from '@/views/balance/_value_line'
 import strategyLevelPositions from '@/views/position/_strategy_level_positions'
 import exchangeBalanceDistributions from '@/views/balance/_exchange_balance_distributions'
 import liveBacktestStats from '@/views/dashboard/v2/live_backtest_stats'
+import positionMap from '@/views/position/position_map'
 
 import totalBalance from '@/views/balance/total_balance'
 import pfoBalances from '@/views/balance/pfo_balances'
@@ -91,7 +102,6 @@ import positionRanks from '@/views/position/position_ranks'
 import totalPerf from '@/views/performance/total_perf'
 import pfoPerfs from '@/views/performance/pfo_perfs'
 import profitRanks from '@/views/performance/profit_ranks'
-import positionMap from '@/views/position/position_map'
 
 import config from '@/configs/system_configs'
 import { getPortfolioDatas } from '@/api/portfolio' 
@@ -100,6 +110,7 @@ import { getDelegateWorkerDatas } from '@/api/worker'
 import { getPositions } from '@/api/position'
 import { getBacktestPlanByName } from '@/api/backtest_plan'
 import { getBacktestReportById } from '@/api/backtest_report'
+import { getProductDatas } from '@/api/product'
 
 
 export default {
@@ -151,6 +162,9 @@ export default {
             positions: [],
             positionsAvailable: false,
             positionsLoading: false,
+
+            productVolumes: {},
+            productVolumesAvailable: false,
 
             liveValueName: '实盘资金',
             btValueName: '15币回测资金',
@@ -220,11 +234,11 @@ export default {
             // 获取Benchmark 回测数据 (Backtest)
             this.fetchBacktestDatas()
             
-            // 获取WorkerDatas (Pfo)
-            // this.fetchDelegateWorkerDatas()
-
             // 获取Positions (Pfo)
-            // this.fetchPositions()
+            this.fetchPositions()
+
+            // 获取Product Volumes (Pfo)
+            this.fetchProductVolumes()
         },
 
         // 从Backtest获取benchmark回测数据
@@ -322,6 +336,7 @@ export default {
             this.positions = []
             var count = 0
             this.positionsLoading = true
+            this.positionsAvailable = false
             for(var i = 0; i < this.pfoHosts.length; i++){
                 getPositions(this.pfoHosts[i], 'normal').then(response => {
                         count += 1
@@ -333,14 +348,38 @@ export default {
                         this.positions = this.positions.concat(pfoPositions)
                         if (count === this.pfoHosts.length ){
                             // 排序
-                            // this.positions.sort((a, b) => a.worker - b.worker)
                             this.positionsAvailable = true
-                            this.positionsLoading = false
+                            if (this.productVolumesAvailable){
+                               this.positionsLoading = false 
+                            }
                         }
                     }
                 )
             }
         },
+
+        // 从Pfo获取所有的volume data
+        fetchProductVolumes(){
+            this.productVolumes = {}
+            var productVolumesCount = 0
+            this.productVolumesAvailable = false
+            for(var i = 0; i < this.pfoHosts.length; i++){
+                getProductDatas(this.pfoHosts[i], 'product,volumes').then(response => {
+                        for(var i=0; i < response.results.length; i++){
+                            var key = response.results[i].product.name.split('_').slice(1, 4).join('_')   // 转化为: exchange_sub-type_symbol形式， eg binance_swap_btc/usdt
+                            this.productVolumes[key] = response.results[i].volumes.volume_weight
+                        }
+                        productVolumesCount += 1
+                        if (productVolumesCount === this.pfoHosts.length ){
+                            this.productVolumesAvailable = true
+                            if (this.positionsAvailable) {
+                               this.positionsLoading = false 
+                            }
+                        }
+                    }
+                )
+            }
+        },   
 
         // 从Pfo获取所有 delegate worker performance data
         fetchDelegateWorkerDatas() {

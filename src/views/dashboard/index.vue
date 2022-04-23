@@ -166,7 +166,7 @@ export default {
             for(var i = 0; i < this.pfoHosts.length; i++){
                 getProductDatas(this.pfoHosts[i], 'product,volumes').then(response => {
                         for(var i=0; i < response.results.length; i++){
-                            var key = response.results[i].product.name.slice(1).join('_')   // 转化为: exchange_sub-type_symbol形式， eg binance_swap_btc/usdt
+                            var key = response.results[i].product.name.split('_').slice(1, 4).join('_')   // 转化为: exchange_sub-type_symbol形式， eg binance_swap_btc/usdt
                             this.productVolumes[key] = response.results[i].volumes.volume_weight
                         }
                         productVolumesCount += 1
