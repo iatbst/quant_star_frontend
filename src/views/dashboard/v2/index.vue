@@ -56,6 +56,7 @@
             v-bind:values="backtest2Rets.value_line" 
             v-bind:title="btValueName"
             v-bind:y-type="btValueLineType"
+            v-bind:range="btValueLineRange"
             v-if="backtest2RetsAvailable" 
             style="margin-bottom: 20px">
             </value-line>
@@ -171,6 +172,7 @@ export default {
             btValueName: '15币回测资金',
 
             btValueLineType: 'logarithmic',
+            btValueLineRange: 'all',
 
             backtest1Rets: {},  // top15-3y
             backtest1RetsAvailable: false,
