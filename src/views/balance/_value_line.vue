@@ -5,23 +5,26 @@
             <!-- 曲线 -->
             <highcharts :options="totalBalanceOptions" style="margin-top: 20px"></highcharts>
             <div align="center" style="margin-bottom: 20px">
-                <el-button style="margin-left: 0px" type="info" size="mini"  @click="parseData()">
+                <el-button style="margin-left: 0px" type="info" size="mini"  @click="parseData()" plain>
                     全部
                 </el-button> 
-                <el-button type="info" size="mini"  @click="parseData('thisYear')">
+                <el-button type="info" size="mini"  @click="parseData('thisYear')" plain>
                     今年
                 </el-button> 
-                <el-button type="info" size="mini"  @click="parseData('6M')">
+                <el-button type="info" size="mini"  @click="parseData('6M')" plain>
                     6个月
                 </el-button>   
-                <el-button type="info" size="mini"  @click="parseData('12M')">
+                <el-button type="info" size="mini"  @click="parseData('12M')" plain>
                     12个月
                 </el-button>  
-                <el-button type="info" size="mini"  @click="parseData('2Y')">
+                <el-button type="info" size="mini"  @click="parseData('2Y')" plain>
                     2年
                 </el-button>  
-                <el-button type="info" size="mini"  @click="parseData('3Y')">
+                <el-button type="info" size="mini"  @click="parseData('3Y')" plain>
                     3年
+                </el-button>  
+                <el-button type="info" size="mini"  @click.native="switchLineType()" plain>
+                    对数坐标
                 </el-button>  
             </div>       
         </el-col>
@@ -48,6 +51,10 @@ export default {
         title: {
             type: String,
             default: ''
+        },
+        yType: {
+            type: String,
+            default: ''
         }
     },
 
@@ -62,6 +69,8 @@ export default {
     
     data() {
         return {
+            currentType: '',
+
             // 总资产曲线图
             totalBalanceOptions: {
                 chart: {
@@ -75,6 +84,7 @@ export default {
                     categories: []
                 },
                 yAxis: {
+                    type: this.yType,
                     title: {
                         text: '美元'
                     }
@@ -102,6 +112,7 @@ export default {
 
     created() {
         // 分析Data
+        this.currentType = this.yType
         this.parseData('6M')
     },
 
@@ -116,6 +127,16 @@ export default {
             //         addSingleLine('总资金', this.filterDates(this.pfoDatas[i].wallet.history_values, range), this.totalBalanceOptions)
             //     }               
             // }
+        },
+
+        switchLineType(){
+            if (this.totalBalanceOptions.yAxis.type === ''){
+                this.totalBalanceOptions.yAxis.type = 'logarithmic'
+                this.$set('type', 'success')
+            } else {
+                this.totalBalanceOptions.yAxis.type = ''
+                this.$set('type', 'info')
+            }
         },
 
         filterDates(history_values, range){
