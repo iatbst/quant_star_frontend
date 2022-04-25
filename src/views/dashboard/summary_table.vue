@@ -573,11 +573,14 @@ export default {
                 var usdt_symbols = true
                 var position = 0
                 for(let key in this.subaccountDatas[i].positions.summary){
-                    var pos = this.subaccountDatas[i].positions.summary[key]
-                    positions[key] += pos
-                    position += pos
-                    if (key.indexOf('btc') != -1){
-                        usdt_symbols = false
+                    if (positions.hasOwnProperty(key)){
+                        // 只统计usdt_long, usdt_short, btc_long, btc_short
+                        var pos = this.subaccountDatas[i].positions.summary[key]
+                        positions[key] += pos
+                        position += pos
+                        if (key.indexOf('btc') != -1){
+                            usdt_symbols = false
+                        }                        
                     }
                 }
                 // 区分usdt交易资产和btc交易资产
