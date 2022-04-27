@@ -44,6 +44,15 @@ export function formatTimestamp(ts) {
     }
 }
 
+// utc时间戳转化为本地时间戳
+export function utcToLocalTimestamp(utcTs) {
+    if (utcTs[utcTs.length - 1] !== 'Z'){
+        utcTs = utcTs + 'Z'
+    }
+    const stillUtc = new Date(utcTs)
+    return moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss')
+}
+
 // 简化时间戳(2022-01-12T06:20:39.626186 -> 2022-01-12 06:20:39)
 export function standardTimestamp(ts){
     if(ts){
@@ -80,6 +89,22 @@ export function thousandsToInt(str) {
 export function countDecimals(value) {
     if(Math.floor(value) === value) return 0;
     return value.toString().split(".")[1].length || 0; 
+}
+
+// 自定义版本toFiexed: 
+// - value >= 1: 返回小数点后dec位
+// - value < 1: 返回dec位有效的数字(不包括0) eg, dec=2, 0.000000168 -> 0.00000017
+export function toFixed(value, dec){
+    if (value >= 1){
+        // 3.13159 -> 3.13
+        return Number(value.toFixed(dec))
+    } else {
+        for(let i =0; i < 15; i++){
+            if (Number(value.toFixed(i+1)) != 0){
+                return Number(value.toFixed(i+dec))
+            }
+        }
+    }
 }
 
 // 如果quote是usd的稳定币, 转为USD(eg, USDT )

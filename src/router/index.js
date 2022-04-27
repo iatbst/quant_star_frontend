@@ -219,6 +219,12 @@ export const constantRoutes = [
         meta: { title: '警告交易', icon: 'el-icon-warning-outline' },
       },
       {
+        path: 'snapshot',
+        name: '系统快照',
+        component: () => import('@/views/monitor/snapshot/index'),
+        meta: { title: '系统快照', icon: 'el-icon-camera' }
+      },
+      {
         path: 'unchecked_error',
         component: () => import('@/views/monitor/signal_point/unchecked_error'),
         name: 'Unchecked_Error',
