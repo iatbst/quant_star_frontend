@@ -99,9 +99,10 @@ export function toFixed(value, dec){
         // 3.13159 -> 3.13
         return Number(value.toFixed(dec))
     } else {
+        var offset = 2  // 小于1的数字额外多显示几位
         for(let i =0; i < 15; i++){
             if (Number(value.toFixed(i+1)) != 0){
-                return Number(value.toFixed(i+dec))
+                return Number(value.toFixed(i+dec+offset))
             }
         }
     }

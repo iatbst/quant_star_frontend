@@ -2,28 +2,30 @@
   <div class="app-container" style="background-color: lightgray" align="center">
     <!----------------------------------- 查询Bar --------------------------------------->
     <div style="background-color: white; margin-bottom: 20px;">
-        <el-row style="margin-top: 20px">
-            <el-col :span="7">
-                <el-date-picker
-                style="margin-top: 50px; margin-left: 7px"
-                v-model="datetimeRange"
-                type="datetimerange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期">
-                </el-date-picker>
-            </el-col>
+        <div>
+            <el-row style="margin-top: 20px">
+                <el-col :span="7">
+                    <el-date-picker
+                    style="margin-top: 50px; margin-left: 7px"
+                    v-model="datetimeRange"
+                    type="datetimerange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
+                    </el-date-picker>
+                </el-col>
 
-            <el-col :span="6">
-                <el-row style="margin-top: 50px">
-                    <el-col :span="10" :offset="2">
-                        <el-button style="width: 100%" type="primary" @click="searchSnapshots()">
-                            查询
-                        </el-button>                             
-                    </el-col>
-                </el-row>
-            </el-col>
-        </el-row>
+                <el-col :span="6">
+                    <el-row style="margin-top: 50px">
+                        <el-col :span="10" :offset="2">
+                            <el-button style="width: 100%" type="primary" @click="searchSnapshots()">
+                                查询
+                            </el-button>                             
+                        </el-col>
+                    </el-row>
+                </el-col>
+            </el-row>
+        </div>
         
 
         <div style="margin-top: 50px; margin-left: 50px; margin-right: 50px">
@@ -102,64 +104,10 @@
             </el-table> 
         </div>
 
-        <div style="margin-top: 50px; margin-left: 50px; margin-right: 50px">
-            <!----------------------------------- 快照仓位对比详情 --------------------------------------->
-            <el-table
-            :data="snapshotSymbolPositionRows"
-            :header-cell-style="{background: '#e5e9f2'}"
-            v-loading="snapshotSymbolPositionsLoading"
-            >
-                <el-table-column align="center" label="标的" min-width="20%">
-                    <template slot-scope="scope">
-                        {{ scope.row.symbol }}
-                    </template>
-                </el-table-column>
-
-                <el-table-column align="center" label="开始仓位($)" min-width="20%">
-                    <template slot-scope="scope">
-                         <span style="color: green" v-if="scope.row.start >= 0">
-                            {{ toThousands(parseInt(scope.row.start)) }}
-                        </span>
-                        <span style="color: red" v-else>
-                            {{ toThousands(parseInt(scope.row.start)) }}
-                        </span>
-                    </template>
-                </el-table-column>
-
-                <el-table-column align="center" label="结束仓位($)" min-width="20%">
-                    <template slot-scope="scope">
-                         <span style="color: green" v-if="scope.row.end >= 0">
-                            {{ toThousands(parseInt(scope.row.end)) }}
-                        </span>
-                        <span style="color: red" v-else>
-                            {{ toThousands(parseInt(scope.row.end)) }}
-                        </span>
-                    </template>
-                </el-table-column>
-
-                <el-table-column align="center" label="仓位变化($)" min-width="20%">
-                    <template slot-scope="scope">
-                         <span style="color: green" v-if="scope.row.diff >= 0">
-                            {{ toThousands(parseInt(scope.row.diff)) }}
-                        </span>
-                        <span style="color: red" v-else>
-                            {{ toThousands(parseInt(scope.row.diff)) }}
-                        </span>
-                    </template>
-                </el-table-column>
-            </el-table> 
-            <div align="left" style="margin-top: 10px" v-if="allSymbolPositionsButton & snapshotSymbolPositionRows.length > 0">
-                <el-button size="mini" type="primary" @click="showAllSymbolPositions()">显示全部仓位</el-button>
-            </div>
-            <div align="left" style="margin-top: 10px" v-if="topSymbolPositionsButton & snapshotSymbolPositionRows.length > 0">
-                <el-button size="mini" type="primary" @click="showTopSymbolPositions()">显示前10仓位</el-button>
-            </div>
-        </div>
-
         <div style="margin-top: 50px; margin-left: 50px; margin-right: 50px; margin-bottom: 20px">
             <!----------------------------------- 订单详情 --------------------------------------->
             <el-table
-            :data="orders"
+            :data="orderRows"
             :header-cell-style="{background: '#e5e9f2'}"
             v-loading="ordersLoading"
             >
@@ -216,15 +164,98 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column align="center" label="价格" min-width="20%">
+                <el-table-column align="center" label="期望价格" min-width="20%">
+                    <template slot-scope="scope">
+                        {{ toFixed(scope.row.price, 2) }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="成交均价" min-width="20%">
                     <template slot-scope="scope">
                         {{ toFixed(scope.row.exec_avg_price, 2) }}
                     </template>
                 </el-table-column>
 
+                <el-table-column align="center" label="滑点" min-width="20%">
+                    <template slot-scope="scope">
+                        <div v-if="scope.row.slippage !== null">
+                            <span style="color: red" v-if="scope.row.slippage < 0">
+                            {{ (scope.row.slippage*100).toFixed(2) }}%
+                            </span>
+                            <span style="color: green" v-else>
+                            {{ (scope.row.slippage*100).toFixed(2) }}%
+                            </span>
+                        </div>
+                    </template>
+                </el-table-column>
             </el-table> 
+            <div align="left" style="margin-top: 10px" v-if="allOrdersButton & orderRows.length > 0">
+                <el-button size="mini" type="primary" @click="showAllOrders()">显示全部订单</el-button>
+            </div>
+            <div align="left" style="margin-top: 10px" v-if="latestOrdersButton & orderRows.length > 0">
+                <el-button size="mini" type="primary" @click="showLatestOrders()">显示最近订单</el-button>
+            </div>
         </div>
 
+       <div style="margin-top: 50px; margin-left: 50px; margin-right: 50px; margin-bottom: 20px">
+            <!----------------------------------- 快照仓位对比详情 --------------------------------------->
+            <el-table
+            :data="snapshotSymbolPositionRows"
+            :header-cell-style="{background: '#e5e9f2'}"
+            v-loading="snapshotSymbolPositionsLoading"
+            >
+                <el-table-column align="center" label="标的" min-width="20%">
+                    <template slot-scope="scope">
+                        {{ scope.row.symbol }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="开始仓位($)" min-width="20%">
+                    <template slot-scope="scope">
+                         <span style="color: green" v-if="scope.row.start >= 0">
+                            {{ toThousands(parseInt(scope.row.start)) }}
+                        </span>
+                        <span style="color: red" v-else>
+                            {{ toThousands(parseInt(scope.row.start)) }}
+                        </span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="结束仓位($)" min-width="20%">
+                    <template slot-scope="scope">
+                         <span style="color: green" v-if="scope.row.end >= 0">
+                            {{ toThousands(parseInt(scope.row.end)) }}
+                        </span>
+                        <span style="color: red" v-else>
+                            {{ toThousands(parseInt(scope.row.end)) }}
+                        </span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="仓位变化($)" min-width="20%">
+                    <template slot-scope="scope">
+                         <span style="color: green" v-if="scope.row.diff >= 0">
+                            {{ toThousands(parseInt(scope.row.diff)) }}
+                        </span>
+                        <span style="color: red" v-else>
+                            {{ toThousands(parseInt(scope.row.diff)) }}
+                        </span>
+                    </template>
+                </el-table-column>
+            </el-table> 
+            <div align="left" style="margin-top: 10px;" v-if="allSymbolPositionsButton & snapshotSymbolPositionRows.length > 0">
+                <el-button size="mini" type="primary" @click="showAllSymbolPositions()">显示全部仓位</el-button>
+            </div>
+            <div align="left" style="margin-top: 10px;" v-if="topSymbolPositionsButton & snapshotSymbolPositionRows.length > 0">
+                <el-button size="mini" type="primary" @click="showTopSymbolPositions()">显示主流仓位</el-button>
+            </div>
+        </div>
+
+        <!-- 保持底部20px margin ! -->
+        <div>
+            <el-row style="margin-top: 20px">
+            </el-row>
+        </div>
     </div>
   </div>
 </template>
@@ -248,13 +279,29 @@ export default {
             datetimeRange: [],
             snapshotSummary: [],
             orders: [],
+            orderRows: [],
             snapshotSymbolPositions: [],
+            topSymbols: new Set([
+                'BTC/USDT',
+                'ETH/USDT',
+                'LTC/USDT',
+                'EOS/USDT',
+                'ETC/USDT',
+                'XRP/USDT',
+                'TRX/USDT',
+                'ADA/USDT',
+                'BCH/USDT',
+                'BNB/USDT',
+            ]),
+            snapshotTopSymbolPositions: [],
             snapshotSymbolPositionRows: [],
             allSymbolPositionsButton: true,
             topSymbolPositionsButton: false,
             snapshotSummaryLoading: false,
             snapshotSymbolPositionsLoading: false,
             ordersLoading: false,
+            allOrdersButton: true,
+            latestOrdersButton: false,
 
             snapshotStart: null,
             snapshotEnd: null,
@@ -275,7 +322,8 @@ export default {
                 this.snapshotSymbolPositions = []
                 this.snapshotSymbolPositionRows = []
                 this.orders = []
-                this.orders = true
+                this.orderRows = []
+                this.ordersLoading = true
                 this.snapshotSummaryLoading = true
                 this.snapshotSymbolPositionsLoading = true
                 var startDt = this.datetimeRange[0].toISOString().slice(0, 19).replace('T', ' ')    // UTC
@@ -333,8 +381,9 @@ export default {
                                         })
                                     }
                                 }
-                                this.snapshotSymbolPositions.sort((a, b) => Math.abs(Number(b.start)) - Math.abs(Number(a.start)))  // 排序: 大仓位在前
-                                this.snapshotSymbolPositionRows = this.snapshotSymbolPositions.slice(0, 10)
+                                this.snapshotSymbolPositions.sort((a, b) => a.symbol.localeCompare(b.symbol))  // 排序: 字母顺序
+                                this.snapshotTopSymbolPositions = this.snapshotSymbolPositions.filter(this.topSymbolsFilter)
+                                this.snapshotSymbolPositionRows = this.snapshotTopSymbolPositions
                                 this.snapshotSummaryLoading = false
                                 this.snapshotSymbolPositionsLoading = false   
                                 
@@ -351,9 +400,28 @@ export default {
             }
         },
 
+        topSymbolsFilter(st){
+            return this.topSymbols.has(st.symbol)
+        },
+
+        // 计算order的滑点
+        calSlippage(order){
+            if (order.price != null && order.exec_avg_price != null){
+                if (order.side === 'buy'){
+                    return (order.price - order.exec_avg_price)/order.price
+                } else {
+                    return (order.exec_avg_price - order.price)/order.price
+                }
+            } else {
+                // 不可计算滑点
+                return null
+            }
+        },
+
         // 搜索指定时间范围内的订单
         searchOrders(startDt, endDt){
             this.orders = []
+            this.orderRows = []
             this.ordersLoading = true
             var count = 0
             for(var i = 0; i < this.pfoHosts.length; i++){
@@ -363,12 +431,28 @@ export default {
                         this.orders = this.orders.concat(response.results)
                         if (count === this.pfoHosts.length ){
                             // 排序
-                            this.orders.sort((a, b) => a.created_ts - b.created_ts)
+                            this.orders.sort((a, b) => b.created_ts.localeCompare(a.created_ts))
+                            for(let i =0; i < this.orders.length; i++){
+                                this.orders[i]['slippage'] = this.calSlippage(this.orders[i])
+                            }
+                            this.orderRows = this.orders.slice(0, 10)   // 默认显示最近10笔交易
                             this.ordersLoading = false
                         }
                     }
                 )
             }
+        },
+
+        showAllOrders(){
+            this.allOrdersButton = false
+            this.latestOrdersButton = true
+            this.orderRows = this.orders
+        },
+
+        showLatestOrders(){
+            this.allOrdersButton = true
+            this.latestOrdersButton = false
+            this.orderRows = this.orders.slice(0, 10)
         },
 
         showAllSymbolPositions(){
@@ -380,7 +464,7 @@ export default {
         showTopSymbolPositions(){
             this.allSymbolPositionsButton = true
             this.topSymbolPositionsButton = false
-            this.snapshotSymbolPositionRows = this.snapshotSymbolPositions.slice(0, 10)
+            this.snapshotSymbolPositionRows = this.snapshotTopSymbolPositions
         },
 
         utcToLocalTimestamp: utcToLocalTimestamp,
