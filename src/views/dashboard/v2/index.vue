@@ -259,7 +259,7 @@ export default {
                     this.backtest1Rets = report.analyzer_rets
                     
                     this.liveBacktestStatDatas[0].btShortTerm = (this.backtest1Rets.value.annual_return*100).toFixed(2) + '%'
-                    this.liveBacktestStatDatas[1].btShortTerm = (this.backtest1Rets.drawdown.max_drawdown*100).toFixed(2) + '%'
+                    this.liveBacktestStatDatas[1].btShortTerm = (this.backtest1Rets.drawdown.top1*100).toFixed(2) + '%'
                     this.liveBacktestStatDatas[2].btShortTerm = (this.backtest1Rets.trade_stats.count/btSymbols).toFixed(0)
                     this.liveBacktestStatDatas[3].btShortTerm = (this.backtest1Rets.trade_stats.win_ratio*100).toFixed(2) + '%'
                     this.liveBacktestStatDatas[4].btShortTerm = (Math.abs(this.backtest1Rets.trade_stats.win_avg_pnl_ptg/this.backtest1Rets.trade_stats.lose_avg_pnl_ptg)).toFixed(2)
@@ -278,7 +278,7 @@ export default {
                     this.backtest2Rets = report.analyzer_rets
 
                     this.liveBacktestStatDatas[0].btLongTerm = (this.backtest2Rets.value.annual_return*100).toFixed(2) + '%'
-                    this.liveBacktestStatDatas[1].btLongTerm = (this.backtest2Rets.drawdown.max_drawdown*100).toFixed() + '%'
+                    this.liveBacktestStatDatas[1].btLongTerm = (this.backtest2Rets.drawdown.top1*100).toFixed() + '%'
                     this.liveBacktestStatDatas[2].btLongTerm = (this.backtest2Rets.trade_stats.count/btSymbols).toFixed(0)
                     this.liveBacktestStatDatas[3].btLongTerm = (this.backtest2Rets.trade_stats.win_ratio*100).toFixed(2) + '%'
                     this.liveBacktestStatDatas[4].btLongTerm = (Math.abs(this.backtest2Rets.trade_stats.win_avg_pnl_ptg/this.backtest2Rets.trade_stats.lose_avg_pnl_ptg)).toFixed(2)
