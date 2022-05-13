@@ -113,6 +113,7 @@ import { getPositions } from '@/api/position'
 import { getBacktestPlanByName } from '@/api/backtest_plan'
 import { getBacktestReportById } from '@/api/backtest_report'
 import { getProductDatas } from '@/api/product'
+import { getAnnualReturn, getMaxDrawdown} from '@/utils/general'
 
 
 export default {
@@ -258,8 +259,9 @@ export default {
                     var report = response.results[0]
                     this.backtest1Rets = report.analyzer_rets
                     
-                    this.liveBacktestStatDatas[0].btShortTerm = (this.backtest1Rets.value.annual_return*100).toFixed(2) + '%'
-                    this.liveBacktestStatDatas[1].btShortTerm = (this.backtest1Rets.drawdown.top1*100).toFixed(2) + '%'
+                    // 6月的annual_return和max_drawdown需要从3年的value_line中截取, 否则不能直接和实盘对比
+                    // this.liveBacktestStatDatas[0].btShortTerm = (this.backtest1Rets.value.annual_return*100).toFixed(2) + '%'
+                    // this.liveBacktestStatDatas[1].btShortTerm = (this.backtest1Rets.drawdown.top1*100).toFixed(2) + '%'
                     this.liveBacktestStatDatas[2].btShortTerm = (this.backtest1Rets.trade_stats.count/btSymbols).toFixed(0)
                     this.liveBacktestStatDatas[3].btShortTerm = (this.backtest1Rets.trade_stats.win_ratio*100).toFixed(2) + '%'
                     this.liveBacktestStatDatas[4].btShortTerm = (Math.abs(this.backtest1Rets.trade_stats.win_avg_pnl_ptg/this.backtest1Rets.trade_stats.lose_avg_pnl_ptg)).toFixed(2)
@@ -282,6 +284,14 @@ export default {
                     this.liveBacktestStatDatas[2].btLongTerm = (this.backtest2Rets.trade_stats.count/btSymbols).toFixed(0)
                     this.liveBacktestStatDatas[3].btLongTerm = (this.backtest2Rets.trade_stats.win_ratio*100).toFixed(2) + '%'
                     this.liveBacktestStatDatas[4].btLongTerm = (Math.abs(this.backtest2Rets.trade_stats.win_avg_pnl_ptg/this.backtest2Rets.trade_stats.lose_avg_pnl_ptg)).toFixed(2)
+
+                    // 6月的annual_return和max_drawdown需要从3年的value_line中截取, 否则不能直接和实盘对比
+                    var valueLine3y = report.analyzer_rets.value_line
+                    var date = new Date()
+                    date.setMonth(date.getMonth() - 6)
+                    var firstDate = date.toISOString().slice(0, 10)
+                    this.liveBacktestStatDatas[0].btShortTerm = (getAnnualReturn(valueLine3y, firstDate)*100).toFixed(2) + '%'
+                    this.liveBacktestStatDatas[1].btShortTerm = (getMaxDrawdown(valueLine3y, firstDate)*100).toFixed(2) + '%'
 
                     this.backtest2RetsAvailable = true
                 })

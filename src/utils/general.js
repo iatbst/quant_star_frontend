@@ -147,3 +147,30 @@ export function toString2(str) {
         return str
     }
 }
+
+// 计算年化收益率
+export function getAnnualReturn(valueLine, firstDate){
+    var dates = Object.keys(valueLine).sort()
+    var lastDate = dates[dates.length - 1]
+    var profitPtg = valueLine[lastDate]/valueLine[firstDate]
+    var years = ((new Date(lastDate)).getTime() - (new Date(firstDate)).getTime())/(3600*24*365*1000)     
+    return (Math.pow(profitPtg, 1/years) - 1)
+}
+
+// 计算最大回撤
+export function getMaxDrawdown(valueLine, firstDate){
+    var maxValue = null
+    var mdd = 0
+    for(let date in valueLine){
+        if (date >= firstDate ){
+            if (maxValue === null || valueLine[date] > maxValue){
+                maxValue = valueLine[date]
+            }
+            var dd = 1 - valueLine[date]/maxValue
+            if (dd > mdd){
+                mdd = dd
+            }
+        }
+    }
+    return mdd
+}

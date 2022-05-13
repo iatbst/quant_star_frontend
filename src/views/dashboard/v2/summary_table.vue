@@ -218,7 +218,7 @@
 
 <script>
 import config from '@/configs/system_configs'
-import {toThousands} from '@/utils/general'
+import {toThousands, getAnnualReturn, getMaxDrawdown} from '@/utils/general'
 import moment from 'moment'
 
 export default {
@@ -298,6 +298,7 @@ export default {
                 btcSymbol: null,
             }],  
             usdtSymbols: new Set(),
+            absUsdtSymbols: 0,  // 绝对交易数量, 不去重复
             // btcSymbols: new Set(),
             btcSymbolsCount: 18,    // 暂时手工统计btc交易数量
 
@@ -388,6 +389,7 @@ export default {
             this.totalPosition = 0
             this.longPosition = 0
             this.shortPosition = 0 
+            this.absUsdtSymbols = 0
             for(var i = 0; i < this.subaccountDatas.length; i++){
                 for(let symbol in this.subaccountDatas[i].positions.data){
                     var usdtAmount = this.subaccountDatas[i].positions.data[symbol]
@@ -411,10 +413,13 @@ export default {
                         positionsByCoins[coinKey] = usdtAmount
                     } 
 
-                    // 统计币种数量(目前只统计quote是usdt和btc的交易对)
+                    // 统计币种数量(目前只统计quote是usdt的交易对)
                     var base = symbol.split('/')[0]
-                    if (quote === 'USD' && !this.usdtSymbols.has(base)){
+                    if (quote === 'USD'){
+                        if (!this.usdtSymbols.has(base)){
                             this.usdtSymbols.add(base)
+                        }
+                        this.absUsdtSymbols += 1
                     } 
                     // else if(quote === 'BTC'){
                     //     if (!this.btcSymbols.has(base)){
@@ -471,45 +476,18 @@ export default {
             // 更新liveRets
             this.liveRets.winRatio = this.perfDatas[0].winRatio
             this.liveRets.plRatio = this.perfDatas[0].plRatio
-            this.liveRets.countPerSymbol = totalCount/(this.usdtSymbols.size + this.btcSymbolsCount)
+            this.liveRets.countPerSymbol = totalCount/(this.absUsdtSymbols + this.btcSymbolsCount)
             for(var i = 0; i < this.pfoMasterDatas.length; i++){
                 if (this.pfoMasterDatas[i].portfolio.name === config.cryptoParentPfo){
                     var valueLine = this.pfoMasterDatas[i].wallet.history_values
                     var date = new Date()
                     date.setMonth(date.getMonth() - 6)
                     var firstDate = date.toISOString().slice(0, 10)
-                    this.liveRets.annualReturn = this._getAnnualReturn(valueLine, firstDate)
-                    this.liveRets.maxDrawdown = this._getMaxDrawdown(valueLine, firstDate)
+                    this.liveRets.annualReturn = getAnnualReturn(valueLine, firstDate)
+                    this.liveRets.maxDrawdown = getMaxDrawdown(valueLine, firstDate)
                 }
             }
             this.liveRets.available = true
-        },
-
-        // 计算年化收益率
-        _getAnnualReturn(valueLine, firstDate){
-            var dates = Object.keys(valueLine).sort()
-            var lastDate = dates[dates.length - 1]
-            var profitPtg = valueLine[lastDate]/valueLine[firstDate]
-            var years = ((new Date(lastDate)).getTime() - (new Date(firstDate)).getTime())/(3600*24*365*1000)     
-            return (Math.pow(profitPtg, 1/years) - 1)
-        },
-
-        // 计算最大回撤
-        _getMaxDrawdown(valueLine, firstDate){
-            var maxValue = null
-            var mdd = 0
-            for(let date in valueLine){
-                if (date >= firstDate ){
-                    if (maxValue === null || valueLine[date] > maxValue){
-                        maxValue = valueLine[date]
-                    }
-                    var dd = 1 - valueLine[date]/maxValue
-                    if (dd > mdd){
-                        mdd = dd
-                    }
-                }
-            }
-            return mdd
         },
 
 
