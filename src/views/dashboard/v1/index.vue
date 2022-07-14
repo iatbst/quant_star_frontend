@@ -67,7 +67,7 @@
 
 <script>
 // Components
-import summaryTable from '@/views/dashboard/summary_table'
+import summaryTable from '@/views/dashboard/v1/summary_table'
 import totalBalance from '@/views/balance/total_balance'
 import pfoBalances from '@/views/balance/pfo_balances'
 import balanceDistributions from '@/views/balance/balance_distributions'
