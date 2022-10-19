@@ -385,7 +385,7 @@ export default {
 
         // 分析仓位数据
         parsePositionData() {   
-            var positionsByCoins = {} 
+            var positionsByCoins = {USD_long: 0, USD_short: 0, BTC_long: 0, BTC_short: 0} 
             this.totalPosition = 0
             this.longPosition = 0
             this.shortPosition = 0 
@@ -431,13 +431,14 @@ export default {
             this.positionDatas[0].totalPosition = parseInt(this.totalPosition)
             this.positionDatas[0].longPosition = parseInt(this.longPosition)
             this.positionDatas[0].shortPosition = parseInt(this.shortPosition)
-            this.positionDatas[0].usdtLongPosition = parseInt(positionsByCoins['USD_long'] || 0)
-            this.positionDatas[0].usdtShortPosition = parseInt(positionsByCoins['USD_short'] || 0)
-            this.positionDatas[0].usdtPosition = parseInt(positionsByCoins['USD_long'] || 0 + positionsByCoins['USD_short'] || 0)
+            this.positionDatas[0].usdtLongPosition = parseInt(positionsByCoins['USD_long'])
+            this.positionDatas[0].usdtShortPosition = parseInt(positionsByCoins['USD_short'])
+            this.positionDatas[0].usdtPosition = parseInt(positionsByCoins['USD_long'] + positionsByCoins['USD_short'])
+            debugger;
 
-            this.positionDatas[0].btcLongPosition = parseInt(positionsByCoins['BTC_long'] || 0)
-            this.positionDatas[0].btcShortPosition = parseInt(positionsByCoins['BTC_short'] || 0)
-            this.positionDatas[0].btcPosition = parseInt(positionsByCoins['BTC_long'] || 0 + positionsByCoins['BTC_short'] || 0)
+            this.positionDatas[0].btcLongPosition = parseInt(positionsByCoins['BTC_long'])
+            this.positionDatas[0].btcShortPosition = parseInt(positionsByCoins['BTC_short'])
+            this.positionDatas[0].btcPosition = parseInt(positionsByCoins['BTC_long'] + positionsByCoins['BTC_short'])
         },
 
         // 分析策略数据(最近6m)
