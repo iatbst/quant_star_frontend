@@ -281,8 +281,8 @@ export default {
                 btcShortPosition: null,
                 btcPosition: null,
 
-                shortLevelPosition: null,   // 短周期仓位: 1/2/3 号策略
-                longLevelPosition: null     // 长周期仓位   4/5号策略
+                shortLevelPosition: null,   // 短周期仓位: 1, 2 号策略
+                longLevelPosition: null     // 长周期仓位   3, 4号策略
             }],
 
             // 策略
@@ -367,7 +367,7 @@ export default {
                     for(let key in posData){
                         var level = key.split('_')[0]
                         if (levelList.has(level)){
-                            if (parseInt(level) <= 3 ){
+                            if (parseInt(level) < 3 ){
                                 // 短周期
                                 this.shortLevelPosition += parseInt(posData[key])
                             } else {

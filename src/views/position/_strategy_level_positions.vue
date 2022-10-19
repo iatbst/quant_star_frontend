@@ -110,7 +110,7 @@ export default {
                     data: [],                
             }]
             var positions = []
-            var levelPositions = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0} // 指定周期长短序号
+            var levelPositions = {1: 0, 2: 0, 3: 0, 4: 0} // 指定周期长短序号
             for(var i = 0; i < this.pfoDatas.length; i++){
                 if (this.pfoDatas[i].portfolio.name === config.cryptoParentPfo){
                     // Crypto父pfo
