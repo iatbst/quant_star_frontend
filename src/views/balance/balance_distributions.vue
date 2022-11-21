@@ -200,10 +200,7 @@ export default {
                         this.totalUsdtAmount += usdtAmount
 
                         // 币种分布
-                        // 特例: USD转化为USDT(Eg. FTX使用USD临时记录收益)
-                        if (asset === 'USD'){
-                            asset = 'USDT'
-                        }
+                        // 注意: USD也是一种特殊的coin! (部分平台支持USD, eg, ftx)
                         if (asset in this.balancesByCoins){
                             this.balancesByCoins[asset] += usdtAmount
                         } else {

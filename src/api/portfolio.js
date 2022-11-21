@@ -11,10 +11,10 @@ export function getPortfolios(host=null) {
 }
 
 export function getPortfolioDatas(host=null, fields=null) {
-  var url = '/portfolio-datas/'
+  var url = '/portfolio-datas/?portfolio__status=normal'  // 只获取normal状态的pfo
   if (fields != null){
     // 指定fields
-    url += '?fields=' + fields
+    url += '&fields=' + fields
   }
   var req_obj = {
     url: url,

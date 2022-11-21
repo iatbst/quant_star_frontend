@@ -434,7 +434,6 @@ export default {
             this.positionDatas[0].usdtLongPosition = parseInt(positionsByCoins['USD_long'])
             this.positionDatas[0].usdtShortPosition = parseInt(positionsByCoins['USD_short'])
             this.positionDatas[0].usdtPosition = parseInt(positionsByCoins['USD_long'] + positionsByCoins['USD_short'])
-            debugger;
 
             this.positionDatas[0].btcLongPosition = parseInt(positionsByCoins['BTC_long'])
             this.positionDatas[0].btcShortPosition = parseInt(positionsByCoins['BTC_short'])

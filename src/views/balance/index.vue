@@ -55,7 +55,7 @@ import balanceDistributions from '@/views/balance/balance_distributions'
 import balanceDetails from '@/views/balance/balance_details'
 
 import config from '@/configs/system_configs'
-import { getSubAccountWalletDatas } from '@/api/subaccount'
+import { getSubAccountDatas } from '@/api/subaccount'
 import { getPortfolioDatas } from '@/api/portfolio' 
 
 
@@ -89,7 +89,7 @@ export default {
 
     methods: {
         fetchSubAccountWalletDatas() {
-            getSubAccountWalletDatas(config.masterHost, 'wallet,subaccount,portfolio').then(response => {
+            getSubAccountDatas(config.masterHost, 'wallet,subaccount,portfolio').then(response => {
                     this.subaccountDatas = response.results
                     this.subaccountDatasAvailable = true
                 }
