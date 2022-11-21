@@ -305,6 +305,7 @@ export default {
                 }
             }
 
+            this.feeDatas.sort((a, b) => a.status.localeCompare(b.status)).reverse()
             this.initFeeDatas = false
             this.feeDatasAvailable = true
             this.feeFilterAvailable = true

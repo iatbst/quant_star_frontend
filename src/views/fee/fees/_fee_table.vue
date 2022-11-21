@@ -92,7 +92,7 @@ export default {
           if (index === 0) {
             sums[index] = '合计';
             return;
-          } else if(index !== 5){
+          } else if(index !== 6){
             sums[index] = null
             return;
           } else {
