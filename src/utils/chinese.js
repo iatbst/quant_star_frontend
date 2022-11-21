@@ -44,7 +44,9 @@ export function chineseString(s) {
             // Worker状态
             case 'live': cs = '在线'; break;
             case 'suspend': cs = '暂停'; break;
-    
+            case 'normal': cs = '在线'; break;
+            case 'disable': cs = '下线'; break;
+
             default: cs = '翻译失败:' + s 
         }
         return cs

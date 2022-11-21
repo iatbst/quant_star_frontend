@@ -78,11 +78,14 @@ export default {
             for(let i = 0; i < this.subaccountDatas.length; i++){
                 var acctName = this.subaccountDatas[i].subaccount.account.name
                 var subType = this.subaccountDatas[i].subaccount.sub_type
-                this.feeRateDatas.push({
-                    acctName: acctName,
-                    subType: subType,
-                    feeRate: this.subaccountDatas[i].fee_rates
-                })
+                if (this.subaccountDatas[i].subaccount.portfolio.status == 'normal'){
+                    // 只展示当前normal pfo的rate
+                    this.feeRateDatas.push({
+                        acctName: acctName,
+                        subType: subType,
+                        feeRate: this.subaccountDatas[i].fee_rates
+                    })                   
+                }
             }
         },
         chineseString: chineseString

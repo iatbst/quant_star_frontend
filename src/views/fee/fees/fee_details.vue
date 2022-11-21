@@ -255,12 +255,16 @@ export default {
                         var endMonth = months[months.length - 1]
                     }
 
+                    // 当前对应pfo的状态
+                    var status = this.subaccountDatas[i].subaccount.portfolio.status
+
                     // 是否过滤
                     if (sum != 0){
                         var filterRet = this.filterFees(acctName, subType, pfo, type)
                         if (filterRet){
                             this.feeDatas.push({
                                 acctName: acctName,
+                                status: status,
                                 subType: subType,
                                 pfo: pfo,
                                 feeType: type,

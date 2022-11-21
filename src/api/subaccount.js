@@ -1,7 +1,13 @@
 import request from '@/utils/request'
 
-export function getSubAccountDatas(host=null, fields=null) {
-    var url = '/subaccount-datas/?subaccount__portfolio__status=normal' // 只获取normal状态的pfo的subaccounts
+export function getSubAccountDatas(host=null, fields=null, all=false) {
+    if (all){
+      // 获取所有subaccounts(包括已经disabled的pfo的subaccounts)
+      var url = '/subaccount-datas/?'
+    } else {
+      // 只获取normal状态的pfo的subaccounts
+      var url = '/subaccount-datas/?subaccount__portfolio__status=normal'
+    }
     if (fields != null){
         // 指定fields
         url += '&fields=' + fields

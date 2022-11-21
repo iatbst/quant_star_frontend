@@ -93,7 +93,7 @@ export default {
         fetchDatas() {
             this.iconRefreshActive = false
             this.iconLoadingActive = true
-            getSubAccountDatas(config.masterHost, 'subaccount,fees,fee_rates').then(response => {
+            getSubAccountDatas(config.masterHost, 'subaccount,fees,fee_rates', true).then(response => {
                     this.subaccountDatas = response.results    
                     this.subaccountDatasAvailable = true     
                     // this.$message.success('费用数据已更新.')  
