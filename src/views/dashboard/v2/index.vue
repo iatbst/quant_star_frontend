@@ -301,18 +301,22 @@ export default {
         // 从Pfo获取所有pfo data
         fetchPfoDatas() {
             this.pfoDatas = []
-            for(var i = 0; i < this.pfoHosts.length; i++){
-                getPortfolioDatas(this.pfoHosts[i]).then(response => {
-                        var data = response.results
-                        data['sort_id'] = config.pfoAliasSortWeights[data[0].portfolio.alias]
-                        this.pfoDatas.push(data)
-                        if (this.pfoDatas.length === this.pfoHosts.length ){
-                            // pfo排序
-                            this.pfoDatas.sort((a, b) => a.sort_id - b.sort_id)
-                            this.pfoDatasAvailable = true
+            if (this.pfoHosts.length > 0){
+                for(var i = 0; i < this.pfoHosts.length; i++){
+                    getPortfolioDatas(this.pfoHosts[i]).then(response => {
+                            var data = response.results
+                            data['sort_id'] = config.pfoAliasSortWeights[data[0].portfolio.alias]
+                            this.pfoDatas.push(data)
+                            if (this.pfoDatas.length === this.pfoHosts.length ){
+                                // pfo排序
+                                this.pfoDatas.sort((a, b) => a.sort_id - b.sort_id)
+                                this.pfoDatasAvailable = true
+                            }
                         }
-                    }
-                )
+                    )
+                }
+            } else {
+                this.pfoDatasAvailable = true
             }
         },
 

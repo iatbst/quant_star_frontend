@@ -2,7 +2,12 @@
 const masterHost = 'http://ec2-54-169-201-152.ap-southeast-1.compute.amazonaws.com:8000/api'
 
 // 当前投资组合的Hosts地址(由环境变量VUE_APP_PFO_HOSTS决定)
-const pfoHosts = process.env.VUE_APP_PFO_HOSTS.split(',')
+if (process.env.VUE_APP_PFO_HOSTS === ''){
+    var pfoHostList = []
+} else {
+    var pfoHostList = process.env.VUE_APP_PFO_HOSTS.split(',')
+}
+const pfoHosts = pfoHostList
 
 // Backtest Host地址(运行回测的Host)
 // const backtestHost = 'http://localhost:8000/api'
