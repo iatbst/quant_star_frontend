@@ -1,6 +1,6 @@
 // Master的Host地址
-// const masterHost = 'http://ec2-13-215-209-99.ap-southeast-1.compute.amazonaws.com:8000/api'
-const masterHost = 'http://18.138.152.197:8000/api'
+const masterHost = 'http://ec2-18-138-152-197.ap-southeast-1.compute.amazonaws.com:8000/api'
+// const masterHost = 'http://18.138.152.197:8000/api'
 
 // 当前投资组合的Hosts地址(由环境变量VUE_APP_PFO_HOSTS决定)
 if (process.env.VUE_APP_PFO_HOSTS === ''){
