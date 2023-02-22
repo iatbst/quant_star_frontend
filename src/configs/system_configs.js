@@ -11,7 +11,7 @@ const pfoHosts = pfoHostList
 
 // Backtest Host地址(运行回测的Host)
 // const backtestHost = 'http://localhost:8000/api'
-const backtestHost = 'http://ec2-54-169-125-145.ap-southeast-1.compute.amazonaws.com:8000/api'
+const backtestHost = 'http://ec2-18-139-27-246.ap-southeast-1.compute.amazonaws.com:8000/api'
 
 // 当前投资组合的别名(product)
 const pfoAlias = [
