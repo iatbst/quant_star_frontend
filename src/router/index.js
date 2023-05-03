@@ -195,10 +195,10 @@ export const constantRoutes = [
         meta: { title: '系统运行', icon: 'el-icon-view' }
       },
       {
-        path: 'positions_signals',
-        name: 'Positions_Signals',
-        component: () => import('@/views/monitor/position_signal/index'),
-        meta: { title: '仓位/信号', icon: 'el-icon-bell' }
+        path: 'open_trades',
+        name: 'Open_Trades',
+        component: () => import('@/views/monitor/open_trade/index'),
+        meta: { title: '仓位监控', icon: 'el-icon-bell' }
       },
       {
         path: 'warn',

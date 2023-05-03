@@ -26,3 +26,12 @@ export function getPositionMonitorStatsByPortfolio(pfo) {
   if (pfo.host) { req_obj['baseURL'] = pfo.host }
   return request(req_obj)
 }
+
+export function getOpenTradeMonitorStatsByPortfolio(pfo) {
+  var req_obj = {
+    url: '/monitor-stats/' + '?portfolio_id=' + pfo.id + '&type=mt_open_trade',
+    method: 'get'
+  }
+  if (pfo.host) { req_obj['baseURL'] = pfo.host }
+  return request(req_obj)
+}

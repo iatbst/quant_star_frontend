@@ -1,6 +1,6 @@
 <template>
-  <!-- 经典3组件(pfo/worker/sp) -->
-  <pfo-worker-sp
+  <!-- 经典3组件(pfo/worker/trade) -->
+  <pfo-worker-trade
   v-bind:portfolios="portfolios"
   v-bind:portfolios-loading="portfoliosLoading"
   v-bind:currentPfo="currentPfo"
@@ -9,12 +9,12 @@
   v-bind:workers-loading="workersLoading"
   v-bind:current-worker="currentWorker"
 
-  v-bind:signal-points="signalPoints"
-  v-bind:signal-points-loading="signalPointsLoading"
+  v-bind:trades="trades"
+  v-bind:trades-loading="tradesLoading"
 
   @onClickPfo="onClickPfo"
   @onClickWorker="onClickWorker"
-  ></pfo-worker-sp>
+  ></pfo-worker-trade>
 </template>
 
 
@@ -22,12 +22,12 @@
 import config from '@/configs/system_configs'
 import { getPortfolios } from '@/api/portfolio'
 import { getWorkersByPfo } from '@/api/worker'
-import { getSignalPointsByWorker } from '@/api/signal_point'
-import pfoWorkerSp from '@/views/pfo_worker_sp/_pfo_worker_sp'
+import { getTradesByWorker } from '@/api/trade'
+import pfoWorkerTrade from '@/views/pfo_worker_trade/_pfo_worker_trade'
 
 export default {
   components: {
-    pfoWorkerSp
+    pfoWorkerTrade
   },
 
   data() {
@@ -43,8 +43,8 @@ export default {
       workersLoading: true,
       currentWorker: null,
 
-      signalPoints: null,
-      signalPointsLoading: false,
+      trades: null,
+      tradesLoading: false,
     }
   },
 
@@ -53,7 +53,7 @@ export default {
   },
 
   methods: { 
-    // 初始化: 展示所有pfo;展示默认pfo的所有workers; 展示默认worker的所有sp 
+    // 初始化: 展示所有pfo;展示默认pfo的所有workers; 展示默认worker的所有trades
     init() {
       this.portfoliosLoading = true
       this.portfolios = []
@@ -75,16 +75,16 @@ export default {
       }
     },
 
-    // 选择Pfo时: 更新Workers/SignalPoints
+    // 选择Pfo时: 更新Workers/Trades
     onClickPfo(pfo){
       this.currentPfo = pfo
       this.fetchWorkersByPfo(pfo, this.onClickWorker)
     },
 
-    // 选择Worker时: 更新SignalPoints
+    // 选择Worker时: 更新Trades
     onClickWorker(worker){
       this.currentWorker = worker
-      this.fetchSignalPointsByWorker(worker)
+      this.fetchTradesByWorker(worker)
     },
 
     fetchWorkersByPfo(pfo, onWorkers) {
@@ -104,16 +104,16 @@ export default {
           // 回调
           onWorkers(this.workers[0])
         } else {
-          this.signalPoints = []
+          this.trades = []
         }
       })
     },
 
-    fetchSignalPointsByWorker(worker) {
-      this.signalPointsLoading = true
-      getSignalPointsByWorker(worker, this.currentPfo.host).then(response => {
-        this.signalPoints = response.results
-        this.signalPointsLoading = false
+    fetchTradesByWorker(worker) {
+      this.tradesLoading = true
+      getTradesByWorker(worker, this.currentPfo.host).then(response => {
+        this.trades = response.results
+        this.tradesLoading = false
       })
     },
   }

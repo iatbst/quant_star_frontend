@@ -46,6 +46,8 @@ export function formatTimestamp(ts) {
 
 // utc时间戳转化为本地时间戳
 export function utcToLocalTimestamp(utcTs) {
+    if (utcTs == null){return null}
+    
     if (utcTs[utcTs.length - 1] !== 'Z'){
         utcTs = utcTs + 'Z'
     }

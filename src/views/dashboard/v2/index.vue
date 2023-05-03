@@ -81,7 +81,6 @@
         <position-map 
         v-bind:positions="positions" 
         v-bind:positions-loading="positionsLoading"
-        v-bind:product-volumes="productVolumes"
         ></position-map> 
     </div>
   </div>
@@ -244,7 +243,7 @@ export default {
             this.fetchPositions()
 
             // 获取Product Volumes (Pfo)
-            this.fetchProductVolumes()
+            // this.fetchProductVolumes()
         },
 
         // 从Backtest获取benchmark回测数据
@@ -368,9 +367,7 @@ export default {
                         if (count === this.pfoHosts.length ){
                             // 排序
                             this.positionsAvailable = true
-                            if (this.productVolumesAvailable){
-                               this.positionsLoading = false 
-                            }
+                            this.positionsLoading = false 
                         }
                     }
                 )
@@ -378,27 +375,27 @@ export default {
         },
 
         // 从Pfo获取所有的volume data
-        fetchProductVolumes(){
-            this.productVolumes = {}
-            var productVolumesCount = 0
-            this.productVolumesAvailable = false
-            for(var i = 0; i < this.pfoHosts.length; i++){
-                getProductDatas(this.pfoHosts[i], 'product,volumes').then(response => {
-                        for(var i=0; i < response.results.length; i++){
-                            var key = response.results[i].product.name.split('_').slice(1, 4).join('_')   // 转化为: exchange_sub-type_symbol形式， eg binance_swap_btc/usdt
-                            this.productVolumes[key] = response.results[i].volumes.volume_weight
-                        }
-                        productVolumesCount += 1
-                        if (productVolumesCount === this.pfoHosts.length ){
-                            this.productVolumesAvailable = true
-                            if (this.positionsAvailable) {
-                               this.positionsLoading = false 
-                            }
-                        }
-                    }
-                )
-            }
-        },   
+        // fetchProductVolumes(){
+        //     this.productVolumes = {}
+        //     var productVolumesCount = 0
+        //     this.productVolumesAvailable = false
+        //     for(var i = 0; i < this.pfoHosts.length; i++){
+        //         getProductDatas(this.pfoHosts[i], 'product,volumes').then(response => {
+        //                 for(var i=0; i < response.results.length; i++){
+        //                     var key = response.results[i].product.name.split('_').slice(1, 4).join('_')   // 转化为: exchange_sub-type_symbol形式， eg binance_swap_btc/usdt
+        //                     this.productVolumes[key] = response.results[i].volumes.volume_weight
+        //                 }
+        //                 productVolumesCount += 1
+        //                 if (productVolumesCount === this.pfoHosts.length ){
+        //                     this.productVolumesAvailable = true
+        //                     if (this.positionsAvailable) {
+        //                        this.positionsLoading = false 
+        //                     }
+        //                 }
+        //             }
+        //         )
+        //     }
+        // },   
 
         // 从Pfo获取所有 delegate worker performance data
         fetchDelegateWorkerDatas() {

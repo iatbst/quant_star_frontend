@@ -31,13 +31,13 @@
 
                     <el-table-column align="center" prop="name"  label="风险权重">
                         <template slot-scope="scope">
-                            {{ productVolumes[scope.row] }}
+                            {{ symbolWeights[scope.row.split('_')[0]][scope.row.split('_')[2].toUpperCase()] }}
                         </template>
                     </el-table-column>
 
                     <el-table-column align="center" :label="'策略' + tag + '仓位($)'" v-bind:key="tag" v-for="tag in tagList">
                         <template slot-scope="scope">
-                            <div style="cursor: pointer;" @click="showSignalPoints(positionList[scope.row].host, positionList[scope.row].worker[tag])">
+                            <div style="cursor: pointer;" @click="showWorkerTrades(positionList[scope.row].host, positionList[scope.row].worker[tag])">
                                 <span style="color: green" v-if="positionList[scope.row].size[tag] > 0">
                                     {{ toThousands(positionList[scope.row].size[tag]) }}
                                 </span>
@@ -53,15 +53,14 @@
                 </el-table>
             </el-row>
 
-            <!-- Diaglog: SignalPoints -->
-            <el-dialog title="" :visible.sync="dialogSpVisible" width="60%" >
-            <!-- 指定worker的runs -->
-            <signal-points 
-            v-bind:signal-points="signalPoints"
-            v-bind:current-worker="currentWorker"
-            v-bind:current-pfo="currentPfo"
-            v-bind:signal-points-loading="signalPointsLoading"
-            ></signal-points>
+            <el-dialog title="" :visible.sync="dialogWorkerTradesVisible" width="60%" >
+                <!-- 指定worker的runs -->
+                <trades 
+                    v-bind:trades="workerTrades"
+                    v-bind:current-worker="currentWorker"
+                    v-bind:current-pfo="currentPfo"
+                    v-bind:trades-loading="workerTradesLoading"
+                ></trades>
             </el-dialog>
         </div>
     </div>
@@ -69,13 +68,13 @@
 
 <script>
 import {toThousands} from '@/utils/general'
-import signalPoints from '@/views/signal_point/_worker_sps'
-import { getSignalPointsByWorker } from '@/api/signal_point'
+import trades from '@/views/trade/_worker_trades'
+import { getTradesByWorker } from '@/api/trade'
 
 
 export default {
     components: {
-        signalPoints,
+        trades,
     },
     
     props: {
@@ -87,11 +86,6 @@ export default {
         positionsLoading: {
             type: Boolean,
             default: false
-        },
-
-        productVolumes: {
-           type: Object,
-           default: {} 
         }
     },
 
@@ -106,12 +100,13 @@ export default {
 
     data() {
         return {
-            dialogSpVisible: false,
 
-            signalPoints: null,
-            signalPointsLoading: false,
             currentWorker: null,
             currentPfo: null,
+
+            workerTrades: null,
+            dialogWorkerTradesVisible: false,
+            workerTradesLoading: false,
 
             positionList: null,
             tagList: [
@@ -119,7 +114,83 @@ export default {
                 '2',
                 '3',
                 '4'
-            ]
+            ],
+
+            // 临时设置symbol的weights(临时解决方案)
+            symbolWeights:{
+                'binance':{
+                    "BTC/USDT": 18,
+                    "ETH/USDT": 6,
+
+                    "SOL/USDT": 3,
+                    "DOGE/USDT": 3,
+                    "XRP/USDT": 3,
+                    "BNB/USDT": 3,
+                    "GALA/USDT": 3,
+                    "OP/USDT": 3,
+                    "ETC/USDT": 3,
+                    "MATIC/USDT": 3,
+
+                    "DOT/USDT": 1,
+                    "FTM/USDT": 1,
+                    "AXS/USDT": 1,
+                    "ADA/USDT": 1,
+                    "AVAX/USDT": 1,
+                    "LTC/USDT": 1,
+                    "LINK/USDT": 1,
+                    "DYDX/USDT": 1,
+                    "FIL/USDT": 1,
+                    "EOS/USDT": 1,
+                    "ATOM/USDT": 1,
+                    "CHZ/USDT": 1,
+                    "CRV/USDT": 1,
+                    "BCH/USDT": 1,
+                    "NEAR/USDT": 1,
+                    "GRT/USDT": 1,
+                    "MASK/USDT": 1,
+                    "WAVES/USDT": 1,
+                    "GMT/USDT": 1,
+                    "APE/USDT": 1,
+                    "MANA/USDT": 1,
+                    "SAND/USDT": 1
+                }, 
+                'okex':{
+                    "BTC/USDT": 18,
+                    "ETH/USDT": 6,
+
+                    "SOL/USDT": 3,
+                    "DOGE/USDT": 3,
+                    "LTC/USDT": 3,
+                    "GALA/USDT": 3,
+                    "OP/USDT": 3,
+                    "ETC/USDT": 3,
+                    "DYDX/USDT": 3,
+                    "FIL/USDT": 3,
+
+                    "MATIC/USDT": 1,
+                    "SHIB/USDT": 1,
+                    "XRP/USDT": 1,
+                    "DOT/USDT": 1,
+                    "FTM/USDT": 1,
+                    "AXS/USDT": 1,
+                    "ADA/USDT": 1,
+                    "AVAX/USDT": 1,
+                    "LINK/USDT": 1,
+                    "EOS/USDT": 1,
+                    "ATOM/USDT": 1,
+                    "CHZ/USDT": 1,
+                    "CRV/USDT": 1,
+                    "BCH/USDT": 1,
+                    "NEAR/USDT": 1,
+                    "GRT/USDT": 1,
+                    "MASK/USDT": 1,
+                    "WAVES/USDT": 1,
+                    "GMT/USDT": 1,
+                    "APE/USDT": 1,
+                    "MANA/USDT": 1,
+                    "SAND/USDT": 1
+                }
+            }
         }
     },
 
@@ -159,14 +230,26 @@ export default {
         },
 
         // 通过Dialog展示signalPoints(注意, worker只包含id和name)
-        showSignalPoints(host, worker){
-            this.dialogSpVisible = true
-            this.signalPointsLoading = true
+        // showSignalPoints(host, worker){
+        //     this.dialogSpVisible = true
+        //     this.signalPointsLoading = true
+        //     this.currentPfo = {host: host}
+        //     this.currentWorker = worker
+        //     getSignalPointsByWorker(worker, this.currentPfo.host).then(response => {
+        //         this.signalPoints = response.results
+        //         this.signalPointsLoading = false
+        //     })
+        // },
+
+        // 通过Dialog展示signalPoints(注意, worker只包含id和name)
+        showWorkerTrades(host, worker){
+            this.dialogWorkerTradesVisible = true
+            this.workerTradesLoading = true
             this.currentPfo = {host: host}
             this.currentWorker = worker
-            getSignalPointsByWorker(worker, this.currentPfo.host).then(response => {
-                this.signalPoints = response.results
-                this.signalPointsLoading = false
+            getTradesByWorker(worker, this.currentPfo.host).then(response => {
+                this.workerTrades = response.results
+                this.workerTradesLoading = false
             })
         },
 
