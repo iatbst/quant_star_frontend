@@ -75,6 +75,70 @@
       </el-col>
     </el-row> 
 
+    <!---------------------------------- 回测曲线与仓位 ----------------------------------->
+    <!-- Pivot Reversal  -->
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+      <el-col :span="16">
+          <div style="margin-bottom: 20px">
+            <value-line 
+            v-bind:values="btValueLines.pivot_reversal.data" 
+            v-bind:title="btValueLines.pivot_reversal.name"
+            v-bind:y-type="btValueLineType"
+            v-bind:range="btValueLineRange"
+            v-if="btValueLines.pivot_reversal.available" 
+            style="margin-bottom: 20px">
+            </value-line>
+          </div>
+      </el-col>
+
+      <el-col :span="8">
+          <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
+          </div>
+      </el-col>
+    </el-row> 
+
+    <!-- Pivot Reversal Short -->
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px">
+      <el-col :span="16">
+          <div style="margin-bottom: 20px">
+            <value-line 
+            v-bind:values="btValueLines.pivot_reversal_short.data" 
+            v-bind:title="btValueLines.pivot_reversal_short.name"
+            v-bind:y-type="btValueLineType"
+            v-bind:range="btValueLineRange"
+            v-if="btValueLines.pivot_reversal_short.available" 
+            style="margin-bottom: 20px">
+            </value-line>
+          </div>
+      </el-col>
+
+      <el-col :span="8">
+          <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
+          </div>
+      </el-col>
+    </el-row> 
+
+    <!-- Plunge Back -->
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px">
+      <el-col :span="16">
+          <div style="margin-bottom: 20px">
+            <value-line 
+            v-bind:values="btValueLines.plunge_back.data" 
+            v-bind:title="btValueLines.plunge_back.name"
+            v-bind:y-type="btValueLineType"
+            v-bind:range="btValueLineRange"
+            v-if="btValueLines.plunge_back.available" 
+            style="margin-bottom: 20px">
+            </value-line>
+          </div>
+      </el-col>
+
+      <el-col :span="8">
+          <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
+          </div>
+      </el-col>
+    </el-row> 
+
     <!----------------------------------- 仓位 --------------------------------------->
     <div style="background-color: white; margin-bottom: 20px; margin-top: 20px">
         <!-- 仓位详情 -->
@@ -171,12 +235,31 @@ export default {
             liveValueName: '实盘资金',
             btValueName: '15币回测资金',
 
+            // 记录策略回测资产曲线
+            btValueLines: {
+                'pivot_reversal': {
+                    'name': 'Pivot Reversal回测资金曲线',
+                    'data': null,
+                    'available': false
+                },
+                'pivot_reversal_short': {
+                    'name': 'Pivot Reversal Short回测资金曲线',
+                    'data': null,
+                    'available': false
+                }, 
+                'plunge_back': {
+                    'name': 'Plunge Back回测资金曲线',
+                    'data': null,
+                    'available': false
+                },                               
+            },
+
             btValueLineType: 'logarithmic',
             btValueLineRange: 'all',
 
-            backtest1Rets: {},  // top15-3y
+            backtest1Rets: {},  // top15-6m
             backtest1RetsAvailable: false,
-            backtest2Rets: {},  // top15-6m
+            backtest2Rets: {},  // top15-3y
             backtest2RetsAvailable: false,
             liveRets: {
                 available: false,
@@ -238,6 +321,9 @@ export default {
 
             // 获取Benchmark 回测数据 (Backtest)
             this.fetchBacktestDatas()
+
+            // 获取策略的回测资产曲线
+            this.fetchStrategyValuelines()
             
             // 获取Positions (Pfo)
             this.fetchPositions()
@@ -296,6 +382,22 @@ export default {
                 })
             })
         },
+
+        // 从Backtest获取各个策略的回测资产曲线
+        fetchStrategyValuelines(){
+            for (const sty in this.btValueLines){
+                var planName = sty + '_backtest'
+                this.btValueLines[sty].available = false
+                getBacktestPlanByName(config.backtestHost, planName).then(response => {
+                    var plan = response.results[0]
+                    getBacktestReportById(config.backtestHost, plan.latest_report_id).then(response => {
+                        this.btValueLines[sty].data = response.results[0].analyzer_rets.value_line
+                        this.btValueLines[sty].available = true
+                    })
+                })
+            }
+        },
+
 
         // 从Pfo获取所有pfo data
         fetchPfoDatas() {

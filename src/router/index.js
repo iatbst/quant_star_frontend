@@ -198,7 +198,7 @@ export const constantRoutes = [
         path: 'open_trades',
         name: 'Open_Trades',
         component: () => import('@/views/monitor/open_trade/index'),
-        meta: { title: '仓位监控', icon: 'el-icon-bell' }
+        meta: { title: '交易监控', icon: 'el-icon-bell' }
       },
       {
         path: 'warn',
