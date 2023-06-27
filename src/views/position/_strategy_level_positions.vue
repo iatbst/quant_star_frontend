@@ -103,7 +103,7 @@ export default {
     },
 
     methods: {
-        // 处理父组件建传入data: subaccountDatas
+        // 处理父组件建传入data
         parseData() {   
             this.chartOptions.series = [{
                     name: '仓位',

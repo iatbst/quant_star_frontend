@@ -93,6 +93,12 @@
 
       <el-col :span="8">
           <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
+            <strategy-positions
+            v-bind:pos-summary="parentPfoData.positions.summary" 
+            v-bind:strategy-alias-list="strategyAlias.pivot_reversal"
+            v-if="pfoMasterDatasAvailable" 
+            style="margin-bottom: 20px">
+            </strategy-positions>
           </div>
       </el-col>
     </el-row> 
@@ -114,6 +120,12 @@
 
       <el-col :span="8">
           <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
+            <strategy-positions
+            v-bind:pos-summary="parentPfoData.positions.summary" 
+            v-bind:strategy-alias-list="strategyAlias.pivot_reversal_short"
+            v-if="pfoMasterDatasAvailable" 
+            style="margin-bottom: 20px">
+            </strategy-positions>
           </div>
       </el-col>
     </el-row> 
@@ -135,6 +147,12 @@
 
       <el-col :span="8">
           <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
+            <strategy-positions
+            v-bind:pos-summary="parentPfoData.positions.summary" 
+            v-bind:strategy-alias-list="strategyAlias.plunge_back"
+            v-if="pfoMasterDatasAvailable" 
+            style="margin-bottom: 20px">
+            </strategy-positions>
           </div>
       </el-col>
     </el-row> 
@@ -155,6 +173,7 @@
 import summaryTable from '@/views/dashboard/v2/summary_table'
 import valueLine from '@/views/balance/_value_line'
 import strategyLevelPositions from '@/views/position/_strategy_level_positions'
+import strategyPositions from '@/views/position/_strategy_positions'
 import exchangeBalanceDistributions from '@/views/balance/_exchange_balance_distributions'
 import liveBacktestStats from '@/views/dashboard/v2/live_backtest_stats'
 import positionMap from '@/views/position/position_map'
@@ -186,6 +205,7 @@ export default {
         valueLine,
 
         strategyLevelPositions,
+        strategyPositions,
 
         exchangeBalanceDistributions,
 
@@ -219,6 +239,7 @@ export default {
             pfoMasterDatasAvailable: false,
             totalBalanceValues: {},
             totalBalanceValuesAvailable: false,
+            parentPfoData: null,
 
             subaccountDatas: [],
             subaccountDatasAvailable: false,
@@ -252,6 +273,13 @@ export default {
                     'data': null,
                     'available': false
                 },                               
+            },
+
+            // 不同策略的Alias
+            strategyAlias: {
+                'pivot_reversal': ['pr1', 'pr2', 'pr3', 'pr4'],
+                'pivot_reversal_short': ['prs1', 'prs2'],
+                'plunge_back': ['pb1', 'pb2'],
             },
 
             btValueLineType: 'logarithmic',
@@ -435,8 +463,16 @@ export default {
                             this.totalBalanceValuesAvailable = true
                         }
                     }
-                    this.pfoMasterDatas.sort((a, b) => a.sort_id - b.sort_id)    
-                    this.pfoMasterDatasAvailable = true               
+                    this.pfoMasterDatas.sort((a, b) => a.sort_id - b.sort_id)       
+                    
+                    // 标记父pfo
+                    for(var i = 0; i < this.pfoMasterDatas.length; i++){
+                        if (this.pfoMasterDatas[i].portfolio.name === config.cryptoParentPfo){
+                            this.parentPfoData = this.pfoMasterDatas[i]
+                        }
+                    }
+
+                    this.pfoMasterDatasAvailable = true
                 }
             )
         },
