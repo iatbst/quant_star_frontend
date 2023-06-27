@@ -2,7 +2,7 @@
   <div class="app-container" style="background-color: lightgray">
     <!----------------------------------- 总表 + 长短仓位分布 --------------------------------------->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px">
-      <el-col :span="16">
+      <el-col :span="24">
         <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
             <summary-table 
             v-bind:summary-datas="[pfoMasterDatas, subaccountDatas, pfoDatas]" 
@@ -11,16 +11,6 @@
             style="margin-bottom: 20px">
             </summary-table>
         </div>
-      </el-col>
-
-      <el-col :span="8">
-          <div style="margin-left: 0px; margin-top: 20px">
-            <strategy-level-positions
-            v-bind:pfo-datas="pfoMasterDatas" 
-            v-if="pfoMasterDatasAvailable" 
-            style="margin-bottom: 20px">
-            </strategy-level-positions>
-          </div>
       </el-col>
     </el-row>   
 
