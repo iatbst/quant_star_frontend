@@ -43,11 +43,11 @@
       <el-col :span="16">
           <div style="margin-bottom: 20px">
             <value-line 
-            v-bind:values="backtest2Rets.value_line" 
-            v-bind:title="btValueName"
+            v-bind:values="btValueLines.all.data" 
+            v-bind:title="btValueLines.all.name"
             v-bind:y-type="btValueLineType"
             v-bind:range="btValueLineRange"
-            v-if="backtest2RetsAvailable" 
+            v-if="btValueLines.all.available" 
             style="margin-bottom: 20px">
             </value-line>
           </div>
@@ -262,7 +262,12 @@ export default {
                     'name': 'Plunge Back回测资金曲线',
                     'data': null,
                     'available': false
-                },                               
+                },  
+                'all': {
+                    'name': '所有策略回测资金曲线',
+                    'data': null,
+                    'available': false
+                },                              
             },
 
             // 不同策略的Alias
