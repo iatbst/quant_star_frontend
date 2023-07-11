@@ -29,9 +29,9 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" prop="name"  label="风险权重">
+                    <el-table-column align="center" prop="name"  label="策略">
                         <template slot-scope="scope">
-                            {{ symbolWeights[scope.row.split('_')[0]][scope.row.split('_')[2].toUpperCase()] }}
+                            {{ strategyAlias[positionList[scope.row].alias] }}
                         </template>
                     </el-table-column>
 
@@ -70,6 +70,7 @@
 import {toThousands} from '@/utils/general'
 import trades from '@/views/trade/_worker_trades'
 import { getTradesByWorker } from '@/api/trade'
+import config from '@/configs/system_configs'
 
 
 export default {
@@ -115,6 +116,7 @@ export default {
                 '3',
                 '4'
             ],
+            strategyAlias: config.strategyAlias,
 
             // 临时设置symbol的weights(临时解决方案)
             symbolWeights:{
@@ -207,39 +209,23 @@ export default {
         parseData() {  
             for(var i = 0; i < this.positions.length; i++){
                 var workerName = this.positions[i].worker.name
-                var workerGroup = workerName.split('_').slice(0, -1).join('_')
+                var workerGroup = workerName.slice(0, -1)   // worker名称最后一位是tag
                 var posTag = workerName[workerName.length-1]
                 var posSize = Math.round(this.positions[i].usdt_size)
-                // if (workerGroup.indexOf('margin') != -1){
-                //     // Margin需要省略小数点后尾数
-                //     var baseSymbol = workerGroup.split('_').slice(-1)[0].split('/')[0].toUpperCase()
-                //     if (baseSymbol in config.assetRoundLevel){
-                //         posSize = posSize.toFixed(config.assetRoundLevel[baseSymbol])
-                //     }
-                // }
+                var alias = workerName.split('_').slice(-1)[0].slice(0, -1)
                 if (!(workerGroup in this.positionList)){
                     this.positionList[workerGroup] = {
                         size: {}, 
                         worker: {},
-                        host: this.positions[i].host}
+                        host: this.positions[i].host,
+                        alias: alias
+                    }
                 }
                 this.positionList[workerGroup].size[posTag] = posSize
                 this.positionList[workerGroup].worker[posTag] = this.positions[i].worker
             }
             // this.positionLoading = false
         },
-
-        // 通过Dialog展示signalPoints(注意, worker只包含id和name)
-        // showSignalPoints(host, worker){
-        //     this.dialogSpVisible = true
-        //     this.signalPointsLoading = true
-        //     this.currentPfo = {host: host}
-        //     this.currentWorker = worker
-        //     getSignalPointsByWorker(worker, this.currentPfo.host).then(response => {
-        //         this.signalPoints = response.results
-        //         this.signalPointsLoading = false
-        //     })
-        // },
 
         // 通过Dialog展示signalPoints(注意, worker只包含id和name)
         showWorkerTrades(host, worker){

@@ -31,6 +31,13 @@ const subacctPfoAlias = [
     'altbtc'
 ]
 
+// 策略名称和缩写的映射
+const strategyAlias = {
+    'pr': 'pivot reversal',
+    'prs': 'pivot reversal short',
+    'pb': 'plunge back'
+}
+
 // 当前投资组合的初始资金
 const pfoInitUSD = {
     binance: 1436000,
@@ -126,7 +133,8 @@ export default {
     pfoAliasSortWeights,
     riskRatio,
     subacctPfoAlias,
-    spErrorTypes
+    spErrorTypes,
+    strategyAlias
 }
 
 
