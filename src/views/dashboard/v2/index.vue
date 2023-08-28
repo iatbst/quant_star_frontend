@@ -93,33 +93,6 @@
       </el-col>
     </el-row> 
 
-    <!-- Pivot Reversal Short -->
-    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px">
-      <el-col :span="16">
-          <div style="margin-bottom: 20px">
-            <value-line 
-            v-bind:values="btValueLines.pivot_reversal_short.data" 
-            v-bind:title="btValueLines.pivot_reversal_short.name"
-            v-bind:y-type="btValueLineType"
-            v-bind:range="btValueLineRange"
-            v-if="btValueLines.pivot_reversal_short.available" 
-            style="margin-bottom: 20px">
-            </value-line>
-          </div>
-      </el-col>
-
-      <el-col :span="8">
-          <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
-            <strategy-positions
-            v-bind:pos-summary="parentPfoData.positions.summary" 
-            v-bind:strategy-alias-list="strategyAlias.pivot_reversal_short"
-            v-if="pfoMasterDatasAvailable" 
-            style="margin-bottom: 20px">
-            </strategy-positions>
-          </div>
-      </el-col>
-    </el-row> 
-
     <!-- Plunge Back -->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px">
       <el-col :span="16">

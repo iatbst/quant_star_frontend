@@ -456,7 +456,7 @@ export default {
             this.tradeCount += 1     
           }
           this.detailTableDataList.push({
-            worker: '交易所仓位: ' + _data.exchange_position, 
+            worker: symbol + '交易所仓位: ' + _data.exchange_position, 
             position: '合计: ' + (countDecimals(_data.position) > 3 ? _data.position.toFixed(3) : _data.position), 
             summary: true,
             fail: _data.status === 'fail',
