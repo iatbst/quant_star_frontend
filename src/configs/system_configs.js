@@ -13,6 +13,13 @@ const pfoHosts = pfoHostList
 // const backtestHost = 'http://localhost:8000/api'
 const backtestHost = 'http://ec2-18-139-27-246.ap-southeast-1.compute.amazonaws.com:8000/api'
 
+// 常用exchanges
+const exchanges = [
+    'binance',
+    'okex',
+    'huobi'
+]
+
 // 当前投资组合的别名(product)
 const pfoAlias = [
     'binance',
@@ -32,9 +39,14 @@ const subacctPfoAlias = [
 ]
 
 // 策略名称和缩写的映射
+const strategies = [
+    'pivot reversal',
+    'plunge back'
+]
+
 const strategyAlias = {
     'pr': 'pivot reversal',
-    'prs': 'pivot reversal short',
+    'prs': 'pivot reversal mini',
     'pb': 'plunge back'
 }
 
@@ -134,7 +146,9 @@ export default {
     riskRatio,
     subacctPfoAlias,
     spErrorTypes,
-    strategyAlias
+    strategyAlias,
+    exchanges,
+    strategies
 }
 
 

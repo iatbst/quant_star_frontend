@@ -35,6 +35,7 @@ export function chineseString(s) {
             case 'increase': cs = '补仓'; break;
             case 'decrease': cs = '减仓'; break;
             case 'rollback': cs = '回撤'; break;
+            case 'temp': cs = '手动'; break;
 
             // 费用
             case 'trade': cs = '交易费'; break;

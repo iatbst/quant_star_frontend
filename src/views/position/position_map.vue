@@ -5,7 +5,6 @@
                 <!-- Positions -->
                 <el-table
                     :data="Object.keys(positionList).sort()"
-                    style="width: 95%; margin-bottom: 20px; margin-top: 45px"
                     :header-cell-style="{ background: '#f2f2f2' }"
                     border
                     v-loading="positionsLoading"

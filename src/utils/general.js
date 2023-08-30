@@ -110,6 +110,20 @@ export function toFixed(value, dec){
     }
 }
 
+// 计算order的滑点
+export function calSlippage(order){
+    if (order.price != null && order.exec_avg_price != null){
+        if (order.side === 'buy'){
+            return (order.price - order.exec_avg_price)/order.price
+        } else {
+            return (order.exec_avg_price - order.price)/order.price
+        }
+    } else {
+        // 不可计算滑点
+        return null
+    }
+}
+
 // 如果quote是usd的稳定币, 转为USD(eg, USDT )
 export function quoteToUSD(symbol) {
     var quote = symbol.split('/')[1]

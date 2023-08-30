@@ -128,11 +128,23 @@
         v-bind:positions-loading="positionsLoading"
         ></position-map> 
     </div>
+
+    <!----------------------------------- 订单(3天内) --------------------------------------->
+    <div style="background-color: white; margin-bottom: 20px; margin-top: 20px">
+        <!-- 仓位详情 -->
+        <orders 
+        v-bind:orders="orders" 
+        v-bind:orders-loading="ordersLoading"
+        ></orders>
+    </div>
+
   </div>
 </template>
 
 <script>
 // Components
+import orders from '@/views/orders/_orders'
+
 import summaryTable from '@/views/dashboard/v2/summary_table'
 import valueLine from '@/views/balance/_value_line'
 import strategyLevelPositions from '@/views/position/_strategy_level_positions'
@@ -157,12 +169,14 @@ import { getDelegateWorkerDatas } from '@/api/worker'
 import { getPositions } from '@/api/position'
 import { getBacktestPlanByName } from '@/api/backtest_plan'
 import { getBacktestReportById } from '@/api/backtest_report'
-import { getProductDatas } from '@/api/product'
-import { getAnnualReturn, getMaxDrawdown} from '@/utils/general'
+import { getOrders } from '@/api/order'
+import { getAnnualReturn, getMaxDrawdown, calSlippage} from '@/utils/general'
 
 
 export default {
     components: {
+        orders,
+
         summaryTable,
 
         valueLine,
@@ -197,6 +211,9 @@ export default {
 
             pfoDatas: [],
             pfoDatasAvailable: false,
+
+            orders: [],
+            ordersLoading: false,
 
             pfoMasterDatas: [],     
             pfoMasterDatasAvailable: false,
@@ -324,8 +341,34 @@ export default {
             // 获取Positions (Pfo)
             this.fetchPositions()
 
-            // 获取Product Volumes (Pfo)
-            // this.fetchProductVolumes()
+            // 获取Orders
+            this.fetchOrders()
+        },
+
+        fetchOrders(){
+            this.orders = []
+            this.ordersLoading = true
+            var days = 3    // 默认展示最近3天
+            var startDt = new Date(Date.now() - 24 * 3600 * 1000 * days).toISOString().slice(0, 19).replace('T', ' ')    // UTC
+            var endDt = new Date().toISOString().slice(0, 19).replace('T', ' ')      // UTC
+            var count = 0
+            for(var i = 0; i < this.pfoHosts.length; i++){
+                var filters = 'show_worker=true&no_parent_order=true&exec_size__gt=0&created_ts__gte=' + startDt + '&created_ts__lte=' + endDt
+                getOrders(this.pfoHosts[i], null, filters).then(response => {
+                        count += 1
+                        this.orders = this.orders.concat(response.results)
+
+                        if (count === this.pfoHosts.length){
+                            // 排序
+                            this.orders.sort((a, b) => b.created_ts.localeCompare(a.created_ts))
+                            for(let i =0; i < this.orders.length; i++){
+                                this.orders[i]['slippage'] = calSlippage(this.orders[i])
+                            }
+                            this.ordersLoading = false
+                        }
+                    }
+                )
+            }
         },
 
         // 从Backtest获取benchmark回测数据
