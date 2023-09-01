@@ -87,7 +87,20 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="滑点" min-width="5%">
+                    <el-table-column align="center" label="收益" min-width="10%">
+                        <template slot-scope="scope">
+                            <div v-if="scope.row.pnl !== null">
+                                <span style="color: red" v-if="scope.row.pnl < 0">
+                                {{ scope.row.pnl.toFixed(2) }}({{ (scope.row.pnl_ptg*100).toFixed(2) }}%)
+                                </span>
+                                <span style="color: green" v-else>
+                                {{ scope.row.pnl.toFixed(2) }}({{ (scope.row.pnl_ptg*100).toFixed(2) }}%)
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="滑点" min-width="10%">
                         <template slot-scope="scope">
                             <div v-if="scope.row.slippage !== null">
                                 <span style="color: red" v-if="scope.row.slippage < 0">

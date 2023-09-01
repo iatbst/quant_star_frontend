@@ -107,7 +107,7 @@
 // Components
 import orders from '@/views/orders/_orders'
 import config from '@/configs/system_configs'
-import { utcToLocalTimestamp, calSlippage } from '@/utils/general'
+import { utcToLocalTimestamp } from '@/utils/general'
 import {toThousands} from '@/utils/general'
 import { getOrders } from '@/api/order'
 import { chineseString } from '@/utils/chinese'
@@ -152,26 +152,29 @@ export default {
     },
 
     created() {
-        this.orders = []
-        this.ordersLoading = true
-        var days = 7    // 默认展示最近7天
-        var startDt = new Date(Date.now() - 24 * 3600 * 1000 * days).toISOString().slice(0, 19).replace('T', ' ')    // UTC
-        var endDt = new Date().toISOString().slice(0, 19).replace('T', ' ')      // UTC
-        this.searchOrders(startDt, endDt)
+        this.search()
+        // this.orders = []
+        // this.ordersLoading = true
+        // var days = 7    // 默认展示最近7天
+        // var startDt = new Date(Date.now() - 24 * 3600 * 1000 * days).toISOString().slice(0, 19).replace('T', ' ')    // UTC
+        // var endDt = new Date().toISOString().slice(0, 19).replace('T', ' ')      // UTC
+        // this.searchOrders(startDt, endDt)
     },
 
     methods: {
         // 获取原始datas
         search(){
+            this.orders = []
+            this.ordersLoading = true
             if(this.datetimeRange.length == 2){
-                this.orders = []
-                this.ordersLoading = true
                 var startDt = this.datetimeRange[0].toISOString().slice(0, 19).replace('T', ' ')    // UTC
                 var endDt = this.datetimeRange[1].toISOString().slice(0, 19).replace('T', ' ')      // UTC
-                this.searchOrders(startDt, endDt)
             } else {
-                alert('请选择开始/结束日期时间!')
+                var days = 7    // 默认展示最近7天
+                var startDt = new Date(Date.now() - 24 * 3600 * 1000 * days).toISOString().slice(0, 19).replace('T', ' ')    // UTC
+                var endDt = new Date().toISOString().slice(0, 19).replace('T', ' ')      // UTC                   
             }
+            this.searchOrders(startDt, endDt)
         },
 
         // 搜索指定时间范围内的订单
@@ -197,9 +200,6 @@ export default {
                         if (count === this.pfoHosts.length){
                             // 排序
                             this.orders.sort((a, b) => b.created_ts.localeCompare(a.created_ts))
-                            for(let i =0; i < this.orders.length; i++){
-                                this.orders[i]['slippage'] = calSlippage(this.orders[i])
-                            }
                             this.ordersLoading = false
                         }
                     }

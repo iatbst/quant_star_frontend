@@ -170,7 +170,7 @@ import { getPositions } from '@/api/position'
 import { getBacktestPlanByName } from '@/api/backtest_plan'
 import { getBacktestReportById } from '@/api/backtest_report'
 import { getOrders } from '@/api/order'
-import { getAnnualReturn, getMaxDrawdown, calSlippage} from '@/utils/general'
+import { getAnnualReturn, getMaxDrawdown } from '@/utils/general'
 
 
 export default {
@@ -361,9 +361,6 @@ export default {
                         if (count === this.pfoHosts.length){
                             // 排序
                             this.orders.sort((a, b) => b.created_ts.localeCompare(a.created_ts))
-                            for(let i =0; i < this.orders.length; i++){
-                                this.orders[i]['slippage'] = calSlippage(this.orders[i])
-                            }
                             this.ordersLoading = false
                         }
                     }
