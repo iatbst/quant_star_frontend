@@ -69,9 +69,11 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="数量" min-width="10%">
+                    <el-table-column align="center" label="成交额" min-width="10%">
                         <template slot-scope="scope">
-                            {{ scope.row.exec_size }}
+                            <div v-if="scope.row.volume !== null">
+                                {{ toThousands(Math.round(scope.row.volume)) }}
+                            </div>
                         </template>
                     </el-table-column>
 
@@ -83,7 +85,9 @@
 
                     <el-table-column align="center" label="成交均价" min-width="10%">
                         <template slot-scope="scope">
-                            {{ toFixed(scope.row.exec_avg_price, 2) }}
+                            <div v-if="scope.row.exec_avg_price !== null">
+                                {{ toFixed(scope.row.exec_avg_price, 2) }}
+                            </div>
                         </template>
                     </el-table-column>
 
