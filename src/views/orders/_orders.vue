@@ -41,7 +41,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="方向" min-width="10%">
+                    <el-table-column align="center" label="类型" min-width="10%">
                         <template slot-scope="scope">
                             <span v-if="scope.row.order_type === 'open'">
                                 <b>

@@ -41,7 +41,7 @@
                             {{ utcToLocalTimestamp(scope.row.exit_dt) }}
                         </el-col>
 
-                        <el-col :span="2" align="left">
+                        <el-col :span="4" align="left">
                             {{ scope.row.exit_price }}
                         </el-col>
                     </el-row>

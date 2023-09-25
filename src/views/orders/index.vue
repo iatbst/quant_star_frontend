@@ -67,7 +67,7 @@
                     <el-row style="margin-top: 50px; margin-left: 20px">
                     <el-select v-model="orderFilter.order_type" placeholder="类型">
                         <el-option
-                        v-for="item in ['any', 'open', 'close', 'temp']"
+                        v-for="item in ['any', 'open', 'timer', 'flip', 'close', 'temp']"
                         :key="item"
                         :label="item"
                         :value="item">

@@ -31,10 +31,13 @@ export function chineseString(s) {
             case 'open': cs = '开仓'; break;
             case 'close': cs = '关仓'; break;
             case 'adjust': cs = '调整'; break;
+            case 'win_stop': cs = '止盈'; break;
             case 'lose_stop': cs = '止损'; break;
             case 'increase': cs = '补仓'; break;
             case 'decrease': cs = '减仓'; break;
             case 'rollback': cs = '回撤'; break;
+            case 'timer': cs = '定时'; break;
+            case 'flip': cs = '反转'; break;
             case 'temp': cs = '手动'; break;
 
             // 费用
