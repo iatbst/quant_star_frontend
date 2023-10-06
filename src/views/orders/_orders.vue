@@ -29,7 +29,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="策略" min-width="10%">
+                    <el-table-column align="center" label="策略" min-width="8%">
                         <template slot-scope="scope">
                             {{ strategyAlias[scope.row.worker.name.split('_').slice(-1)[0].slice(0,-1)] }}
                         </template>
@@ -41,7 +41,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="类型" min-width="10%">
+                    <el-table-column align="center" label="类型" min-width="8%">
                         <template slot-scope="scope">
                             <span v-if="scope.row.order_type === 'open'">
                                 <b>
