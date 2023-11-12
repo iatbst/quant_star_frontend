@@ -2,11 +2,12 @@
 
 // 添加单line
 // data_obj: key -> x axis, value -> y axis
-export function addSingleLine(name, data_obj, options){
-    options.series = []
+export function addSingleLine(name, data_obj, options, reset_series=true){
+    if (reset_series){
+        options.series = [] 
+    }
     var lineData = {name: name, data: []}
     options.xAxis.categories = Object.keys(data_obj).sort()
-
     for (var i = 0; i < options.xAxis.categories.length; i++){
         var key = options.xAxis.categories[i]
         lineData.data.push(Math.round(data_obj[key]))
@@ -37,6 +38,7 @@ export function addMultiLineX(data_obj, options){
 // 添加LineData (用于多line Chart)
 export function addMultiLine(name, data_obj, options){
     var lineData = {name: name, data: []}
+
     for (var i = 0; i < options.xAxis.categories.length; i++){
         var key = options.xAxis.categories[i]
         if (data_obj.hasOwnProperty(key)){

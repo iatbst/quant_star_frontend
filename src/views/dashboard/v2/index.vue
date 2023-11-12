@@ -71,14 +71,32 @@
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
       <el-col :span="16">
           <div style="margin-bottom: 20px">
-            <value-line 
-            v-bind:values="btValueLines.pivot_reversal.data" 
-            v-bind:title="btValueLines.pivot_reversal.name"
+            <multi-value-line 
+            v-bind:values="
+            [
+                {
+                    title: btValueLines.pivot_reversal.name,
+                    data: btValueLines.pivot_reversal.data
+                },
+                {
+                    title: btValueLines.pivot_reversal_v1.name,
+                    data: btValueLines.pivot_reversal_v1.data
+                },
+                {
+                    title: btValueLines.pivot_reversal_v2.name,
+                    data: btValueLines.pivot_reversal_v2.data
+                },
+            ]
+            " 
             v-bind:y-type="btValueLineType"
             v-bind:range="btValueLineRange"
-            v-if="btValueLines.pivot_reversal.available" 
+            v-if="
+            btValueLines.pivot_reversal.available && 
+            btValueLines.pivot_reversal_v1.available &&
+            btValueLines.pivot_reversal_v2.available
+            " 
             style="margin-bottom: 20px">
-            </value-line>
+            </multi-value-line>
           </div>
       </el-col>
 
@@ -148,6 +166,7 @@ import orders from '@/views/orders/_orders'
 
 import summaryTable from '@/views/dashboard/v2/summary_table'
 import valueLine from '@/views/balance/_value_line'
+import multiValueLine from '@/views/balance/_multi_value_line'
 import strategyLevelPositions from '@/views/position/_strategy_level_positions'
 import strategyPositions from '@/views/position/_strategy_positions'
 import exchangeBalanceDistributions from '@/views/balance/_exchange_balance_distributions'
@@ -181,6 +200,8 @@ export default {
         summaryTable,
 
         valueLine,
+        multiValueLine,
+        
 
         strategyLevelPositions,
         strategyPositions,
@@ -240,12 +261,17 @@ export default {
             // 记录策略回测资产曲线
             btValueLines: {
                 'pivot_reversal': {
-                    'name': 'Pivot Reversal回测资金曲线',
+                    'name': 'Pivot Reversal',
                     'data': null,
                     'available': false
                 },
-                'pivot_reversal_short': {
-                    'name': 'Pivot Reversal Short回测资金曲线',
+                'pivot_reversal_v1': {
+                    'name': 'Pivot Reversal(V1)',
+                    'data': null,
+                    'available': false
+                }, 
+                'pivot_reversal_v2': {
+                    'name': 'Pivot Reversal(V2)',
                     'data': null,
                     'available': false
                 }, 
@@ -253,12 +279,7 @@ export default {
                     'name': 'Plunge Back回测资金曲线',
                     'data': null,
                     'available': false
-                },  
-                'all': {
-                    'name': '所有策略回测资金曲线',
-                    'data': null,
-                    'available': false
-                },                              
+                },                               
             },
 
             // 不同策略的Alias
