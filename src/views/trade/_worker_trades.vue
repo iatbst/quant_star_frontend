@@ -29,7 +29,7 @@
                             {{ utcToLocalTimestamp(scope.row.entry_dt) }}
                         </el-col>
 
-                        <el-col :span="2" align="left">
+                        <el-col :span="3" align="left">
                             {{ scope.row.entry_price }}
                         </el-col>
 

@@ -31,7 +31,7 @@
 
                     <el-table-column align="center" label="策略" min-width="8%">
                         <template slot-scope="scope">
-                            {{ strategyAlias[scope.row.worker.name.split('_').slice(-1)[0].slice(0,-1)] }}
+                            {{ strategyAlias.hasOwnProperty(scope.row.worker.name.split('_').slice(-2, -1)[0]) ? strategyAlias[scope.row.worker.name.split('_').slice(-2, -1)[0]] : '大PV' }}
                         </template>
                     </el-table-column>
 

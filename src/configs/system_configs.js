@@ -45,9 +45,9 @@ const strategies = [
 ]
 
 const strategyAlias = {
-    'pr': 'pivot reversal',
-    'prs': 'pivot reversal mini',
-    'pb': 'plunge back'
+    'pr': '大PV',
+    'prm': '小PV',
+    'pb': '抄底'
 }
 
 // 当前投资组合的初始资金
