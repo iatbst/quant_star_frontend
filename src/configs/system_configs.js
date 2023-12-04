@@ -11,7 +11,7 @@ const pfoHosts = pfoHostList
 
 // Backtest Host地址(运行回测的Host)
 // const backtestHost = 'http://localhost:8000/api'
-const backtestHost = 'http://ec2-18-139-27-246.ap-southeast-1.compute.amazonaws.com:8000/api'
+const backtestHost = 'http://ec2-13-214-122-117.ap-southeast-1.compute.amazonaws.com:8000/api'
 
 // 常用exchanges
 const exchanges = [

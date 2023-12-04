@@ -101,12 +101,20 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/worker-runs',
+    name: '策略执行',
+    meta: { title: '策略执行', icon: 'el-icon-data-analysis' },
     children: [
       {
         path: 'worker-runs',
-        name: '策略运行',
+        name: '运行中',
         component: () => import('@/views/worker_run/index'),
-        meta: { title: '策略运行', icon: 'el-icon-loading' }
+        meta: { title: '运行中', icon: 'el-icon-loading' }
+      },
+      {
+        path: 'worker-runs?status=offline',
+        name: '已下线',
+        component: () => import('@/views/worker_run/index'),
+        meta: { title: '已下线', icon: 'el-icon-remove' }
       }
     ]
   },

@@ -9,7 +9,7 @@
       style="width: 100%"
       height="750"
     >
-      <el-table-column align="center" label="策略机器人">
+      <el-table-column align="center" label="策略工人">
         <template slot-scope="scope">
           <el-button style="width: 100%" v-bind:class="{currentWorker: currentWorker.id == scope.row.id}" type="primary" v-on:click="onClickWorker(scope.row)" plain>
             {{ scope.row.name }}

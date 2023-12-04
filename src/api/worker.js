@@ -1,8 +1,11 @@
 import request from '@/utils/request'
 
 
-export function getWorkersByPfo(pfo, status='normal') {
-  if (status === null){
+export function getWorkersByPfo(pfo, status='normal', disable_ts=null) {
+  if (disable_ts !== null){
+    // 返回下线没多久的workers
+    var url = '/workers/?status=disable&disable_ts__gte=' + disable_ts + '&portfolio_id=' + pfo.id
+  } else if (status === null){
     var url = '/workers/?portfolio_id=' + pfo.id
   } else {
     var url = '/workers/?status=' + status + '&portfolio_id=' + pfo.id

@@ -339,7 +339,7 @@ export default {
       gwHourSuccess: 0,
 
       // Strategy Feed
-      barLevel1: '1h',  
+      barLevel1: '1h',  // 不应该写死
       barLevel2: 'tick',
       monitorStatStyFeedData: {},
       styFeedCount: 0,

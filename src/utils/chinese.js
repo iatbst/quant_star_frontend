@@ -37,6 +37,7 @@ export function chineseString(s) {
             case 'decrease': cs = '减仓'; break;
             case 'rollback': cs = '回撤'; break;
             case 'timer': cs = '定时'; break;
+            case 'offline': cs = '下线'; break;
             case 'flip': cs = '反转'; break;
             case 'temp': cs = '手动'; break;
 

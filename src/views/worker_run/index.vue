@@ -19,6 +19,7 @@
 
 
 <script>
+import moment from 'moment'
 import config from '@/configs/system_configs'
 import { getPortfolios } from '@/api/portfolio'
 import { getWorkersByPfo } from '@/api/worker'
@@ -28,6 +29,17 @@ import pfoWorkerTrade from '@/views/pfo_worker_trade/_pfo_worker_trade'
 export default {
   components: {
     pfoWorkerTrade
+  },
+
+  // 监听路由的变化: 可能通过添加query:status改变获取的workers
+  watch: {
+    $route:{
+      handler(n){
+        this.init()
+      },
+      immediate: true,
+      deep: true,
+    }
   },
 
   data() {
@@ -45,12 +57,15 @@ export default {
 
       trades: null,
       tradesLoading: false,
+
+      created: false,
     }
   },
 
-  created() {
-    this.init()
-  },
+  // 通过watch route的变化进行init刷新
+  // created() {
+  //   this.init()
+  // },
 
   methods: { 
     // 初始化: 展示所有pfo;展示默认pfo的所有workers; 展示默认worker的所有trades
@@ -96,7 +111,12 @@ export default {
       } else {
         var status = this.$route.query.status
       }
-      getWorkersByPfo(pfo, status).then(response => {
+      var disable_ts = null
+      // 返回已经下线的workers(eg, N个月内)
+      if (status == 'offline'){
+        disable_ts = moment(new Date()).subtract(365,'days').format('YYYY-MM-DD') + 'T00:00:00'  // 365天内
+      }
+      getWorkersByPfo(pfo, status, disable_ts).then(response => {
         response.results.sort(function(a,b){return a.name.localeCompare(b.name)})
         this.workers = response.results
         this.workersLoading = false
@@ -104,6 +124,7 @@ export default {
           // 回调
           onWorkers(this.workers[0])
         } else {
+          this.currentWorker = null
           this.trades = []
         }
       })

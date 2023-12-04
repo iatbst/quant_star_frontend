@@ -9,7 +9,7 @@
         style="width: 100%"
         height="750"
         >
-            <el-table-column align="center" :label="'交易详情 ( ' + currentWorker.name + ' )'" v-if="currentWorker">
+            <el-table-column align="center" :label="currentWorker.name + ' ( ' + currentWorker.status + ' )'" v-if="currentWorker">
                 <template slot-scope="scope" style="padding: 0px">
                 <el-card :class="{'box-card': true, 'el-card': true, 'close-card': scope.row.status === 'close', 'short-card': scope.row.side === 'short', 'long-card': scope.row.side === 'long'}">
                     <div slot="header" class="clearfix" style="margin-bottom: -50px;margin-top: -10px;">
@@ -20,7 +20,7 @@
                             </div>
                         </el-col>
 
-                        <el-col :span="2" align="left">
+                        <el-col :span="3" align="left">
                             {{ chineseString(scope.row.side) }} (<el-button style="margin-top: -8px" type="text" @click="showTradeJsonDialog(scope.row)">
                                 {{ scope.row.id }}</el-button>)
                         </el-col>
