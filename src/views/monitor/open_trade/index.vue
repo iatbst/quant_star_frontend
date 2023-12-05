@@ -135,7 +135,7 @@
             header-cell-style="background: lightgray; padding:5px"
             border=""
           >
-            <el-table-column align="center" label="ID" prop="id" min-width="10%">
+            <el-table-column align="center" label="ID" prop="id" min-width="5%">
               <template slot-scope="scope">
                 <span @click="showWorkerTrades(scope.row.workerID, scope.row.worker)" style="cursor: pointer">
                   {{ scope.row.id }}
@@ -146,7 +146,7 @@
             <el-table-column align="center" label="子策略" prop="worker" min-width="20%">
             </el-table-column>        
 
-            <el-table-column align="center" label="标的" prop="symbol" min-width="10%">
+            <el-table-column align="center" label="标的" prop="symbol" min-width="15%">
             </el-table-column>  
 
             <el-table-column align="center" label="状态" prop="status" min-width="10%">
@@ -457,7 +457,8 @@ export default {
           }
           this.detailTableDataList.push({
             worker: symbol + '交易所仓位: ' + _data.exchange_position, 
-            position: '合计: ' + (countDecimals(_data.position) > 3 ? _data.position.toFixed(3) : _data.position), 
+            position: 'pfo仓位: ' + (countDecimals(_data.position) > 3 ? _data.position.toFixed(3) : _data.position), 
+            symbol: '其他pfo仓位: ' + (countDecimals(_data.other_position) > 3 ? _data.other_position.toFixed(3) : _data.other_position), 
             summary: true,
             fail: _data.status === 'fail',
           })
@@ -501,15 +502,16 @@ export default {
       },
 
 
-    arraySpanMethod({ row, column, rowIndex, columnIndex }) {
-      if (row.summary){
-        if (columnIndex % 4 === 0){
-          return [1, 4]
-        } else {
-          return [0, 0]
-        }
-      }
-    },
+    // arraySpanMethod({ row, column, rowIndex, columnIndex }) {
+    //   if (row.summary){
+    //     if (columnIndex % 4 === 0){
+    //       return [1, 4]
+    //     } else {
+    //       return [0, 0]
+    //     }
+    //   }
+    // },
+
     rowStyle({ row, rowIndex}){
       if (row.summary){
         if ( row.fail ) {
