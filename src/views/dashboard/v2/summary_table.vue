@@ -108,111 +108,38 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="短线头寸" min-width="10%" align="center">
+            <el-table-column label="大PV多头" min-width="10%" align="center">
                 <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.shortLevelPosition >= 0">
-                        {{toThousands(scope.row.shortLevelPosition)}}
-                    </span> 
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.shortLevelPosition)}}
-                    </span>               
-                </template>       
-            </el-table-column>
-
-            <el-table-column label="长线头寸" min-width="10%" align="center">
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.longLevelPosition >= 0">
-                        {{toThousands(scope.row.longLevelPosition)}}
-                    </span> 
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.longLevelPosition)}}
-                    </span>         
-                </template>
-            </el-table-column>
-
-            <el-table-column label="USD净头寸" min-width="10%" align="center">
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.usdtPosition >= 0">
-                        {{toThousands(scope.row.usdtPosition)}}
-                    </span> 
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.usdtPosition)}}
-                    </span>                 
-                </template>       
-            </el-table-column>
-
-            <el-table-column label="BTC净头寸" min-width="10%" align="center">
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.btcPosition >= 0">
-                        {{toThousands(scope.row.btcPosition)}}
-                    </span> 
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.btcPosition)}}
-                    </span>             
-                </template>
-            </el-table-column>
-        </el-table>     
-
-        <!--- 策略 --->
-        <el-table
-        :data="perfDatas"
-        :header-cell-style="{ background: '#f2f2f2' }"
-        style="width: 100%">
-
-            <el-table-column label="半年次数" min-width="10%" align="center">
-                <template slot-scope="scope">
-                   <span>
-                        {{toThousands(scope.row.totalCount)}}
-                    </span>              
-                </template>
-            </el-table-column>
-
-            <el-table-column label="半年胜率" min-width="10%" align="center">
-                <template slot-scope="scope">
-                   <span>
-                        {{scope.row.winRatio}}%
-                    </span>               
-                </template>
-            </el-table-column>
-
-            <el-table-column label="半年盈利平均" min-width="10%" align="center">
-                <template slot-scope="scope">  
                    <span style="color: green">
-                        {{scope.row.winAvgPtg}}%
-                    </span>            
+                        {{toThousands(scope.row.prLongPosition)}}
+                    </span>               
                 </template>       
             </el-table-column>
 
-            <el-table-column label="半年亏损平均" min-width="10%" align="center">
-                <template slot-scope="scope">  
+            <el-table-column label="大PV空头" min-width="10%" align="center">
+                <template slot-scope="scope">
                    <span style="color: red">
-                        {{scope.row.loseAvgPtg}}%
-                    </span>             
-                </template>         
-            </el-table-column>
-
-            <el-table-column label="半年盈亏比率" min-width="10%" align="center">
-                <template slot-scope="scope"> 
-                   <span>
-                        {{scope.row.plRatio}}
-                    </span>           
+                        {{toThousands(scope.row.prShortPosition)}}
+                    </span>        
                 </template>
             </el-table-column>
 
-            <el-table-column label="半年综合滑点" min-width="10%" align="center">
-                <template slot-scope="scope">   
-                   <span>
-                        {{scope.row.slippage}}%
-                    </span>        
+            <el-table-column label="小PV头寸" min-width="10%" align="center">
+                <template slot-scope="scope">
+                   <span style="color: red">
+                        {{toThousands(scope.row.prmPosition)}}
+                    </span>              
                 </template>       
             </el-table-column>
 
-            <el-table-column label="交易币数" min-width="10%" align="center">
-                <template slot-scope="scope">   
-                    {{ usdtSymbols.size }} + {{ btcSymbolsCount }}       
-                </template>       
+            <el-table-column label="抄底头寸" min-width="10%" align="center">
+                <template slot-scope="scope">
+                   <span style="color: green">
+                        {{toThousands(scope.row.pbPosition)}}
+                    </span>          
+                </template>
             </el-table-column>
-        </el-table>        
+        </el-table>   
     </div>
 </template>
 
@@ -273,16 +200,10 @@ export default {
                 longPosition: null,
                 shortPosition: null,
 
-                usdtLongPosition: null,
-                usdtShortPosition: null,
-                usdtPosition: null,
-
-                btcLongPosition: null,
-                btcShortPosition: null,
-                btcPosition: null,
-
-                shortLevelPosition: null,   // 短周期仓位: 1, 2 号策略
-                longLevelPosition: null     // 长周期仓位   3, 4号策略
+                prLongPosition: null,
+                prShortPosition: null,
+                prmPosition: null,
+                pbPosition: null
             }],
 
             // 策略
@@ -361,10 +282,16 @@ export default {
 
                     // 仓位信息
                     var posData = this.pfoMasterDatas[i].positions.all
+                    var prData = this.pfoMasterDatas[i].positions.pivot_reversal
+                    var pbData = this.pfoMasterDatas[i].positions.plunge_back
+                    var prmData = this.pfoMasterDatas[i].positions.pivot_reversal_mini
                     this.positionDatas[0].totalPosition = parseInt(posData.long + posData.short)
                     this.positionDatas[0].longPosition = parseInt(posData.long)
                     this.positionDatas[0].shortPosition = parseInt(posData.short)
-
+                    this.positionDatas[0].prLongPosition = parseInt(prData.long)
+                    this.positionDatas[0].prShortPosition = parseInt(prData.short)
+                    this.positionDatas[0].pbPosition = parseInt(pbData.long)
+                    this.positionDatas[0].prmPosition = parseInt(prmData.short)
                 }        
             }  
             this.totalBalance = this.balanceDatas[0].totalBalance   // 计算总体杠杆率
