@@ -37,15 +37,15 @@
                 </template>
             </el-table-column>
 
-            <el-table-column prop="day30Diff" label="三十日变化" min-width="10%" align="center">
+            <el-table-column prop="yearDiff" label="今年变化" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span v-if="scope.row.day30Diff > 0" style="color: green">
+                    <span v-if="scope.row.yearDiff > 0" style="color: green">
                         <i class="el-icon-top"></i>
-                        {{toThousands(scope.row.day30Diff)}}
+                        {{toThousands(scope.row.yearDiff)}}
                     </span>
                     <span style="color: red" v-else>
                         <i class="el-icon-bottom"></i>
-                        {{toThousands(scope.row.day30Diff)}}
+                        {{toThousands(scope.row.yearDiff)}}
                     </span>              
                 </template>          
             </el-table-column>
@@ -180,7 +180,7 @@ export default {
                 totalReturn: null,
                 day1Diff: null,
                 day7Diff: null,
-                day30Diff: null,
+                yearDiff: null,
                 drawdown: null,
                 drawdownDays: null,
                 maxDrawdown: null,
@@ -272,9 +272,9 @@ export default {
 
                     this.balanceDatas[0].day1Diff = parseInt(totalBalanceInfo.day_diff)
                     const day7 = moment().subtract(6, 'day').format('YYYY-MM-DD')
-                    const day30 = moment().subtract(29, 'day').format('YYYY-MM-DD')
+                    const yearStart = moment().startOf('year').format('YYYY-MM-DD')
                     this.balanceDatas[0].day7Diff = parseInt(totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[day7])
-                    this.balanceDatas[0].day30Diff = parseInt(totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[day30])
+                    this.balanceDatas[0].yearDiff = parseInt(totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[yearStart])
                     
                     this.balanceDatas[0].drawdown = (totalBalanceInfo.drawdown*100).toFixed(2)
                     this.balanceDatas[0].maxDrawdown = (totalBalanceInfo.max_drawdown*100).toFixed(2)
