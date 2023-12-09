@@ -335,7 +335,7 @@ export default {
             this.pfoDatas = this.summaryDatas[2]
 
             this.parseBalanceData()
-            this.parsePositionData()
+            // this.parsePositionData()
             this.parsePerfData()
         },
 
@@ -359,25 +359,12 @@ export default {
                     this.balanceDatas[0].maxDrawdown = (totalBalanceInfo.max_drawdown*100).toFixed(2)
                     this.balanceDatas[0].drawdownDays = totalBalanceInfo.drawdown_days
 
-                    // 特例: 从master data中获取长短周期策略的仓位
-                    this.longLevelPosition = 0
-                    this.shortLevelPosition = 0
-                    var posData = this.pfoMasterDatas[i].positions.summary
-                    var levelList = new Set(['1', '2', '3', '4', '5', '6'])
-                    for(let key in posData){
-                        var level = key.split('_')[0]
-                        if (levelList.has(level)){
-                            if (parseInt(level) < 3 ){
-                                // 短周期
-                                this.shortLevelPosition += parseInt(posData[key])
-                            } else {
-                                // 长周期
-                                this.longLevelPosition += parseInt(posData[key])
-                            }                           
-                        }
-                    }    
-                    this.positionDatas[0].longLevelPosition = this.longLevelPosition 
-                    this.positionDatas[0].shortLevelPosition = this.shortLevelPosition  
+                    // 仓位信息
+                    var posData = this.pfoMasterDatas[i].positions.all
+                    this.positionDatas[0].totalPosition = parseInt(posData.long + posData.short)
+                    this.positionDatas[0].longPosition = parseInt(posData.long)
+                    this.positionDatas[0].shortPosition = parseInt(posData.short)
+
                 }        
             }  
             this.totalBalance = this.balanceDatas[0].totalBalance   // 计算总体杠杆率
