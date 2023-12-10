@@ -5,25 +5,34 @@
             <!-- 曲线 -->
             <highcharts :options="totalBalanceOptions" style="margin-top: 20px"></highcharts>
             <div align="center" style="margin-bottom: 20px">
-                <el-button style="margin-left: 0px" type="info" size="mini"  @click="parseData()" :plain="buttonAllPlain">
+                <el-button style="margin-left: 0px" type="info" size="mini"  @click="parseData()" :plain="buttonAllPlain" v-if="range_set.includes('all') ">
                     全部
                 </el-button> 
-                <el-button type="info" size="mini"  @click="parseData('thisYear')" :plain="buttonThisYearPlain">
+                <el-button type="info" size="mini"  @click="parseData('thisYear')" :plain="buttonThisYearPlain" v-if="range_set.includes('thisYear') ">
                     今年
                 </el-button> 
-                <el-button type="info" size="mini"  @click="parseData('6M')" :plain="button6MPlain">
+                <el-button type="info" size="mini"  @click="parseData('1W')" :plain="button1WPlain" v-if="range_set.includes('1W') ">
+                    1周
+                </el-button> 
+                <el-button type="info" size="mini"  @click="parseData('1M')" :plain="button1MPlain" v-if="range_set.includes('1M') ">
+                    1个月
+                </el-button>  
+                <el-button type="info" size="mini"  @click="parseData('3M')" :plain="button3MPlain" v-if="range_set.includes('3M') ">
+                    3个月
+                </el-button>  
+                <el-button type="info" size="mini"  @click="parseData('6M')" :plain="button6MPlain" v-if="range_set.includes('6M') ">
                     6个月
                 </el-button>   
-                <el-button type="info" size="mini"  @click="parseData('12M')" :plain="button12MPlain">
+                <el-button type="info" size="mini"  @click="parseData('12M')" :plain="button12MPlain" v-if="range_set.includes('12M') ">
                     12个月
                 </el-button>  
-                <el-button type="info" size="mini"  @click="parseData('2Y')" :plain="button2YPlain">
+                <el-button type="info" size="mini"  @click="parseData('2Y')" :plain="button2YPlain" v-if="range_set.includes('2Y') ">
                     2年
                 </el-button>  
-                <el-button type="info" size="mini"  @click="parseData('3Y')" :plain="button3YPlain">
+                <el-button type="info" size="mini"  @click="parseData('3Y')" :plain="button3YPlain" v-if="range_set.includes('3Y') ">
                     3年
                 </el-button>  
-                <el-button type="info" size="mini"  @click.native="switchLineType()" :plain="buttonLogPlain">
+                <el-button type="info" size="mini"  @click.native="switchLineType()" :plain="buttonLogPlain" v-if="range_set.includes('log') ">
                     对数坐标
                 </el-button>  
             </div>       
@@ -54,7 +63,11 @@ export default {
         },
         range: {
             type: String,
-            default: '6M'
+            default: 'thisYear'
+        },
+        range_set: {
+            type: Array,
+            default: ['1W', '1M', '3M', '6M', '12M', 'thisYear', 'all']
         }
     },
 
@@ -71,6 +84,9 @@ export default {
         return {
             buttonAllPlain: true,
             buttonThisYearPlain: true,
+            button1WPlain: true,
+            button1MPlain: true,
+            button3MPlain: true,
             button6MPlain: true,
             button12MPlain: true,
             button2YPlain: true,
@@ -148,6 +164,9 @@ export default {
 
         _clearButtons(){
             this.buttonAllPlain = true
+            this.button1WPlain = true
+            this.button1MPlain = true
+            this.button3MPlain = true
             this.button6MPlain = true
             this.button12MPlain = true
             this.button2YPlain = true
@@ -157,7 +176,19 @@ export default {
 
         filterDates(history_values, range){
             var startDate = null
-            if (range === '6M'){
+            if (range === '1W'){
+                // 过去1周
+                startDate = moment(new Date()).subtract(1,'weeks').format('YYYY-MM-DD')
+                this.button1WPlain = false
+            } else if (range === '1M'){
+                // 过去1月
+                startDate = moment(new Date()).subtract(1,'months').format('YYYY-MM-DD')
+                this.button1MPlain = false
+            } else if (range === '3M'){
+                // 过去3月
+                startDate = moment(new Date()).subtract(3,'months').format('YYYY-MM-DD')
+                this.button3MPlain = false
+            } else if (range === '6M'){
                 // 过去6月
                 startDate = moment(new Date()).subtract(6,'months').format('YYYY-MM-DD')
                 this.button6MPlain = false

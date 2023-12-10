@@ -174,9 +174,12 @@
             </el-table-column>
             <el-table-column label="滑点" min-width="14%" align="center"> 
                 <template slot-scope="scope">
-                   <span style="">
+                   <span style="color: green" v-if="scope.row.col2 >= 0">
                         {{scope.row.col2}}%
-                    </span>               
+                    </span>  
+                   <span style="color: red" v-else>
+                        {{scope.row.col2}}%
+                    </span>                
                 </template> 
             </el-table-column>
             <el-table-column label="收益" min-width="14%" align="center">
@@ -191,7 +194,10 @@
             </el-table-column>
             <el-table-column label="滑点" min-width="14%" align="center"> 
                 <template slot-scope="scope">
-                   <span style="">
+                   <span style="color: green" v-if="scope.row.col4 >= 0">
+                        {{scope.row.col4}}%
+                    </span>  
+                   <span style="color: red" v-else>
                         {{scope.row.col4}}%
                     </span>               
                 </template> 
@@ -208,7 +214,10 @@
             </el-table-column>
             <el-table-column label="滑点" min-width="14%" align="center">
                 <template slot-scope="scope">
-                   <span style="">
+                   <span style="color: green" v-if="scope.row.col6 >= 0">
+                        {{scope.row.col6}}%
+                    </span>  
+                   <span style="color: red" v-else>
                         {{scope.row.col6}}%
                     </span>               
                 </template>  

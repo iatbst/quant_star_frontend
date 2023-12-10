@@ -37,6 +37,39 @@
       </el-col>
     </el-row> 
 
+    <!---------------------------------- 策略的Pnl Lines ----------------------------------->
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
+      <el-col :span="22" :offset="1">
+          <div style="margin-bottom: 20px">
+            <multi-value-line 
+            v-bind:values="
+            [
+                {
+                    title: pnlLines.pivot_reversal.name,
+                    data: pnlLines.pivot_reversal.data
+                },
+                {
+                    title: pnlLines.plunge_back.name,
+                    data: pnlLines.plunge_back.data
+                },
+                {
+                    title: pnlLines.pivot_reversal_mini.name,
+                    data: pnlLines.pivot_reversal_mini.data
+                },
+            ]
+            " 
+            v-if="
+            pnlLines.pivot_reversal.available && 
+            pnlLines.plunge_back.available &&
+            pnlLines.pivot_reversal_mini.available
+            " 
+            style="margin-bottom: 20px">
+            </multi-value-line>
+          </div>
+      </el-col>
+    </el-row>
+
+
     <!---------------------------------- Benchbark 回测比较 -----------------------------------
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
       <el-col :span="16">
@@ -65,8 +98,7 @@
     </el-row> 
     ------->
 
-    <!---------------------------------- 回测曲线与仓位 ----------------------------------->
-    <!-- Pivot Reversal  -->
+    <!---------------------------------- 回测曲线与仓位 -----------------------------------
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
       <el-col :span="16">
           <div style="margin-bottom: 20px">
@@ -111,7 +143,6 @@
       </el-col>
     </el-row> 
 
-    <!-- Plunge Back -->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px">
       <el-col :span="16">
           <div style="margin-bottom: 20px">
@@ -137,6 +168,7 @@
           </div>
       </el-col>
     </el-row> 
+    ------->
 
     <!----------------------------------- 仓位 --------------------------------------->
     <div style="background-color: white; margin-bottom: 20px; margin-top: 20px">
@@ -280,6 +312,27 @@ export default {
                     'available': false
                 },                               
             },
+
+            // 策略的Pnl Line(今年)
+            pnlLines: {
+                'pivot_reversal': {
+                    'name': '大PV',
+                    'data': null,
+                    'available': false
+                },
+                'plunge_back': {
+                    'name': '抄底',
+                    'data': null,
+                    'available': false
+                },
+                'pivot_reversal_mini': {
+                    'name': '小PV',
+                    'data': null,
+                    'available': false
+                },                                 
+            },
+            btValueLineType: 'logarithmic',
+            pnlLineRange: 'thisYear',
 
             // 不同策略的Alias
             strategyAlias: {
@@ -481,7 +534,7 @@ export default {
         // 从Master获取所有pfo的wallet/position data
         fetchPfoDatasFromMaster() {
             this.pfoMasterDatas = []
-            getPortfolioDatas(config.masterHost, 'portfolio,wallet,positions,trade_stats').then(response => {
+            getPortfolioDatas(config.masterHost, 'portfolio,wallet,positions,trade_stats,pnl_line').then(response => {
                     this.pfoMasterDatas = response.results
                     // 排序
                     for(var i = 0; i < this.pfoMasterDatas.length; i++){
@@ -500,6 +553,14 @@ export default {
                             this.parentPfoData = this.pfoMasterDatas[i]
                         }
                     }
+
+                    // Pnl Line
+                    this.pnlLines.pivot_reversal.data = this.parentPfoData.pnl_line.pivot_reversal.year_now
+                    this.pnlLines.pivot_reversal.available = true
+                    this.pnlLines.plunge_back.data = this.parentPfoData.pnl_line.plunge_back.year_now
+                    this.pnlLines.plunge_back.available = true
+                    this.pnlLines.pivot_reversal_mini.data = this.parentPfoData.pnl_line.pivot_reversal_mini.year_now
+                    this.pnlLines.pivot_reversal_mini.available = true                    
 
                     this.pfoMasterDatasAvailable = true
                 }
