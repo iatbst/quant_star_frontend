@@ -5,9 +5,8 @@
       <el-col :span="24">
         <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
             <summary-table 
-            v-bind:summary-datas="[pfoMasterDatas, subaccountDatas, pfoDatas]" 
-            v-bind:live-rets="liveRets"
-            v-if="pfoMasterDatasAvailable && subaccountDatasAvailable && pfoDatasAvailable" 
+            v-bind:parentPfoData="parentPfoData" 
+            v-if="pfoMasterDatasAvailable" 
             style="margin-bottom: 20px">
             </summary-table>
         </div>
@@ -482,7 +481,7 @@ export default {
         // 从Master获取所有pfo的wallet/position data
         fetchPfoDatasFromMaster() {
             this.pfoMasterDatas = []
-            getPortfolioDatas(config.masterHost, 'portfolio,wallet,positions').then(response => {
+            getPortfolioDatas(config.masterHost, 'portfolio,wallet,positions,trade_stats').then(response => {
                     this.pfoMasterDatas = response.results
                     // 排序
                     for(var i = 0; i < this.pfoMasterDatas.length; i++){

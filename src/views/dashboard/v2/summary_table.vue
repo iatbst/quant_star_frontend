@@ -139,7 +139,216 @@
                     </span>          
                 </template>
             </el-table-column>
-        </el-table>   
+        </el-table> 
+
+        <!--- 策略表现(row0) --->
+        <template>
+            <el-table
+            :data="[{col1: '大PV今年', col2: '小PV今年', col3: '抄底今年'}]"
+            :show-header="false"
+            :cell-style="{ background: '#f2f2f2' }"
+            style="width: 100%; background: #f2f2f2">
+            <el-table-column prop="col1" min-width="33%" align="center"> 
+            </el-table-column>
+            <el-table-column prop="col2" min-width="33%" align="center"> 
+            </el-table-column>
+            <el-table-column prop="col3" min-width="33%" align="center"> 
+            </el-table-column>
+            </el-table>
+        </template>
+        <!--- 策略表现(row1) --->
+        <el-table
+        :data="perfData1"
+        :header-cell-style="addRightBorder"
+        :cell-style="addRightBorder"
+        style="width: 100%">
+            <el-table-column label="收益" min-width="14%" align="center" style="background: white"> 
+                <template slot-scope="scope">
+                   <span style="color: green" v-if="scope.row.col1 >= 0">
+                        {{toThousands(scope.row.col1)}}
+                    </span>  
+                   <span style="color: red" v-else>
+                        {{toThousands(scope.row.col1)}}
+                    </span>                
+                </template> 
+            </el-table-column>
+            <el-table-column label="滑点" min-width="14%" align="center"> 
+                <template slot-scope="scope">
+                   <span style="">
+                        {{scope.row.col2}}%
+                    </span>               
+                </template> 
+            </el-table-column>
+            <el-table-column label="收益" min-width="14%" align="center">
+                <template slot-scope="scope">
+                   <span style="color: green" v-if="scope.row.col3 >= 0">
+                        {{toThousands(scope.row.col3)}}
+                    </span>  
+                   <span style="color: red" v-else>
+                        {{toThousands(scope.row.col3)}}
+                    </span>                
+                </template> 
+            </el-table-column>
+            <el-table-column label="滑点" min-width="14%" align="center"> 
+                <template slot-scope="scope">
+                   <span style="">
+                        {{scope.row.col4}}%
+                    </span>               
+                </template> 
+            </el-table-column>
+            <el-table-column label="收益" min-width="14%" align="center"> 
+                <template slot-scope="scope">
+                   <span style="color: green" v-if="scope.row.col5 >= 0">
+                        {{toThousands(scope.row.col5)}}
+                    </span>  
+                   <span style="color: red" v-else>
+                        {{toThousands(scope.row.col5)}}
+                    </span>                
+                </template> 
+            </el-table-column>
+            <el-table-column label="滑点" min-width="14%" align="center">
+                <template slot-scope="scope">
+                   <span style="">
+                        {{scope.row.col6}}%
+                    </span>               
+                </template>  
+            </el-table-column>
+            <el-table-column label="" min-width="14%" align="center"> 
+            </el-table-column>
+        </el-table> 
+        <!--- 策略表现(row2) --->
+        <el-table
+        :data="perfData2"
+        :header-cell-style="addRightBorder"
+        :cell-style="addRightBorder"
+        style="width: 100%">
+            <el-table-column label="交易次数" min-width="14%" align="center" style="background: white"> 
+                <template slot-scope="scope">
+                   <span style="">
+                        {{toThousands(scope.row.col1)}}
+                    </span>               
+                </template> 
+            </el-table-column>
+            <el-table-column label="胜率" min-width="14%" align="center"> 
+                <template slot-scope="scope">
+                   <span style="">
+                        {{scope.row.col2}}%
+                    </span>               
+                </template> 
+            </el-table-column>
+            <el-table-column label="PV10H收益" min-width="14%" align="center">
+                <template slot-scope="scope">
+                   <span style="color: green" v-if="scope.row.col3 >= 0">
+                        {{toThousands(scope.row.col3)}}
+                    </span>  
+                   <span style="color: red" v-else>
+                        {{toThousands(scope.row.col3)}}
+                    </span>                
+                </template> 
+            </el-table-column>
+            <el-table-column label="PV20H收益" min-width="14%" align="center">
+                <template slot-scope="scope">
+                   <span style="color: green" v-if="scope.row.col4 >= 0">
+                        {{toThousands(scope.row.col4)}}
+                    </span>  
+                   <span style="color: red" v-else>
+                        {{toThousands(scope.row.col4)}}
+                    </span>                
+                </template>  
+            </el-table-column>
+            <el-table-column label="20%次数" min-width="14%" align="center"> 
+                <template slot-scope="scope">
+                   <span style="">
+                        {{toThousands(scope.row.col5)}}
+                    </span>               
+                </template> 
+            </el-table-column>
+            <el-table-column label="30%次数" min-width="14%" align="center">
+                <template slot-scope="scope">
+                   <span style="">
+                        {{toThousands(scope.row.col6)}}
+                    </span>               
+                </template>  
+            </el-table-column>
+            <el-table-column label="50%次数" min-width="14%" align="center">
+                <template slot-scope="scope">
+                   <span style="">
+                        {{toThousands(scope.row.col7)}}
+                    </span>               
+                </template>  
+            </el-table-column>
+        </el-table> 
+        <!--- 策略表现(row3) --->
+        <el-table
+        :data="perfData3"
+        :header-cell-style="addRightBorder"
+        :cell-style="addRightBorder"
+        style="width: 100%">
+            <el-table-column label="单笔盈亏" min-width="14%" align="center" style="background: white"> 
+                <template slot-scope="scope">
+                   <span style="color: green" v-if="scope.row.col1 >= 0">
+                        {{toThousands(scope.row.col1)}}
+                    </span>  
+                   <span style="color: red" v-else>
+                        {{toThousands(scope.row.col1)}}
+                    </span>                
+                </template> 
+            </el-table-column>
+            <el-table-column label="交易币数" min-width="14%" align="center"> 
+                <template slot-scope="scope">
+                   <span style="">
+                        {{toThousands(scope.row.col2)}}
+                    </span>               
+                </template> 
+            </el-table-column>
+            <el-table-column label="交易币数" min-width="14%" align="center"> 
+                <template slot-scope="scope">
+                   <span style="">
+                        {{toThousands(scope.row.col3)}}
+                    </span>               
+                </template> 
+            </el-table-column>
+            <el-table-column label="单笔盈亏" min-width="14%" align="center"> 
+                <template slot-scope="scope">
+                   <span style="color: green" v-if="scope.row.col4 >= 0">
+                        {{toThousands(scope.row.col4)}}
+                    </span>  
+                   <span style="color: red" v-else>
+                        {{toThousands(scope.row.col4)}}
+                    </span>                
+                </template> 
+            </el-table-column>
+            <el-table-column label="20%收益" min-width="14%" align="center"> 
+                <template slot-scope="scope">
+                   <span style="color: green" v-if="scope.row.col5 >= 0">
+                        {{toThousands(scope.row.col5)}}
+                    </span>  
+                   <span style="color: red" v-else>
+                        {{toThousands(scope.row.col5)}}
+                    </span>                
+                </template> 
+            </el-table-column>
+            <el-table-column label="30%收益" min-width="14%" align="center"> 
+                <template slot-scope="scope">
+                   <span style="color: green" v-if="scope.row.col6 >= 0">
+                        {{toThousands(scope.row.col6)}}
+                    </span>  
+                   <span style="color: red" v-else>
+                        {{toThousands(scope.row.col6)}}
+                    </span>                
+                </template> 
+            </el-table-column>
+            <el-table-column label="50%收益" min-width="14%" align="center"> 
+                <template slot-scope="scope">
+                   <span style="color: green" v-if="scope.row.col7 >= 0">
+                        {{toThousands(scope.row.col7)}}
+                    </span>  
+                   <span style="color: red" v-else>
+                        {{toThousands(scope.row.col7)}}
+                    </span>                
+                </template> 
+            </el-table-column>
+        </el-table>    
     </div>
 </template>
 
@@ -150,19 +359,14 @@ import moment from 'moment'
 
 export default {
     props: {
-        summaryDatas: {
-            type:Array,
-            default:[]
-        },
-
-        liveRets: {
+        parentPfoData: {
             type:Object,
-            default:{}         
+            default:{}
         }
     },
 
     watch: {
-        summaryDatas: {
+        parentPfoData: {
             handler(val, oldVal){
                 this.parseData()
             },
@@ -173,8 +377,6 @@ export default {
     data() {
         return {
             // 资产
-            pfoMasterDatas: null,
-            totalBalance: null,
             balanceDatas: [{
                 totalBalance: null,
                 totalReturn: null,
@@ -189,12 +391,6 @@ export default {
             }],
 
             // 仓位
-            subaccountDatas: null,
-            totalPosition: 0,
-            longPosition: 0,
-            shortPosition: 0, 
-            shortLevelPosition: 0,
-            longLevelPosition: 0,
             positionDatas: [{
                 totalPosition: null,
                 longPosition: null,
@@ -206,41 +402,35 @@ export default {
                 pbPosition: null
             }],
 
-            // 策略
-            pfoDatas: null,
-            perfDatas: [{
-                totalProfit: null,
-                totalCount: null,
-                winRatio: null,
-                plRatio: null,
-                slippage: null,
-                totalSty: null,
-                usdtSymbol: null,
-                btcSymbol: null,
-            }],  
-            usdtSymbols: new Set(),
-            absUsdtSymbols: 0,  // 绝对交易数量, 不去重复
-            // btcSymbols: new Set(),
-            btcSymbolsCount: 18,    // 暂时手工统计btc交易数量
-
-            // 风险
-            // subacctPfoAlias: config.subacctPfoAlias, 
-            // riskDatas: [{
-            //     riskRatio: null,
-            //     leverage: null,
-            //     usdtLeverage: null,
-            //     btcLeverage: null,
-            // }],   
-
-            // 监控
-            // pfoAlias: config.pfoAlias, 
-            // monitorDatas: [{
-            //     totalTradeSuccessRate: null,
-            //     totalTradeErrorRate: null,
-            //     totalTradeManualRate: null,
-            //     allProcessStatus: null,
-            //     allHostStatus: null,
-            // }],
+            // 策略表现
+            perfData1: [{
+                col1: null,
+                col2: null,
+                col3: null,
+                col4: null,
+                col5: null,
+                col6: null,
+                col7: null,
+            }],
+            perfData2: [{
+                col1: null,
+                col2: null,
+                col3: null,
+                col4: null,
+                col5: null,
+                col6: null,
+                col7: null,
+            }],
+            perfData3: [{
+                col1: null,
+                col2: null,
+                col3: null,
+                col4: null,
+                col5: null,
+                col6: null,
+                col7: null,
+            }],
+            
         }
     },
 
@@ -250,160 +440,72 @@ export default {
     },
 
     methods: {
-        parseData(){
-            this.pfoMasterDatas = this.summaryDatas[0]
-            this.subaccountDatas = this.summaryDatas[1]
-            this.pfoDatas = this.summaryDatas[2]
+        parseData(){  
+            // 资产数据          
+            var totalBalanceInfo = this.parentPfoData.wallet
 
-            this.parseBalanceData()
-            // this.parsePositionData()
-            this.parsePerfData()
+            this.balanceDatas[0].totalBalance = parseInt(totalBalanceInfo.usdt_amount)
+            this.balanceDatas[0].totalReturn = (((totalBalanceInfo.usdt_amount/config.initFundUSD) - 1)*100).toFixed(2)
+
+            this.balanceDatas[0].day1Diff = parseInt(totalBalanceInfo.day_diff)
+            const day7 = moment().subtract(6, 'day').format('YYYY-MM-DD')
+            const yearStart = moment().startOf('year').format('YYYY-MM-DD')
+            this.balanceDatas[0].day7Diff = parseInt(totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[day7])
+            this.balanceDatas[0].yearDiff = parseInt(totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[yearStart])
+            
+            this.balanceDatas[0].drawdown = (totalBalanceInfo.drawdown*100).toFixed(2)
+            this.balanceDatas[0].maxDrawdown = (totalBalanceInfo.max_drawdown*100).toFixed(2)
+            this.balanceDatas[0].drawdownDays = totalBalanceInfo.drawdown_days
+
+            // 仓位数据
+            var posData = this.parentPfoData.positions.all
+            var prData = this.parentPfoData.positions.pivot_reversal
+            var pbData = this.parentPfoData.positions.plunge_back
+            var prmData = this.parentPfoData.positions.pivot_reversal_mini
+            this.positionDatas[0].totalPosition = parseInt(posData.long + posData.short)
+            this.positionDatas[0].longPosition = parseInt(posData.long)
+            this.positionDatas[0].shortPosition = parseInt(posData.short)
+            this.positionDatas[0].prLongPosition = parseInt(prData.long)
+            this.positionDatas[0].prShortPosition = parseInt(prData.short)
+            this.positionDatas[0].pbPosition = parseInt(pbData.long)
+            this.positionDatas[0].prmPosition = parseInt(prmData.short)
+
+            // 策略表现(trade_stats)
+            var prData = this.parentPfoData.trade_stats.pivot_reversal
+            var pbData = this.parentPfoData.trade_stats.plunge_back
+            var prmData = this.parentPfoData.trade_stats.pivot_reversal_mini
+            // 第一行
+            this.perfData1[0].col1 = parseInt(prData.all.year_now.total_pnl)
+            this.perfData1[0].col2 = prData.all.year_now.weight_slippage != null ? (prData.all.year_now.weight_slippage*100).toFixed(3) : null
+            this.perfData1[0].col3 = parseInt(prmData.all.year_now.total_pnl)
+            this.perfData1[0].col4 = prmData.all.year_now.weight_slippage != null ? (prmData.all.year_now.weight_slippage*100).toFixed(3) : null
+            this.perfData1[0].col5 = parseInt(pbData.all.year_now.total_pnl)
+            this.perfData1[0].col6 = pbData.all.year_now.weight_slippage != null ? (pbData.all.year_now.weight_slippage*100).toFixed(3) : null
+            // 第二行
+            this.perfData2[0].col1 = prData.all.year_now.count
+            this.perfData2[0].col2 = (prData.all.year_now.win_ratio*100).toFixed(1)
+            this.perfData2[0].col3 = parseInt(prmData.pivot_reversal_mini_1.year_now.total_pnl)
+            this.perfData2[0].col4 = parseInt(prmData.pivot_reversal_mini_2.year_now.total_pnl)
+            this.perfData2[0].col5 = pbData.plunge_back_1.year_now.count
+            this.perfData2[0].col6 = pbData.plunge_back_2.year_now.count
+            this.perfData2[0].col7 = pbData.plunge_back_3.year_now.count
+            // 第三行
+            this.perfData3[0].col1 = parseInt(prData.all.year_now.avg_pnl)
+            this.perfData3[0].col2 = prData.all.year_now.symbol_count
+            this.perfData3[0].col3 = prmData.pivot_reversal_mini_1.year_now.symbol_count
+            this.perfData3[0].col4 = prmData.pivot_reversal_mini_2.year_now.avg_pnl
+            this.perfData3[0].col5 = parseInt(pbData.plunge_back_1.year_now.total_pnl)
+            this.perfData3[0].col6 = parseInt(pbData.plunge_back_2.year_now.total_pnl)
+            this.perfData3[0].col7 = parseInt(pbData.plunge_back_3.year_now.total_pnl)
         },
 
-        // 分析资产数据
-        parseBalanceData(){            
-            for(var i = 0; i < this.pfoMasterDatas.length; i++){
-                if (this.pfoMasterDatas[i].portfolio.name === config.cryptoParentPfo){
-                    // Crypto父pfo
-                    var totalBalanceInfo = this.pfoMasterDatas[i].wallet
-
-                    this.balanceDatas[0].totalBalance = parseInt(totalBalanceInfo.usdt_amount)
-                    this.balanceDatas[0].totalReturn = (((totalBalanceInfo.usdt_amount/config.initFundUSD) - 1)*100).toFixed(2)
-
-                    this.balanceDatas[0].day1Diff = parseInt(totalBalanceInfo.day_diff)
-                    const day7 = moment().subtract(6, 'day').format('YYYY-MM-DD')
-                    const yearStart = moment().startOf('year').format('YYYY-MM-DD')
-                    this.balanceDatas[0].day7Diff = parseInt(totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[day7])
-                    this.balanceDatas[0].yearDiff = parseInt(totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[yearStart])
-                    
-                    this.balanceDatas[0].drawdown = (totalBalanceInfo.drawdown*100).toFixed(2)
-                    this.balanceDatas[0].maxDrawdown = (totalBalanceInfo.max_drawdown*100).toFixed(2)
-                    this.balanceDatas[0].drawdownDays = totalBalanceInfo.drawdown_days
-
-                    // 仓位信息
-                    var posData = this.pfoMasterDatas[i].positions.all
-                    var prData = this.pfoMasterDatas[i].positions.pivot_reversal
-                    var pbData = this.pfoMasterDatas[i].positions.plunge_back
-                    var prmData = this.pfoMasterDatas[i].positions.pivot_reversal_mini
-                    this.positionDatas[0].totalPosition = parseInt(posData.long + posData.short)
-                    this.positionDatas[0].longPosition = parseInt(posData.long)
-                    this.positionDatas[0].shortPosition = parseInt(posData.short)
-                    this.positionDatas[0].prLongPosition = parseInt(prData.long)
-                    this.positionDatas[0].prShortPosition = parseInt(prData.short)
-                    this.positionDatas[0].pbPosition = parseInt(pbData.long)
-                    this.positionDatas[0].prmPosition = parseInt(prmData.short)
-                }        
-            }  
-            this.totalBalance = this.balanceDatas[0].totalBalance   // 计算总体杠杆率
-        },
-
-        // 分析仓位数据
-        parsePositionData() {   
-            var positionsByCoins = {USD_long: 0, USD_short: 0, BTC_long: 0, BTC_short: 0} 
-            this.totalPosition = 0
-            this.longPosition = 0
-            this.shortPosition = 0 
-            this.absUsdtSymbols = 0
-            for(var i = 0; i < this.subaccountDatas.length; i++){
-                for(let symbol in this.subaccountDatas[i].positions.data){
-                    var usdtAmount = this.subaccountDatas[i].positions.data[symbol]
-                    this.totalPosition += usdtAmount
-                    if (usdtAmount >= 0){
-                        this.longPosition += usdtAmount
-                    } else {
-                        this.shortPosition += Math.abs(usdtAmount)
-                    }
-
-                    // 币种分布(USD vs BTC)
-                    var quote = symbol.split('/')[1]
-                    if (config.usdStableCoins.includes(quote)) {
-                        quote = 'USD'
-                    }
-                    var side = usdtAmount >= 0 ? 'long' : 'short'
-                    var coinKey = quote + '_' + side
-                    if (coinKey in positionsByCoins){
-                        positionsByCoins[coinKey] += usdtAmount
-                    } else {
-                        positionsByCoins[coinKey] = usdtAmount
-                    } 
-
-                    // 统计币种数量(目前只统计quote是usdt的交易对)
-                    var base = symbol.split('/')[0]
-                    if (quote === 'USD'){
-                        if (!this.usdtSymbols.has(base)){
-                            this.usdtSymbols.add(base)
-                        }
-                        this.absUsdtSymbols += 1
-                    } 
-                    // else if(quote === 'BTC'){
-                    //     if (!this.btcSymbols.has(base)){
-                    //         this.btcSymbols.add(base)
-                    //     }
-                    // }
-                }
+        addRightBorder({rowIndex, columnIndex}){
+            if(columnIndex == 1 || columnIndex == 3){
+                return {'border-right': '2px solid #f2f2f2'}
+            } else {
+                return {}
             }
-            this.positionDatas[0].totalPosition = parseInt(this.totalPosition)
-            this.positionDatas[0].longPosition = parseInt(this.longPosition)
-            this.positionDatas[0].shortPosition = parseInt(this.shortPosition)
-            this.positionDatas[0].usdtLongPosition = parseInt(positionsByCoins['USD_long'])
-            this.positionDatas[0].usdtShortPosition = parseInt(positionsByCoins['USD_short'])
-            this.positionDatas[0].usdtPosition = parseInt(positionsByCoins['USD_long'] + positionsByCoins['USD_short'])
-
-            this.positionDatas[0].btcLongPosition = parseInt(positionsByCoins['BTC_long'])
-            this.positionDatas[0].btcShortPosition = parseInt(positionsByCoins['BTC_short'])
-            this.positionDatas[0].btcPosition = parseInt(positionsByCoins['BTC_long'] + positionsByCoins['BTC_short'])
         },
-
-        // 分析策略数据(最近6m)
-        parsePerfData() {
-            var perf_range = '6m'
-            var totalProfit = 0
-            var totalCount = 0
-            var totalWinCount = 0
-            var totalWinPtg = 0
-            var totalLosePtg = 0
-            var totalPtg = 0
-            var totalWeightSlippage = 0
-            var totalUsdVolume = 0
-
-            for(var i = 0; i < this.pfoDatas.length; i++){
-                const data = this.pfoDatas[i][0].performance.range_perfs[perf_range].data
-                totalProfit += data.usd_profit
-                totalCount += data.count
-                totalWinCount += data.win_count
-                totalWinPtg += data.win_pnl_ptg
-                totalLosePtg += data.lose_pnl_ptg
-                totalPtg += data.total_pnl_ptg
-                totalWeightSlippage += data.total_weighted_slippage
-                totalUsdVolume += data.usd_volume
-            }
-
-            this.perfDatas[0].totalProfit = parseInt(totalProfit)
-            this.perfDatas[0].totalCount = totalCount
-            this.perfDatas[0].winRatio = (totalWinCount*100/totalCount).toFixed(2)
-            this.perfDatas[0].winAvgPtg = (totalWinPtg*100 / totalWinCount).toFixed(2)
-            this.perfDatas[0].loseAvgPtg = (totalLosePtg*100 / (totalCount - totalWinCount)).toFixed(2)
-            this.perfDatas[0].avgPtg = (totalPtg*100 / totalCount).toFixed(2)
-            this.perfDatas[0].plRatio = ( this.perfDatas[0].winAvgPtg / Math.abs(this.perfDatas[0].loseAvgPtg )).toFixed(2)
-            this.perfDatas[0].slippage = (totalWeightSlippage*100/totalUsdVolume).toFixed(2)
-
-            // 更新liveRets
-            this.liveRets.winRatio = this.perfDatas[0].winRatio
-            this.liveRets.plRatio = this.perfDatas[0].plRatio
-            this.liveRets.countPerSymbol = totalCount/(this.absUsdtSymbols + this.btcSymbolsCount)
-            for(var i = 0; i < this.pfoMasterDatas.length; i++){
-                if (this.pfoMasterDatas[i].portfolio.name === config.cryptoParentPfo){
-                    var valueLine = this.pfoMasterDatas[i].wallet.history_values
-                    var date = new Date()
-                    date.setMonth(date.getMonth() - 6)
-                    var firstDate = date.toISOString().slice(0, 10)
-                    this.liveRets.annualReturn = getAnnualReturn(valueLine, firstDate)
-                    this.liveRets.maxDrawdown = getMaxDrawdown(valueLine, firstDate)
-                }
-            }
-            this.liveRets.available = true
-        },
-
 
         toThousands: toThousands,
     },
