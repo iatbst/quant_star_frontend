@@ -148,11 +148,11 @@
             :show-header="false"
             :cell-style="{ background: '#f2f2f2' }"
             style="width: 100%; background: #f2f2f2">
-            <el-table-column prop="col1" min-width="33%" align="center"> 
+            <el-table-column prop="col1" min-width="28%" align="center"> 
             </el-table-column>
-            <el-table-column prop="col2" min-width="33%" align="center"> 
+            <el-table-column prop="col2" min-width="28%" align="center"> 
             </el-table-column>
-            <el-table-column prop="col3" min-width="33%" align="center"> 
+            <el-table-column prop="col3" min-width="44%" align="center"> 
             </el-table-column>
             </el-table>
         </template>
@@ -493,16 +493,16 @@ export default {
             // 第二行
             this.perfData2[0].col1 = prData.all.year_now.count
             this.perfData2[0].col2 = (prData.all.year_now.win_ratio*100).toFixed(1)
-            this.perfData2[0].col3 = parseInt(prmData.pivot_reversal_mini_1.year_now.total_pnl)
-            this.perfData2[0].col4 = parseInt(prmData.pivot_reversal_mini_2.year_now.total_pnl)
+            this.perfData2[0].col3 = 0  // PV-10暂停
+            this.perfData2[0].col4 = parseInt(prmData.pivot_reversal_mini_1.year_now.total_pnl)
             this.perfData2[0].col5 = pbData.plunge_back_1.year_now.count
             this.perfData2[0].col6 = pbData.plunge_back_2.year_now.count
             this.perfData2[0].col7 = pbData.plunge_back_3.year_now.count
             // 第三行
             this.perfData3[0].col1 = parseInt(prData.all.year_now.avg_pnl)
             this.perfData3[0].col2 = prData.all.year_now.symbol_count
-            this.perfData3[0].col3 = prmData.pivot_reversal_mini_1.year_now.symbol_count
-            this.perfData3[0].col4 = prmData.pivot_reversal_mini_2.year_now.avg_pnl
+            this.perfData3[0].col3 = prmData.all.year_now.symbol_count
+            this.perfData3[0].col4 = prmData.all.year_now.avg_pnl
             this.perfData3[0].col5 = parseInt(pbData.plunge_back_1.year_now.total_pnl)
             this.perfData3[0].col6 = parseInt(pbData.plunge_back_2.year_now.total_pnl)
             this.perfData3[0].col7 = parseInt(pbData.plunge_back_3.year_now.total_pnl)
