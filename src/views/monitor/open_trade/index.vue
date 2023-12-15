@@ -376,12 +376,11 @@ export default {
       var request_count = 0
       for (var i = 0; i < config.pfoHosts.length; i++){
         getPortfolios(config.pfoHosts[i]).then(response => {
-          response.results[0]['sort_id'] = config.pfoSortWeights[response.results[0]['name']]
           this.portfolioList = this.portfolioList.concat(response.results)
           request_count += 1
           if (request_count == config.pfoHosts.length){
             // pfo加载完成
-            this.portfolioList.sort((a, b) => a.sort_id - b.sort_id)
+            this.portfolioList.sort((a, b) => a.name.localeCompare(b.name))
             this.portfolioListLoading = false
             this.choosePortfolio(this.portfolioList[0])
           }

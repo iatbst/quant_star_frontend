@@ -42,6 +42,12 @@ export default {
       }
   },
 
+  created() {
+      // pfo排序
+      //debugger
+      //this.portfolios.sort((a, b) => a.name.localeCompare(b.name))
+  },
+
   methods: {
     onClickPfo(pfo) {
         this.$emit('onClickPfo', pfo)

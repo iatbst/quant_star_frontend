@@ -213,13 +213,13 @@ export default {
       if (level === 'critical'){
         return "<i style=\"font-size:20px; color: black \" class=\"el-icon-error\"></i>"
       } else if (level === 'exception'){
-        return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-warning\"></i>"
+        return "<i style=\"font-size:20px; color: orange \" class=\"el-icon-warning\"></i>"
       } else if (level === 'error') {
         return "<i style=\"font-size:20px; color: red \" class=\"el-icon-error\"></i>"
       } else if (level === 'warn') {
-        return "<i style=\"font-size:20px; color: gray \" class=\"el-icon-question\"></i>"
+        return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-question\"></i>"
       } else {
-        return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-warning\"></i>"
+        return "<i style=\"font-size:20px; color: gray \" class=\"el-icon-warning\"></i>"
       }
     },
     showJsonDialog(data) {
@@ -268,12 +268,11 @@ export default {
       var request_count = 0
       for (var i = 0; i < config.pfoHosts.length; i++){
         getPortfolios(config.pfoHosts[i]).then(response => {
-          response.results[0]['sort_id'] = config.pfoSortWeights[response.results[0]['name']]
           this.portfolioList = this.portfolioList.concat(response.results)
           request_count += 1
           if (request_count == config.pfoHosts.length){
             // pfo加载完成
-            this.portfolioList.sort((a, b) => a.sort_id - b.sort_id)
+            this.portfolioList.sort((a, b) => a.name.localeCompare(b.name))
             this.portfolioListLoading = false
           }
         })

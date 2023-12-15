@@ -75,12 +75,13 @@ export default {
       var request_count = 0
       for (var i = 0; i < this.pfo_hosts.length; i++){
         getPortfolios(this.pfo_hosts[i]).then(response => {
-          response.results[0]['sort_id'] = config.pfoSortWeights[response.results[0]['name']]
+          // response.results[0]['sort_id'] = config.pfoSortWeights[response.results[0]['name']]
           this.portfolios = this.portfolios.concat(response.results)
           request_count += 1
           if (request_count == this.pfo_hosts.length){
             // pfo加载完成
-            this.portfolios.sort((a, b) => a.sort_id - b.sort_id)
+            this.portfolios.sort((a, b) => a.name.localeCompare(b.name))
+            // this.portfolios.sort((a, b) => a.sort_id - b.sort_id)
             this.portfoliosLoading = false
             if (this.portfolios.length > 0){
               this.onClickPfo(this.portfolios[0])
