@@ -502,7 +502,7 @@ export default {
             this.perfData3[0].col1 = parseInt(prData.all.year_now.avg_pnl)
             this.perfData3[0].col2 = prData.all.year_now.symbol_count
             this.perfData3[0].col3 = prmData.all.year_now.symbol_count
-            this.perfData3[0].col4 = prmData.all.year_now.avg_pnl
+            this.perfData3[0].col4 = parseInt(prmData.all.year_now.avg_pnl)
             this.perfData3[0].col5 = parseInt(pbData.plunge_back_1.year_now.total_pnl)
             this.perfData3[0].col6 = parseInt(pbData.plunge_back_2.year_now.total_pnl)
             this.perfData3[0].col7 = parseInt(pbData.plunge_back_3.year_now.total_pnl)
