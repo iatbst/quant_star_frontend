@@ -2,12 +2,43 @@
 const masterHost = 'http://ec2-18-138-152-197.ap-southeast-1.compute.amazonaws.com:8000/api'
 
 // 当前投资组合的Hosts地址(由环境变量VUE_APP_PFO_HOSTS决定)
-if (process.env.VUE_APP_PFO_HOSTS === ''){
-    var pfoHostList = []
+// if (process.env.VUE_APP_PFO_HOSTS === ''){
+//     var pfoHostList = []
+// } else {
+//     var pfoHostList = process.env.VUE_APP_PFO_HOSTS.split(',')
+// }
+// const pfoHosts = pfoHostList
+
+var production_hosts = [
+    // 香港: Okex
+    'http://ec2-52-76-137-43.ap-southeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-139-27-246.ap-southeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-143-129-146.ap-southeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-52-221-230-97.ap-southeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-136-104-195.ap-southeast-1.compute.amazonaws.com:8000/api',
+
+    // 东京: Binance
+    'http://ec2-35-78-113-187.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-181-211-216.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-52-195-149-42.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-35-78-72-28.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-35-76-111-12.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-54-249-205-73.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-183-193-63.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api'
+]
+
+// 当前投资组合的Hosts地址
+if (process.env.ENV === 'development'){
+    // 开发环境
+    var hostList = production_hosts
 } else {
-    var pfoHostList = process.env.VUE_APP_PFO_HOSTS.split(',')
+    // 线上环境
+    var hostList = production_hosts
 }
-const pfoHosts = pfoHostList
+const pfoHosts = hostList
 
 // Backtest Host地址(运行回测的Host)
 // const backtestHost = 'http://localhost:8000/api'
