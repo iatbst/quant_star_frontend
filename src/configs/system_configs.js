@@ -11,12 +11,12 @@ const masterHost = 'http://ec2-18-138-152-197.ap-southeast-1.compute.amazonaws.c
 
 var production_hosts = [
     // 香港: Okex
-    'http://ec2-52-76-137-43.ap-southeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-162-154-126.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-113-187.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-136-104-195.ap-southeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-16-162-187-219.ap-east-1.compute.amazonaws.com:8000/api',
 
     // 东京: Binance
     'http://ec2-35-78-113-187.ap-northeast-1.compute.amazonaws.com:8000/api',
