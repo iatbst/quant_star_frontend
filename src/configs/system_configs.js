@@ -13,9 +13,9 @@ var production_hosts = [
     // 香港: Okex
     'http://ec2-52-76-137-43.ap-southeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-139-27-246.ap-southeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-143-129-146.ap-southeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-52-221-230-97.ap-southeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-166-113-187.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-136-104-195.ap-southeast-1.compute.amazonaws.com:8000/api',
 
     // 东京: Binance
@@ -32,7 +32,7 @@ var production_hosts = [
 
 var development_hosts = [
     // 开发/测试
-    
+
 ]
 // 当前投资组合的Hosts地址
 if (process.env.ENV === 'development'){
