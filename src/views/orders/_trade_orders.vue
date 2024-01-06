@@ -5,20 +5,12 @@
     <div class="app-container" align="center" >
         <div style="width: 95%; margin-top: 20px">
             <el-row :gutter="0" type="flex">
-                <!----------------------------------- 订单详情 --------------------------------------->
+                <!----------------------------------- Trade详情 --------------------------------------->
                 <el-table
-                :data="orders"
+                :data="[trade]"
                 :header-cell-style="{ background: '#f2f2f2' }"
-                @row-click="clickOrder"
                 v-loading="ordersLoading"
-                :cell-style="{cursor: 'pointer'}"
                 >
-                    <el-table-column align="center" label="时间" min-width="10%">
-                        <template slot-scope="scope">
-                            {{ utcToLocalTimestamp(scope.row.created_ts) }}
-                        </template>
-                    </el-table-column>
-
                     <el-table-column align="center" label="交易所" min-width="5%">
                         <template slot-scope="scope">
                             {{ scope.row.worker.name.split('_')[0] }}
@@ -27,7 +19,7 @@
 
                     <el-table-column align="center" label="标的" min-width="10%">
                         <template slot-scope="scope">
-                            {{ scope.row.symbol }}
+                            {{ scope.row.worker.product.symbol }}
                         </template>
                     </el-table-column>
 
@@ -40,6 +32,59 @@
                     <el-table-column align="center" label="策略ID" min-width="5%">
                         <template slot-scope="scope">
                             {{ scope.row.order_type == 'temp' ? 'N/A' : scope.row.worker.name.slice(-1,) }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="方向" min-width="8%">
+                        <template slot-scope="scope">
+                            <span style="color: green" v-if="scope.row.side == 'long'">
+                                {{ chineseString(scope.row.side) }}
+                            </span>
+                            <span style="color: red" v-else>
+                                {{ chineseString(scope.row.side) }}
+                            </span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="当前持仓(个/张)" min-width="8%">
+                        <template slot-scope="scope">
+                            {{ scope.row.position }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="状态" min-width="5%">
+                        <template slot-scope="scope">
+                            {{ chineseString('trade_' + scope.row.status) }}
+                        </template>
+                    </el-table-column>
+
+
+                    <el-table-column align="center" label="总收益" min-width="10%">
+                        <template slot-scope="scope">
+                            <div v-if="scope.row.pnl !== null">
+                                <span style="color: red" v-if="scope.row.pnl < 0">
+                                {{ scope.row.pnl.toFixed(2) }}
+                                </span>
+                                <span style="color: green" v-else>
+                                {{ scope.row.pnl.toFixed(2) }}
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
+
+                </el-table> 
+            </el-row>
+
+            <el-row :gutter="0" type="flex">
+                <!----------------------------------- 订单详情 --------------------------------------->
+                <el-table
+                :data="orders"
+                :header-cell-style="{ background: '#f2f2f2' }"
+                v-loading="ordersLoading"
+                >
+                    <el-table-column align="center" label="时间" min-width="10%">
+                        <template slot-scope="scope">
+                            {{ utcToLocalTimestamp(scope.row.created_ts) }}
                         </template>
                     </el-table-column>
 
@@ -68,6 +113,12 @@
                             <span style="color: green" v-else>
                             {{ chineseString(scope.row.side) }}
                             </span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="数量" min-width="10%">
+                        <template slot-scope="scope">
+                            {{ toThousands(Math.round(scope.row.exec_size)) }}
                         </template>
                     </el-table-column>
 
@@ -119,25 +170,12 @@
                         </template>
                     </el-table-column>
                 </el-table> 
-
-                <!-- Diaglog: Trade -->
-                <el-dialog title="" :visible.sync="dialogTradeVisible"  width="80%" append-to-body>
-                    <div style="background-color: white; margin-bottom: 10px; margin-top: -20px">
-                        <!-- 仓位详情 -->
-                        <trade-orders 
-                        v-bind:trade="trade"
-                        v-bind:orders-loading="tradeOrdersLoading"
-                        v-if="tradeAvailable" 
-                        ></trade-orders>
-                    </div>
-                </el-dialog>
             </el-row>
         </div>
     </div>
 </template>
 
 <script>
-import tradeOrders from '@/views/orders/_trade_orders'
 import config from '@/configs/system_configs'
 import { utcToLocalTimestamp } from '@/utils/general'
 import {toThousands} from '@/utils/general'
@@ -147,15 +185,12 @@ import { getTradeById } from '@/api/trade'
 
 
 export default {
-    components: {
-        tradeOrders,
-    },
-
     props: {
-        orders: {
-            type:Array,
-            default:[]
+        trade: {
+            type:Object,
+            default:{}
         },
+
         ordersLoading: {
             type: Boolean,
             default: true
@@ -170,32 +205,22 @@ export default {
         return {
             strategyAlias: config.strategyAlias, 
             config: config,
-
-            dialogTradeVisible: false,
-            tradeOrdersLoading: false,
-            trade: null,
-            tradeAvailable: false,
+            orders: [],
         }
     },
 
-    methods: {
-        //点击order
-        clickOrder(row, ix){
-            this.tradeAvailable = false
-            this.tradeOrdersLoading = true
-            this.dialogTradeVisible = true
-            this.fetchTrade(row.trade, row.host)
-        },
+    created() {
+        this.parseData()
+    },
 
-        // 获取order对应的trade
-        fetchTrade(id, host) {
-            console.log(id)
-            console.log(host)
-            getTradeById(id, host).then(response => {
-                this.trade = response.results[0]
-                this.tradeOrdersLoading = false
-                this.tradeAvailable = true
-            })
+    methods: {
+        parseData(){
+            // 过滤掉没有成交的orders
+            for(var i = 0; i < this.trade.orders.length; i++){
+                if (this.trade.orders[i].exec_size > 0){
+                    this.orders.push(this.trade.orders[i])
+                }
+            }
         },
 
         utcToLocalTimestamp: utcToLocalTimestamp,

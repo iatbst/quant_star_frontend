@@ -253,7 +253,7 @@ export default {
                 return "<i style=\"font-size:20px; color: lightgreen \" class=\"el-icon-check\"></i>"
             } else if (status === 'canceled' || status === 'expired' || status === 'partial_canceled') {
                 return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-warning-outline\"></i>"
-            } else if (status === 'deleted' || status === 'rejected') {
+            } else if (status === 'deleted' || status === 'rejected' || status === 'place_error') {
                 return "<i style=\"font-size:20px; color: red \" class=\"el-icon-circle-close\"></i>"
             } else {
                 return "<i style=\"font-size:20px; color: gray \" class=\"el-icon-loading\"></i>"

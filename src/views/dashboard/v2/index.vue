@@ -6,7 +6,8 @@
         <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
             <summary-table 
             v-bind:parentPfoData="parentPfoData" 
-            v-if="pfoMasterDatasAvailable" 
+            v-bind:subaccountDatas="subaccountDatas" 
+            v-if="pfoMasterDatasAvailable && subaccountDatasAvailable" 
             style="margin-bottom: 20px">
             </summary-table>
         </div>
@@ -268,6 +269,9 @@ export default {
             orders: [],
             ordersLoading: false,
 
+            trades: [],
+            tradesLoading: false,
+
             pfoMasterDatas: [],     
             pfoMasterDatasAvailable: false,
             totalBalanceValues: {},
@@ -427,9 +431,16 @@ export default {
             var endDt = new Date().toISOString().slice(0, 19).replace('T', ' ')      // UTC
             var count = 0
             for(var i = 0; i < this.pfoHosts.length; i++){
+                var host = this.pfoHosts[i]
                 var filters = 'show_worker=true&no_parent_order=true&exec_size__gt=0&created_ts__gte=' + startDt + '&created_ts__lte=' + endDt
-                getOrders(this.pfoHosts[i], null, filters).then(response => {
+                getOrders(host, null, filters).then(response => {
                         count += 1
+                        // 添加host
+                        for(var i = 0; i < response.results.length; i++){
+                            // 点击获取对应的trade时知道从那个host获取
+                            response.results[i]["host"] = response.config.baseURL
+                        }
+
                         this.orders = this.orders.concat(response.results)
 
                         if (count === this.pfoHosts.length){

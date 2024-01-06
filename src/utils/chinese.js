@@ -26,6 +26,8 @@ export function chineseString(s) {
             case 'short': cs = '空'; break;
             case 'buy': cs = '买'; break;
             case 'sell': cs = '卖'; break;
+            case 'trade_open': cs = '持仓中'; break;
+            case 'trade_close': cs = '已平仓'; break;
     
             // 订单
             case 'open': cs = '开仓'; break;

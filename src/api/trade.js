@@ -18,6 +18,15 @@ export function getTradesByWorker(worker, host=null) {
   return request(req_obj)
 }
 
+export function getTradeById(id, host=null) {
+  var req_obj = {
+    url: '/trades/?id=' + id,
+    method: 'get'
+  }
+  if (host) { req_obj['baseURL'] = host }
+  return request(req_obj)
+}
+
 export function getTradesByFinalFlag(final_flag, host=null, checked=false) {
   if (final_flag == 'error'){
     // 分为两种情况: checked vs unchecked

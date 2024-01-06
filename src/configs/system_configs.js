@@ -32,16 +32,18 @@ var production_hosts = [
 
 var development_hosts = [
     // 开发/测试
-
+    'http://ec2-18-163-186-187.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-3-1-210-211.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
 // 当前投资组合的Hosts地址
 if (process.env.ENV === 'development'){
     // 开发环境
-    var hostList = development_hosts
+    var hostList = production_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
 }
+
 const pfoHosts = hostList
 
 // Backtest Host地址(运行回测的Host)

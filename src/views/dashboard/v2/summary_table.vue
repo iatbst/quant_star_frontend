@@ -371,7 +371,11 @@ export default {
         parentPfoData: {
             type:Object,
             default:{}
-        }
+        },
+        subaccountDatas: {
+            type:Object,
+            default:{}
+        }       
     },
 
     watch: {
@@ -467,13 +471,24 @@ export default {
             this.balanceDatas[0].drawdownDays = totalBalanceInfo.drawdown_days
 
             // 仓位数据
-            var posData = this.parentPfoData.positions.all
+            // 总体仓位信息从subaccount(平台)获取
+            var totalPosition = 0
+            var longPosition = 0
+            var shortPosition = 0
+            for(var i = 0; i < this.subaccountDatas.length; i++){
+                var summary = this.subaccountDatas[i].positions.summary
+                totalPosition += summary.usdt_long
+                totalPosition += summary.usdt_short
+                longPosition += summary.usdt_long
+                shortPosition += summary.usdt_short
+            }
+            // 策略仓位信息从系统后台获取
             var prData = this.parentPfoData.positions.pivot_reversal
             var pbData = this.parentPfoData.positions.plunge_back
             var prmData = this.parentPfoData.positions.pivot_reversal_mini
-            this.positionDatas[0].totalPosition = parseInt(posData.long + posData.short)
-            this.positionDatas[0].longPosition = parseInt(posData.long)
-            this.positionDatas[0].shortPosition = parseInt(posData.short)
+            this.positionDatas[0].totalPosition = parseInt(totalPosition)
+            this.positionDatas[0].longPosition = parseInt(longPosition)
+            this.positionDatas[0].shortPosition = parseInt(shortPosition)
             this.positionDatas[0].prLongPosition = parseInt(prData.long)
             this.positionDatas[0].prShortPosition = parseInt(prData.short)
             this.positionDatas[0].pbPosition = parseInt(pbData.long)
