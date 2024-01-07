@@ -9,6 +9,35 @@ const masterHost = 'http://ec2-18-138-152-197.ap-southeast-1.compute.amazonaws.c
 // }
 // const pfoHosts = pfoHostList
 
+const prBinanceHosts = [
+    'http://ec2-35-78-113-187.ap-northeast-1.compute.amazonaws.com:8000/api'
+]
+const prOkexHosts = [
+    'http://ec2-18-162-154-126.ap-east-1.compute.amazonaws.com:8000/api'
+]
+const prmBinanceHosts = [
+    'http://ec2-18-181-211-216.ap-northeast-1.compute.amazonaws.com:8000/api'
+]
+const prmOkexHosts = [
+    'http://ec2-16-162-187-219.ap-east-1.compute.amazonaws.com:8000/api'
+]
+const pbBinanceHosts = [
+    'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-183-193-63.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-54-249-205-73.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-35-76-111-12.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-35-78-72-28.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-52-195-149-42.ap-northeast-1.compute.amazonaws.com:8000/api',
+]
+
+const pbOkexHosts = [
+    'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-166-113-187.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',   
+]
+
 var production_hosts = [
     // 香港: Okex
     'http://ec2-18-162-154-126.ap-east-1.compute.amazonaws.com:8000/api',
@@ -54,7 +83,7 @@ const backtestHost = 'http://ec2-13-214-122-117.ap-southeast-1.compute.amazonaws
 const exchanges = [
     'binance',
     'okex',
-    'huobi'
+    //'huobi'
 ]
 
 // 当前投资组合的别名(product)
@@ -77,8 +106,9 @@ const subacctPfoAlias = [
 
 // 策略名称和缩写的映射
 const strategies = [
-    'pivot reversal',
-    'plunge back'
+    'pivot-reversal',
+    'plunge-back',
+    'pivot-reversal-mini',
 ]
 
 const strategyAlias = {
@@ -170,6 +200,12 @@ const usdStableCoins = [
 export default {
     masterHost,
     pfoHosts,
+    prBinanceHosts,
+    prOkexHosts,
+    pbBinanceHosts,
+    pbOkexHosts,
+    prmBinanceHosts,
+    prmOkexHosts,
     pfoAlias,
     backtestHost,
     cryptoParentPfo,

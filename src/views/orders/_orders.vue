@@ -3,7 +3,91 @@
 -->
 <template>
     <div class="app-container" align="center" >
-        <div style="width: 95%; margin-top: 20px">
+        <div style="width: 95%; margin-top: 0px">
+            <el-row :gutter="0" type="flex" style="margin-bottom: 10px">
+                <!----------------------------------- 查询Bar --------------------------------------->
+                        <el-col :span="7">
+                            <el-date-picker
+                            style="margin-left: 50px"
+                            v-model="datetimeRange"
+                            type="datetimerange"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期">
+                            </el-date-picker>
+                        </el-col>
+
+                        <el-col :span="2">
+                            <el-row style="margin-left: 20px">
+                            <el-select v-model="orderFilter.exchange" placeholder="交易所">
+                                <el-option
+                                v-for="item in ['any'].concat(config.exchanges)"
+                                :key="item"
+                                :label="item"
+                                :value="item">
+                                </el-option>
+                            </el-select>  
+                            </el-row>      
+                        </el-col>
+
+                        <el-col :span="2">
+                            <el-row style="margin-left: 20px">
+                                <el-input
+                                    v-model="orderFilter.symbol"
+                                    placeholder="标的"
+                                ></el-input> 
+                            </el-row>      
+                        </el-col>
+
+                        <el-col :span="3">
+                            <el-row style="margin-left: 20px">
+                            <el-select v-model="orderFilter.strategy" placeholder="策略">
+                                <el-option
+                                v-for="item in ['any'].concat(config.strategies)"
+                                :key="item"
+                                :label="item"
+                                :value="item">
+                                </el-option>
+                            </el-select>  
+                            </el-row>      
+                        </el-col>
+
+                        <el-col :span="2">
+                            <el-row style="margin-left: 20px">
+                            <el-select v-model="orderFilter.strategy_id" placeholder="策略ID">
+                                <el-option
+                                v-for="item in ['any'].concat(strategy_ids)"
+                                :key="item"
+                                :label="item"
+                                :value="item">
+                                </el-option>
+                            </el-select>  
+                            </el-row>      
+                        </el-col>
+
+                        <el-col :span="2">
+                            <el-row style="margin-left: 20px">
+                            <el-select v-model="orderFilter.order_type" placeholder="类型">
+                                <el-option
+                                v-for="item in order_types"
+                                :key="item"
+                                :label="item"
+                                :value="item">
+                                </el-option>
+                            </el-select>  
+                            </el-row>      
+                        </el-col>
+
+                        <el-col :span="5">
+                            <el-row style="margin-left: 20px">
+                                <el-col :span="10" :offset="2">
+                                    <el-button style="width: 100%" type="primary" @click="search()">
+                                        查询
+                                    </el-button>                             
+                                </el-col>
+                            </el-row>
+                        </el-col>
+            </el-row>
             <el-row :gutter="0" type="flex">
                 <!----------------------------------- 订单详情 --------------------------------------->
                 <el-table
@@ -144,6 +228,7 @@ import {toThousands} from '@/utils/general'
 import { chineseString } from '@/utils/chinese'
 import { toFixed } from  '@/utils/general'
 import { getTradeById } from '@/api/trade'
+import { getOrders } from '@/api/order'
 
 
 export default {
@@ -170,15 +255,94 @@ export default {
         return {
             strategyAlias: config.strategyAlias, 
             config: config,
+            pfoHosts: config.pfoHosts,
 
             dialogTradeVisible: false,
             tradeOrdersLoading: false,
             trade: null,
             tradeAvailable: false,
+
+            datetimeRange: [],
+            orderFilter: {
+                'exchange': null,
+                'symbol': null,
+                'strategy': null,
+                'strategy_id': null,
+                'order_type': null
+            },
+            strategy_ids: ['1', '2', '3', '4'],  
+            order_types: ['any', 'open', 'win_stop', 'timer', 'flip', 'close'],
+
         }
     },
 
     methods: {
+        // 获取原始datas
+        search(){
+            if(this.datetimeRange.length == 2){
+                var startDt = this.datetimeRange[0].toISOString().slice(0, 19).replace('T', ' ')    // UTC
+                var endDt = this.datetimeRange[1].toISOString().slice(0, 19).replace('T', ' ')      // UTC
+            } else {
+                var days = 3    // 默认展示最近3天
+                var startDt = new Date(Date.now() - 24 * 3600 * 1000 * days).toISOString().slice(0, 19).replace('T', ' ')    // UTC
+                var endDt = new Date().toISOString().slice(0, 19).replace('T', ' ')      // UTC                   
+            }
+            this.searchOrders(startDt, endDt)
+        },
+
+        // 搜索指定时间范围内的订单
+        searchOrders(startDt, endDt){
+            this.orders = []
+            this.ordersLoading = true
+            var count = 0
+            for(var i = 0; i < this.pfoHosts.length; i++){
+                var filters = 'show_worker=true&no_parent_order=true&exec_size__gt=0&created_ts__gte=' + startDt + '&created_ts__lte=' + endDt
+                getOrders(this.pfoHosts[i], null, filters).then(response => {
+                        count += 1
+                        // this.orders = this.orders.concat(response.results)
+
+                        // 过滤
+                        var _orders = []
+                        for(var i = 0; i < response.results.length; i++){
+                            if (this.filterOrder(response.results[i])){
+                                response.results[i]["host"] = response.config.baseURL   // 添加host
+                                _orders.push(response.results[i])
+                            }
+                        }
+                        this.orders = this.orders.concat(_orders)
+
+                        if (count === this.pfoHosts.length){
+                            // 排序
+                            this.orders.sort((a, b) => b.created_ts.localeCompare(a.created_ts))
+                            this.ordersLoading = false
+                        }
+                    }
+                )
+            }
+        },
+
+        filterOrder(order){
+            var exchange = order.worker.name.split('_')[0]
+            var symbol = order.symbol
+            var strategy = order.worker.strategy_name
+            var strategy_id = order.worker.name.slice(-1,)
+            var order_type = order.order_type
+            if (this.orderFilter.exchange && this.orderFilter.exchange != 'any' && exchange != this.orderFilter.exchange){
+                return false
+            } else if (this.orderFilter.strategy && this.orderFilter.strategy != 'any' && strategy != this.orderFilter.strategy){
+                return false
+            } else if (this.orderFilter.symbol && !symbol.includes(this.orderFilter.symbol.toUpperCase())){
+                return false
+            } else if (this.orderFilter.strategy_id && this.orderFilter.strategy_id != 'any' && strategy_id != this.orderFilter.strategy_id){
+                return false
+            } else if (this.orderFilter.order_type && this.orderFilter.order_type != 'any' && order_type != this.orderFilter.order_type){
+                return false
+            } else {
+                // 通过
+                return true
+            }
+        },
+
         //点击order
         clickOrder(row, ix){
             this.tradeAvailable = false

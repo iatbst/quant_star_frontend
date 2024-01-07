@@ -171,13 +171,70 @@
     </el-row> 
     ------->
 
-    <!----------------------------------- 仓位 --------------------------------------->
+    <!----------------------------------- 仓位 ---------------------------------------
     <div style="background-color: white; margin-bottom: 20px; margin-top: 20px">
-        <!-- 仓位详情 -->
         <position-map 
         v-bind:positions="positions" 
         v-bind:positions-loading="positionsLoading"
         ></position-map> 
+    </div>
+    -------->
+
+    <!----------------------------------- 仓位 --------------------------------------->
+    <div style="background-color: white; margin-bottom: 20px; margin-top: 20px">
+        <!-- pr_binance -->
+        <position-map2 
+        v-bind:positions="prBinancePositions" 
+        v-bind:positions-loading="prBinancePositionsLoading"
+        v-bind:exchange="'Binance'"
+        v-bind:strategy="'大PV'"
+        v-bind:col-count="5"
+        ></position-map2> 
+
+        <!-- pr_okex -->
+        <position-map2 
+        v-bind:positions="prOkexPositions" 
+        v-bind:positions-loading="prOkexPositionsLoading"
+        v-bind:exchange="'Okex'"
+        v-bind:strategy="'大PV'"
+        v-bind:col-count="5"
+        ></position-map2> 
+
+        <!-- pb_binance -->
+        <position-map2 
+        v-bind:positions="pbBinancePositions" 
+        v-bind:positions-loading="pbBinancePositionsLoading"
+        v-bind:exchange="'Binance'"
+        v-bind:strategy="'抄底'"
+        v-bind:col-count="7"
+        ></position-map2> 
+
+        <!-- pb_okex -->
+        <position-map2 
+        v-bind:positions="pbOkexPositions" 
+        v-bind:positions-loading="pbOkexPositionsLoading"
+        v-bind:exchange="'Okex'"
+        v-bind:strategy="'抄底'"
+        v-bind:col-count="7"
+        ></position-map2> 
+
+        <!-- prm_binance -->
+        <position-map2 
+        v-bind:positions="prmBinancePositions" 
+        v-bind:positions-loading="prmBinancePositionsLoading"
+        v-bind:exchange="'Binance'"
+        v-bind:strategy="'小PV'"
+        v-bind:col-count="20"
+        ></position-map2> 
+
+        <!-- prm_okex -->
+        <position-map2 
+        v-bind:positions="prmOkexPositions" 
+        v-bind:positions-loading="prmOkexPositionsLoading"
+        v-bind:exchange="'Okex'"
+        v-bind:strategy="'小PV'"
+        v-bind:col-count="20"
+        ></position-map2> 
     </div>
 
     <!----------------------------------- 订单(3天内) --------------------------------------->
@@ -203,7 +260,7 @@ import strategyLevelPositions from '@/views/position/_strategy_level_positions'
 import strategyPositions from '@/views/position/_strategy_positions'
 import exchangeBalanceDistributions from '@/views/balance/_exchange_balance_distributions'
 import liveBacktestStats from '@/views/dashboard/v2/live_backtest_stats'
-import positionMap from '@/views/position/position_map'
+import positionMap2 from '@/views/position/position_map2'
 
 import totalBalance from '@/views/balance/total_balance'
 import pfoBalances from '@/views/balance/pfo_balances'
@@ -249,7 +306,7 @@ export default {
 
         totalPosition,
         positionRanks,
-        positionMap,
+        positionMap2,
 
         pfoPerfs,
         totalPerf,
@@ -260,6 +317,12 @@ export default {
         return {
           
             pfoHosts: config.pfoHosts,
+            prBinanceHosts: config.prBinanceHosts,
+            prOkexHosts: config.prOkexHosts,
+            pbBinanceHosts: config.pbBinanceHosts,
+            pbOkexHosts: config.pbOkexHosts,
+            prmBinanceHosts: config.prmBinanceHosts,
+            prmOkexHosts: config.prmOkexHosts,
 
             summaryDatas: [],
 
@@ -286,6 +349,25 @@ export default {
             positions: [],
             positionsAvailable: false,
             positionsLoading: false,
+
+            prBinancePositions: [],
+            prBinancePositionsAvailable: false,
+            prBinancePositionsLoading: false,
+            prOkexPositions: [],
+            prOkexPositionsAvailable: false,
+            prOkexPositionsLoading: false,
+            pbBinancePositions: [],
+            pbBinancePositionsAvailable: false,
+            pbBinancePositionsLoading: false,
+            pbOkexPositions: [],
+            pbOkexPositionsAvailable: false,
+            pbOkexPositionsLoading: false,
+            prmBinancePositions: [],
+            prmBinancePositionsAvailable: false,
+            prmBinancePositionsLoading: false,
+            prmOkexPositions: [],
+            prmOkexPositionsAvailable: false,
+            prmOkexPositionsLoading: false,
 
             productVolumes: {},
             productVolumesAvailable: false,
@@ -590,23 +672,139 @@ export default {
 
         // 从Pfo获取所有positions(normal workers)
         fetchPositions() {
-            this.positions = []
-            var count = 0
-            this.positionsLoading = true
-            this.positionsAvailable = false
-            for(var i = 0; i < this.pfoHosts.length; i++){
-                getPositions(this.pfoHosts[i], 'normal').then(response => {
-                        count += 1
-                        var pfoPositions = response.results
+            // pr binance
+            this.prBinancePositions = []
+            var prBinanceCount = 0
+            this.prBinancePositionsLoading = true
+            this.prBinancePositionsAvailable = false
+            for(var i = 0; i < this.prBinanceHosts.length; i++){
+                getPositions(this.prBinanceHosts[i], 'normal').then(response => {
+                        prBinanceCount += 1
+                        var positions = response.results
                         // 每个position添加host信息
-                        for (let j = 0; j < pfoPositions.length; j++){
-                            pfoPositions[j]['host'] = response.config.baseURL
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
                         }
-                        this.positions = this.positions.concat(pfoPositions)
-                        if (count === this.pfoHosts.length ){
+                        this.prBinancePositions = this.prBinancePositions.concat(positions)
+                        if (prBinanceCount === this.prBinanceHosts.length ){
                             // 排序
-                            this.positionsAvailable = true
-                            this.positionsLoading = false 
+                            this.prBinancePositionsAvailable = true
+                            this.prBinancePositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // pr okex
+            this.prOkexPositions = []
+            var prOkexCount = 0
+            this.prOkexPositionsLoading = true
+            this.prOkexPositionsAvailable = false
+            for(var i = 0; i < this.prOkexHosts.length; i++){
+                getPositions(this.prOkexHosts[i], 'normal').then(response => {
+                        prOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加host信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                        }
+                        this.prOkexPositions = this.prOkexPositions.concat(positions)
+                        if (prOkexCount === this.prOkexHosts.length ){
+                            // 排序
+                            this.prOkexPositionsAvailable = true
+                            this.prOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // pb binance
+            this.pbBinancePositions = []
+            var pbBinanceCount = 0
+            this.pbBinancePositionsLoading = true
+            this.pbBinancePositionsAvailable = false
+            for(var i = 0; i < this.pbBinanceHosts.length; i++){
+                getPositions(this.pbBinanceHosts[i], 'normal').then(response => {
+                        pbBinanceCount += 1
+                        var positions = response.results
+                        // 每个position添加host信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                        }
+                        this.pbBinancePositions = this.pbBinancePositions.concat(positions)
+                        if (pbBinanceCount === this.pbBinanceHosts.length ){
+                            // 排序
+                            this.pbBinancePositionsAvailable = true
+                            this.pbBinancePositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // pr okex
+            this.pbOkexPositions = []
+            var pbOkexCount = 0
+            this.pbOkexPositionsLoading = true
+            this.pbOkexPositionsAvailable = false
+            for(var i = 0; i < this.pbOkexHosts.length; i++){
+                getPositions(this.pbOkexHosts[i], 'normal').then(response => {
+                        pbOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加host信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                        }
+                        this.pbOkexPositions = this.pbOkexPositions.concat(positions)
+                        if (pbOkexCount === this.pbOkexHosts.length ){
+                            // 排序
+                            this.pbOkexPositionsAvailable = true
+                            this.pbOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+    
+            // prm binance
+            this.prmBinancePositions = []
+            var prmBinanceCount = 0
+            this.prmBinancePositionsLoading = true
+            this.prmBinancePositionsAvailable = false
+            for(var i = 0; i < this.prmBinanceHosts.length; i++){
+                getPositions(this.prmBinanceHosts[i], 'normal').then(response => {
+                        prmBinanceCount += 1
+                        var positions = response.results
+                        // 每个position添加host信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                        }
+                        this.prmBinancePositions = this.prmBinancePositions.concat(positions)
+                        if (prmBinanceCount === this.prmBinanceHosts.length ){
+                            // 排序
+                            this.prmBinancePositionsAvailable = true
+                            this.prmBinancePositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // prm okex
+            this.prmOkexPositions = []
+            var prmOkexCount = 0
+            this.prmOkexPositionsLoading = true
+            this.prmOkexPositionsAvailable = false
+            for(var i = 0; i < this.prmOkexHosts.length; i++){
+                getPositions(this.prmOkexHosts[i], 'normal').then(response => {
+                        prmOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加host信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                        }
+                        this.prmOkexPositions = this.prmOkexPositions.concat(positions)
+                        if (prmOkexCount === this.prmOkexHosts.length ){
+                            // 排序
+                            this.prmOkexPositionsAvailable = true
+                            this.prmOkexPositionsLoading = false
                         }
                     }
                 )
