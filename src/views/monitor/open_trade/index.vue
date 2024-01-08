@@ -59,29 +59,44 @@
 
             <el-table-column align="center" label="持仓" min-width="5%">
               <template slot-scope="scope">
-                {{ openTradeCount }}
+                <span v-if="openTradeCount > 0"> 
+                  <b>{{ openTradeCount }}</b>
+                </span>
+                <span v-else> 
+                  {{ openTradeCount }}
+                </span>
               </template>
             </el-table-column>
 
             <el-table-column align="center" label="多头" min-width="5%">
               <template slot-scope="scope">
-                {{ longTradeCount }}
+                <span v-if="longTradeCount > 0"> 
+                  <b style="color: green">{{ longTradeCount }}</b>
+                </span>
+                <span v-else> 
+                  {{ longTradeCount }}
+                </span>
               </template>
             </el-table-column>
 
             <el-table-column align="center" label="空头" min-width="5%">
               <template slot-scope="scope">
-                {{ shortTradeCount }}
+                <span v-if="shortTradeCount > 0"> 
+                  <b style="color: red">{{ shortTradeCount }}</b>
+                </span>
+                <span v-else> 
+                  {{ shortTradeCount }}
+                </span>
               </template>
             </el-table-column>
 
             <el-table-column align="center" label="空仓" min-width="5%">
               <template slot-scope="scope">
-                <span style="color:red" v-if="emptyTradeCount > 0">
-                {{ emptyTradeCount }}
+                <span v-if="emptyTradeCount > 0"> 
+                  <b style="color: orange">{{ emptyTradeCount }}</b>
                 </span>
-                <span v-else>
-                {{ emptyTradeCount }}
+                <span v-else> 
+                  {{ emptyTradeCount }}
                 </span>
               </template>
             </el-table-column>
