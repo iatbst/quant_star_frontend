@@ -26,50 +26,10 @@
           <!-- Errors.type表 -->
           <el-table
             v-loading="errorTableLoading"
-            :data="Object.values(errorTableDict)"
+            :data="errorList"
             style="width: 100%; margin-bottom: 20px; margin-top: 45px"
             :header-cell-style="{ background: 'lightgray' }"
           >
-
-            <el-table-column align="center" type="expand">
-              <template slot-scope="scope">
-
-
-                    <!-- Errors.messages表 -->
-                    <el-table
-                      :data="Object.values(scope.row.messages)"
-                      style="width: 100%; margin-bottom: 20px"
-                      :header-cell-style="{ background: 'white' }"
-                      :show-header="false"
-                    >
-                      <el-table-column align="center" label="时间" min-width="15%">
-                        <template slot-scope="_scope">
-                          {{ _scope.row.ts }}
-                        </template>
-                      </el-table-column>    
-
-                      <el-table-column align="center" label="消息" min-width="65%">
-                        <template slot-scope="_scope">
-                          {{ _scope.row.message }}
-                        </template>
-                      </el-table-column> 
-
-                      <el-table-column align="center" label="次数" min-width="10%">
-                        <template slot-scope="_scope">
-                          <el-link type="text" @click="showTsDialog(_scope.row.tsList)">
-                            {{ _scope.row.count }}次
-                          </el-link>
-                        </template>
-                      </el-table-column>   
-
-                      <el-table-column align="center" label="" min-width="10%">
-                        <template slot-scope="_scope">
-                          <el-link type="text" @click="showJsonDialog(_scope.row.data)">JSON</el-link>
-                        </template>
-                      </el-table-column>                     
-                    </el-table>
-              </template>
-            </el-table-column>
 
             <el-table-column align="left" label="级别" min-width="5%">
               <template slot-scope="scope">
@@ -79,19 +39,19 @@
 
            <el-table-column align="left" label="时间" min-width="15%">
               <template slot-scope="scope">
-                {{ scope.row.ts }}
+                {{ formatTimestamp(scope.row.ts) }}
               </template>
             </el-table-column>    
 
-            <el-table-column align="left" label="类型" min-width="65%">
+            <el-table-column align="left" label="类型" min-width="15%">
               <template slot-scope="scope">
                 {{ scope.row.type }}
               </template>
             </el-table-column> 
 
-            <el-table-column align="left" label="次数" min-width="15%">
+            <el-table-column align="left" label="内容" min-width="65%">
               <template slot-scope="scope">
-                {{ scope.row.count }}
+                {{ scope.row.data.message }}
               </template>
             </el-table-column> 
 
@@ -186,7 +146,7 @@ export default {
       currentHosts: null,
 
       errorTableLoading: true,
-      errorTableList: [],
+      errorList: [],
       errorTableDict: {},
 
       jsonData: null,
@@ -227,14 +187,14 @@ export default {
       this.dialogTsVisible = true
     },
     fetchErrors(hosts, page=null) {
-      this.errorTableList = []
+      this.errorList = []
       this.totalCount = 0
       this.currentHosts = hosts
       this.errorTableLoading = true
       var request_count = 0
       for(const host of hosts){
         getErrors(host, page).then(response => {
-          this.errorTableList = this.errorTableList.concat(response.results)
+          this.errorList = this.errorList.concat(response.results)
           this.totalCount += response.count
           request_count += 1
           if (request_count == hosts.length){  
@@ -281,61 +241,9 @@ export default {
       return ts.replace('T', ' ').slice(0, 19)
     },
     parseErrorList(){
-      // 按照时间排序: 新 -> 旧
-      this.errorTableList.sort((a, b) => a.ts.localeCompare(b.ts)).reverse()
-
-      this.errorTableDict = {}
-      for(var i=0; i < this.errorTableList.length; i++ ){
-        var type = this.errorTableList[i].type
-        var level = this.errorTableList[i].level
-        var ts = this.formatTimestamp(this.errorTableList[i].ts)
-        var data = this.errorTableList[i].data
-        var message = data.message
-        if (!this.errorTableDict.hasOwnProperty(type)){
-          // 新type
-          this.errorTableDict[type] = {
-            type: type,
-            ts: ts,
-            level: level,
-            count: 1,
-            messages: {
-              [message]: {
-                message: message,
-                ts: ts,
-                count: 1,
-                tsList: [ts],
-                data: data,
-              } 
-            }
-          }
-        } else {
-          // type存在
-          this.errorTableDict[type].count += 1
-          // if (ts > this.errorTableDict.ts){
-          //   // 相同type记录最新的ts
-          //   this.errorTableDict.ts = ts
-          // }
-          if (!this.errorTableDict[type].messages.hasOwnProperty(message)){
-            // 新message
-            this.errorTableDict[type].messages[message] = {
-              message: message,
-              ts: ts,
-              count: 1,
-              tsList: [ts],
-              data: data,
-            }
-          } else {
-            // message存在
-            this.errorTableDict[type].messages[message].count += 1
-            // if (ts > this.errorTableDict[type].messages[message].ts){
-            //   // 相同message记录最新的ts
-            //   this.errorTableDict[type].messages[message].ts = ts
-            // }
-            this.errorTableDict[type].messages[message].tsList.push(ts)
-          }
-        }
-      }
-      //console.log(this.errorTableDict)
+      // 
+      // 按照时间排序
+      this.errorList.sort((a, b) => a.ts.localeCompare(b.ts)).reverse()
     }
   }
 }

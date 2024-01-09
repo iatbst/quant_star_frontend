@@ -14,7 +14,6 @@
                         :show-header="false"
                         border
                         v-loading="positionsLoading"
-                        cell-style="padding:0px"
                     >
                         <el-table-column align="center" v-for="col in Object.keys(rowData).sort()">
                             <template slot-scope="scope">
@@ -32,7 +31,6 @@
                         :show-header="false"
                         border
                         v-loading="positionsLoading"
-                        cell-style="padding:0px"
                     >
                         <el-table-column align="center" v-for="col in Object.keys(rowData).sort()">
                             <template slot-scope="scope">
@@ -43,10 +41,10 @@
                                                 {{ data.position }}
                                             </span>
                                             <span style="color: green" v-else-if="data.position > 0">
-                                                <b>{{ toThousands((data.position/1000).toFixed(2))}}</b>
+                                                {{ toThousands((data.position/1000).toFixed(1))}}
                                             </span> 
                                              <span style="color: red" v-else>
-                                                <b>{{ toThousands((data.position/1000).toFixed(2))}}</b>
+                                                {{ toThousands((data.position/1000).toFixed(1))}}
                                             </span>                                                                                  
                                         </span>
                                     </el-col>
@@ -107,6 +105,11 @@ export default {
         colCount: {
             type: Number,
             default: 5
+        },
+
+        showZero: {
+            type: Boolean,
+            default: true
         }
 
     },
@@ -174,7 +177,19 @@ export default {
                     worker_name: workerName
                 })
             }
-            // debugger
+            // 过滤掉子策略仓位都是0的币
+            if (!this.showZero){
+                for(let coin in this.positionList1){
+                    var posSum = 0
+                    for(const data of this.positionList1[coin]){
+                        posSum += data.position
+                    }
+                    if (posSum == 0){
+                        // 删除
+                        delete this.positionList1[coin]
+                    }
+                }
+            }
 
             // 转化2 -> positionList2
             var currentRow = {}

@@ -189,6 +189,7 @@
         v-bind:exchange="'Binance'"
         v-bind:strategy="'大PV'"
         v-bind:col-count="5"
+        v-bind:show-zero="true"
         ></position-map2> 
 
         <!-- pr_okex -->
@@ -198,6 +199,7 @@
         v-bind:exchange="'Okex'"
         v-bind:strategy="'大PV'"
         v-bind:col-count="5"
+        v-bind:show-zero="true"
         ></position-map2> 
 
         <!-- pb_binance -->
@@ -207,6 +209,7 @@
         v-bind:exchange="'Binance'"
         v-bind:strategy="'抄底'"
         v-bind:col-count="7"
+        v-bind:show-zero="false"
         ></position-map2> 
 
         <!-- pb_okex -->
@@ -216,6 +219,7 @@
         v-bind:exchange="'Okex'"
         v-bind:strategy="'抄底'"
         v-bind:col-count="7"
+        v-bind:show-zero="false"
         ></position-map2> 
 
         <!-- prm_binance -->
@@ -225,6 +229,7 @@
         v-bind:exchange="'Binance'"
         v-bind:strategy="'小PV'"
         v-bind:col-count="20"
+        v-bind:show-zero="false"
         ></position-map2> 
 
         <!-- prm_okex -->
@@ -234,6 +239,7 @@
         v-bind:exchange="'Okex'"
         v-bind:strategy="'小PV'"
         v-bind:col-count="20"
+        v-bind:show-zero="false"
         ></position-map2> 
     </div>
 

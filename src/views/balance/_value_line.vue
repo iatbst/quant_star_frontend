@@ -58,7 +58,7 @@ export default {
         },
         range: {
             type: String,
-            default: '6M'
+            default: 'thisYear'
         }
     },
 
