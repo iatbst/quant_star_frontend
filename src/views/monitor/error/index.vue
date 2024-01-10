@@ -9,7 +9,7 @@
           >
             <el-table-column align="center" label="">
               <template slot-scope="scope">
-                <el-button style="width: 100%" type="primary" v-on:click="fetchErrors(scope.row.hosts)" plain>
+                <el-button style="width: 100%" type="primary" v-on:click="fetchDatas(scope.row.hosts)" plain>
                   {{ scope.row.name }}
                 </el-button>
               </template>
@@ -42,19 +42,25 @@
                       :header-cell-style="{ background: 'white' }"
                       :show-header="false"
                     >
-                      <el-table-column align="center" label="时间" min-width="15%">
+                      <el-table-column align="left" label="时间" min-width="15%">
                         <template slot-scope="_scope">
                           {{ _scope.row.ts }}
                         </template>
                       </el-table-column>    
 
-                      <el-table-column align="center" label="消息" min-width="65%">
+                      <el-table-column align="left" label="" min-width="10%" v-if="showPfo">
+                        <template slot-scope="_scope">
+                          {{ _scope.row.pfo }}
+                        </template>
+                      </el-table-column>   
+
+                      <el-table-column align="left" label="消息" min-width="63%">
                         <template slot-scope="_scope">
                           {{ _scope.row.message }}
                         </template>
                       </el-table-column> 
 
-                      <el-table-column align="center" label="次数" min-width="10%">
+                      <el-table-column align="center" label="次数" min-width="6%">
                         <template slot-scope="_scope">
                           <el-link type="text" @click="showTsDialog(_scope.row.tsList)">
                             {{ _scope.row.count }}次
@@ -62,7 +68,7 @@
                         </template>
                       </el-table-column>   
 
-                      <el-table-column align="center" label="" min-width="10%">
+                      <el-table-column align="center" label="" min-width="6%">
                         <template slot-scope="_scope">
                           <el-link type="text" @click="showJsonDialog(_scope.row.data)">JSON</el-link>
                         </template>
@@ -189,6 +195,9 @@ export default {
       errorTableList: [],
       errorTableDict: {},
 
+      hostPfoMap: {},
+      showPfo: false,
+
       jsonData: null,
       dialogJsonVisible: false,
 
@@ -200,7 +209,7 @@ export default {
     }
   },
   created() {
-    this.fetchErrors(config.pfoHosts)  // 默认展示portfolios的Errors
+    this.fetchDatas(config.pfoHosts)  // 默认展示portfolios的Errors
   },
   methods: {
     levelIcon(level) {
@@ -222,10 +231,38 @@ export default {
       // debugger;
       this.dialogJsonVisible = true
     },
+    
     showTsDialog(list){
       this.tsList = list
       this.dialogTsVisible = true
     },
+
+    fetchDatas(hosts, page=null){
+      if (hosts.length == 1){
+        this.showPfo = false
+      } else {
+        this.showPfo = true
+      }
+      var request_count = 0
+      if (this.showPfo){
+        // 需要先获取所有的pfo
+        for(const host of hosts){
+          getPortfolios(host).then(response => {
+            var pfo = response.results[0].alias // 每个pfo host上只能有一个pfo
+            this.hostPfoMap[host] = pfo
+            request_count += 1
+            if (request_count == hosts.length){
+              // hostPfoMap生成 
+              this.fetchErrors(hosts, page)
+            }
+          })
+        }      
+      } else {
+        // 不需要pfo数据
+        this.fetchErrors(hosts, page)
+      }
+    },
+
     fetchErrors(hosts, page=null) {
       this.errorTableList = []
       this.totalCount = 0
@@ -234,6 +271,10 @@ export default {
       var request_count = 0
       for(const host of hosts){
         getErrors(host, page).then(response => {
+          // 添加pfo
+          for(var i=0; i < response.results.length; i++){
+            response.results[i]['pfo'] = this.hostPfoMap[response.config.baseURL]
+          }
           this.errorTableList = this.errorTableList.concat(response.results)
           this.totalCount += response.count
           request_count += 1
@@ -251,7 +292,7 @@ export default {
       }
     },
     fetchErrorsByPage(page) {
-      this.fetchErrors(this.currentHosts, page)
+      this.fetchDatas(this.currentHosts, page)
     },
     // fetchPortfolios() {
     //   this.portfolioListLoading = true
@@ -288,6 +329,7 @@ export default {
       for(var i=0; i < this.errorTableList.length; i++ ){
         var type = this.errorTableList[i].type
         var level = this.errorTableList[i].level
+        var pfo = this.errorTableList[i].pfo
         var ts = this.formatTimestamp(this.errorTableList[i].ts)
         var data = this.errorTableList[i].data
         var message = data.message
@@ -300,6 +342,7 @@ export default {
             count: 1,
             messages: {
               [message]: {
+                pfo: pfo,
                 message: message,
                 ts: ts,
                 count: 1,
@@ -318,6 +361,7 @@ export default {
           if (!this.errorTableDict[type].messages.hasOwnProperty(message)){
             // 新message
             this.errorTableDict[type].messages[message] = {
+              pfo: pfo,
               message: message,
               ts: ts,
               count: 1,
