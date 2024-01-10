@@ -207,7 +207,7 @@ export default {
       if (level === 'critical'){
         return "<i style=\"font-size:20px; color: red \" class=\"el-icon-error\"></i>"
       } else if (level === 'exception'){
-        return "<i style=\"font-size:20px; color: red \" class=\"el-icon-warning\"></i>"
+        return "<i style=\"font-size:20px; color: orange \" class=\"el-icon-warning\"></i>"
       } else if (level === 'error') {
         return "<i style=\"font-size:20px; color: red \" class=\"el-icon-error\"></i>"
       } else if (level === 'warn') {

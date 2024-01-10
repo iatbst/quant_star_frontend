@@ -141,7 +141,7 @@ const riskRatio = 0.48
 // Crypto父pfo的名称
 const cryptoParentPfo = 'crypto_pfo'
 
-// Pfo的展示顺序
+// 展示顺序
 const pfoSortWeights = {
     crypto_cta_pr_binance: 1,
     crypto_cta_pr_huobi: 2,
@@ -155,6 +155,30 @@ const pfoAliasSortWeights = {
     okex: 3,
     ftx: 4,
     altbtc: 5,
+}
+const prBinanceSortWeights = {
+    btc: 3,
+    eth: 2,
+    sol: 1,
+    ordi: 1,
+    avax: 1,
+    xrp: 1,
+    doge: 1,
+    '1000sats': 1,
+    gas: 1,
+    link: 1
+}
+const prOkexSortWeights = {
+    btc: 3,
+    eth: 2,  
+    ltc: 1,
+    xrp: 1,
+    etc: 1,
+    ada: 1,
+    bnb: 1,
+    sol: 1,
+    doge: 1,
+    matic: 1  
 }
 
 // 不同Asset的Round Level
@@ -216,6 +240,8 @@ export default {
     initFundUSD,
     pfoSortWeights,
     pfoAliasSortWeights,
+    prBinanceSortWeights,
+    prOkexSortWeights,
     riskRatio,
     subacctPfoAlias,
     spErrorTypes,

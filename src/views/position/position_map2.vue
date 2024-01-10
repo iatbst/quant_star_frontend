@@ -1,9 +1,9 @@
 <template>
     <div class="app-container" align="center" >
         <div style="width: 95%; margin-top: 0px">
-            <span>
+            <h4 style="font-weight: normal;">
                 {{ exchange }} {{ strategy }}
-            </span>
+            </h4>
             <div v-for="rowData in positionList2">
                 <!-- 表1: coins -->
                 <el-row :gutter="0" type="flex">
@@ -110,8 +110,17 @@ export default {
         showZero: {
             type: Boolean,
             default: true
-        }
+        },
 
+        sortCoin: {
+            type: Boolean,
+            default: false
+        },
+
+        sortCoinWeights: {
+            type: Object,
+            default: {}
+        },
     },
 
     watch: {
@@ -177,6 +186,7 @@ export default {
                     worker_name: workerName
                 })
             }
+
             // 过滤掉子策略仓位都是0的币
             if (!this.showZero){
                 for(let coin in this.positionList1){
@@ -191,10 +201,35 @@ export default {
                 }
             }
 
+            // 确定coin顺序
+            if (this.sortCoin){
+                var weightedCoins = []
+                for(const coin of Object.keys(this.positionList1)){
+                    if(coin in this.sortCoinWeights){
+                        weightedCoins.push({
+                            coin: coin,
+                            weight: this.sortCoinWeights[coin]
+                        })
+                    } else {
+                        weightedCoins.push({
+                            coin: coin,
+                            weight: 0
+                        })                       
+                    }
+                }
+                weightedCoins.sort((a, b)=> b.weight - a.weight)
+                var coins = []
+                for(const data of weightedCoins){
+                    coins.push(data.coin)
+                }
+            } else {
+                var coins = Object.keys(this.positionList1).sort()
+            }
+
             // 转化2 -> positionList2
             var currentRow = {}
             var count = 1
-            for (const coin of Object.keys(this.positionList1).sort()){
+            for (const coin of coins){
                 currentRow['col' + count] = {
                     coin: coin,
                     positions: this.positionList1[coin].sort((a, b)=>a.strategy_id - b.strategy_id)
@@ -208,6 +243,16 @@ export default {
                 }
             }
             if (Object.keys(currentRow).length > 0){
+                // 按照colCount行补齐
+                var colIx = Object.keys(currentRow).length
+                var len = Object.keys(currentRow).length
+                for(var i=0; i < this.colCount - len; i++){
+                    colIx += 1
+                    currentRow['col' + colIx] = {
+                        coin: '',
+                        position: null
+                    }
+                }
                 this.positionList2.push(currentRow)
             }
             // debugger

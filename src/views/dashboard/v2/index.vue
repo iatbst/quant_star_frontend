@@ -190,6 +190,8 @@
         v-bind:strategy="'大PV'"
         v-bind:col-count="5"
         v-bind:show-zero="true"
+        v-bind:sort-coin="true"
+        v-bind:sort-coin-weights="prBinanceSortWeights"
         ></position-map2> 
 
         <!-- pr_okex -->
@@ -200,6 +202,8 @@
         v-bind:strategy="'大PV'"
         v-bind:col-count="5"
         v-bind:show-zero="true"
+        v-bind:sort-coin="true"
+        v-bind:sort-coin-weights="prOkexSortWeights"
         ></position-map2> 
 
         <!-- pb_binance -->
@@ -329,6 +333,8 @@ export default {
             pbOkexHosts: config.pbOkexHosts,
             prmBinanceHosts: config.prmBinanceHosts,
             prmOkexHosts: config.prmOkexHosts,
+            prBinanceSortWeights: config.prBinanceSortWeights,
+            prOkexSortWeights: config.prOkexSortWeights,
 
             summaryDatas: [],
 
