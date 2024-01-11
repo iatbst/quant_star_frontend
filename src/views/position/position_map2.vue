@@ -253,6 +253,7 @@ export default {
                         position: null
                     }
                 }
+                // debugger
                 this.positionList2.push(currentRow)
             }
             // debugger
