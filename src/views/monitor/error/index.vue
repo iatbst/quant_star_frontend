@@ -106,7 +106,7 @@
   
         </div>
 
-        <div align="center">
+        <div align="center" v-if="showPage">
             <el-pagination
                 layout="prev, pager, next"
                 :page-size="500"
@@ -197,6 +197,7 @@ export default {
 
       hostPfoMap: {},
       showPfo: false,
+      showPage: false,  // 只有从单一host获取errors时才能启用pages
 
       jsonData: null,
       dialogJsonVisible: false,
@@ -240,8 +241,10 @@ export default {
     fetchDatas(hosts, page=null){
       if (hosts.length == 1){
         this.showPfo = false
+        this.showPage = true
       } else {
         this.showPfo = true
+        this.showPage = false
       }
       var request_count = 0
       if (this.showPfo){
@@ -269,11 +272,16 @@ export default {
       this.currentHosts = hosts
       this.errorTableLoading = true
       var request_count = 0
+      if (!this.showPage){
+        page = null
+      }
       for(const host of hosts){
         getErrors(host, page).then(response => {
           // 添加pfo
-          for(var i=0; i < response.results.length; i++){
-            response.results[i]['pfo'] = this.hostPfoMap[response.config.baseURL]
+          if (this.showPfo){
+            for(var i=0; i < response.results.length; i++){
+              response.results[i]['pfo'] = this.hostPfoMap[response.config.baseURL]
+            }
           }
           this.errorTableList = this.errorTableList.concat(response.results)
           this.totalCount += response.count
@@ -294,22 +302,6 @@ export default {
     fetchErrorsByPage(page) {
       this.fetchDatas(this.currentHosts, page)
     },
-    // fetchPortfolios() {
-    //   this.portfolioListLoading = true
-    //   this.portfolioList = []
-    //   var request_count = 0
-    //   for (var i = 0; i < config.pfoHosts.length; i++){
-    //     getPortfolios(config.pfoHosts[i]).then(response => {
-    //       this.portfolioList = this.portfolioList.concat(response.results)
-    //       request_count += 1
-    //       if (request_count == config.pfoHosts.length){
-    //         // pfo加载完成
-    //         this.portfolioList.sort((a, b) => a.name.localeCompare(b.name))
-    //         this.portfolioListLoading = false
-    //       }
-    //     })
-    //   }
-    // },
     formatTimestamp(ts) {
       if (ts) {
         const stillUtc = moment.utc(ts).toDate()
@@ -354,13 +346,10 @@ export default {
         } else {
           // type存在
           this.errorTableDict[type].count += 1
-          // if (ts > this.errorTableDict.ts){
-          //   // 相同type记录最新的ts
-          //   this.errorTableDict.ts = ts
-          // }
-          if (!this.errorTableDict[type].messages.hasOwnProperty(message)){
+          var key = pfo+message
+          if (!this.errorTableDict[type].messages.hasOwnProperty(key)){
             // 新message
-            this.errorTableDict[type].messages[message] = {
+            this.errorTableDict[type].messages[key] = {
               pfo: pfo,
               message: message,
               ts: ts,
@@ -370,12 +359,8 @@ export default {
             }
           } else {
             // message存在
-            this.errorTableDict[type].messages[message].count += 1
-            // if (ts > this.errorTableDict[type].messages[message].ts){
-            //   // 相同message记录最新的ts
-            //   this.errorTableDict[type].messages[message].ts = ts
-            // }
-            this.errorTableDict[type].messages[message].tsList.push(ts)
+            this.errorTableDict[type].messages[key].count += 1
+            this.errorTableDict[type].messages[key].tsList.push(ts)
           }
         }
       }
