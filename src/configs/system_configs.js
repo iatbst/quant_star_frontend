@@ -67,10 +67,10 @@ var development_hosts = [
 // 当前投资组合的Hosts地址
 if (process.env.ENV === 'development'){
     // 开发环境
-    var hostList = development_hosts
+    var hostList = production_hosts
 } else {
     // 线上环境
-    var hostList = development_hosts
+    var hostList = production_hosts
 }
 
 const pfoHosts = hostList
