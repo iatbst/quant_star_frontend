@@ -230,7 +230,12 @@ export default {
             var currentRow = {}
             var count = 1
             for (const coin of coins){
-                currentRow['col' + count] = {
+                if (count<10){
+                    var colKey = 'col0' + count
+                } else {
+                    var colKey = 'col' + count
+                }
+                currentRow[colKey] = {
                     coin: coin,
                     positions: this.positionList1[coin].sort((a, b)=>a.strategy_id - b.strategy_id)
                 }
@@ -248,7 +253,12 @@ export default {
                 var len = Object.keys(currentRow).length
                 for(var i=0; i < this.colCount - len; i++){
                     colIx += 1
-                    currentRow['col' + colIx] = {
+                    if (colIx<10){
+                        var colKey = 'col0' + colIx
+                    } else {
+                        var colKey = 'col' + colIx
+                    }
+                    currentRow[colKey] = {
                         coin: '',
                         position: null
                     }
