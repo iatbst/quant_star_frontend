@@ -59,19 +59,14 @@
 
             <el-table-column align="center" label="持仓" min-width="5%">
               <template slot-scope="scope">
-                <span v-if="openTradeCount > 0"> 
-                  <b>{{ openTradeCount }}</b>
-                </span>
-                <span v-else> 
-                  {{ openTradeCount }}
-                </span>
+                {{ openTradeCount }}
               </template>
             </el-table-column>
 
             <el-table-column align="center" label="多头" min-width="5%">
               <template slot-scope="scope">
-                <span v-if="longTradeCount > 0"> 
-                  <b style="color: green">{{ longTradeCount }}</b>
+                <span style="color: green" v-if="longTradeCount > 0"> 
+                  {{ longTradeCount }}
                 </span>
                 <span v-else> 
                   {{ longTradeCount }}
@@ -81,8 +76,8 @@
 
             <el-table-column align="center" label="空头" min-width="5%">
               <template slot-scope="scope">
-                <span v-if="shortTradeCount > 0"> 
-                  <b style="color: red">{{ shortTradeCount }}</b>
+                <span style="color: red" v-if="shortTradeCount > 0"> 
+                  {{ shortTradeCount }}
                 </span>
                 <span v-else> 
                   {{ shortTradeCount }}
@@ -92,8 +87,8 @@
 
             <el-table-column align="center" label="空仓" min-width="5%">
               <template slot-scope="scope">
-                <span v-if="emptyTradeCount > 0"> 
-                  <b style="color: orange">{{ emptyTradeCount }}</b>
+                <span style="color: orange" v-if="emptyTradeCount > 0"> 
+                  {{ emptyTradeCount }}
                 </span>
                 <span v-else> 
                   {{ emptyTradeCount }}
@@ -126,6 +121,7 @@
               </template>            
             </el-table-column>
 
+            <!---
             <el-table-column align="center" label="回测异常" min-width="10%">
               <template slot-scope="scope">
                 <div v-if="scope.row.backtest_fail == 0">
@@ -138,6 +134,7 @@
                 </div>
               </template>
             </el-table-column>
+            --->
           </el-table>
 
           <!-- 明细 -->

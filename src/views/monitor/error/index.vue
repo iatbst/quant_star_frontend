@@ -214,14 +214,14 @@ export default {
   },
   methods: {
     levelIcon(level) {
-      if (level === 'critical'){
-        return "<i style=\"font-size:20px; color: red \" class=\"el-icon-error\"></i>"
-      } else if (level === 'exception'){
+      if (level === 'alert'){
         return "<i style=\"font-size:20px; color: orange \" class=\"el-icon-warning\"></i>"
+      } else if (level === 'exception'){
+        return "<i style=\"font-size:20px; color: black \" class=\"el-icon-question\"></i>"
       } else if (level === 'error') {
         return "<i style=\"font-size:20px; color: red \" class=\"el-icon-error\"></i>"
       } else if (level === 'warn') {
-        return "<i style=\"font-size:20px; color: gray \" class=\"el-icon-question\"></i>"
+        return "<i style=\"font-size:20px; color: gray \" class=\"el-icon-info\"></i>"
       } else {
         return "<i style=\"font-size:20px; color: lightgray \" class=\"el-icon-warning\"></i>"
       }
