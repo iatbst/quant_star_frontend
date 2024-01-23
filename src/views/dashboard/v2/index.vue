@@ -38,6 +38,20 @@
       </el-col>
     </el-row> 
 
+    <!---------------------------------- Benchbark 回测比较 ---------------------------->
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+      <el-col :span="24">
+          <div style="margin-bottom: 20px">
+            <value-line 
+            v-bind:values="btValueLines.all.data" 
+            v-bind:title="btValueLines.all.name"
+            v-if="btValueLines.all.available" 
+            style="margin-bottom: 20px">
+            </value-line>
+          </div>
+      </el-col>
+    </el-row>
+
     <!---------------------------------- 策略的Pnl Lines ----------------------------------->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
       <el-col :span="22" :offset="1">
@@ -69,35 +83,6 @@
           </div>
       </el-col>
     </el-row>
-
-
-    <!---------------------------------- Benchbark 回测比较 -----------------------------------
-    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
-      <el-col :span="16">
-          <div style="margin-bottom: 20px">
-            <value-line 
-            v-bind:values="btValueLines.all.data" 
-            v-bind:title="btValueLines.all.name"
-            v-bind:y-type="btValueLineType"
-            v-bind:range="btValueLineRange"
-            v-if="btValueLines.all.available" 
-            style="margin-bottom: 20px">
-            </value-line>
-          </div>
-      </el-col>
-
-      <el-col :span="8">
-          <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
-            <live-backtest-stats
-            v-bind:live-backtest-stat-datas="liveBacktestStatDatas" 
-            v-bind:live-rets="liveRets"
-            v-if="liveRets.available && backtest1RetsAvailable && backtest2RetsAvailable" 
-            style="margin-bottom: 20px">
-            </live-backtest-stats>
-          </div>
-      </el-col>
-    </el-row> 
-    ------->
 
     <!---------------------------------- 回测曲线与仓位 -----------------------------------
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
@@ -389,26 +374,31 @@ export default {
 
             // 记录策略回测资产曲线
             btValueLines: {
-                'pivot_reversal': {
-                    'name': 'Pivot Reversal',
+                'all': {
+                    'name': '回测资金',
                     'data': null,
                     'available': false
-                },
-                'pivot_reversal_v1': {
-                    'name': 'Pivot Reversal(V1)',
-                    'data': null,
-                    'available': false
-                }, 
-                'pivot_reversal_v2': {
-                    'name': 'Pivot Reversal(V2)',
-                    'data': null,
-                    'available': false
-                }, 
-                'plunge_back': {
-                    'name': 'Plunge Back回测资金曲线',
-                    'data': null,
-                    'available': false
-                },                               
+                },                
+                // 'pivot_reversal': {
+                //     'name': 'Pivot Reversal',
+                //     'data': null,
+                //     'available': false
+                // },
+                // 'pivot_reversal_v1': {
+                //     'name': 'Pivot Reversal(V1)',
+                //     'data': null,
+                //     'available': false
+                // }, 
+                // 'pivot_reversal_v2': {
+                //     'name': 'Pivot Reversal(V2)',
+                //     'data': null,
+                //     'available': false
+                // }, 
+                // 'plunge_back': {
+                //     'name': 'Plunge Back回测资金曲线',
+                //     'data': null,
+                //     'available': false
+                // },                               
             },
 
             // 策略的Pnl Line(今年)

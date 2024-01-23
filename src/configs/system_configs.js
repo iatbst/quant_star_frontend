@@ -61,8 +61,8 @@ var production_hosts = [
 
 var development_hosts = [
     // 开发/测试
-    'http://ec2-18-167-19-16.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-163-56-233.ap-east-1.compute.amazonaws.com:8000/api'
+    'http://ec2-54-95-119-214.ap-northeast-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-18-163-56-233.ap-east-1.compute.amazonaws.com:8000/api'
 ]
 // 当前投资组合的Hosts地址
 if (process.env.ENV === 'development'){
@@ -77,7 +77,7 @@ const pfoHosts = hostList
 
 // Backtest Host地址(运行回测的Host)
 // const backtestHost = 'http://localhost:8000/api'
-const backtestHost = 'http://ec2-13-214-122-117.ap-southeast-1.compute.amazonaws.com:8000/api'
+const backtestHost = 'http://ec2-52-195-236-169.ap-northeast-1.compute.amazonaws.com:8000/api'
 
 // 常用exchanges
 const exchanges = [
