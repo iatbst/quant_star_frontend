@@ -32,6 +32,20 @@ export function getBacktestReportById(host=null, id, fields=null) {
   return request(req_obj)
 }
 
+export function getBacktestReportByName(host=null, name, fields=null) {
+  var url = '/backtest-reports/?name=' + name
+  if (fields != null){
+      // 指定fields
+      url += '&fields=' + fields
+    }
+  var req_obj = {
+    url: url,
+    method: 'get'
+  }
+  if (host) { req_obj['baseURL'] = host }
+  return request(req_obj)
+}
+
 export function getBacktestReportsByPlanId(host=null, plan_id, fields=null, page=null) {
   var url = '/backtest-reports/?plan_id=' + plan_id
   if (fields != null){

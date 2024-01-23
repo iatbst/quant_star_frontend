@@ -272,7 +272,7 @@ import { getSubAccountDatas} from '@/api/subaccount'
 import { getDelegateWorkerDatas } from '@/api/worker'
 import { getPositions } from '@/api/position'
 import { getBacktestPlanByName } from '@/api/backtest_plan'
-import { getBacktestReportById } from '@/api/backtest_report'
+import { getBacktestReportById, getBacktestReportByName } from '@/api/backtest_report'
 import { getOrders } from '@/api/order'
 import { getAnnualReturn, getMaxDrawdown } from '@/utils/general'
 
@@ -588,17 +588,14 @@ export default {
             })
         },
 
-        // 从Backtest获取各个策略的回测资产曲线
+        // 从master获取各个策略的回测资产曲线
         fetchStrategyValuelines(){
             for (const sty in this.btValueLines){
-                var planName = sty + '_backtest'
+                var reportName = sty + '_backtest'
                 this.btValueLines[sty].available = false
-                getBacktestPlanByName(config.backtestHost, planName).then(response => {
-                    var plan = response.results[0]
-                    getBacktestReportById(config.backtestHost, plan.latest_report_id).then(response => {
-                        this.btValueLines[sty].data = response.results[0].analyzer_rets.value_line
-                        this.btValueLines[sty].available = true
-                    })
+                getBacktestReportByName(config.masterHost, reportName).then(response => {
+                    this.btValueLines[sty].data = response.results[0].analyzer_rets.value_line
+                    this.btValueLines[sty].available = true
                 })
             }
         },
