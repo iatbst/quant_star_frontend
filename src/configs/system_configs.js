@@ -35,7 +35,8 @@ const pbOkexHosts = [
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-113-187.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',   
+    'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',  
+    'http://ec2-16-163-154-133.ap-east-1.compute.amazonaws.com:8000/api',  
 ]
 
 var production_hosts = [
@@ -45,6 +46,7 @@ var production_hosts = [
     'http://ec2-18-166-113-187.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-16-163-154-133.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-16-162-187-219.ap-east-1.compute.amazonaws.com:8000/api',
 
     // 东京: Binance
