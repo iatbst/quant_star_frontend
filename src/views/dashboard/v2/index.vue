@@ -495,7 +495,7 @@ export default {
             this.fetchSubAccountDatas()
 
             // 获取Benchmark 回测数据 (Backtest)
-            this.fetchBacktestDatas()
+            //this.fetchBacktestDatas()
 
             // 获取策略的回测资产曲线
             this.fetchStrategyValuelines()

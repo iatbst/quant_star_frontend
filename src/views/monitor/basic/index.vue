@@ -383,13 +383,16 @@ export default {
     },
 
     fetchMasterHosts() {
-      this.masterList = [{
+      this.masterList = [
+      {
         name: 'master',
         hostRole: 'master'
-      }, {
-       name: 'backtest',
-        hostRole: 'backtest'
-      }]
+      }
+      // {
+      //  name: 'backtest',
+      //   hostRole: 'backtest'
+      // }
+      ]
       this.fetchMasterMonitorStats()  // 默认展示master的monitorStats
     },
 

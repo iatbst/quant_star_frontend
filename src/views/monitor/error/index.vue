@@ -177,11 +177,13 @@ export default {
         name: 'master',
         hostRole: 'master',
         hosts: [config.masterHost],
-      }, {
-       name: 'backtest',
-        hostRole: 'backtest',
-        hosts: [config.backtestHost]
-      }, {
+      }, 
+      // {
+      //  name: 'backtest',
+      //   hostRole: 'backtest',
+      //   hosts: [config.backtestHost]
+      // }, 
+      {
        name: 'portfolios',
         hostRole: 'pfo',
         hosts: config.pfoHosts
