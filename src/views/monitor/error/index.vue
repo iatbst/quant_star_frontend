@@ -208,12 +208,18 @@ export default {
       dialogTsVisible: false,
 
       totalCount: null,
-      currentPage: null
+      currentPage: null,
+
+      refreshInterval: 300000,
+      intervalId: null
     }
   },
+
   created() {
     this.fetchDatas(config.pfoHosts)  // 默认展示portfolios的Errors
+    this.dataRefreh()
   },
+
   methods: {
     levelIcon(level) {
       if (level === 'alert'){
@@ -367,7 +373,32 @@ export default {
         }
       }
       //console.log(this.errorTableDict)
-    }
+    },
+
+    // 定时刷新数据函数
+    dataRefreh() {
+        // 计时器正在进行中，退出函数
+        if (this.intervalId != null) {
+            return;
+        }
+
+        // 计时器为空，操作
+        this.intervalId = setInterval(() => {
+                console.log("刷新" + new Date());
+                this.fetchDatas(config.pfoHosts); //加载数据函数
+            }, this.refreshInterval);
+    }, 
+
+    // 停止定时器
+    clear() {
+        clearInterval(this.intervalId); //清除计时器
+        this.intervalId = null; //设置为null
+    },
+  },
+
+  destroyed(){
+      // 在页面销毁后，清除计时器
+      this.clear();
   }
 }
 </script>
