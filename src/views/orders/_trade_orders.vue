@@ -4,6 +4,21 @@
 <template>
     <div class="app-container" align="center" >
         <div style="width: 95%; margin-top: 20px">
+            <div align="left" style="margin-bottom: 3px" v-if="trade.flags.last_tick && trade.status == 'open'">
+                <span>
+                    [{{ formatTimestamp(trade.flags.last_tick_ts) }}]: {{ trade.flags.last_tick }}
+                </span>
+                <span v-if="trade.price_diff_ptg">
+                    <span v-if="trade.price_diff_ptg > 0" style="color: green">
+                        <i class="el-icon-top"></i>
+                        {{ trade.price_diff_ptg }}%
+                    </span>
+                    <span style="color: red" v-else>
+                        <i class="el-icon-bottom"></i>
+                        {{ trade.price_diff_ptg }}%
+                    </span>                    
+                </span>
+            </div>
             <el-row :gutter="0" type="flex">
                 <!----------------------------------- Trade详情 --------------------------------------->
                 <el-table
@@ -11,31 +26,26 @@
                 :header-cell-style="{ background: '#f2f2f2' }"
                 v-loading="ordersLoading"
                 >
-                    <el-table-column align="center" label="交易所" min-width="5%">
+                    <el-table-column align="center" label="交易所" min-width="10%">
                         <template slot-scope="scope">
                             {{ scope.row.worker.name.split('_')[0] }}
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="标的" min-width="10%">
+                    <el-table-column align="center" label="标的" min-width="8%">
                         <template slot-scope="scope">
                             {{ scope.row.worker.product.symbol }}
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="策略" min-width="8%">
+                    <el-table-column align="center" label="策略" min-width="5%">
                         <template slot-scope="scope">
                             {{ strategyAlias.hasOwnProperty(scope.row.worker.name.split('_').slice(-2, -1)[0]) ? strategyAlias[scope.row.worker.name.split('_').slice(-2, -1)[0]] : '大PV' }}
+                            [{{ scope.row.order_type == 'temp' ? 'N/A' : scope.row.worker.name.slice(-1,) }}]
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="策略ID" min-width="5%">
-                        <template slot-scope="scope">
-                            {{ scope.row.order_type == 'temp' ? 'N/A' : scope.row.worker.name.slice(-1,) }}
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column align="center" label="方向" min-width="8%">
+                    <el-table-column align="center" label="方向" min-width="10%">
                         <template slot-scope="scope">
                             <span style="color: green" v-if="scope.row.side == 'long'">
                                 {{ chineseString(scope.row.side) }}
@@ -46,20 +56,32 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="当前持仓(个/张)" min-width="8%">
+                    <el-table-column align="center" label="当前持仓(个/张)" min-width="10%">
                         <template slot-scope="scope">
                             {{ scope.row.position }}
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="状态" min-width="5%">
+                    <el-table-column align="center" label="状态" min-width="10%">
                         <template slot-scope="scope">
                             {{ chineseString('trade_' + scope.row.status) }}
                         </template>
                     </el-table-column>
 
+                    <el-table-column align="center" label="持仓收益" min-width="10%">
+                        <template slot-scope="scope">
+                            <div v-if="scope.row.position_pnl !== 0">
+                                <span style="color: red" v-if="scope.row.position_pnl < 0">
+                                {{ scope.row.position_pnl.toFixed(2) }}
+                                </span>
+                                <span style="color: green" v-else>
+                                {{ scope.row.position_pnl.toFixed(2) }}
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
 
-                    <el-table-column align="center" label="总收益" min-width="10%">
+                    <el-table-column align="center" label="平仓收益" min-width="10%">
                         <template slot-scope="scope">
                             <div v-if="scope.row.pnl !== null">
                                 <span style="color: red" v-if="scope.row.pnl < 0">
@@ -72,6 +94,18 @@
                         </template>
                     </el-table-column>
 
+                    <el-table-column align="center" label="总收益" min-width="10%">
+                        <template slot-scope="scope">
+                            <div v-if="scope.row.total_pnl !== null">
+                                <span style="color: red" v-if="scope.row.total_pnl < 0">
+                                {{ scope.row.total_pnl.toFixed(2) }}
+                                </span>
+                                <span style="color: green" v-else>
+                                {{ scope.row.total_pnl.toFixed(2) }}
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
                 </el-table> 
             </el-row>
 
@@ -177,7 +211,7 @@
 
 <script>
 import config from '@/configs/system_configs'
-import { utcToLocalTimestamp } from '@/utils/general'
+import { utcToLocalTimestamp, formatTimestamp } from '@/utils/general'
 import {toThousands} from '@/utils/general'
 import { chineseString } from '@/utils/chinese'
 import { toFixed } from  '@/utils/general'
@@ -215,6 +249,18 @@ export default {
 
     methods: {
         parseData(){
+            // 计算总收益
+            if (this.trade.pnl !== null){
+                this.trade.total_pnl = this.trade.pnl + this.trade.position_pnl
+            } else {
+                this.trade.total_pnl = this.trade.position_pnl
+            }
+
+            // 计算price_diff_ptg(当前价格相对于开仓价格)
+            if (this.trade.flags.last_tick){
+                this.trade.price_diff_ptg = ((this.trade.flags.last_tick - this.trade.entry_price)*100/this.trade.entry_price).toFixed(2)
+            }
+            
             // 过滤掉没有成交的orders
             for(var i = 0; i < this.trade.orders.length; i++){
                 if (this.trade.orders[i].exec_size > 0){
@@ -227,6 +273,7 @@ export default {
         toThousands: toThousands,
         chineseString: chineseString,
         toFixed: toFixed,
+        formatTimestamp: formatTimestamp,
 
     }
 }
