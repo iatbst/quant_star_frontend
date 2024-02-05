@@ -335,13 +335,14 @@ export default {
         var message = data.message
         if (!this.errorTableDict.hasOwnProperty(type)){
           // 新type
+          var key = pfo+message
           this.errorTableDict[type] = {
             type: type,
             ts: ts,
             level: level,
             count: 1,
             messages: {
-              [message]: {
+              [key]: {
                 pfo: pfo,
                 message: message,
                 ts: ts,

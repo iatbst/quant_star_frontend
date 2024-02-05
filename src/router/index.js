@@ -55,6 +55,20 @@ export const constantRoutes = [
     }]
   },
 
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/performances/history_pnl',
+    children: [
+      {
+        path: '/performances/history_pnl',
+        name: '历史收益',
+        component: () => import('@/views/performance/history_pnl'),
+        meta: { title: '历史收益', icon: 'el-icon-data-analysis' }
+      }
+    ]
+  },
+
   // {
   //   path: '/',
   //   component: Layout,
