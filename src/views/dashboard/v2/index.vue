@@ -217,7 +217,7 @@
         v-bind:positions-loading="prmBinancePositionsLoading"
         v-bind:exchange="'Binance'"
         v-bind:strategy="'小PV'"
-        v-bind:col-count="18"
+        v-bind:col-count="10"
         v-bind:show-zero="false"
         ></position-map2> 
 
@@ -227,7 +227,7 @@
         v-bind:positions-loading="prmOkexPositionsLoading"
         v-bind:exchange="'Okex'"
         v-bind:strategy="'小PV'"
-        v-bind:col-count="18"
+        v-bind:col-count="10"
         v-bind:show-zero="false"
         ></position-map2> 
     </div>

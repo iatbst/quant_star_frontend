@@ -508,8 +508,8 @@ export default {
             // 第二行
             this.perfData2[0].col1 = prData.all.year_now.count
             this.perfData2[0].col2 = (prData.all.year_now.win_ratio*100).toFixed(1)
-            this.perfData2[0].col3 = 0  // PV-10暂停
-            this.perfData2[0].col4 = parseInt(prmData.pivot_reversal_mini_1.year_now.total_pnl)
+            this.perfData2[0].col3 = parseInt(prmData.pivot_reversal_mini_1.year_now.total_pnl)     //PV10
+            this.perfData2[0].col4 = parseInt(prmData.pivot_reversal_mini_2.year_now.total_pnl)     //PV20
             this.perfData2[0].col5 = pbData.plunge_back_1.year_now.count
             this.perfData2[0].col6 = pbData.plunge_back_2.year_now.count
             this.perfData2[0].col7 = pbData.plunge_back_3.year_now.count
