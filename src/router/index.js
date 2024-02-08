@@ -59,12 +59,20 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/performances/history_pnl',
+    name: '历史收益',
+    meta: { title: '历史收益', icon: 'el-icon-data-analysis' },
     children: [
       {
         path: '/performances/history_pnl',
-        name: '历史收益',
+        name: '总体收益',
         component: () => import('@/views/performance/history_pnl'),
-        meta: { title: '历史收益', icon: 'el-icon-data-analysis' }
+        meta: { title: '总体收益', icon: 'el-icon-data-analysis' }
+      },
+      {
+        path: '/performances/history_pnl_stack',
+        name: '策略收益',
+        component: () => import('@/views/performance/history_pnl_stack'),
+        meta: { title: '策略收益', icon: 'el-icon-data-analysis' }
       }
     ]
   },
