@@ -207,9 +207,12 @@ export default {
                                         enabled: true,
                                         style: {
                                             fontWeight: 100,
-                                            fontSize: '10px'
-                                        }
-                                    }
+                                            fontSize: '10px',
+                                            textOutline: 0
+                                        },
+                                        color: 'black'
+                                    },
+                                    borderWidth: 0
                                 }
                             },
                             series: [],                        
@@ -238,6 +241,11 @@ export default {
                 'pivot_reversal',
                 'pivot_reversal_mini'
             ]
+            var strategyColors = {
+                'plunge_back': '#70ace9',
+                'pivot_reversal': '#85ea72',
+                'pivot_reversal_mini': 'orange',   
+            }
             for (const exchange in this.pnlDatas){
                 var reportName = 'all_' + exchange + '_backtest'
                 this.pnlDatas[exchange].available = false
@@ -268,8 +276,8 @@ export default {
                         pnl_week[date] = pnl_week[date]*100
                     }
                     addSingleLine('收益', pnl_week, this.pnlDatas[exchange].pnl_week_chart, true, 2)
-                    addStackedColumn(this.pnlDatas[exchange].pnl_month, strategies, this.pnlDatas[exchange].pnl_month_chart)
-                    addStackedColumn(this.pnlDatas[exchange].pnl_quarter, strategies, this.pnlDatas[exchange].pnl_quarter_chart)
+                    addStackedColumn(this.pnlDatas[exchange].pnl_month, strategies, this.pnlDatas[exchange].pnl_month_chart, strategyColors)
+                    addStackedColumn(this.pnlDatas[exchange].pnl_quarter, strategies, this.pnlDatas[exchange].pnl_quarter_chart, strategyColors)
 
                     // addSingleColumn(this.pnlDatas[exchange].pnl_month, this.pnlDatas[exchange].pnl_month_chart)
                     // addSingleColumn(this.pnlDatas[exchange].pnl_quarter, this.pnlDatas[exchange].pnl_quarter_chart)

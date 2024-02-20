@@ -10,8 +10,8 @@ export function addSingleLine(name, data_obj, options, reset_series=true, roundL
     options.xAxis.categories = Object.keys(data_obj).sort()
     for (var i = 0; i < options.xAxis.categories.length; i++){
         var key = options.xAxis.categories[i]
-        // lineData.data.push(Math.round(data_obj[key]))
-        lineData.data.push(Number(data_obj[key].toFixed(roundLevel)))
+        //lineData.data.push(Math.round(data_obj[key]))
+        lineData.data.push(Number(Number(data_obj[key]).toFixed(roundLevel)))
     }
     options.series.push(lineData)
 }
@@ -95,7 +95,7 @@ export function addSingleClickableColumn(data_list, options, onClick, onClickDat
 // types: series.names
 // data_obj: keys -> categories, values -> {type1: xxx, type2: xxx, type3: xxx ...}
 // 注意: values可能没有全部types, 对应的data需要填充0; keys需要sort
-export function addStackedColumn(data_obj, types, options) {
+export function addStackedColumn(data_obj, types, options, typeColors=null) {
     // 填充categories
     var xDatas = Object.keys(data_obj).sort()
     options.xAxis.categories = xDatas
@@ -103,10 +103,19 @@ export function addStackedColumn(data_obj, types, options) {
     // series初始化
     options.series = []
     for(let i = 0; i < types.length; i++){
-        options.series.push({
-            name: types[i],
-            data: []
-        })
+        if (typeColors === null){
+            options.series.push({
+                name: types[i],
+                data: []
+            })
+        } else {
+            // 不同type指定不同color
+            options.series.push({
+                name: types[i],
+                data: [],
+                color: typeColors[types[i]]
+            })
+        }
     }
 
     for(let i = 0; i < xDatas.length; i++){

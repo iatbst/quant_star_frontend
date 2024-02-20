@@ -64,9 +64,9 @@ export const constantRoutes = [
     children: [
       {
         path: '/performances/history_pnl',
-        name: '总体收益',
+        name: '合计收益',
         component: () => import('@/views/performance/history_pnl'),
-        meta: { title: '总体收益', icon: 'el-icon-data-analysis' }
+        meta: { title: '合计收益', icon: 'el-icon-data-analysis' }
       },
       {
         path: '/performances/history_pnl_stack',

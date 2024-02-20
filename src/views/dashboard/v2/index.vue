@@ -2,8 +2,8 @@
   <div class="app-container" style="background-color: lightgray">
     <!----------------------------------- 总表 + 长短仓位分布 --------------------------------------->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px">
-      <el-col :span="24">
-        <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
+      <el-col :span="24" align="center">
+        <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px; width: 95%">
             <summary-table 
             v-bind:parentPfoData="parentPfoData" 
             v-bind:subaccountDatas="subaccountDatas" 
@@ -14,10 +14,10 @@
       </el-col>
     </el-row>   
 
-    <!---------------------------------- 资产曲线 + 交易所资金分布 ----------------------------------->
+    <!---------------------------------- 资产曲线 ----------------------------------->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
-      <el-col :span="16">
-          <div style="margin-bottom: 20px">
+      <el-col :span="24" align="center">
+          <div style="margin-bottom: 20px; width: 95%">
             <value-line 
             v-bind:values="totalBalanceValues" 
             v-bind:title="liveValueName"
@@ -27,6 +27,7 @@
           </div>
       </el-col>
 
+      <!----- 交易所资金分布 
       <el-col :span="8">
           <div style="margin-left: 0px; margin-top: 20px">
             <exchange-balance-distributions
@@ -36,12 +37,13 @@
             </exchange-balance-distributions>
           </div>
       </el-col>
-    </el-row> 
+      --->
+    </el-row>
 
     <!---------------------------------- Benchbark 回测比较 ---------------------------->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
-      <el-col :span="24">
-          <div style="margin-bottom: 20px">
+      <el-col :span="24" align="center">
+          <div style="margin-bottom: 20px; width: 95%">
             <value-line 
             v-bind:values="btValueLines.all.data" 
             v-bind:title="btValueLines.all.name"
@@ -54,8 +56,8 @@
 
     <!---------------------------------- 策略的Pnl Lines ----------------------------------->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
-      <el-col :span="22" :offset="1">
-          <div style="margin-bottom: 20px">
+      <el-col :span="24" align="center">
+          <div style="margin-bottom: 20px; width: 95%">
             <multi-value-line 
             v-bind:values="
             [

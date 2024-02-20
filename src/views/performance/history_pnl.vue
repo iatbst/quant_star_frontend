@@ -178,8 +178,12 @@ export default {
                             plotOptions: {
                                 column: {
                                     dataLabels: {
-                                        enabled: true
-                                    }
+                                        enabled: true,
+                                        style: {
+                                            textOutline: 0
+                                        },                                        
+                                    },
+                                    borderWidth: 0
                                 }
                             },
                             series: [{
