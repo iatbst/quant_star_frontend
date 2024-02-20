@@ -444,6 +444,8 @@ export default {
                 col7: null,
             }],
             
+            // 大PV策略年初始时归零(和pnl曲线保持一致)
+            prPnlOffset: -402312
         }
     },
 
@@ -499,7 +501,7 @@ export default {
             var pbData = this.parentPfoData.trade_stats.plunge_back
             var prmData = this.parentPfoData.trade_stats.pivot_reversal_mini
             // 第一行
-            this.perfData1[0].col1 = parseInt(prData.all.year_now.total_pnl)
+            this.perfData1[0].col1 = parseInt(prData.all.year_now.total_pnl) + this.prPnlOffset
             this.perfData1[0].col2 = prData.all.year_now.weight_slippage != null ? (prData.all.year_now.weight_slippage*100).toFixed(3) : null
             this.perfData1[0].col3 = parseInt(prmData.all.year_now.total_pnl)
             this.perfData1[0].col4 = prmData.all.year_now.weight_slippage != null ? (prmData.all.year_now.weight_slippage*100).toFixed(3) : null
