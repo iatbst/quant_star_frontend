@@ -445,7 +445,7 @@ export default {
             }],
             
             // 大PV策略年初始时归零(和pnl曲线保持一致)
-            prPnlOffset: -402312
+            prPnlOffset: -521469
         }
     },
 
