@@ -56,27 +56,40 @@ export const constantRoutes = [
   },
 
   {
-    path: '/',
+    path: '/performances',
     component: Layout,
     redirect: '/performances/history_pnl',
     name: '历史收益',
-    meta: { title: '历史收益', icon: 'el-icon-data-analysis' },
+    meta: { title: '历史收益', icon: 'el-icon-s-data' },
     children: [
       {
         path: '/performances/history_pnl',
         name: '合计收益',
         component: () => import('@/views/performance/history_pnl'),
-        meta: { title: '合计收益', icon: 'el-icon-data-analysis' }
+        meta: { title: '合计收益', icon: 'el-icon-document' }
       },
       {
         path: '/performances/history_pnl_stack',
         name: '策略收益',
         component: () => import('@/views/performance/history_pnl_stack'),
-        meta: { title: '策略收益', icon: 'el-icon-data-analysis' }
+        meta: { title: '策略收益', icon: 'el-icon-s-marketing' }
       }
     ]
   },
 
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/analysis/pnl',
+    children: [
+      {
+        path: '/analysis/pnl',
+        name: '收益分析',
+        component: () => import('@/views/analysis/pnl'),
+        meta: { title: '收益分析', icon: 'el-icon-data-analysis' }
+      }
+    ]
+  },
   // {
   //   path: '/',
   //   component: Layout,
@@ -120,11 +133,11 @@ export const constantRoutes = [
   // },
 
   {
-    path: '/',
+    path: '/worker-runs',
     component: Layout,
     redirect: '/worker-runs',
     name: '策略执行',
-    meta: { title: '策略执行', icon: 'el-icon-data-analysis' },
+    meta: { title: '策略执行', icon: 'el-icon-s-operation' },
     children: [
       {
         path: 'worker-runs',

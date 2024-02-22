@@ -45,6 +45,20 @@ export function getWorkerDatas(host=null, fields=null) {
   return request(req_obj)
 }
 
+export function getNormalWorkerDatas(host=null, fields=null) {
+  var url = '/worker-datas/?worker__status=normal'
+  if (fields != null){
+    // 指定fields
+    url += '&fields=' + fields
+  }
+  var req_obj = {
+    url: url,
+    method: 'get'
+  }
+  if (host) { req_obj['baseURL'] = host }
+  return request(req_obj)
+}
+
 export function getDelegateWorkerDatas(host=null, fields=null) {
   var url = '/worker-datas/?worker__status=normal&delegate=true'
   if (fields != null){

@@ -69,7 +69,7 @@ var development_hosts = [
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = development_hosts
+    var hostList = production_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
@@ -115,8 +115,11 @@ const strategies = [
 ]
 
 const strategyAlias = {
+    'pivot-reversal': '大PV',
     'pr': '大PV',
+    'pivot-reversal-mini': '小PV',
     'prm': '小PV',
+    'plunge-back': '抄底',
     'pb': '抄底'
 }
 
