@@ -16,6 +16,38 @@ export function addSingleLine(name, data_obj, options, reset_series=true, roundL
     options.series.push(lineData)
 }
 
+// 添加双line(左右y轴表示不同的坐标)
+// data_obj: key -> x axis, value -> y axis
+// 目前存在未知bug: 当数据多时图表无法显示, 比如展示3年数据时
+export function addTwoLine(name1, data_obj1, name2, data_obj2, options, reset_series=true, roundLevel=0){
+    // debugger
+    if (reset_series){
+        options.series = [] 
+    }
+
+    // 选取数量多的为x轴
+    if (Object.keys(data_obj1).length > Object.keys(data_obj2).length){
+        options.xAxis.categories = Object.keys(data_obj1).sort()
+    } else {
+        options.xAxis.categories = Object.keys(data_obj2).sort()
+    }
+
+    // Line1
+    var lineData1 = {name: name1, data: []}
+    for(const key of Object.keys(data_obj1).sort()){
+        lineData1.data.push([key, Number(Number(data_obj1[key]).toFixed(roundLevel))]) 
+    }
+    options.series.push(lineData1)
+
+    // Line2: 使用右侧Y
+    var lineData2 = {name: name2, data: [], yAxis: 1}
+    for(const key of Object.keys(data_obj2).sort()){
+        lineData2.data.push([key, Number(Number(data_obj2[key]).toFixed(roundLevel))]) 
+    }
+    options.series.push(lineData2)
+    // debugger
+}
+
 // 添加xAixs (用于多line Chart)
 export function addMultiLineX(data_obj, options){
     var insertKey = false

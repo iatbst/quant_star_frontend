@@ -18,12 +18,14 @@
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
       <el-col :span="24" align="center">
           <div style="margin-bottom: 20px; width: 95%">
-            <value-line 
-            v-bind:values="totalBalanceValues" 
-            v-bind:title="liveValueName"
-            v-if="totalBalanceValuesAvailable" 
+            <two-value-line 
+            v-bind:values1="totalBalanceValues" 
+            v-bind:title1="liveValueName"
+            v-bind:values2="btValueLines.all.data" 
+            v-bind:title2="btValueLines.all.name"
+            v-if="totalBalanceValuesAvailable && btValueLines.all.available" 
             style="margin-bottom: 20px">
-            </value-line>
+            </two-value-line>
           </div>
       </el-col>
 
@@ -40,7 +42,7 @@
       --->
     </el-row>
 
-    <!---------------------------------- Benchbark 回测比较 ---------------------------->
+    <!---------------------------------- Benchbark 回测比较 ----------------------------
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
       <el-col :span="24" align="center">
           <div style="margin-bottom: 20px; width: 95%">
@@ -53,6 +55,7 @@
           </div>
       </el-col>
     </el-row>
+    --->
 
     <!---------------------------------- 策略的Pnl Lines ----------------------------------->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
@@ -252,6 +255,7 @@ import orders from '@/views/orders/_orders'
 
 import summaryTable from '@/views/dashboard/v2/summary_table'
 import valueLine from '@/views/balance/_value_line'
+import twoValueLine from '@/views/balance/_two_value_line'
 import multiValueLine from '@/views/balance/_multi_value_line'
 import strategyLevelPositions from '@/views/position/_strategy_level_positions'
 import strategyPositions from '@/views/position/_strategy_positions'
@@ -286,6 +290,7 @@ export default {
         summaryTable,
 
         valueLine,
+        twoValueLine,
         multiValueLine,
         
 
