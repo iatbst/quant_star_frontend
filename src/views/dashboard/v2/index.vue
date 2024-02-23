@@ -474,38 +474,41 @@ export default {
                 btLongTerm: null                  
             }],
 
-            refreshInterval: 300000,
-            intervalId: null
+            fastRefreshInterval: 60000,
+            fastIntervalId: null,
+            slowRefreshInterval: 600000,
+            slowIntervalId: null
         }
     },
 
     created() {
         this.fetchDatas()
-        this.dataRefreh()
+        this.fastRefresh()
+        this.slowRefresh()
     },
 
     methods: {
         // 获取所有数据
         fetchDatas(){
             // 获取Pfo Datas (Pfo)
-            this.fetchPfoDatas()
+            // this.fetchPfoDatas()
 
-            // 获取Pfo Wallet Data (Master)
+            // 获取Pfo Wallet Data (Master)(fast_refresh)
             this.fetchPfoDatasFromMaster()
 
-            // 获取Subaccount Datas (Master)
+            // 获取Subaccount Datas (Master)(fast_refresh)
             this.fetchSubAccountDatas()
 
             // 获取Benchmark 回测数据 (Backtest)
             //this.fetchBacktestDatas()
 
-            // 获取策略的回测资产曲线
+            // 获取策略的回测资产曲线(slow_refresh)
             this.fetchStrategyValuelines()
             
-            // 获取Positions (Pfo)
+            // 获取Positions(Pfo)(slow_refresh)
             this.fetchPositions()
 
-            // 获取Orders
+            // 获取Orders(slow_refresh)
             this.fetchOrders()
         },
 
@@ -672,7 +675,7 @@ export default {
         },
 
         // 从Pfo获取所有positions(normal workers)
-        fetchPositions() {
+    fetchPositions() {
             // pr binance
             this.prBinancePositions = []
             var prBinanceCount = 0
@@ -847,23 +850,40 @@ export default {
         },
 
         // 定时刷新数据函数
-        dataRefreh() {
+        fastRefresh() {
             // 计时器正在进行中，退出函数
-            if (this.intervalId != null) {
+            if (this.fastIntervalId != null) {
                 return;
             }
 
             // 计时器为空，操作
-            this.intervalId = setInterval(() => {
-                    console.log("刷新" + new Date());
-                    this.fetchDatas(); //加载数据函数
-                }, this.refreshInterval);
+            this.fastIntervalId = setInterval(() => {
+                    console.log("刷新(fast)" + new Date());
+                    //加载部分需要快速更新数据
+                    this.fetchPfoDatasFromMaster();
+                    this.fetchSubAccountDatas();
+                }, this.fastRefreshInterval);
+        }, 
+        // 定时刷新数据函数
+        slowRefresh() {
+            // 计时器正在进行中，退出函数
+            if (this.slowIntervalId != null) {
+                return;
+            }
+
+            // 计时器为空，操作
+            this.slowIntervalId = setInterval(() => {
+                    console.log("刷新(slow)" + new Date());
+                    this.fetchDatas(); //加载所有数据
+                }, this.slowRefreshInterval);
         }, 
 
         // 停止定时器
         clear() {
-            clearInterval(this.intervalId); //清除计时器
-            this.intervalId = null; //设置为null
+            clearInterval(this.fastIntervalId); //清除计时器
+            this.fastIntervalId = null; //设置为null
+            clearInterval(this.slowIntervalId); //清除计时器
+            this.slowIntervalId = null; //设置为null
         },
     },
 
