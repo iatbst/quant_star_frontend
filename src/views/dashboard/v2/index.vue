@@ -476,7 +476,7 @@ export default {
 
             fastRefreshInterval: 60000,
             fastIntervalId: null,
-            slowRefreshInterval: 600000,
+            slowRefreshInterval: 300000,
             slowIntervalId: null
         }
     },
@@ -675,7 +675,7 @@ export default {
         },
 
         // 从Pfo获取所有positions(normal workers)
-    fetchPositions() {
+        fetchPositions() {
             // pr binance
             this.prBinancePositions = []
             var prBinanceCount = 0
@@ -864,7 +864,6 @@ export default {
                     this.fetchSubAccountDatas();
                 }, this.fastRefreshInterval);
         }, 
-        // 定时刷新数据函数
         slowRefresh() {
             // 计时器正在进行中，退出函数
             if (this.slowIntervalId != null) {
