@@ -62,7 +62,7 @@
                             </el-col>
 
                             <el-col :span="5" align="left">
-                            {{ formatTimestamp(order.created_ts) }}
+                            {{ formatTimestamp(order.exec_ts) }}
                             </el-col>
                             
                             <el-col :span="10" align="left">
@@ -107,7 +107,7 @@
                 {{ chineseString(parentOrder.side) }} ({{ parentOrder.id }})
                 </el-table-column>
                 <el-table-column min-width="20%">
-                {{ formatTimestamp(parentOrder.created_ts) }}
+                {{ formatTimestamp(parentOrder.exec_ts) }}
                 </el-table-column>
                 <el-table-column min-width="10%">
                 {{ parentOrder.price}}
@@ -141,7 +141,7 @@
                 </el-table-column>
                 <el-table-column min-width="20%">
                 <template slot-scope="scope">
-                    {{ formatTimestamp(scope.row.created_ts) }}
+                    {{ formatTimestamp(scope.row.exec_ts) }}
                 </template>
                 </el-table-column>
                 <el-table-column min-width="10%">

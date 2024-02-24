@@ -118,7 +118,7 @@
                 >
                     <el-table-column align="center" label="时间" min-width="10%">
                         <template slot-scope="scope">
-                            {{ utcToLocalTimestamp(scope.row.created_ts) }}
+                            {{ utcToLocalTimestamp(scope.row.exec_ts) }}
                         </template>
                     </el-table-column>
 

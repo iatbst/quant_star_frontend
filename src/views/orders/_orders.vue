@@ -99,7 +99,7 @@
                 >
                     <el-table-column align="center" label="时间" min-width="10%">
                         <template slot-scope="scope">
-                            {{ utcToLocalTimestamp(scope.row.created_ts) }}
+                            {{ utcToLocalTimestamp(scope.row.exec_ts) }}
                         </template>
                     </el-table-column>
 
@@ -296,7 +296,7 @@ export default {
             this.ordersLoading = true
             var count = 0
             for(var i = 0; i < this.pfoHosts.length; i++){
-                var filters = 'show_worker=true&no_parent_order=true&exec_size__gt=0&created_ts__gte=' + startDt + '&created_ts__lte=' + endDt
+                var filters = 'show_worker=true&no_parent_order=true&exec_size__gt=0&exec_ts__gte=' + startDt + '&exec_ts__lte=' + endDt
                 getOrders(this.pfoHosts[i], null, filters).then(response => {
                         count += 1
                         // this.orders = this.orders.concat(response.results)
@@ -313,7 +313,7 @@ export default {
 
                         if (count === this.pfoHosts.length){
                             // 排序
-                            this.orders.sort((a, b) => b.created_ts.localeCompare(a.created_ts))
+                            this.orders.sort((a, b) => b.exec_ts.localeCompare(a.exec_ts))
                             this.ordersLoading = false
                         }
                     }
