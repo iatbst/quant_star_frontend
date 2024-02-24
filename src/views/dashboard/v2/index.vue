@@ -161,14 +161,18 @@
     </el-row> 
     ------->
 
-    <!----------------------------------- 仓位 ---------------------------------------
-    <div style="background-color: white; margin-bottom: 20px; margin-top: 20px">
-        <position-map 
-        v-bind:positions="positions" 
-        v-bind:positions-loading="positionsLoading"
-        ></position-map> 
-    </div>
-    -------->
+    <!----------------------------------- 仓位ranks --------------------------------------->
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
+      <el-col :span="24" align="center">
+          <div style="margin-bottom: 20px; width: 95%">
+            <position-ranks2
+            v-bind:positions="positions"
+            v-if="prBinancePositionsAvailable && prOkexPositionsAvailable && prmBinancePositionsAvailable && prmOkexPositionsAvailable && 
+            pbBinancePositionsAvailable && pbOkexPositionsAvailable" 
+            ></position-ranks2> 
+          </div>
+      </el-col>
+    </el-row>
 
     <!----------------------------------- 仓位 --------------------------------------->
     <div style="background-color: white; margin-bottom: 20px; margin-top: 20px">
@@ -267,7 +271,7 @@ import totalBalance from '@/views/balance/total_balance'
 import pfoBalances from '@/views/balance/pfo_balances'
 import balanceDistributions from '@/views/balance/balance_distributions'
 import totalPosition from '@/views/position/total_position'
-import positionRanks from '@/views/position/position_ranks'
+import positionRanks2 from '@/views/position/position_ranks2'
 import totalPerf from '@/views/performance/total_perf'
 import pfoPerfs from '@/views/performance/pfo_perfs'
 import profitRanks from '@/views/performance/profit_ranks'
@@ -307,7 +311,7 @@ export default {
         balanceDistributions,
 
         totalPosition,
-        positionRanks,
+        positionRanks2,
         positionMap2,
 
         pfoPerfs,
@@ -681,6 +685,11 @@ export default {
 
         // 从Pfo获取所有positions(normal workers)
         fetchPositions() {
+            // 所有positions
+            this.positions = []
+            this.positionsAvailable = false
+            this.positionsLoading = true
+
             // pr binance
             this.prBinancePositions = []
             var prBinanceCount = 0
@@ -695,6 +704,7 @@ export default {
                             positions[j]['host'] = response.config.baseURL
                         }
                         this.prBinancePositions = this.prBinancePositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
                         if (prBinanceCount === this.prBinanceHosts.length ){
                             // 排序
                             this.prBinancePositionsAvailable = true
@@ -718,6 +728,7 @@ export default {
                             positions[j]['host'] = response.config.baseURL
                         }
                         this.prOkexPositions = this.prOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
                         if (prOkexCount === this.prOkexHosts.length ){
                             // 排序
                             this.prOkexPositionsAvailable = true
@@ -741,6 +752,7 @@ export default {
                             positions[j]['host'] = response.config.baseURL
                         }
                         this.pbBinancePositions = this.pbBinancePositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
                         if (pbBinanceCount === this.pbBinanceHosts.length ){
                             // 排序
                             this.pbBinancePositionsAvailable = true
@@ -764,6 +776,7 @@ export default {
                             positions[j]['host'] = response.config.baseURL
                         }
                         this.pbOkexPositions = this.pbOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
                         if (pbOkexCount === this.pbOkexHosts.length ){
                             // 排序
                             this.pbOkexPositionsAvailable = true
@@ -787,6 +800,7 @@ export default {
                             positions[j]['host'] = response.config.baseURL
                         }
                         this.prmBinancePositions = this.prmBinancePositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
                         if (prmBinanceCount === this.prmBinanceHosts.length ){
                             // 排序
                             this.prmBinancePositionsAvailable = true
@@ -810,6 +824,7 @@ export default {
                             positions[j]['host'] = response.config.baseURL
                         }
                         this.prmOkexPositions = this.prmOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
                         if (prmOkexCount === this.prmOkexHosts.length ){
                             // 排序
                             this.prmOkexPositionsAvailable = true
