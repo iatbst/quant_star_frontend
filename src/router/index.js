@@ -78,18 +78,27 @@ export const constantRoutes = [
   },
 
   {
-    path: '/',
+    path: '/analysis',
     component: Layout,
     redirect: '/analysis/pnl',
+    name: '收益分析',
+    meta: { title: '收益分析', icon: 'el-icon-s-data' },
     children: [
       {
         path: '/analysis/pnl',
-        name: '收益分析',
+        name: '实盘收益',
         component: () => import('@/views/analysis/pnl'),
-        meta: { title: '收益分析', icon: 'el-icon-data-analysis' }
-      }
+        meta: { title: '实盘收益', icon: 'el-icon-data-analysis' }
+      },
+      {
+        path: '/analysis/pnl_backtest',
+        name: '回测收益',
+        component: () => import('@/views/analysis/pnl_backtest'),
+        meta: { title: '回测收益', icon: 'el-icon-data-analysis' }
+      }     
     ]
   },
+  
   // {
   //   path: '/',
   //   component: Layout,

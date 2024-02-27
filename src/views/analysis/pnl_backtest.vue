@@ -71,6 +71,19 @@
                             </div>
                         </template>
                     </el-table-column>
+
+                    <el-table-column align="center" label="收益率(%)" min-width="25%">
+                        <template slot-scope="scope">
+                            <div v-if="scope.row.pnl_ptg !== null">
+                                <span style="color: red" v-if="scope.row.pnl_ptg < 0">
+                                {{ Number((scope.row.pnl_ptg*100).toFixed(3)) }}
+                                </span>
+                                <span style="color: green" v-else>
+                                {{ Number((scope.row.pnl_ptg*100).toFixed(3)) }}
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
                 </el-table> 
 
                 <!-- Diaglog: workerPnls -->
@@ -111,12 +124,25 @@
 
                             <el-table-column align="center" label="收益" min-width="25%">
                                 <template slot-scope="scope">
-                                    <div v-if="scope.row.pnl !== null" @click="showWorkerTrades(scope.row.host, {id: scope.row.worker_id, name: scope.row.worker})">
+                                    <div v-if="scope.row.pnl !== null">
                                         <span style="color: red" v-if="scope.row.pnl < 0">
                                         {{ scope.row.pnl.toFixed(0) }}
                                         </span>
                                         <span style="color: green" v-else>
                                         {{ scope.row.pnl.toFixed(0) }}
+                                        </span>
+                                    </div>
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column align="center" label="收益率(%)" min-width="25%">
+                                <template slot-scope="scope">
+                                    <div v-if="scope.row.pnl_ptg !== null">
+                                        <span style="color: red" v-if="scope.row.pnl_ptg < 0">
+                                        {{ (scope.row.pnl_ptg*100).toFixed(3) }}
+                                        </span>
+                                        <span style="color: green" v-else>
+                                        {{ (scope.row.pnl_ptg*100).toFixed(3) }}
                                         </span>
                                     </div>
                                 </template>
@@ -150,7 +176,7 @@ import { getTradeById } from '@/api/trade'
 import { getOrders } from '@/api/order'
 import { getNormalWorkerDatas } from '@/api/worker'
 import trades from '@/views/trade/_worker_trades'
-import { getTradesByWorker } from '@/api/trade'
+import { getBacktestReportByName } from '@/api/backtest_report'
 
 
 export default {
@@ -195,14 +221,20 @@ export default {
 
     methods: {
         // 获取原始datas
+        // 注意: 回测pnl的时间是Beiing时间(实盘是utc时间);回测pnl是K线结束时的pnl(实盘pnl是K线开始时的pnl)
+        // 为了方便对比,按照实盘的时间标准
         search(){
             var keepDays = 14   // 最多查询天数
             var ep = Math.round(Date.now()/1000)
-            var currentDt = new Date((ep - ep%3600)*1000).toISOString().slice(0, 19).replace('T', ' ')
-            var earlyDt = new Date((ep - ep%3600 - 3600*24*keepDays + 3600)*1000).toISOString().slice(0, 19).replace('T', ' ')
+            var currentDt = new Date((ep - ep%3600 - 3600 + 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')   // Beijing
+            var earlyDt = new Date((ep - ep%3600 - 3600*24*keepDays + 3600 + 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')   // Beijing
             if(this.datetimeRange.length == 2){
-                var startDt = this.datetimeRange[0].toISOString().slice(0, 19).replace('T', ' ')    // UTC
-                var endDt = this.datetimeRange[1].toISOString().slice(0, 19).replace('T', ' ')      // UTC
+                var rangeStart = new Date(this.datetimeRange[0].getTime())
+                var rangeEnd = new Date(this.datetimeRange[1].getTime())
+                rangeStart.setHours(rangeStart.getHours() - 1 + 8)
+                rangeEnd.setHours(rangeEnd.getHours() - 1 + 8)
+                var startDt = rangeStart.toISOString().slice(0, 19).replace('T', ' ')    // Beijing
+                var endDt = rangeEnd.toISOString().slice(0, 19).replace('T', ' ')    // Beijing
                 if (endDt > currentDt){
                     alert('结束时间不能超过当前小时!')
                     return
@@ -212,11 +244,12 @@ export default {
                     return
                 }
             } else {
-                // 默认从今天0点到现在
+                // 默认昨天24H的pnl
                 ep += 3600*8
-                var startDt = new Date((ep - ep%86400 - 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')    // UTC
-                var endDt = currentDt      // UTC                     
+                var startDt = new Date((ep - ep%86400 - 86400 - 3600)*1000).toISOString().slice(0, 19).replace('T', ' ')     // Beijing
+                var endDt = new Date((ep - ep%86400 - 3600)*1000).toISOString().slice(0, 19).replace('T', ' ')     // Beijing                 
             }
+            // debugger
             this.searchWorkerPnl(startDt, endDt)
         },
 
@@ -225,33 +258,39 @@ export default {
             this.pnlDatas = []
             this.pnlDatasLoading = true
             var count = 0
+            var exchanges = [
+                'binance',
+                'okex'
+            ]
             var workerPnls = []
-            for(var i = 0; i < this.pfoHosts.length; i++){
-                var fields = 'worker,pnl_line'
-                // var fields = null
-                getNormalWorkerDatas(this.pfoHosts[i], fields).then(response => {
+            for(const exchange of exchanges){
+                var reportName = 'all_' + exchange + '_backtest'
+                getBacktestReportByName(config.masterHost, reportName).then(response => {
                         count += 1
+                        var data = response.results[0].analyzer_rets.worker_pnls
 
                         // 提取信息
                         var pnls = []
-                        for(var i = 0; i < response.results.length; i++){
-                            if(response.results[i].pnl_line !== null && startDt in response.results[i].pnl_line && endDt in response.results[i].pnl_line){
+                        var startValue = data.valueline[startDt]
+                        for(const worker in data.pnl_lines){
+                            var line = data.pnl_lines[worker]
+                            // debugger
+                            if(startDt in line && endDt in line && startDt in data.valueline){
                                 // 只处理startDt和endDt都存在的pnl
                                 pnls.push({
-                                    'pnl': response.results[i]["pnl_line"][endDt] - response.results[i]["pnl_line"][startDt],
-                                    'host': response.config.baseURL,
-                                    'worker': response.results[i].worker.name,
-                                    'worker_id': response.results[i].worker.id,
-                                    'symbol': response.results[i].worker.product.symbol,
-                                    'strategy': response.results[i].worker.strategy_name,
-                                    'strategyID': response.results[i].worker.name.slice(-1,),  //worker最后一位表示子策略
-                                    'exchange': response.results[i].worker.name.split('_')[0],  //worker第一位表示平台
+                                    'pnl': line[endDt] - line[startDt],
+                                    'pnl_ptg': (line[endDt] - line[startDt])/startValue,
+                                    'startValue': startValue,
+                                    'exchange': worker.split('_')[0],  //worker第一位表示平台
+                                    'strategy': worker.split('_')[1],
+                                    'strategyID': worker.split('_')[2],  //worker最后一位表示子策略
+                                    'symbol': worker.split('_')[3],
                                 })
                             }
                         }
                         workerPnls = workerPnls.concat(pnls)
 
-                        if (count === this.pfoHosts.length){
+                        if (count === exchanges.length){
                             // 处理数据
                             this.parsePnl(workerPnls)
                             this.pnlDatasLoading = false
@@ -269,6 +308,7 @@ export default {
                 if (!(group in groupDatas)){
                     groupDatas[group] = {
                         'pnl': 0,
+                        'pnl_ptg': 0,
                         'workerPnls': [],
                         'exchange': data.exchange,
                         'strategy': data.strategy,
@@ -278,55 +318,27 @@ export default {
                 if (data.pnl != 0){
                     // 只展示非零的workerPnl
                     groupDatas[group].pnl += data.pnl
+                    groupDatas[group].pnl_ptg = groupDatas[group].pnl/data.startValue
                     groupDatas[group].workerPnls.push(data)                   
                 }
-                // if (group in groupDatas){
-                //     groupDatas[group].pnl += data.pnl
-                //     groupDatas[group].workerPnls.push(data)
-                // } else {
-                //     groupDatas[group] = {
-                //         'pnl': data.pnl,
-                //         'workerPnls': [data],
-                //         'exchange': data.exchange,
-                //         'strategy': data.strategy,
-                //         'strategyID': data.strategyID
-                //     }
-                // }
             }
 
             this.pnlDatas = Object.values(groupDatas)
-            this.pnlDatas.sort((a, b) => b.pnl - a.pnl)
+            this.pnlDatas.sort((a, b) => b.pnl_ptg - a.pnl_ptg)
         },
 
         //展开workerPnl
         clickGroupPnl(row, ix){
             this.workerPnlDatas = row.workerPnls
-            this.workerPnlDatas.sort((a, b) => b.pnl - a.pnl)
+            this.workerPnlDatas.sort((a, b) => b.pnl_ptg - a.pnl_ptg)
             this.dialogWorkerPnlsVisible = true
-        },
-
-        clickWorkerPnl(row, ix){
-
-            this.dialogWorkerTradesVisible = true
-        },
-
-        // 通过Dialog展示trades(注意, worker只包含id和name)
-        showWorkerTrades(host, worker){
-            this.dialogWorkerTradesVisible = true
-            this.workerTradesLoading = true
-            this.currentPfo = {host: host}
-            this.currentWorker = worker
-            getTradesByWorker(worker, this.currentPfo.host).then(response => {
-                this.workerTrades = response.results
-                this.workerTradesLoading = false
-            })
         },
 
         getSummaries(param) {
             if (this.dialogWorkerPnlsVisible){
-                var tableSumCol = 4
+                var tableSumCol = [4, 5]
             } else {
-                var tableSumCol = 3
+                var tableSumCol = [3, 4]
             }
             const { columns, data } = param;
             const sums = [];
@@ -334,15 +346,23 @@ export default {
             if (index === 0) {
                 sums[index] = '合计';
                 return;
-            } else if(index !== tableSumCol){
-                sums[index] = null
-                return;
-            } else {
+            } else if(tableSumCol.includes(index)){
                 var sum = 0
                 for(let i = 0; i < data.length; i++){
-                    sum += data[i].pnl
+                    if (index == tableSumCol[0]){
+                        sum += data[i].pnl
+                    } else {
+                        sum += data[i].pnl_ptg
+                    }
                 }
-                sums[index] = toThousands(Math.round(sum))
+                if (index == tableSumCol[0]){
+                    sums[index] = toThousands(Math.round(sum))
+                } else {
+                    sums[index] = (sum*100).toFixed(3)
+                }               
+                return;
+            } else {        
+                sums[index] = null
                 return;
             }
             });
