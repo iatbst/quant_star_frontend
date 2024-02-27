@@ -34,7 +34,7 @@
                         </el-col>
 
                         <el-col :span="3" align="left">
-                            |&nbsp仓位:<b>{{ scope.row.position }}</b>&nbsp|
+                            |&nbsp仓位:<b>{{ Math.abs(scope.row.position) < 0.000001 ? 0 : scope.row.position }}</b>&nbsp|
                         </el-col>
 
                         <el-col :span="4" align="left">
