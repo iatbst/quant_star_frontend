@@ -34,18 +34,39 @@ export function addTwoLine(name1, data_obj1, name2, data_obj2, options, reset_se
 
     // Line1
     var lineData1 = {name: name1, data: []}
+    var floor1 = null
+    var ceiling1 = null
     for(const key of Object.keys(data_obj1).sort()){
         lineData1.data.push([key, Number(Number(data_obj1[key]).toFixed(roundLevel))]) 
+        if (floor1 == null || data_obj1[key] < floor1){
+            floor1 = data_obj1[key]
+        }
+        if (ceiling1 == null || data_obj1[key] > ceiling1){
+            ceiling1 = data_obj1[key]
+        }
     }
     options.series.push(lineData1)
+    options.yAxis[0].floor = floor1
+    options.yAxis[0].ceiling = ceiling1
 
     // Line2: 使用右侧Y
     var lineData2 = {name: name2, data: [], yAxis: 1}
+    var floor2 = null
+    var ceiling2 = null
     for(const key of Object.keys(data_obj2).sort()){
-        lineData2.data.push([key, Number(Number(data_obj2[key]).toFixed(roundLevel))]) 
+        lineData2.data.push([key, Number(Number(data_obj2[key]).toFixed(roundLevel))])
+        if (floor2 == null || data_obj2[key] < floor2){
+            floor2 = data_obj2[key]
+        }
+        if (ceiling2 == null || data_obj2[key] > ceiling2){
+            ceiling2 = data_obj2[key]
+        } 
     }
     options.series.push(lineData2)
-    // debugger
+    options.yAxis[1].floor = floor2
+    options.yAxis[1].ceiling = ceiling2
+
+    debugger
 }
 
 // 添加xAixs (用于多line Chart)

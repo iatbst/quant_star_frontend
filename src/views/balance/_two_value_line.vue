@@ -118,12 +118,16 @@ export default {
                 yAxis: [
                     {
                         type: this.yType1,
+                        alignTicks: false,
+                        endOnTick: false,
                         title: {
                             text: '实盘'
                         }
                     },
                     {
                         type: this.yType2,
+                        alignTicks: false,
+                        endOnTick: false,
                         opposite: true,
                         title: {
                             text: '回测'
