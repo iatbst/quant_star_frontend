@@ -46,8 +46,8 @@ export function addTwoLine(name1, data_obj1, name2, data_obj2, options, reset_se
         }
     }
     options.series.push(lineData1)
-    options.yAxis[0].floor = floor1
-    options.yAxis[0].ceiling = ceiling1
+    options.yAxis[0].floor = floor1*0.99
+    options.yAxis[0].ceiling = ceiling1*1.01
 
     // Line2: 使用右侧Y
     var lineData2 = {name: name2, data: [], yAxis: 1}
@@ -63,10 +63,10 @@ export function addTwoLine(name1, data_obj1, name2, data_obj2, options, reset_se
         } 
     }
     options.series.push(lineData2)
-    options.yAxis[1].floor = floor2
-    options.yAxis[1].ceiling = ceiling2
+    options.yAxis[1].floor = floor2*0.99
+    options.yAxis[1].ceiling = ceiling2*1.01
 
-    debugger
+    // debugger
 }
 
 // 添加xAixs (用于多line Chart)

@@ -106,6 +106,20 @@
                             </div>
                         </template>
                     </el-table-column>
+
+
+                    <el-table-column align="center" label="手续费" min-width="10%">
+                        <template slot-scope="scope">
+                            <div v-if="scope.row.fee !== null">
+                                <span style="color: red" v-if="scope.row.fee < 0">
+                                {{ scope.row.fee.toFixed(2) }}
+                                </span>
+                                <span style="color: green" v-else>
+                                {{ scope.row.fee.toFixed(2) }}
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
                 </el-table> 
             </el-row>
 
@@ -199,6 +213,19 @@
                                 </span>
                                 <span style="color: green" v-else>
                                 {{ (scope.row.slippage*100).toFixed(2) }}%
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="手续费" min-width="10%">
+                        <template slot-scope="scope">
+                            <div v-if="scope.row.fee !== null">
+                                <span style="color: red" v-if="scope.row.fee < 0">
+                                {{ scope.row.fee.toFixed(2) }}
+                                </span>
+                                <span style="color: green" v-else>
+                                {{ scope.row.fee.toFixed(2) }}
                                 </span>
                             </div>
                         </template>
