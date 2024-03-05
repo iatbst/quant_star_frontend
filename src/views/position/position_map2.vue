@@ -2,7 +2,13 @@
     <div class="app-container" align="center" >
         <div style="width: 95%; margin-top: 0px">
             <h4 style="font-weight: normal;">
-                {{ exchange }} {{ strategy }}
+                {{ exchange }} {{ strategy }}(
+                <span style="color: green" v-if="positionSum >= 0">
+                    {{ toThousands(Math.round(positionSum/1000)) }}
+                </span> 
+                <span style="color: red" v-else>
+                    {{ toThousands(Math.round(positionSum/1000)) }}
+                </span>)
             </h4>
             <div v-for="rowData in positionList2">
                 <!-- 表1: coins -->
@@ -41,10 +47,10 @@
                                                 {{ data.position }}
                                             </span>
                                             <span style="color: green" v-else-if="data.position > 0">
-                                                {{ toThousands((data.position/1000).toFixed(1))}}
+                                                {{ toThousands(Math.round(data.position/1000))}}
                                             </span> 
                                              <span style="color: red" v-else>
-                                                {{ toThousands((data.position/1000).toFixed(1))}}
+                                                {{ toThousands(Math.round(data.position/1000))}}
                                             </span>                                                                                  
                                         </span>
                                     </el-col>
@@ -149,6 +155,7 @@ export default {
 
             // 一行展示几个symbol
             // colCount: 5,
+            positionSum: null,
 
         }
     },
@@ -164,6 +171,7 @@ export default {
             // 初始化
             this.positionList1 = {}
             this.positionList2 = []
+            this.positionSum = 0
 
             // 转化1 -> positionList1
             for(var i = 0; i < this.positions.length; i++){
@@ -175,6 +183,7 @@ export default {
                 // var posTag = workerName[workerName.length-1]
                 var posSize = Math.round(this.positions[i].usdt_size)
                 // var alias = workerName.split('_').slice(-1)[0].slice(0, -1)
+                this.positionSum += this.positions[i].usdt_size
                 if (!(coin in this.positionList1)){
                     this.positionList1[coin] = []
                 }
