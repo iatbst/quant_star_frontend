@@ -111,7 +111,7 @@ export default {
                 if (data.size > 0){
                     columnDatas.push({
                         'x': data.coin,
-                        'y': Number((data.size/1000).toFixed(1)),
+                        'y': Math.round((data.size/1000)),
                         'color': 'green'
                     })                   
                 }
@@ -121,7 +121,7 @@ export default {
                 if (data.size < 0){
                     columnDatas.push({
                         'x': data.coin,
-                        'y': Number((Math.abs(data.size/1000)).toFixed(1)),
+                        'y': Math.round((Math.abs(data.size/1000))),
                         'color': 'red'
                     })                   
                 }
