@@ -310,10 +310,10 @@
                     </span>               
                 </template> 
             </el-table-column>
-            <el-table-column label="交易币数" min-width="14%" align="center"> 
+            <el-table-column label="交易次数" min-width="14%" align="center"> 
                 <template slot-scope="scope">
                    <span style="">
-                        {{toThousands(scope.row.col3)}}
+                        {{toThousands(scope.row.col3)}}({{ toThousands(scope.row.col32)}})
                     </span>               
                 </template> 
             </el-table-column>
@@ -438,6 +438,7 @@ export default {
                 col1: null,
                 col2: null,
                 col3: null,
+                col32:null,
                 col4: null,
                 col5: null,
                 col6: null,
@@ -518,7 +519,8 @@ export default {
             // 第三行
             this.perfData3[0].col1 = parseInt(prData.all.year_now.avg_pnl)
             this.perfData3[0].col2 = prData.all.year_now.symbol_count
-            this.perfData3[0].col3 = prmData.all.year_now.symbol_count
+            this.perfData3[0].col3 = prmData.all.year_now.count
+            this.perfData3[0].col32 = prmData.all.year_now.symbol_count
             this.perfData3[0].col4 = parseInt(prmData.all.year_now.avg_pnl)
             this.perfData3[0].col5 = parseInt(pbData.plunge_back_1.year_now.total_pnl)
             this.perfData3[0].col6 = parseInt(pbData.plunge_back_2.year_now.total_pnl)
