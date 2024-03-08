@@ -271,7 +271,7 @@ export default {
                 'order_type': null
             },
             strategy_ids: ['1', '2', '3', '4'],  
-            order_types: ['any', 'open', 'win_stop', 'timer', 'flip', 'close'],
+            order_types: ['any', 'open', 'win_stop', 'timer', 'flip', 'lose_stop'],
 
         }
     },

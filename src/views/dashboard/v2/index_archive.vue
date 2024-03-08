@@ -4,33 +4,12 @@
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px">
       <el-col :span="24" align="center">
         <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px; width: 95%">
-            <!--- 资产表 --->
-            <balance-table 
-            v-bind:parentPfoData="parentPfoData" 
-            v-if="pfoMasterDatasAvailable" >
-            </balance-table>
-
-            <!--- 仓位表 --->
-            <position-table 
+            <summary-table 
             v-bind:parentPfoData="parentPfoData" 
             v-bind:subaccountDatas="subaccountDatas" 
-            v-if="pfoMasterDatasAvailable && subaccountDatasAvailable">
-            </position-table>
-
-            <!--- 今日表 --->
-            <today-table 
-            v-bind:parentPfoData="parentPfoData" 
-            v-bind:todayOrders="todayOrders" 
-            v-bind:todayStrategyPnl="todayStrategyPnl"
-            v-if="pfoMasterDatasAvailable && todayOrdersAvailable && todayPnlAvailable"
-            >
-            </today-table>
-            
-            <!--- Perf统计表 --->
-            <perf-table 
-            v-bind:parentPfoData="parentPfoData" 
-            v-if="pfoMasterDatasAvailable">
-            </perf-table>
+            v-if="pfoMasterDatasAvailable && subaccountDatasAvailable" 
+            style="margin-bottom: 20px">
+            </summary-table>
         </div>
       </el-col>
     </el-row>   
@@ -49,7 +28,34 @@
             </two-value-line>
           </div>
       </el-col>
+
+      <!----- 交易所资金分布 
+      <el-col :span="8">
+          <div style="margin-left: 0px; margin-top: 20px">
+            <exchange-balance-distributions
+            v-bind:subaccount-datas="subaccountDatas" 
+            v-if="subaccountDatasAvailable"
+            style="margin-bottom: 20px">
+            </exchange-balance-distributions>
+          </div>
+      </el-col>
+      --->
     </el-row>
+
+    <!---------------------------------- Benchbark 回测比较 ----------------------------
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+      <el-col :span="24" align="center">
+          <div style="margin-bottom: 20px; width: 95%">
+            <value-line 
+            v-bind:values="btValueLines.all.data" 
+            v-bind:title="btValueLines.all.name"
+            v-if="btValueLines.all.available" 
+            style="margin-bottom: 20px">
+            </value-line>
+          </div>
+      </el-col>
+    </el-row>
+    --->
 
     <!---------------------------------- 策略的Pnl Lines ----------------------------------->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
@@ -82,6 +88,78 @@
           </div>
       </el-col>
     </el-row>
+
+    <!---------------------------------- 回测曲线与仓位 -----------------------------------
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+      <el-col :span="16">
+          <div style="margin-bottom: 20px">
+            <multi-value-line 
+            v-bind:values="
+            [
+                {
+                    title: btValueLines.pivot_reversal.name,
+                    data: btValueLines.pivot_reversal.data
+                },
+                {
+                    title: btValueLines.pivot_reversal_v1.name,
+                    data: btValueLines.pivot_reversal_v1.data
+                },
+                {
+                    title: btValueLines.pivot_reversal_v2.name,
+                    data: btValueLines.pivot_reversal_v2.data
+                },
+            ]
+            " 
+            v-bind:y-type="btValueLineType"
+            v-bind:range="btValueLineRange"
+            v-if="
+            btValueLines.pivot_reversal.available && 
+            btValueLines.pivot_reversal_v1.available &&
+            btValueLines.pivot_reversal_v2.available
+            " 
+            style="margin-bottom: 20px">
+            </multi-value-line>
+          </div>
+      </el-col>
+
+      <el-col :span="8">
+          <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
+            <strategy-positions
+            v-bind:pos-summary="parentPfoData.positions.summary" 
+            v-bind:strategy-alias-list="strategyAlias.pivot_reversal"
+            v-if="pfoMasterDatasAvailable" 
+            style="margin-bottom: 20px">
+            </strategy-positions>
+          </div>
+      </el-col>
+    </el-row> 
+
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px">
+      <el-col :span="16">
+          <div style="margin-bottom: 20px">
+            <value-line 
+            v-bind:values="btValueLines.plunge_back.data" 
+            v-bind:title="btValueLines.plunge_back.name"
+            v-bind:y-type="btValueLineType"
+            v-bind:range="btValueLineRange"
+            v-if="btValueLines.plunge_back.available" 
+            style="margin-bottom: 20px">
+            </value-line>
+          </div>
+      </el-col>
+
+      <el-col :span="8">
+          <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px">
+            <strategy-positions
+            v-bind:pos-summary="parentPfoData.positions.summary" 
+            v-bind:strategy-alias-list="strategyAlias.plunge_back"
+            v-if="pfoMasterDatasAvailable" 
+            style="margin-bottom: 20px">
+            </strategy-positions>
+          </div>
+      </el-col>
+    </el-row> 
+    ------->
 
     <!----------------------------------- 仓位ranks --------------------------------------->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
@@ -179,10 +257,6 @@
 // Components
 import orders from '@/views/orders/_orders'
 
-import todayTable from '@/views/dashboard/v2/today_table'
-import perfTable from '@/views/dashboard/v2/perf_table'
-import positionTable from '@/views/dashboard/v2/position_table'
-import balanceTable from '@/views/dashboard/v2/balance_table'
 import summaryTable from '@/views/dashboard/v2/summary_table'
 import valueLine from '@/views/balance/_value_line'
 import twoValueLine from '@/views/balance/_two_value_line'
@@ -209,7 +283,7 @@ import { getPositions } from '@/api/position'
 import { getBacktestPlanByName } from '@/api/backtest_plan'
 import { getBacktestReportById, getBacktestReportByName } from '@/api/backtest_report'
 import { getOrders } from '@/api/order'
-import { getNormalWorkerDatas } from '@/api/worker'
+import { getAnnualReturn, getMaxDrawdown } from '@/utils/general'
 
 
 export default {
@@ -217,10 +291,6 @@ export default {
         orders,
 
         summaryTable,
-        balanceTable,
-        positionTable,
-        perfTable,
-        todayTable,
 
         valueLine,
         twoValueLine,
@@ -266,10 +336,6 @@ export default {
 
             orders: [],
             ordersLoading: false,
-            todayOrders: [],
-            todayOrdersAvailable: false,
-            todayPnlAvailable: false,
-            todayStrategyPnl: null,
 
             trades: [],
             tradesLoading: false,
@@ -430,11 +496,17 @@ export default {
     methods: {
         // 获取所有数据
         fetchDatas(){
+            // 获取Pfo Datas (Pfo)
+            // this.fetchPfoDatas()
+
             // 获取Pfo Wallet Data (Master)(fast_refresh)
             this.fetchPfoDatasFromMaster()
 
             // 获取Subaccount Datas (Master)(fast_refresh)
             this.fetchSubAccountDatas()
+
+            // 获取Benchmark 回测数据 (Backtest)
+            //this.fetchBacktestDatas()
 
             // 获取策略的回测资产曲线(slow_refresh)
             this.fetchStrategyValuelines()
@@ -444,70 +516,8 @@ export default {
 
             // 获取Orders(slow_refresh)
             this.fetchOrders()
-
-            // 获取今日Orders(slow_refesh)
-            this.fetchTodayOrders()
-
-            // 获取worker pnl(slow_refesh)
-            this.fetchWorkerPnls()
         },
 
-        // 获取worker的pnls
-        fetchWorkerPnls(){
-            // 准备实盘start/end
-            var ep = Math.round(Date.now()/1000)
-            ep += 3600*8
-            var startDt = new Date((ep - ep%86400 - 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')    // UTC
-            var endDt = new Date((ep - ep%3600 - 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')    // UTC                  
-
-            // 获取pnl
-            var count = 0
-            var workerPnls = []
-            for(let host of this.pfoHosts){
-                // 获取worker.data.pnl_line
-                getNormalWorkerDatas(host, 'worker,pnl_line').then(response => {
-                        count += 1
-
-                        // 提取信息
-                        var pnls = []
-                        for(var i = 0; i < response.results.length; i++){
-                            if(response.results[i].pnl_line !== null && startDt in response.results[i].pnl_line && endDt in response.results[i].pnl_line){
-                                // 只处理startDt和endDt都存在的pnl
-                                var pnl = response.results[i]["pnl_line"][endDt] - response.results[i]["pnl_line"][startDt]
-                                var strategy = response.results[i].worker.strategy_name.replaceAll('-', '_')
-                                pnls.push({
-                                    'pnl': pnl,
-                                    'strategy': strategy,
-                                })
-                            }
-                        }
-                        workerPnls = workerPnls.concat(pnls)
-
-                        if (count === this.pfoHosts.length){
-                            // 处理数据
-                            this.parsePnl(workerPnls)
-                            this.todayPnlAvailable = true
-                        }
-                    }
-                )
-            }
-        },
-
-        // 把原始的workerPnl进行分组: 相同的strategy分为一组
-        parsePnl(workerPnls){
-            this.todayStrategyPnl = {}
-            for(const data of workerPnls){
-                var sty = data.strategy
-                if (!(sty in this.todayStrategyPnl)){
-                    this.todayStrategyPnl[sty] = 0             
-                }
-                if (data.pnl != null && data.pnl != 0){
-                    this.todayStrategyPnl[sty] += data.pnl              
-                }
-            }
-        },
-
-        // 获取最近3天orders
         fetchOrders(){
             this.orders = []
             this.ordersLoading = true
@@ -538,33 +548,55 @@ export default {
             }
         },
 
-        // 获取今日orders
-        fetchTodayOrders(){
-            this.todayOrders = []
-            var ep = Math.round(Date.now()/1000)
-            ep += 8*3600
-            var startDt = new Date((ep - ep%86400 - 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')    // UTC 
-            var count = 0
-            for(var i = 0; i < this.pfoHosts.length; i++){
-                var host = this.pfoHosts[i]
-                var filters = 'show_worker=true&no_parent_order=true&exec_size__gt=0&exec_ts__gte=' + startDt
-                getOrders(host, null, filters).then(response => {
-                        count += 1
-                        // 添加host
-                        // for(var i = 0; i < response.results.length; i++){
-                        //     // 点击获取对应的trade时知道从那个host获取
-                        //     response.results[i]["host"] = response.config.baseURL
-                        // }
-                        this.todayOrders = this.todayOrders.concat(response.results)
+        // 从Backtest获取benchmark回测数据
+        fetchBacktestDatas(){
+            var btSymbols = 15
+            // pr策略_top15币种_6月
+            var planName = 'pr_top15_6m_backtest'
+            this.backtest1RetsAvailable = false
+            getBacktestPlanByName(config.backtestHost, planName).then(response => {
+                var plan = response.results[0]
+                getBacktestReportById(config.backtestHost, plan.latest_report_id).then(response => {
+                    var report = response.results[0]
+                    this.backtest1Rets = report.analyzer_rets
+                    
+                    // 6月的annual_return和max_drawdown需要从3年的value_line中截取, 否则不能直接和实盘对比
+                    // this.liveBacktestStatDatas[0].btShortTerm = (this.backtest1Rets.value.annual_return*100).toFixed(2) + '%'
+                    // this.liveBacktestStatDatas[1].btShortTerm = (this.backtest1Rets.drawdown.top1*100).toFixed(2) + '%'
+                    this.liveBacktestStatDatas[2].btShortTerm = (this.backtest1Rets.trade_stats.count/btSymbols).toFixed(0)
+                    this.liveBacktestStatDatas[3].btShortTerm = (this.backtest1Rets.trade_stats.win_ratio*100).toFixed(2) + '%'
+                    this.liveBacktestStatDatas[4].btShortTerm = (Math.abs(this.backtest1Rets.trade_stats.win_avg_pnl_ptg/this.backtest1Rets.trade_stats.lose_avg_pnl_ptg)).toFixed(2)
 
-                        if (count === this.pfoHosts.length){
-                            // 排序
-                            this.orders.sort((a, b) => b.created_ts.localeCompare(a.created_ts))
-                            this.todayOrdersAvailable = true
-                        }
-                    }
-                )
-            }
+                    this.backtest1RetsAvailable = true
+                })
+            })
+
+            // pr策略_top15币种_3年
+            var planName = 'pr_top15_3y_backtest'
+            getBacktestPlanByName(config.backtestHost, planName).then(response => {
+                var plan = response.results[0]
+                this.backtest2RetsAvailable = false
+                getBacktestReportById(config.backtestHost, plan.latest_report_id).then(response => {
+                    var report = response.results[0]
+                    this.backtest2Rets = report.analyzer_rets
+
+                    this.liveBacktestStatDatas[0].btLongTerm = (this.backtest2Rets.value.annual_return*100).toFixed(2) + '%'
+                    this.liveBacktestStatDatas[1].btLongTerm = (this.backtest2Rets.drawdown.top1*100).toFixed() + '%'
+                    this.liveBacktestStatDatas[2].btLongTerm = (this.backtest2Rets.trade_stats.count/btSymbols).toFixed(0)
+                    this.liveBacktestStatDatas[3].btLongTerm = (this.backtest2Rets.trade_stats.win_ratio*100).toFixed(2) + '%'
+                    this.liveBacktestStatDatas[4].btLongTerm = (Math.abs(this.backtest2Rets.trade_stats.win_avg_pnl_ptg/this.backtest2Rets.trade_stats.lose_avg_pnl_ptg)).toFixed(2)
+
+                    // 6月的annual_return和max_drawdown需要从3年的value_line中截取, 否则不能直接和实盘对比
+                    var valueLine3y = report.analyzer_rets.value_line
+                    var date = new Date()
+                    date.setMonth(date.getMonth() - 6)
+                    var firstDate = date.toISOString().slice(0, 10)
+                    this.liveBacktestStatDatas[0].btShortTerm = (getAnnualReturn(valueLine3y, firstDate)*100).toFixed(2) + '%'
+                    this.liveBacktestStatDatas[1].btShortTerm = (getMaxDrawdown(valueLine3y, firstDate)*100).toFixed(2) + '%'
+
+                    this.backtest2RetsAvailable = true
+                })
+            })
         },
 
         // 从master获取各个策略的回测资产曲线
@@ -579,10 +611,33 @@ export default {
             }
         },
 
+
+        // 从Pfo获取所有pfo data
+        fetchPfoDatas() {
+            this.pfoDatas = []
+            if (this.pfoHosts.length > 0){
+                for(var i = 0; i < this.pfoHosts.length; i++){
+                    getPortfolioDatas(this.pfoHosts[i]).then(response => {
+                            var data = response.results
+                            data['sort_id'] = config.pfoAliasSortWeights[data[0].portfolio.alias]
+                            this.pfoDatas.push(data)
+                            if (this.pfoDatas.length === this.pfoHosts.length ){
+                                // pfo排序
+                                this.pfoDatas.sort((a, b) => a.sort_id - b.sort_id)
+                                this.pfoDatasAvailable = true
+                            }
+                        }
+                    )
+                }
+            } else {
+                this.pfoDatasAvailable = true
+            }
+        },
+
         // 从Master获取所有pfo的wallet/position data
         fetchPfoDatasFromMaster() {
             this.pfoMasterDatas = []
-            getPortfolioDatas(config.masterHost, 'portfolio,wallet,positions,positions_history,trade_stats,pnl_line').then(response => {
+            getPortfolioDatas(config.masterHost, 'portfolio,wallet,positions,trade_stats,pnl_line').then(response => {
                     this.pfoMasterDatas = response.results
                     // 排序
                     for(var i = 0; i < this.pfoMasterDatas.length; i++){
@@ -772,6 +827,40 @@ export default {
                             this.prmOkexPositionsAvailable = true
                             this.prmOkexPositionsLoading = false
                         }
+                    }
+                )
+            }
+        },
+
+        // 从Pfo获取所有的volume data
+        // fetchProductVolumes(){
+        //     this.productVolumes = {}
+        //     var productVolumesCount = 0
+        //     this.productVolumesAvailable = false
+        //     for(var i = 0; i < this.pfoHosts.length; i++){
+        //         getProductDatas(this.pfoHosts[i], 'product,volumes').then(response => {
+        //                 for(var i=0; i < response.results.length; i++){
+        //                     var key = response.results[i].product.name.split('_').slice(1, 4).join('_')   // 转化为: exchange_sub-type_symbol形式， eg binance_swap_btc/usdt
+        //                     this.productVolumes[key] = response.results[i].volumes.volume_weight
+        //                 }
+        //                 productVolumesCount += 1
+        //                 if (productVolumesCount === this.pfoHosts.length ){
+        //                     this.productVolumesAvailable = true
+        //                     if (this.positionsAvailable) {
+        //                        this.positionsLoading = false 
+        //                     }
+        //                 }
+        //             }
+        //         )
+        //     }
+        // },   
+
+        // 从Pfo获取所有 delegate worker performance data
+        fetchDelegateWorkerDatas() {
+            this.delegateWorkerDatas = []
+            for(var i = 0; i < this.pfoHosts.length; i++){
+                getDelegateWorkerDatas(this.pfoHosts[i], 'worker,performance').then(response => {
+                        this.delegateWorkerDatas.push(response.results)
                     }
                 )
             }

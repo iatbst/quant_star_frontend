@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <!--- 资产 --->
+        <!--- 表1: 资产 --->
         <el-table
         :data="balanceDatas"
         :header-cell-style="{ background: '#f2f2f2' }"
@@ -75,7 +75,7 @@
             </el-table-column>
         </el-table>
 
-        <!--- 仓位 --->
+        <!--- 表2: 仓位 --->
         <el-table
         :data="positionDatas"
         :header-cell-style="{ background: '#f2f2f2' }"
@@ -140,224 +140,6 @@
                 </template>
             </el-table-column>
         </el-table> 
-
-        <!--- 策略表现(row0) --->
-        <template>
-            <el-table
-            :data="[{col1: '大PV今年', col2: '小PV今年', col3: '抄底今年'}]"
-            :show-header="false"
-            :cell-style="{ background: '#f2f2f2' }"
-            style="width: 100%; background: #f2f2f2">
-            <el-table-column prop="col1" min-width="28%" align="center"> 
-            </el-table-column>
-            <el-table-column prop="col2" min-width="28%" align="center"> 
-            </el-table-column>
-            <el-table-column prop="col3" min-width="44%" align="center"> 
-            </el-table-column>
-            </el-table>
-        </template>
-        <!--- 策略表现(row1) --->
-        <el-table
-        :data="perfData1"
-        :header-cell-style="addRightBorder"
-        :cell-style="addRightBorder"
-        style="width: 100%">
-            <el-table-column label="收益" min-width="14%" align="center" style="background: white"> 
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col1 >= 0">
-                        {{toThousands(scope.row.col1)}}
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.col1)}}
-                    </span>                
-                </template> 
-            </el-table-column>
-            <el-table-column label="滑点" min-width="14%" align="center"> 
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col2 >= 0">
-                        {{scope.row.col2}}%
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{scope.row.col2}}%
-                    </span>                
-                </template> 
-            </el-table-column>
-            <el-table-column label="收益" min-width="14%" align="center">
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col3 >= 0">
-                        {{toThousands(scope.row.col3)}}
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.col3)}}
-                    </span>                
-                </template> 
-            </el-table-column>
-            <el-table-column label="滑点" min-width="14%" align="center"> 
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col4 >= 0">
-                        {{scope.row.col4}}%
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{scope.row.col4}}%
-                    </span>               
-                </template> 
-            </el-table-column>
-            <el-table-column label="收益" min-width="14%" align="center"> 
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col5 >= 0">
-                        {{toThousands(scope.row.col5)}}
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.col5)}}
-                    </span>                
-                </template> 
-            </el-table-column>
-            <el-table-column label="滑点" min-width="14%" align="center">
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col6 >= 0">
-                        {{scope.row.col6}}%
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{scope.row.col6}}%
-                    </span>               
-                </template>  
-            </el-table-column>
-            <el-table-column label="" min-width="14%" align="center"> 
-            </el-table-column>
-        </el-table> 
-        <!--- 策略表现(row2) --->
-        <el-table
-        :data="perfData2"
-        :header-cell-style="addRightBorder"
-        :cell-style="addRightBorder"
-        style="width: 100%">
-            <el-table-column label="交易次数" min-width="14%" align="center" style="background: white"> 
-                <template slot-scope="scope">
-                   <span style="">
-                        {{toThousands(scope.row.col1)}}
-                    </span>               
-                </template> 
-            </el-table-column>
-            <el-table-column label="胜率" min-width="14%" align="center"> 
-                <template slot-scope="scope">
-                   <span style="">
-                        {{scope.row.col2}}%
-                    </span>               
-                </template> 
-            </el-table-column>
-            <el-table-column label="PV10H收益" min-width="14%" align="center">
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col3 >= 0">
-                        {{toThousands(scope.row.col3)}}
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.col3)}}
-                    </span>                
-                </template> 
-            </el-table-column>
-            <el-table-column label="PV20H收益" min-width="14%" align="center">
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col4 >= 0">
-                        {{toThousands(scope.row.col4)}}
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.col4)}}
-                    </span>                
-                </template>  
-            </el-table-column>
-            <el-table-column label="20%次数" min-width="14%" align="center"> 
-                <template slot-scope="scope">
-                   <span style="">
-                        {{toThousands(scope.row.col5)}}
-                    </span>               
-                </template> 
-            </el-table-column>
-            <el-table-column label="30%次数" min-width="14%" align="center">
-                <template slot-scope="scope">
-                   <span style="">
-                        {{toThousands(scope.row.col6)}}
-                    </span>               
-                </template>  
-            </el-table-column>
-            <el-table-column label="50%次数" min-width="14%" align="center">
-                <template slot-scope="scope">
-                   <span style="">
-                        {{toThousands(scope.row.col7)}}
-                    </span>               
-                </template>  
-            </el-table-column>
-        </el-table> 
-        <!--- 策略表现(row3) --->
-        <el-table
-        :data="perfData3"
-        :header-cell-style="addRightBorder"
-        :cell-style="addRightBorder"
-        style="width: 100%">
-            <el-table-column label="单笔盈亏" min-width="14%" align="center" style="background: white"> 
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col1 >= 0">
-                        {{toThousands(scope.row.col1)}}
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.col1)}}
-                    </span>                
-                </template> 
-            </el-table-column>
-            <el-table-column label="交易币数" min-width="14%" align="center"> 
-                <template slot-scope="scope">
-                   <span style="">
-                        {{toThousands(scope.row.col2)}}
-                    </span>               
-                </template> 
-            </el-table-column>
-            <el-table-column label="交易次数" min-width="14%" align="center"> 
-                <template slot-scope="scope">
-                   <span style="">
-                        {{toThousands(scope.row.col3)}}({{ toThousands(scope.row.col32)}})
-                    </span>               
-                </template> 
-            </el-table-column>
-            <el-table-column label="单笔盈亏" min-width="14%" align="center"> 
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col4 >= 0">
-                        {{toThousands(scope.row.col4)}}
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.col4)}}
-                    </span>                
-                </template> 
-            </el-table-column>
-            <el-table-column label="20%收益" min-width="14%" align="center"> 
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col5 >= 0">
-                        {{toThousands(scope.row.col5)}}
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.col5)}}
-                    </span>                
-                </template> 
-            </el-table-column>
-            <el-table-column label="30%收益" min-width="14%" align="center"> 
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col6 >= 0">
-                        {{toThousands(scope.row.col6)}}
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.col6)}}
-                    </span>                
-                </template> 
-            </el-table-column>
-            <el-table-column label="50%收益" min-width="14%" align="center"> 
-                <template slot-scope="scope">
-                   <span style="color: green" v-if="scope.row.col7 >= 0">
-                        {{toThousands(scope.row.col7)}}
-                    </span>  
-                   <span style="color: red" v-else>
-                        {{toThousands(scope.row.col7)}}
-                    </span>                
-                </template> 
-            </el-table-column>
-        </el-table>    
     </div>
 </template>
 
@@ -372,10 +154,14 @@ export default {
             type:Object,
             default:{}
         },
-        subaccountDatas: {
-            type:Object,
-            default:{}
-        }       
+        todayOrders: {
+            type:Array,
+            default:[]
+        },
+        todayOrdersLoading: {
+            type: Boolean,
+            default: true
+        }             
     },
 
     watch: {
@@ -389,64 +175,61 @@ export default {
 
     data() {
         return {
-            // 资产
-            balanceDatas: [{
-                totalBalance: null,
-                totalReturn: null,
-                day1Diff: null,
-                day7Diff: null,
-                yearDiff: null,
-                drawdown: null,
-                drawdownDays: null,
-                maxDrawdown: null,
-                usdTotalBalance: null,
-                coinTotalBalance: null,
-            }],
-
-            // 仓位
-            positionDatas: [{
-                totalPosition: null,
-                longPosition: null,
-                shortPosition: null,
-
-                prLongPosition: null,
-                prShortPosition: null,
-                prmPosition: null,
-                pbPosition: null
-            }],
-
-            // 策略表现
-            perfData1: [{
-                col1: null,
-                col2: null,
-                col3: null,
-                col4: null,
-                col5: null,
-                col6: null,
-                col7: null,
-            }],
-            perfData2: [{
-                col1: null,
-                col2: null,
-                col3: null,
-                col4: null,
-                col5: null,
-                col6: null,
-                col7: null,
-            }],
-            perfData3: [{
-                col1: null,
-                col2: null,
-                col3: null,
-                col32:null,
-                col4: null,
-                col5: null,
-                col6: null,
-                col7: null,
-            }],
-            
-            // 大PV策略年初始时归零(和pnl曲线保持一致)
-            prPnlOffset: -533097
+            // 今日分类数据
+            todayDatas: {
+                'pivot_reversal': {
+                    strategy: '大PV',
+                    initPosition: null,
+                    position: null,
+                    openVol: null,
+                    flipVol: null,
+                    timerVol: null,
+                    winStopVol: null,
+                    pnl: null,
+                    slippage: null,
+                    fee: null,
+                    swapFee: null,
+                },
+                'plunge_back': {
+                    strategy: '抄底',
+                    initPosition: null,
+                    position: null,
+                    openVol: null,
+                    flipVol: null,
+                    timerVol: null,
+                    winStopVol: null,
+                    pnl: null,
+                    slippage: null,
+                    fee: null,
+                    swapFee: null,
+                },
+                'pivot_reversal_mini': {
+                    strategy: '小PV',
+                    initPosition: null,
+                    position: null,
+                    openVol: null,
+                    flipVol: null,
+                    timerVol: null,
+                    winStopVol: null,
+                    pnl: null,
+                    slippage: null,
+                    fee: null,
+                    swapFee: null,
+                },
+                'all': {
+                    strategy: '合计',
+                    initPosition: 0,
+                    position: 0,
+                    openVol: 0,
+                    flipVol: 0,
+                    timerVol: 0,
+                    winStopVol: 0,
+                    pnl: 0,
+                    slippage: 0,
+                    fee: 0,
+                    swapFee: 0,
+                }
+            }
         }
     },
 
@@ -497,6 +280,7 @@ export default {
             this.positionDatas[0].pbPosition = parseInt(pbData.long)
             this.positionDatas[0].prmPosition = parseInt(prmData.short)
 
+            // 
             // 策略表现(trade_stats)
             var prData = this.parentPfoData.trade_stats.pivot_reversal
             var pbData = this.parentPfoData.trade_stats.plunge_back
