@@ -294,6 +294,7 @@ export default {
             this.pnlDatasLoading = true
             var count = 0
             var workerPnls = []
+            alert('开始爬取数据.')
             for(let host of this.pfoHosts){
                 // 获取worker.data.pnl_line
                 getNormalWorkerDatas(host, 'worker,pnl_line').then(response => {
@@ -323,9 +324,13 @@ export default {
                     }
                     workerPnls = workerPnls.concat(pnls)
 
+                    alert('从host('+ response.config.baseURL + ')爬取数据成功.')
+
                     if (count === this.pfoHosts.length){
                         // 处理数据
+                        alert('所有数据爬取完成.')
                         this.parsePnl(workerPnls)
+                        alert('所有数据分析完成.')
                         this.pnlDatasLoading = false
                     }
                 })
