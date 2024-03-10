@@ -73,7 +73,7 @@ import moment from 'moment'
 
 export default {
     props: {
-        parentPfoData: {
+        parentPfoPositions: {
             type:Object,
             default:{}
         },
@@ -84,9 +84,16 @@ export default {
     },
 
     watch: {
-        parentPfoData: {
+        parentPfoPositions: {
             handler(val, oldVal){
-                this.parseData()
+                this.parseParentPfoPositions()
+            },
+            deep: true
+        },
+
+        subaccountDatas: {
+            handler(val, oldVal){
+                this.parseSubaccountDatas()
             },
             deep: true
         },
@@ -110,12 +117,23 @@ export default {
 
     created() {
         // 分析Data
-        this.parseData()
+        this.parseSubaccountDatas()
+        this.parseParentPfoPositions()
     },
 
     methods: {
-        parseData(){  
-            // 仓位数据
+        parseParentPfoPositions(){
+            // 策略仓位信息从系统后台获取
+            var prData = this.parentPfoPositions.pivot_reversal
+            var pbData = this.parentPfoPositions.plunge_back
+            var prmData = this.parentPfoPositions.pivot_reversal_mini
+            this.positionDatas[0].prLongPosition = Math.round(prData.long)
+            this.positionDatas[0].prShortPosition = Math.round(prData.short)
+            this.positionDatas[0].pbPosition = Math.round(pbData.long)
+            this.positionDatas[0].prmPosition = Math.round(prmData.short)
+        },
+
+        parseSubaccountDatas(){  
             // 总体仓位信息从subaccount(平台)获取
             var totalPosition = 0
             var longPosition = 0
@@ -127,17 +145,9 @@ export default {
                 longPosition += summary.usdt_long
                 shortPosition += summary.usdt_short
             }
-            // 策略仓位信息从系统后台获取
-            var prData = this.parentPfoData.positions.pivot_reversal
-            var pbData = this.parentPfoData.positions.plunge_back
-            var prmData = this.parentPfoData.positions.pivot_reversal_mini
             this.positionDatas[0].totalPosition = Math.round(totalPosition)
             this.positionDatas[0].longPosition = Math.round(longPosition)
             this.positionDatas[0].shortPosition = Math.round(shortPosition)
-            this.positionDatas[0].prLongPosition = Math.round(prData.long)
-            this.positionDatas[0].prShortPosition = Math.round(prData.short)
-            this.positionDatas[0].pbPosition = Math.round(pbData.long)
-            this.positionDatas[0].prmPosition = Math.round(prmData.short)
         },
 
         toThousands: toThousands,

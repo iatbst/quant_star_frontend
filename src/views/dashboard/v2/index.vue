@@ -1,41 +1,77 @@
 <template>
   <div class="app-container" style="background-color: lightgray">
-    <!----------------------------------- 总表 + 长短仓位分布 --------------------------------------->
+    <!----------------------------------- 表格 --------------------------------------->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px">
       <el-col :span="24" align="center">
         <div style="margin-left: 20px; margin-right: 20px; margin-top: 40px; margin-bottom: 40px; width: 95%">
-            <!--- 资产表 --->
+            <!--- 资产表 ---
+                函数: fetchParentPfoWallet
+            -->
             <balance-table 
-            v-bind:parentPfoData="parentPfoData" 
-            v-if="pfoMasterDatasAvailable" >
+            v-bind:parentPfoWallet="parentPfoWallet" 
+            v-if="parentPfoWalletAvailable" >
             </balance-table>
 
-            <!--- 仓位表 --->
+            <!--- 仓位表 ---
+                函数: 
+                    - fetchParentPfoPositions
+                    - fetchSubAccountDatas
+            --->
             <position-table 
-            v-bind:parentPfoData="parentPfoData" 
+            v-bind:parentPfoPositions="parentPfoPositions" 
             v-bind:subaccountDatas="subaccountDatas" 
-            v-if="pfoMasterDatasAvailable && subaccountDatasAvailable">
+            v-if="parentPfoPositionsAvailable && subaccountDatasAvailable">
             </position-table>
 
-            <!--- 今日表 --->
+            <!--- 今日表 ---
+                函数: 
+                    - fetchParentPfoPositions
+                    - fetchTodayOrders
+                    - fetchTodayPnls
+            --->
             <today-table 
-            v-bind:parentPfoData="parentPfoData" 
+            v-bind:parentPfoPositions="parentPfoPositions" 
+            v-bind:parentPfoPositionsHistory="parentPfoPositionsHistory" 
             v-bind:todayOrders="todayOrders" 
             v-bind:todayStrategyPnl="todayStrategyPnl"
-            v-if="pfoMasterDatasAvailable && todayOrdersAvailable && todayPnlAvailable"
+            v-if="parentPfoPositionsAvailable && todayOrdersAvailable && todayPnlAvailable"
             >
             </today-table>
             
-            <!--- Perf统计表 --->
+            <!--- Perf统计表 ---
+                函数: fetchParentPfoTradeStats
+                更新频率: ?
+            --->
             <perf-table 
-            v-bind:parentPfoData="parentPfoData" 
-            v-if="pfoMasterDatasAvailable">
+            v-bind:parentPfoTradeStats="parentPfoTradeStats" 
+            v-if="parentPfoTradeStatsAvailable">
             </perf-table>
+
+            <!--- 刷新说明 --->
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        资产表格: 每分钟第5秒刷新1次
+                        <br/>
+                        仓位表格: 每分钟第5秒刷新1次
+                        <br />
+                        今日表格: 每间隔5分钟刷新1次(非整点);盈亏列每小时第5分钟刷新1次
+                        <br/>
+                        策略今年表现表格: 每小时第5分钟刷新1次
+                    </div>
+                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
+                </el-tooltip>
+            </div>
         </div>
       </el-col>
     </el-row>   
 
-    <!---------------------------------- 资产曲线 ----------------------------------->
+    <!---------------------------------- 资产曲线 -----------------------------------
+        函数:
+            - fetchLiveValueline 
+            - fetchBacktestValuelines
+        更新频率: ?
+    --->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
       <el-col :span="24" align="center">
           <div style="margin-bottom: 20px; width: 95%">
@@ -47,11 +83,26 @@
             v-if="totalBalanceValuesAvailable && btValueLines.all.available" 
             style="margin-bottom: 20px">
             </two-value-line>
+
+            <!--- 刷新说明 --->
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        实盘资产曲线: 每天00:01:00刷新1次
+                        <br/>
+                        回测资产曲线: 每天09:00:00刷新1次
+                    </div>
+                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
+                </el-tooltip>
+            </div>
           </div>
       </el-col>
     </el-row>
 
-    <!---------------------------------- 策略的Pnl Lines ----------------------------------->
+    <!---------------------------------- 策略的Pnl Lines -----------------------------------
+        函数:fetchPnlLines 
+        更新频率: ?
+    --->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
       <el-col :span="24" align="center">
           <div style="margin-bottom: 20px; width: 95%">
@@ -79,11 +130,24 @@
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
+
+            <!--- 刷新说明 --->
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        策略收益曲线: 每天00:30:00刷新1次
+                    </div>
+                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
+                </el-tooltip>
+            </div>
           </div>
       </el-col>
     </el-row>
 
-    <!----------------------------------- 仓位ranks --------------------------------------->
+    <!----------------------------------- 仓位ranks ---------------------------------------
+        函数:fetchPositions 
+        更新频率: ?
+    --->  
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
       <el-col :span="24" align="center">
           <div style="margin-bottom: 20px; width: 95%">
@@ -92,85 +156,129 @@
             v-if="prBinancePositionsAvailable && prOkexPositionsAvailable && prmBinancePositionsAvailable && prmOkexPositionsAvailable && 
             pbBinancePositionsAvailable && pbOkexPositionsAvailable" 
             ></position-ranks2> 
+
+            <!--- 刷新说明 --->
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        仓位排名: 每间隔5分钟刷新1次(非整点)
+                    </div>
+                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
+                </el-tooltip>
+            </div>
           </div>
       </el-col>
     </el-row>
 
-    <!----------------------------------- 仓位 --------------------------------------->
-    <div style="background-color: white; margin-bottom: 20px; margin-top: 20px">
-        <!-- pr_binance -->
-        <position-map2 
-        v-bind:positions="prBinancePositions" 
-        v-bind:positions-loading="prBinancePositionsLoading"
-        v-bind:exchange="'Binance'"
-        v-bind:strategy="'大PV'"
-        v-bind:col-count="5"
-        v-bind:show-zero="true"
-        v-bind:sort-coin="true"
-        v-bind:sort-coin-weights="prBinanceSortWeights"
-        ></position-map2> 
+    <!----------------------------------- 仓位 ---------------------------------------
+        函数:fetchPositions 
+        更新频率: ?
+    --->  
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
+      <el-col :span="24" align="center">
+          <div style="margin-bottom: 20px; width: 95%">
+            <!-- pr_binance -->
+            <position-map2 
+            v-bind:positions="prBinancePositions" 
+            v-bind:positions-loading="prBinancePositionsLoading"
+            v-bind:exchange="'Binance'"
+            v-bind:strategy="'大PV'"
+            v-bind:col-count="5"
+            v-bind:show-zero="true"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="prBinanceSortWeights"
+            ></position-map2> 
 
-        <!-- pr_okex -->
-        <position-map2 
-        v-bind:positions="prOkexPositions" 
-        v-bind:positions-loading="prOkexPositionsLoading"
-        v-bind:exchange="'Okex'"
-        v-bind:strategy="'大PV'"
-        v-bind:col-count="5"
-        v-bind:show-zero="true"
-        v-bind:sort-coin="true"
-        v-bind:sort-coin-weights="prOkexSortWeights"
-        ></position-map2> 
+            <!-- pr_okex -->
+            <position-map2 
+            v-bind:positions="prOkexPositions" 
+            v-bind:positions-loading="prOkexPositionsLoading"
+            v-bind:exchange="'Okex'"
+            v-bind:strategy="'大PV'"
+            v-bind:col-count="5"
+            v-bind:show-zero="true"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="prOkexSortWeights"
+            ></position-map2> 
 
-        <!-- pb_binance -->
-        <position-map2 
-        v-bind:positions="pbBinancePositions" 
-        v-bind:positions-loading="pbBinancePositionsLoading"
-        v-bind:exchange="'Binance'"
-        v-bind:strategy="'抄底'"
-        v-bind:col-count="7"
-        v-bind:show-zero="false"
-        ></position-map2> 
+            <!-- pb_binance -->
+            <position-map2 
+            v-bind:positions="pbBinancePositions" 
+            v-bind:positions-loading="pbBinancePositionsLoading"
+            v-bind:exchange="'Binance'"
+            v-bind:strategy="'抄底'"
+            v-bind:col-count="7"
+            v-bind:show-zero="false"
+            ></position-map2> 
 
-        <!-- pb_okex -->
-        <position-map2 
-        v-bind:positions="pbOkexPositions" 
-        v-bind:positions-loading="pbOkexPositionsLoading"
-        v-bind:exchange="'Okex'"
-        v-bind:strategy="'抄底'"
-        v-bind:col-count="7"
-        v-bind:show-zero="false"
-        ></position-map2> 
+            <!-- pb_okex -->
+            <position-map2 
+            v-bind:positions="pbOkexPositions" 
+            v-bind:positions-loading="pbOkexPositionsLoading"
+            v-bind:exchange="'Okex'"
+            v-bind:strategy="'抄底'"
+            v-bind:col-count="7"
+            v-bind:show-zero="false"
+            ></position-map2> 
 
-        <!-- prm_binance -->
-        <position-map2 
-        v-bind:positions="prmBinancePositions" 
-        v-bind:positions-loading="prmBinancePositionsLoading"
-        v-bind:exchange="'Binance'"
-        v-bind:strategy="'小PV'"
-        v-bind:col-count="10"
-        v-bind:show-zero="false"
-        ></position-map2> 
+            <!-- prm_binance -->
+            <position-map2 
+            v-bind:positions="prmBinancePositions" 
+            v-bind:positions-loading="prmBinancePositionsLoading"
+            v-bind:exchange="'Binance'"
+            v-bind:strategy="'小PV'"
+            v-bind:col-count="10"
+            v-bind:show-zero="false"
+            ></position-map2> 
 
-        <!-- prm_okex -->
-        <position-map2 
-        v-bind:positions="prmOkexPositions" 
-        v-bind:positions-loading="prmOkexPositionsLoading"
-        v-bind:exchange="'Okex'"
-        v-bind:strategy="'小PV'"
-        v-bind:col-count="10"
-        v-bind:show-zero="false"
-        ></position-map2> 
-    </div>
+            <!-- prm_okex -->
+            <position-map2 
+            v-bind:positions="prmOkexPositions" 
+            v-bind:positions-loading="prmOkexPositionsLoading"
+            v-bind:exchange="'Okex'"
+            v-bind:strategy="'小PV'"
+            v-bind:col-count="10"
+            v-bind:show-zero="false"
+            ></position-map2> 
 
-    <!----------------------------------- 订单(3天内) --------------------------------------->
-    <div style="background-color: white; margin-bottom: 20px; margin-top: 20px">
-        <!-- 仓位详情 -->
-        <orders 
-        v-bind:orders="orders" 
-        v-bind:orders-loading="ordersLoading"
-        ></orders>
-    </div>
+            <!--- 刷新说明 --->
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        策略仓位明细: 每间隔5分钟刷新1次(非整点)
+                    </div>
+                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
+                </el-tooltip>
+            </div>
+         </div>
+      </el-col>
+    </el-row>
+
+    <!----------------------------------- 订单(3天内) ---------------------------------------
+        函数:fetchOrders
+        更新频率: ?
+    ---> 
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
+      <el-col :span="24" align="center">
+          <div style="margin-bottom: 20px; width: 95%">
+            <!-- 仓位详情 -->
+            <orders 
+            v-bind:orders="orders" 
+            v-bind:orders-loading="ordersLoading"
+            ></orders>
+
+            <!--- 刷新说明 --->
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        3日内订单: 每间隔5分钟刷新1次(非整点)
+                    </div>
+                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
+                </el-tooltip>
+            </div>
+         </div>
+      </el-col>
+    </el-row>
 
   </div>
 </template>
@@ -183,7 +291,6 @@ import todayTable from '@/views/dashboard/v2/today_table'
 import perfTable from '@/views/dashboard/v2/perf_table'
 import positionTable from '@/views/dashboard/v2/position_table'
 import balanceTable from '@/views/dashboard/v2/balance_table'
-import summaryTable from '@/views/dashboard/v2/summary_table'
 import valueLine from '@/views/balance/_value_line'
 import twoValueLine from '@/views/balance/_two_value_line'
 import multiValueLine from '@/views/balance/_multi_value_line'
@@ -202,7 +309,7 @@ import pfoPerfs from '@/views/performance/pfo_perfs'
 import profitRanks from '@/views/performance/profit_ranks'
 
 import config from '@/configs/system_configs'
-import { getPortfolioDatas } from '@/api/portfolio' 
+import { getPortfolioDatas, getPortfolioDataByName } from '@/api/portfolio' 
 import { getSubAccountDatas} from '@/api/subaccount'
 import { getDelegateWorkerDatas } from '@/api/worker'
 import { getPositions } from '@/api/position'
@@ -216,7 +323,6 @@ export default {
     components: {
         orders,
 
-        summaryTable,
         balanceTable,
         positionTable,
         perfTable,
@@ -259,11 +365,6 @@ export default {
             prBinanceSortWeights: config.prBinanceSortWeights,
             prOkexSortWeights: config.prOkexSortWeights,
 
-            summaryDatas: [],
-
-            pfoDatas: [],
-            pfoDatasAvailable: false,
-
             orders: [],
             ordersLoading: false,
             todayOrders: [],
@@ -271,19 +372,21 @@ export default {
             todayPnlAvailable: false,
             todayStrategyPnl: null,
 
-            trades: [],
-            tradesLoading: false,
+            parentPfoTradeStats: null,
+            parentPfoTradeStatsAvailable: false,
 
-            pfoMasterDatas: [],     
-            pfoMasterDatasAvailable: false,
+            parentPfoWallet: null,
+            parentPfoWalletAvailable: false,
+
+            parentPfoPositions: null,
+            parentPfoPositionsAvailable: false,
+            parentPfoPositionsHistory: null,
+
             totalBalanceValues: {},
             totalBalanceValuesAvailable: false,
-            parentPfoData: null,
 
             subaccountDatas: [],
             subaccountDatasAvailable: false,
-
-            delegateWorkerDatas: [],
 
             positions: [],
             positionsAvailable: false,
@@ -308,11 +411,7 @@ export default {
             prmOkexPositionsAvailable: false,
             prmOkexPositionsLoading: false,
 
-            productVolumes: {},
-            productVolumesAvailable: false,
-
             liveValueName: '实盘资金',
-            btValueName: '15币回测资金',
 
             // 记录策略回测资产曲线
             btValueLines: {
@@ -361,99 +460,68 @@ export default {
                     'available': false
                 },                                 
             },
-            btValueLineType: 'logarithmic',
-            pnlLineRange: 'thisYear',
 
-            // 不同策略的Alias
-            strategyAlias: {
-                'pivot_reversal': ['pr1', 'pr2', 'pr3', 'pr4'],
-                'pivot_reversal_short': ['prs1', 'prs2'],
-                'plunge_back': ['pb1', 'pb2'],
-            },
-
-            btValueLineType: 'logarithmic',
-            btValueLineRange: 'all',
-
-            backtest1Rets: {},  // top15-6m
-            backtest1RetsAvailable: false,
-            backtest2Rets: {},  // top15-3y
-            backtest2RetsAvailable: false,
-            liveRets: {
-                available: false,
-                annualReturn: null,
-                maxDrawdown: null,
-                countPerSymbol: null,
-                winRatio: null,
-                plRatio: null,
-            },
-
-            liveBacktestStatDatas: [{
-                stats: '年化收益率',
-                live: null,
-                btShortTerm: null,
-                btLongTerm: null
-            },{
-                stats: '最大回撤',
-                live: null,
-                btShortTerm: null,
-                btLongTerm: null              
-            },{
-                stats: '交易次数/币',
-                live: null,
-                btShortTerm: null,
-                btLongTerm: null                  
-            },{
-                stats: '胜率',
-                live: null,
-                btShortTerm: null,
-                btLongTerm: null                  
-            },{
-                stats: '盈亏比',
-                live: null,
-                btShortTerm: null,
-                btLongTerm: null                  
-            }],
+            refreshInterval: 1000,
+            refreshIntervalId: null,
 
             fastRefreshInterval: 60000,
             fastIntervalId: null,
             slowRefreshInterval: 300000,
-            slowIntervalId: null
+            slowIntervalId: null,
+
+            parentPfoWalletRefresh: null,
+            parentPfoPositionsRefresh: null,
+            todayOrdersRefresh: null,
+            todayPnlsRefresh: null,
+            parentPfoTradeStatsRefresh: null,
+            liveBalanceValuesRefresh: null,
+            btBalanceValuesRefresh: null,
+            pnlLinesRefresh: null,
+            positionsRefresh: null,
+            ordersRefresh: null,
         }
     },
 
     created() {
         this.fetchDatas()
-        this.fastRefresh()
-        this.slowRefresh()
+        this.refresh()
     },
 
     methods: {
         // 获取所有数据
         fetchDatas(){
-            // 获取Pfo Wallet Data (Master)(fast_refresh)
-            this.fetchPfoDatasFromMaster()
+            // 表格1: 总体资产信息
+            this.fetchParentPfoWallet()
 
-            // 获取Subaccount Datas (Master)(fast_refresh)
+            // 表格2: 总体仓位信息
+            this.fetchParentPfoPositions()
             this.fetchSubAccountDatas()
 
-            // 获取策略的回测资产曲线(slow_refresh)
-            this.fetchStrategyValuelines()
-            
-            // 获取Positions(Pfo)(slow_refresh)
+            // 表格3: 总体今日信息
+            this.fetchTodayOrders()
+            this.fetchTodayPnls()
+
+            // 表格4: 总体策略表现
+            this.fetchParentPfoTradeStats()
+
+            // 图表1: 实盘资产 VS 回测资产
+            this.fetchLiveValueline()   // 实盘资产曲线
+            this.fetchBacktestValuelines()  // 策略的回测资产曲线
+
+            // 图表2: 策略收益曲线
+            this.fetchPnlLines()
+
+            // 图表3: 仓位排名 + 仓位表格
             this.fetchPositions()
 
-            // 获取Orders(slow_refresh)
+            // 订单列表
             this.fetchOrders()
-
-            // 获取今日Orders(slow_refesh)
-            this.fetchTodayOrders()
-
-            // 获取worker pnl(slow_refesh)
-            this.fetchWorkerPnls()
         },
 
         // 获取worker的pnls
-        fetchWorkerPnls(){
+        fetchTodayPnls(){
+            this.todayPnlsRefresh = new Date()
+
             // 准备实盘start/end
             var ep = Math.round(Date.now()/1000)
             ep += 3600*8
@@ -509,6 +577,7 @@ export default {
 
         // 获取最近3天orders
         fetchOrders(){
+            this.ordersRefresh = new Date()
             this.orders = []
             this.ordersLoading = true
             var days = 3    // 默认展示最近3天
@@ -540,6 +609,7 @@ export default {
 
         // 获取今日orders
         fetchTodayOrders(){
+            this.todayOrdersRefresh = new Date()
             this.todayOrders = []
             var ep = Math.round(Date.now()/1000)
             ep += 8*3600
@@ -568,7 +638,8 @@ export default {
         },
 
         // 从master获取各个策略的回测资产曲线
-        fetchStrategyValuelines(){
+        fetchBacktestValuelines(){
+            this.btBalanceValuesRefresh = new Date()
             for (const sty in this.btValueLines){
                 var reportName = sty + '_backtest'
                 this.btValueLines[sty].available = false
@@ -579,38 +650,54 @@ export default {
             }
         },
 
-        // 从Master获取所有pfo的wallet/position data
-        fetchPfoDatasFromMaster() {
-            this.pfoMasterDatas = []
-            getPortfolioDatas(config.masterHost, 'portfolio,wallet,positions,positions_history,trade_stats,pnl_line').then(response => {
-                    this.pfoMasterDatas = response.results
-                    // 排序
-                    for(var i = 0; i < this.pfoMasterDatas.length; i++){
-                        this.pfoMasterDatas[i]['sort_id'] = config.pfoSortWeights[this.pfoMasterDatas[i].portfolio.name]
-                        if (this.pfoMasterDatas[i].portfolio.name === config.cryptoParentPfo){
-                            // Parent Pfo
-                            this.totalBalanceValues = this.pfoMasterDatas[i].wallet.history_values
-                            this.totalBalanceValuesAvailable = true
-                        }
-                    }
-                    this.pfoMasterDatas.sort((a, b) => a.sort_id - b.sort_id)       
-                    
-                    // 标记父pfo
-                    for(var i = 0; i < this.pfoMasterDatas.length; i++){
-                        if (this.pfoMasterDatas[i].portfolio.name === config.cryptoParentPfo){
-                            this.parentPfoData = this.pfoMasterDatas[i]
-                        }
-                    }
+        // 从Master获取实盘资产曲线
+        fetchLiveValueline(){
+            this.liveBalanceValuesRefresh = new Date()
+            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'wallet').then(response => {
+                this.totalBalanceValues = response.results[0].wallet.history_values
+                this.totalBalanceValuesAvailable = true
+            })
+        },
 
-                    // Pnl Line
-                    this.pnlLines.pivot_reversal.data = this.parentPfoData.pnl_line.pivot_reversal.year_now
+        // 从Master获取资产信息
+        fetchParentPfoWallet(){
+            this.parentPfoWalletRefresh = new Date()
+            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'wallet').then(response => {
+                this.parentPfoWallet = response.results[0].wallet
+                this.parentPfoWalletAvailable = true
+            })
+        },
+
+        // 从Master获取TradeStats信息
+        fetchParentPfoTradeStats(){
+            this.parentPfoTradeStatsRefresh = new Date()
+            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'trade_stats').then(response => {
+                this.parentPfoTradeStats = response.results[0].trade_stats
+                this.parentPfoTradeStatsAvailable = true
+            })
+        },
+
+        // 从Master获取仓位信息
+        fetchParentPfoPositions(){
+            this.parentPfoPositionsRefresh = new Date()
+            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'positions,positions_history').then(response => {
+                this.parentPfoPositions = response.results[0].positions
+                this.parentPfoPositionsHistory = response.results[0].positions_history
+                this.parentPfoPositionsAvailable = true
+            })
+        },
+
+        // 从Master获取所pnl lines
+        fetchPnlLines(){
+            this.pnlLinesRefresh = new Date()
+            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'pnl_line').then(response => {
+                    var parentPfoData = response.results[0]
+                    this.pnlLines.pivot_reversal.data = parentPfoData.pnl_line.pivot_reversal.year_now
                     this.pnlLines.pivot_reversal.available = true
-                    this.pnlLines.plunge_back.data = this.parentPfoData.pnl_line.plunge_back.year_now
+                    this.pnlLines.plunge_back.data = parentPfoData.pnl_line.plunge_back.year_now
                     this.pnlLines.plunge_back.available = true
-                    this.pnlLines.pivot_reversal_mini.data = this.parentPfoData.pnl_line.pivot_reversal_mini.year_now
+                    this.pnlLines.pivot_reversal_mini.data = parentPfoData.pnl_line.pivot_reversal_mini.year_now
                     this.pnlLines.pivot_reversal_mini.available = true                    
-
-                    this.pfoMasterDatasAvailable = true
                 }
             )
         },
@@ -618,7 +705,7 @@ export default {
         // 从Master获取所有subaccount data
         fetchSubAccountDatas() {
             this.subaccountDatas = []
-            getSubAccountDatas(config.masterHost).then(response => {
+            getSubAccountDatas(config.masterHost, 'positions').then(response => {
                     this.subaccountDatas = response.results
                     this.subaccountDatasAvailable = true
                 }
@@ -627,6 +714,8 @@ export default {
 
         // 从Pfo获取所有positions(normal workers)
         fetchPositions() {
+            this.positionsRefresh = new Date()
+
             // 所有positions
             this.positions = []
             this.positionsAvailable = false
@@ -778,39 +867,78 @@ export default {
         },
 
         // 定时刷新数据函数
-        fastRefresh() {
+        refresh() {
             // 计时器正在进行中，退出函数
-            if (this.fastIntervalId != null) {
+            if (this.refreshIntervalId != null) {
                 return;
             }
 
             // 计时器为空，操作
-            this.fastIntervalId = setInterval(() => {
-                    console.log("刷新(fast)" + new Date());
-                    //加载部分需要快速更新数据
-                    this.fetchPfoDatasFromMaster();
-                    this.fetchSubAccountDatas();
-                }, this.fastRefreshInterval);
-        }, 
-        slowRefresh() {
-            // 计时器正在进行中，退出函数
-            if (this.slowIntervalId != null) {
-                return;
-            }
+            this.refreshIntervalId = setInterval(() => {
+                var now = new Date();
+                var hour = now.getHours()
+                var minute = now.getMinutes()
+                var second = now.getSeconds()
+                var date = now.getDate()
 
-            // 计时器为空，操作
-            this.slowIntervalId = setInterval(() => {
-                    console.log("刷新(slow)" + new Date());
-                    this.fetchDatas(); //加载所有数据
-                }, this.slowRefreshInterval);
+                console.log("刷新检查:" + now);
+                // 资产表格
+                if(second >= 5 && minute != this.parentPfoWalletRefresh.getMinutes()){
+                    console.log(now + '刷新:fetchParentPfoWallet');
+                    this.fetchParentPfoWallet()
+                }
+                // 仓位表格
+                if(second >= 5 && minute != this.parentPfoPositionsRefresh.getMinutes()){
+                    console.log(now + '刷新:fetchParentPfoPositions;fetchSubAccountDatas');
+                    this.fetchParentPfoPositions()
+                    this.fetchSubAccountDatas()
+                }   
+                // 今日表格
+                if(now - this.todayOrdersRefresh > 5*60*1000){
+                    console.log(now + '刷新:fetchTodayOrders');
+                    this.fetchTodayOrders()
+                }  
+                if(minute >= 5 && hour != this.todayPnlsRefresh.getHours()){
+                    console.log(now + '刷新:fetchTodayPnls');
+                    this.fetchTodayPnls()
+                }  
+                // Perf表格
+                if(minute >= 5 && hour != this.parentPfoTradeStatsRefresh.getHours()){
+                    console.log(now + '刷新:fetchParentPfoTradeStats');
+                    this.fetchParentPfoTradeStats()
+                }  
+                // 实盘资产VS回测资产
+                if(minute >= 1 && date != this.liveBalanceValuesRefresh.getDate()){
+                    console.log(now + '刷新:fetchLiveValueline');
+                    this.fetchLiveValueline()                   
+                }
+                if(hour >= 9 && date != this.btBalanceValuesRefresh.getDate()){
+                    console.log(now + '刷新:fetchBacktestValuelines');
+                    this.fetchBacktestValuelines()                   
+                }
+                // 策略收益曲线
+                if(minute >= 30 && date != this.pnlLinesRefresh.getDate()){
+                    console.log(now + '刷新:fetchPnlLines');
+                    this.fetchPnlLines()
+                }  
+                // 仓位表格 + 仓位排名柱状图
+                if(now - this.positionsRefresh > 5*60*1000){
+                    console.log(now + '刷新:fetchPositions');
+                    this.fetchPositions()
+                } 
+                // 订单列表
+                if(now - this.ordersRefresh > 5*60*1000){
+                    console.log(now + '刷新:fetchOrders');
+                    this.fetchOrders()
+                } 
+
+            }, this.refreshInterval);
         }, 
 
         // 停止定时器
         clear() {
-            clearInterval(this.fastIntervalId); //清除计时器
-            this.fastIntervalId = null; //设置为null
-            clearInterval(this.slowIntervalId); //清除计时器
-            this.slowIntervalId = null; //设置为null
+            clearInterval(this.refreshIntervalId); //清除计时器
+            this.refreshIntervalId = null; //设置为null
         },
     },
 

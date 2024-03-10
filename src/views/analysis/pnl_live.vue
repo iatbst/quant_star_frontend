@@ -130,32 +130,6 @@
                                     </div>
                                 </template>
                             </el-table-column>
-
-                            <el-table-column align="center" label="收益率(%)" min-width="25%">
-                                <template slot-scope="scope">
-                                    <div v-if="scope.row.pnl_ptg !== null">
-                                        <span style="color: red" v-if="scope.row.pnl_ptg < 0">
-                                        {{ Number((scope.row.pnl_ptg*100).toFixed(3)) }}
-                                        </span>
-                                        <span style="color: green" v-else>
-                                        {{ Number((scope.row.pnl_ptg*100).toFixed(3)) }}
-                                        </span>
-                                    </div>
-                                </template>
-                            </el-table-column>
-
-                            <el-table-column align="center" label="回测收益率(%)" min-width="25%">
-                                <template slot-scope="scope">
-                                    <div v-if="scope.row.bt_pnl_ptg !== null">
-                                        <span style="color: red" v-if="scope.row.bt_pnl_ptg < 0">
-                                        {{ Number((scope.row.bt_pnl_ptg*100).toFixed(3)) }}
-                                        </span>
-                                        <span style="color: green" v-else>
-                                        {{ Number((scope.row.bt_pnl_ptg*100).toFixed(3)) }}
-                                        </span>
-                                    </div>
-                                </template>
-                            </el-table-column>
                         </el-table> 
                     </div>
                 </el-dialog>
@@ -294,7 +268,7 @@ export default {
             this.pnlDatasLoading = true
             var count = 0
             var workerPnls = []
-            alert('开始爬取数据.')
+            // alert('开始爬取数据.')
             for(let host of this.pfoHosts){
                 // 获取worker.data.pnl_line
                 getNormalWorkerDatas(host, 'worker,pnl_line').then(response => {
@@ -324,13 +298,13 @@ export default {
                     }
                     workerPnls = workerPnls.concat(pnls)
 
-                    alert('从host('+ response.config.baseURL + ')爬取数据成功.')
+                    // alert('从host('+ response.config.baseURL + ')爬取数据成功.')
 
                     if (count === this.pfoHosts.length){
                         // 处理数据
-                        alert('所有数据爬取完成.')
+                        // alert('所有数据爬取完成.')
                         this.parsePnl(workerPnls)
-                        alert('所有数据分析完成.')
+                        // alert('所有数据分析完成.')
                         this.pnlDatasLoading = false
                     }
                 })

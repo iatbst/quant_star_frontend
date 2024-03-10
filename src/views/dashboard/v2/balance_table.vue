@@ -81,14 +81,14 @@ import moment from 'moment'
 
 export default {
     props: {
-        parentPfoData: {
+        parentPfoWallet: {
             type:Object,
             default:{}
         }      
     },
 
     watch: {
-        parentPfoData: {
+        parentPfoWallet: {
             handler(val, oldVal){
                 this.parseData()
             },
@@ -122,7 +122,7 @@ export default {
     methods: {
         parseData(){  
             // 资产数据          
-            var totalBalanceInfo = this.parentPfoData.wallet
+            var totalBalanceInfo = this.parentPfoWallet
 
             this.balanceDatas[0].totalBalance = parseInt(totalBalanceInfo.usdt_amount)
             this.balanceDatas[0].totalReturn = (((totalBalanceInfo.usdt_amount/config.initFundUSD) - 1)*100).toFixed(2)

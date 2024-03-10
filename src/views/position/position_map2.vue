@@ -1,6 +1,6 @@
 <template>
     <div class="app-container" align="center" >
-        <div style="width: 95%; margin-top: 0px">
+        <div style="margin-top: 0px">
             <h4 style="font-weight: normal;">
                 {{ exchange }} {{ strategy }}(
                 <span style="color: green" v-if="positionSum >= 0">

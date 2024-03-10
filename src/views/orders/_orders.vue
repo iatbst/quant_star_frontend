@@ -3,7 +3,7 @@
 -->
 <template>
     <div class="app-container" align="center" >
-        <div style="width: 95%; margin-top: 0px">
+        <div style="margin-top: 0px">
             <el-row :gutter="0" type="flex" style="margin-bottom: 10px">
                 <!----------------------------------- 查询Bar --------------------------------------->
                         <el-col :span="7">

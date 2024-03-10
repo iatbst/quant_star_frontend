@@ -228,14 +228,14 @@ import moment from 'moment'
 
 export default {
     props: {
-        parentPfoData: {
+        parentPfoTradeStats: {
             type:Object,
             default:{}
         }   
     },
 
     watch: {
-        parentPfoData: {
+        parentPfoTradeStats: {
             handler(val, oldVal){
                 this.parseData()
             },
@@ -288,9 +288,9 @@ export default {
     methods: {
         parseData(){  
             // 策略表现(trade_stats)
-            var prData = this.parentPfoData.trade_stats.pivot_reversal
-            var pbData = this.parentPfoData.trade_stats.plunge_back
-            var prmData = this.parentPfoData.trade_stats.pivot_reversal_mini
+            var prData = this.parentPfoTradeStats.pivot_reversal
+            var pbData = this.parentPfoTradeStats.plunge_back
+            var prmData = this.parentPfoTradeStats.pivot_reversal_mini
             // 第一行
             this.perfData1[0].col1 = parseInt(prData.all.year_now.total_pnl) + this.prPnlOffset
             this.perfData1[0].col2 = prData.all.year_now.weight_slippage != null ? (prData.all.year_now.weight_slippage*100).toFixed(3) : null

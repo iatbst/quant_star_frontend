@@ -45,6 +45,15 @@
                 </span>    
                 <span v-else-if="scope.row.shortOpen > 0" style="color: red">
                     {{toThousands(Math.round(scope.row.shortOpen/1000))}}
+                </span>
+                <span v-else-if="scope.row.longOpen != null" style="color: green">
+                    {{0}}
+                </span>
+                <span v-else-if="scope.row.shortOpen != null" style="color: red">
+                    {{0}}
+                </span>     
+                <span v-else>
+                    /
                 </span>    
             </template>
         </el-table-column>
@@ -60,12 +69,21 @@
                 </span>    
                 <span v-else-if="scope.row.shortFlip > 0" style="color: red">
                     {{toThousands(Math.round(scope.row.shortFlip/1000))}}
-                </span>      
+                </span>
+                <span v-else-if="scope.row.longFlip != null" style="color: green">
+                    {{0}}
+                </span>
+                <span v-else-if="scope.row.shortFlip != null" style="color: red">
+                    {{0}}
+                </span>     
+                <span v-else>
+                    /
+                </span>     
             </template>
         </el-table-column>
 
         <el-table-column label="定时额(k)" min-width="10%" align="center">
-            <template slot-scope="scope">     
+            <template slot-scope="scope"> 
                 <span v-if="scope.row.longTimer > 0 && scope.row.shortTimer > 0">
                     <span style="color: green">{{toThousands(Math.round(scope.row.longTimer/1000))}}</span>&nbsp&nbsp|&nbsp&nbsp
                     <span style="color: red">{{toThousands(Math.round(scope.row.shortTimer/1000))}}</span>
@@ -75,7 +93,16 @@
                 </span>    
                 <span v-else-if="scope.row.shortTimer > 0" style="color: red">
                     {{toThousands(Math.round(scope.row.shortTimer/1000))}}
-                </span>    
+                </span>
+                <span v-else-if="scope.row.longTimer != null" style="color: green">
+                    {{0}}
+                </span>
+                <span v-else-if="scope.row.shortTimer != null" style="color: red">
+                    {{0}}
+                </span>     
+                <span v-else>
+                    /
+                </span>   
             </template>
         </el-table-column>
 
@@ -90,7 +117,16 @@
                 </span>    
                 <span v-else-if="scope.row.shortWinStop > 0" style="color: red">
                     {{toThousands(Math.round(scope.row.shortWinStop/1000))}}
-                </span>           
+                </span>
+                <span v-else-if="scope.row.longWinStop != null" style="color: green">
+                    {{0}}
+                </span>
+                <span v-else-if="scope.row.shortWinStop != null" style="color: red">
+                    {{0}}
+                </span>     
+                <span v-else>
+                    /
+                </span>        
             </template>
         </el-table-column>
 
@@ -138,7 +174,11 @@ import moment from 'moment'
 
 export default {
     props: {
-        parentPfoData: {
+        parentPfoPositions: {
+            type:Object,
+            default:{}
+        },
+        parentPfoPositionsHistory: {
             type:Object,
             default:{}
         },
@@ -157,9 +197,9 @@ export default {
     },
 
     watch: {
-        parentPfoData: {
+        parentPfoPositions: {
             handler(val, oldVal){
-                this.parseParentPfoData()
+                this.parseParentPfoPositions()
             },
             deep: true
         },
@@ -195,53 +235,21 @@ export default {
                     strategy: '大PV',
                     initPosition: null,
                     position: null,
-                    // openVol: null,
-                    // flipVol: null,
-                    // timerVol: null,
-                    // winStopVol: null,
-                    // pnl: null,
-                    // slippage: null,
-                    // fee: null,
-                    // swapFee: null,
                 },
                 'plunge_back': {
                     strategy: '抄底',
                     initPosition: null,
                     position: null,
-                    // openVol: null,
-                    // flipVol: null,
-                    // timerVol: null,
-                    // winStopVol: null,
-                    // pnl: null,
-                    // slippage: null,
-                    // fee: null,
-                    // swapFee: null,
                 },
                 'pivot_reversal_mini': {
                     strategy: '小PV',
                     initPosition: null,
                     position: null,
-                    // openVol: null,
-                    // flipVol: null,
-                    // timerVol: null,
-                    // winStopVol: null,
-                    // pnl: null,
-                    // slippage: null,
-                    // fee: null,
-                    // swapFee: null,
                 },
                 'all': {
-                    strategy: '',
+                    strategy: '合计',
                     initPosition: 0,
                     position: 0,
-                    // openVol: 0,
-                    // flipVol: 0,
-                    // timerVol: 0,
-                    // winStopVol: 0,
-                    // pnl: 0,
-                    // slippage: 0,
-                    // fee: 0,
-                    // swapFee: 0,
                 }
             }
         }
@@ -249,7 +257,7 @@ export default {
 
     created() {
         // 分析1
-        this.parseParentPfoData()
+        this.parseParentPfoPositions()
 
         // 分析2
         this.parseTodayOrders()
@@ -283,6 +291,24 @@ export default {
                 this.todayObj[key].slippageSum = 0      
                 this.todayObj[key].fee = 0  
                 this.todayObj[key].swapFee = 0  
+
+                // 特例
+                if (key == 'pivot_reversal'){
+                    this.todayObj[key].longWinStop = null
+                    this.todayObj[key].shortWinStop = null                    
+                } else if (key == 'plunge_back') {
+                    this.todayObj[key].shortOpen = null
+                    this.todayObj[key].longFlip = null
+                    this.todayObj[key].shortFlip = null  
+                    this.todayObj[key].shortWinStop = null  
+                    this.todayObj[key].shortTimer = null                  
+                } else if (key == 'pivot_reversal_mini'){
+                    this.todayObj[key].longOpen = null
+                    this.todayObj[key].longFlip = null
+                    this.todayObj[key].longTimer = null
+                    this.todayObj[key].longWinStop = null
+                    this.todayObj[key].shortWinStop = null
+                }
             }
         },
 
@@ -296,16 +322,16 @@ export default {
         },
 
         // 根据parentPfoData分析
-        parseParentPfoData(){  
+        parseParentPfoPositions(){  
             // 仓位数据(初始/此刻)
-            for(let sty in this.parentPfoData.positions){
-                var positionData = this.parentPfoData.positions[sty]
+            for(let sty in this.parentPfoPositions){
+                var positionData = this.parentPfoPositions[sty]
                 this.todayObj[sty].position = Math.round(positionData.long + positionData.short)
             }
             var ep = Math.round(Date.now()/1000)
             var yesterday = new Date((ep - 86400 + 3600*8)*1000).toISOString().slice(0, 10).replace('T', ' ')   // Beijing
-            for(let sty in this.parentPfoData.positions_history){
-                var positionHistoryData = this.parentPfoData.positions_history[sty]
+            for(let sty in this.parentPfoPositionsHistory){
+                var positionHistoryData = this.parentPfoPositionsHistory[sty]
                 if(yesterday in positionHistoryData){
                     this.todayObj[sty].initPosition = Math.round(positionHistoryData[yesterday].long + positionHistoryData[yesterday].short)
                 }
