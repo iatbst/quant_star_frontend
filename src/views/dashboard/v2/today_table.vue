@@ -274,7 +274,7 @@ export default {
     },
 
     methods: { 
-        initTodayObj(){
+        initTodayOrders(){
             for(let key in this.todayObj){
                 this.todayObj[key].longOpen = 0
                 this.todayObj[key].shortOpen = 0
@@ -285,12 +285,9 @@ export default {
                 this.todayObj[key].longWinStop = 0
                 this.todayObj[key].shortWinStop = 0 
                 this.todayObj[key].volume = 0
-
-                this.todayObj[key].pnl = 0
                 this.todayObj[key].slippage = null 
                 this.todayObj[key].slippageSum = 0      
                 this.todayObj[key].fee = 0  
-                this.todayObj[key].swapFee = 0  
 
                 // 特例
                 if (key == 'pivot_reversal'){
@@ -319,6 +316,7 @@ export default {
                 this.todayObj[sty].pnl = this.todayStrategyPnl[sty]
                 this.todayObj.all.pnl += this.todayStrategyPnl[sty]
             }
+            // alert('parseTodayStrategyPnl')
         },
 
         // 根据parentPfoData分析
@@ -336,11 +334,13 @@ export default {
                     this.todayObj[sty].initPosition = Math.round(positionHistoryData[yesterday].long + positionHistoryData[yesterday].short)
                 }
             }
+            // alert(JSON.stringify(this.todayStrategyPnl))
+            // console.log(JSON.stringify(this.todayStrategyPnl))
         },
 
         // 根据todayOrders分析
         parseTodayOrders(){
-            this.initTodayObj()
+            this.initTodayOrders()
 
             for(let order of this.todayOrders){
                 var sty = order.worker.strategy_name.replaceAll('-', '_')
