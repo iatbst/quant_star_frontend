@@ -575,12 +575,12 @@ export default {
             }
         },
 
-        // 获取最近3天orders
+        // 获取最近24Horders
         fetchOrders(){
             this.ordersRefresh = new Date()
             this.orders = []
             this.ordersLoading = true
-            var days = 3    // 默认展示最近3天
+            var days = 1    // 默认展示最近24H
             var startDt = new Date(Date.now() - 24 * 3600 * 1000 * days).toISOString().slice(0, 19).replace('T', ' ')    // UTC
             var endDt = new Date().toISOString().slice(0, 19).replace('T', ' ')      // UTC
             var count = 0
