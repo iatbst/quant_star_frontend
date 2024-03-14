@@ -593,7 +593,7 @@ export default {
             var count = 0
             for(var i = 0; i < this.pfoHosts.length; i++){
                 var host = this.pfoHosts[i]
-                var filters = 'show_worker=true&no_parent_order=true&exec_size__gt=0&created_ts__gte=' + startDt + '&created_ts__lte=' + endDt
+                var filters = 'show_worker=true&no_parent_order=true&exec_size__gt=0&exec_ts__gte=' + startDt
                 getOrders(host, null, filters).then(response => {
                         count += 1
                         // 添加host
@@ -606,7 +606,7 @@ export default {
 
                         if (count === this.pfoHosts.length){
                             // 排序
-                            this.orders.sort((a, b) => b.created_ts.localeCompare(a.created_ts))
+                            this.orders.sort((a, b) => b.exec_ts.localeCompare(a.exec_ts))
                             this.ordersLoading = false
                         }
                     }
@@ -636,7 +636,7 @@ export default {
 
                         if (count === this.pfoHosts.length){
                             // 排序
-                            this.orders.sort((a, b) => b.created_ts.localeCompare(a.created_ts))
+                            this.orders.sort((a, b) => b.exec_ts.localeCompare(a.exec_ts))
                             this.todayOrdersAvailable = true
                         }
                     }
