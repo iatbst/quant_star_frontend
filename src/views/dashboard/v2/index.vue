@@ -28,13 +28,15 @@
                     - fetchParentPfoPositions
                     - fetchTodayOrders
                     - fetchTodayPnls
+                    - fetchTodayFundingFees
             --->
             <today-table 
             v-bind:parentPfoPositions="parentPfoPositions" 
             v-bind:parentPfoPositionsHistory="parentPfoPositionsHistory" 
             v-bind:todayOrders="todayOrders" 
             v-bind:todayStrategyPnl="todayStrategyPnl"
-            v-if="parentPfoPositionsAvailable && todayOrdersAvailable && todayPnlAvailable"
+            v-bind:todayFundingFees="todayFundingFees" 
+            v-if="parentPfoPositionsAvailable && todayOrdersAvailable && todayPnlAvailable && todayFundingFeesAvailable"
             >
             </today-table>
             
@@ -55,7 +57,7 @@
                         <br/>
                         仓位表格: 每分钟第5秒刷新1次
                         <br />
-                        今日表格: 每间隔5分钟刷新1次(非整点);盈亏列每小时第5分钟刷新1次
+                        今日表格: 每间隔5分钟刷新1次(非整点);盈亏列每小时第5分钟刷新1次;资金费每小时第5分钟刷新1次
                         <br/>
                         策略今年表现表格: 每小时第5分钟刷新1次
                     </div>
@@ -317,6 +319,7 @@ import { getBacktestPlanByName } from '@/api/backtest_plan'
 import { getBacktestReportById, getBacktestReportByName } from '@/api/backtest_report'
 import { getOrders } from '@/api/order'
 import { getNormalWorkerDatas } from '@/api/worker'
+import { getFees } from '@/api/fee'
 
 
 export default {
@@ -368,9 +371,11 @@ export default {
             orders: [],
             ordersLoading: false,
             todayOrders: [],
+            todayFundingFees: [],
             todayOrdersAvailable: false,
             todayPnlAvailable: false,
             todayStrategyPnl: null,
+            todayFundingFeesAvailable: false,
 
             parentPfoTradeStats: null,
             parentPfoTradeStatsAvailable: false,
@@ -472,6 +477,7 @@ export default {
             parentPfoWalletRefresh: null,
             parentPfoPositionsRefresh: null,
             todayOrdersRefresh: null,
+            todayFundingFeesRefresh: null,
             todayPnlsRefresh: null,
             parentPfoTradeStatsRefresh: null,
             liveBalanceValuesRefresh: null,
@@ -500,6 +506,7 @@ export default {
             // 表格3: 总体今日信息
             this.fetchTodayOrders()
             this.fetchTodayPnls()
+            this.fetchTodayFundingFees()
 
             // 表格4: 总体策略表现
             this.fetchParentPfoTradeStats()
@@ -635,6 +642,23 @@ export default {
                     }
                 )
             }
+        },
+
+        // 获取今日永续合约资金费
+        fetchTodayFundingFees(){
+            this.todayFundingFeesRefresh = new Date()
+            this.todayFundingFees = []
+            var ep = Math.round(Date.now()/1000)
+            ep += 8*3600
+            var startDt = new Date((ep - ep%86400 - 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')    // UTC 
+            var host = config.masterHost
+            var filters = 'fee_type=swap_funding&ts__gte=' + startDt
+            var fields = 'amount'
+            getFees(host, fields, filters).then(response => {
+                    this.todayFundingFees = response.results
+                    this.todayFundingFeesAvailable = true
+                }
+            )
         },
 
         // 从master获取各个策略的回测资产曲线
@@ -901,6 +925,10 @@ export default {
                 if(minute >= 5 && hour != this.todayPnlsRefresh.getHours()){
                     console.log(now + '刷新:fetchTodayPnls');
                     this.fetchTodayPnls()
+                }  
+                if(minute >= 5 && hour != this.todayFundingFeesRefresh.getHours()){
+                    console.log(now + '刷新:fetchTodayFundingFees');
+                    this.fetchTodayFundingFees()
                 }  
                 // Perf表格
                 if(minute >= 5 && hour != this.parentPfoTradeStatsRefresh.getHours()){

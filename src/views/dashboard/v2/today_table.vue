@@ -161,7 +161,19 @@
         </el-table-column>
 
         <el-table-column label="资金费" min-width="10%" align="center">
-            <template slot-scope="scope">         
+            <template slot-scope="scope">  
+                <span v-if="scope.row.fundingFees !== null">
+                    <span v-if="scope.row.fundingFees >= 0" style="color: green">
+                        {{ Math.round(scope.row.fundingFees) }}
+                    </span>
+                    <span v-else style="color: red">
+                        {{ Math.round(scope.row.fundingFees) }} 
+                    </span>                    
+                </span> 
+                <span v-else>
+                    /
+                </span>
+
             </template>
         </el-table-column>
     </el-table>
@@ -190,10 +202,10 @@ export default {
             type:Object,
             default:{}
         },
-        // todayOrdersLoading: {
-        //     type: Boolean,
-        //     default: true
-        // }             
+        todayFundingFees: {
+            type:Array,
+            default:[]
+        }             
     },
 
     watch: {
@@ -217,6 +229,13 @@ export default {
             },
             deep: true
         },
+
+        todayFundingFees: {
+            handler(val, oldVal){
+                this.parseTodayFundingFees()
+            },
+            deep: true
+        },
     },
 
     data() {
@@ -235,21 +254,25 @@ export default {
                     strategy: '大PV',
                     initPosition: null,
                     position: null,
+                    fundingFees: null
                 },
                 'plunge_back': {
                     strategy: '抄底',
                     initPosition: null,
                     position: null,
+                    fundingFees: null
                 },
                 'pivot_reversal_mini': {
                     strategy: '小PV',
                     initPosition: null,
                     position: null,
+                    fundingFees: null
                 },
                 'all': {
                     strategy: '合计',
                     initPosition: 0,
                     position: 0,
+                    fundingFees: 0
                 }
             }
         }
@@ -264,6 +287,9 @@ export default {
 
         // 分析3
         this.parseTodayStrategyPnl()
+
+        // 分析4
+        this.parseTodayFundingFees()
 
         // 加入list
         for (let key of this.keys){
@@ -317,6 +343,15 @@ export default {
                 this.todayObj.all.pnl += this.todayStrategyPnl[sty]
             }
             // alert('parseTodayStrategyPnl')
+        },
+
+        // 根据todayFundingFees分析
+        parseTodayFundingFees(){
+            this.todayObj.all.fundingFees = 0
+            for(let fee of this.todayFundingFees){
+                
+                this.todayObj.all.fundingFees += fee.amount
+            }
         },
 
         // 根据parentPfoData分析
