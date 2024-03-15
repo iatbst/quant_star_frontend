@@ -25,17 +25,6 @@
                 </el-col>
 
                 <el-col :span="4">
-                    <el-select v-model="feeFilter.pfo" placeholder="请选择">
-                        <el-option
-                        v-for="item in options.pfos"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>    
-                </el-col>
-
-                <el-col :span="4">
                     <el-select v-model="feeFilter.feeType" placeholder="请选择">
                         <el-option
                         v-for="item in options.feeTypes"
@@ -163,19 +152,17 @@ export default {
             this.feeFilter = {
                 acctName: null,
                 subType: null,
-                pfo: null,
                 feeType: null,
                 monthRange: null,
             }
             this.options = {
                 acctNames: [{label: '全部', value: null}],
                 subTypes: [{label: '全部', value: null}],
-                pfos: [{label: '全部', value: null}],
                 feeTypes: [{label: '全部', value: null}], 
             }
         },
 
-        // 处理父组件建传入data: pfoDatas
+        // 处理父组件建传入data: feeDatas
         parseData() {
             this.prepareFeeDatas()
         },
@@ -190,7 +177,6 @@ export default {
             this.feeFilter = {
                 acctName: null,
                 subType: null,
-                pfo: null,
                 feeType: null,
                 monthRange: null,
             }
@@ -198,12 +184,10 @@ export default {
         },
 
         // 根据条件过滤
-        filterFees(acctName, subType, pfo, feeType){
+        filterFees(acctName, subType, feeType){
             if (this.feeFilter.acctName && acctName != this.feeFilter.acctName){
                 return false
             } else if (this.feeFilter.subType && subType != this.feeFilter.subType){
-                return false
-            } else if (this.feeFilter.pfo && pfo != this.feeFilter.pfo){
                 return false
             } else if (this.feeFilter.feeType && feeType != this.feeFilter.feeType){
                 return false
@@ -243,7 +227,6 @@ export default {
                     this.totalFees -= sum
                     var acctName = this.subaccountDatas[i].subaccount.account.name
                     var subType = this.subaccountDatas[i].subaccount.sub_type
-                    var pfo = this.subaccountDatas[i].subaccount.portfolio.alias
                     var months = Object.keys(this.subaccountDatas[i].fees.types[type].month_records).sort()
 
                     // 起始/终止时间
@@ -255,18 +238,17 @@ export default {
                         var endMonth = months[months.length - 1]
                     }
 
-                    // 当前对应pfo的状态
-                    var status = this.subaccountDatas[i].subaccount.portfolio.status
+                    // 当前对应subaccount的状态
+                    var status = this.subaccountDatas[i].subaccount.status
 
                     // 是否过滤
                     if (sum != 0){
-                        var filterRet = this.filterFees(acctName, subType, pfo, type)
+                        var filterRet = this.filterFees(acctName, subType, type)
                         if (filterRet){
                             this.feeDatas.push({
                                 acctName: acctName,
                                 status: status,
                                 subType: subType,
-                                pfo: pfo,
                                 feeType: type,
                                 startMonth: startMonth,
                                 endMonth: endMonth,
@@ -287,12 +269,6 @@ export default {
                             this.options.subTypes.push({
                                 label: chineseString(subType),
                                 value: subType                            
-                            })
-                        }
-                        if (!this.options.pfos.map(a => a.value).includes(pfo)){
-                            this.options.pfos.push({
-                                label: pfo,
-                                value: pfo                                
                             })
                         }
                         if (!this.options.feeTypes.map(a => a.value).includes(type)){

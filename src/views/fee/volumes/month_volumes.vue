@@ -39,13 +39,18 @@ export default {
             monthVolumes: null,
             exchanges: null,
 
+            colors: {
+                'binance': '#70ace9',
+                'okex': '#85ea72'
+            },
+
             // 月度柱状图
             monthVolumesOptions: {
                 chart: {
                     type: 'column'
                 },
                 title: {
-                    text: '月度成交量'
+                    text: '月度成交量(百万)'
                 },
                 xAxis: {
                     categories: []
@@ -76,14 +81,21 @@ export default {
                 },
                 tooltip: {
                     headerFormat: '<b>{point.x}</b><br/>',
-                    pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+                    pointFormat: '{series.name}: {point.y}'
                 },
                 plotOptions: {
                     column: {
                         stacking: 'normal',
                         dataLabels: {
-                            enabled: true
-                        }
+                            enabled: true,
+                            style: {
+                                fontWeight: 100,
+                                fontSize: '10px',
+                                textOutline: 0
+                            },
+                            color: 'black'
+                        },
+                        borderWidth: 0
                     }
                 },
                 series: [] 
@@ -99,7 +111,7 @@ export default {
     methods: {
         parseData() {
             this.prepareMonthVolumesDatas()
-            addStackedColumn(this.monthVolumes, this.exchanges, this.monthVolumesOptions)
+            addStackedColumn(this.monthVolumes, this.exchanges, this.monthVolumesOptions, this.colors)
         },
 
         prepareMonthVolumesDatas(){
@@ -125,6 +137,13 @@ export default {
                     }
                 }
             }
+
+            for(let month in this.monthVolumes){
+                for(let exchange in this.monthVolumes[month]){
+                    this.monthVolumes[month][exchange] = Number((this.monthVolumes[month][exchange]/1000000).toFixed(1))
+                }
+            }
+
         },
 
         toThousands: toThousands,

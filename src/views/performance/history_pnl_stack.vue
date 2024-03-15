@@ -164,7 +164,7 @@ export default {
                                         color: 'gray'
                                     },
                                     align: 'center',
-                                            formatter: function() {
+                                    formatter: function() {
                                         var sum = 0;
                                         var series = this.axis.series;
 

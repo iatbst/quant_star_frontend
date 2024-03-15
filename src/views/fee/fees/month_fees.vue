@@ -40,6 +40,12 @@ export default {
             // { month1: {'trade': xxx, 'swap_funding': xxx, 'interest': xxx}, month2: {xxx}, ...}
             monthFees: null,
 
+            colors: {
+                'trade': '#70ace9',
+                'swap_funding': '#85ea72',
+                'interest': 'orange',   
+            },
+
             // 月度柱状图
             monthFeesOptions: {
                 chart: {
@@ -61,7 +67,22 @@ export default {
                         style: {
                             fontWeight: 'bold',
                             color: 'gray'
-                        }
+                        },
+                        align: 'center',
+                        formatter: function() {
+                            var sum = 0;
+                            var series = this.axis.series;
+
+                            for (var i in series) {
+                                if (series[i].visible && series[i].options.stacking == 'normal') 
+                                    sum += series[i].yData[this.x];
+                            }
+                            if(this.total > 0 ) {
+                                return Math.round(sum*10)/10; 
+                            } else {
+                                return '';    
+                            }
+                        }                    
                     }
                 },
                 legend: {
@@ -77,14 +98,21 @@ export default {
                 },
                 tooltip: {
                     headerFormat: '<b>{point.x}</b><br/>',
-                    pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+                    pointFormat: '{series.name}: {point.y}'
                 },
                 plotOptions: {
                     column: {
                         stacking: 'normal',
                         dataLabels: {
-                            enabled: true
-                        }
+                            enabled: true,
+                            style: {
+                                fontWeight: 100,
+                                fontSize: '10px',
+                                textOutline: 0
+                            },
+                            color: 'black'
+                        },
+                        borderWidth: 0
                     }
                 },
                 series: [] 
@@ -102,7 +130,7 @@ export default {
         parseData() {
             this.prepareMonthFeesDatas()
             var feeTypes = ['trade', 'swap_funding', 'interest']
-            addStackedColumn(this.monthFees, feeTypes, this.monthFeesOptions)
+            addStackedColumn(this.monthFees, feeTypes, this.monthFeesOptions, this.colors)
         },
 
         // 为totalFee准备数据

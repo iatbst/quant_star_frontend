@@ -14,7 +14,7 @@
         </div> 
     </div>
 
-    <!----------------------------------- 表2: 分布Pie图 --------------------------------------->
+    <!----------------------------------- 表2: 分布Pie图 ---------------------------------------
     <div style="background-color: white; margin-bottom: 20px">
         <volume-distributions
         v-bind:subaccount-datas="subaccountDatas"
@@ -22,6 +22,7 @@
         >
         </volume-distributions>
     </div>
+    --->
 
   </div>
 </template>

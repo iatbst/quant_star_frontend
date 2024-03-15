@@ -57,7 +57,7 @@
                         <br/>
                         仓位表格: 每分钟第5秒刷新1次
                         <br />
-                        今日表格: 每间隔5分钟刷新1次(非整点);盈亏列每小时第5分钟刷新1次;资金费每小时第5分钟刷新1次
+                        今日表格: 每间隔5分钟刷新1次(非整点);盈亏列每小时第5分钟刷新1次;资金费每小时第30分钟刷新1次
                         <br/>
                         策略今年表现表格: 每小时第5分钟刷新1次
                     </div>
@@ -926,7 +926,7 @@ export default {
                     console.log(now + '刷新:fetchTodayPnls');
                     this.fetchTodayPnls()
                 }  
-                if(minute >= 5 && hour != this.todayFundingFeesRefresh.getHours()){
+                if(minute >= 30 && hour != this.todayFundingFeesRefresh.getHours()){
                     console.log(now + '刷新:fetchTodayFundingFees');
                     this.fetchTodayFundingFees()
                 }  

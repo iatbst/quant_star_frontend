@@ -16,7 +16,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column align="center" label="Pfo状态" min-width="10%">
+            <el-table-column align="center" label="Subaccount状态" min-width="10%">
                 <template slot-scope="scope">
                     <span style="color: red" v-if="scope.row.status == 'disable'">
                         {{ chineseString(scope.row.status) }}
@@ -30,12 +30,6 @@
             <el-table-column align="center" label="产品类型" min-width="10%">
                 <template slot-scope="scope">
                     {{ chineseString(scope.row.subType) }}
-                </template>
-            </el-table-column>
-
-            <el-table-column align="center" label="投资组合" min-width="20%">
-                <template slot-scope="scope">
-                    {{ scope.row.pfo }}
                 </template>
             </el-table-column>
 
@@ -92,7 +86,7 @@ export default {
           if (index === 0) {
             sums[index] = '合计';
             return;
-          } else if(index !== 6){
+          } else if(index !== 5){
             sums[index] = null
             return;
           } else {
