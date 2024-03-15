@@ -251,19 +251,19 @@ export default {
             ],
             todayObj: {
                 'pivot_reversal': {
-                    strategy: '大PV',
+                    strategy: '大',
                     initPosition: null,
                     position: null,
                     fundingFees: null
                 },
                 'plunge_back': {
-                    strategy: '抄底',
+                    strategy: '底',
                     initPosition: null,
                     position: null,
                     fundingFees: null
                 },
                 'pivot_reversal_mini': {
-                    strategy: '小PV',
+                    strategy: '小',
                     initPosition: null,
                     position: null,
                     fundingFees: null

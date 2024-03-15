@@ -2,7 +2,7 @@
     <div>
         <!--- 表3: 策略表现(row0) --->
         <el-table
-        :data="[{col1: '大PV今年', col2: '小PV今年', col3: '抄底今年'}]"
+        :data="[{col1: '大今年', col2: '小今年', col3: '底今年'}]"
         :show-header="false"
         :cell-style="{ background: '#f2f2f2' }"
         style="width: 100%; background: #f2f2f2">

@@ -32,7 +32,7 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="大PV多头" min-width="10%" align="center">
+        <el-table-column label="大多头" min-width="10%" align="center">
             <template slot-scope="scope">
                 <span style="color: green">
                     {{toThousands(scope.row.prLongPosition)}}
@@ -40,7 +40,7 @@
             </template>       
         </el-table-column>
 
-        <el-table-column label="大PV空头" min-width="10%" align="center">
+        <el-table-column label="大空头" min-width="10%" align="center">
             <template slot-scope="scope">
                 <span style="color: red">
                     {{toThousands(scope.row.prShortPosition)}}
@@ -48,7 +48,7 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="小PV头寸" min-width="10%" align="center">
+        <el-table-column label="小头寸" min-width="10%" align="center">
             <template slot-scope="scope">
                 <span style="color: red">
                     {{toThousands(scope.row.prmPosition)}}
@@ -56,7 +56,7 @@
             </template>       
         </el-table-column>
 
-        <el-table-column label="抄底头寸" min-width="10%" align="center">
+        <el-table-column label="底头寸" min-width="10%" align="center">
             <template slot-scope="scope">
                 <span style="color: green">
                     {{toThousands(scope.row.pbPosition)}}

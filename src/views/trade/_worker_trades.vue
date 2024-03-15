@@ -169,6 +169,15 @@
 
         <!-- Diaglog: 日志 -->
         <el-dialog title="日志" :visible.sync="dialogLogVisible" width="80%" append-to-body>
+            <div align="center">
+                <el-pagination
+                    layout="prev, pager, next"
+                    :page-size="500"
+                    :current-page.sync="currentPage"
+                    @current-change="fetchTradeLogsByPage"
+                    :total="totalCount">
+                </el-pagination>
+            </div>        
             <div v-loading="logsLoading">
                 <div v-for="log in logs" :key="log.ts" class="text item" >
                     <!-- log -->
@@ -243,7 +252,11 @@ export default {
                 final_flag: null,
                 error_type: null,
                 note: null,
-            }
+            },
+
+            currentPage: null,
+            totalCount: null,
+            currentTrade: null,
         }
     },
 
@@ -293,11 +306,22 @@ export default {
             this.dialogTradeJsonVisible = true
         },
 
-        fetchLogsByTrade(trade) {
+        fetchTradeLogsByPage(page){
+            this.fetchLogsByTrade(this.currentTrade, page)
+        },
+
+        fetchLogsByTrade(trade, page=null) {
+            this.currentTrade = trade
+            if (page != null){
+                this.currentPage = page
+            } else {
+                this.currentPage = 1
+            }
             this.logsLoading = true
             this.dialogLogVisible = true
-            getLogsByTrade(trade, this.currentPfo.host).then(response => {
+            getLogsByTrade(trade, this.currentPfo.host, page).then(response => {
                 this.logs = response.results
+                this.totalCount = response.count
                 this.logsLoading = false
             })
         },

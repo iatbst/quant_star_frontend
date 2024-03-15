@@ -184,7 +184,7 @@
             v-bind:positions="prBinancePositions" 
             v-bind:positions-loading="prBinancePositionsLoading"
             v-bind:exchange="'Binance'"
-            v-bind:strategy="'大PV'"
+            v-bind:strategy="'大'"
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
@@ -196,7 +196,7 @@
             v-bind:positions="prOkexPositions" 
             v-bind:positions-loading="prOkexPositionsLoading"
             v-bind:exchange="'Okex'"
-            v-bind:strategy="'大PV'"
+            v-bind:strategy="'大'"
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
@@ -208,7 +208,7 @@
             v-bind:positions="pbBinancePositions" 
             v-bind:positions-loading="pbBinancePositionsLoading"
             v-bind:exchange="'Binance'"
-            v-bind:strategy="'抄底'"
+            v-bind:strategy="'底'"
             v-bind:col-count="7"
             v-bind:show-zero="false"
             ></position-map2> 
@@ -218,7 +218,7 @@
             v-bind:positions="pbOkexPositions" 
             v-bind:positions-loading="pbOkexPositionsLoading"
             v-bind:exchange="'Okex'"
-            v-bind:strategy="'抄底'"
+            v-bind:strategy="'底'"
             v-bind:col-count="7"
             v-bind:show-zero="false"
             ></position-map2> 
@@ -228,7 +228,7 @@
             v-bind:positions="prmBinancePositions" 
             v-bind:positions-loading="prmBinancePositionsLoading"
             v-bind:exchange="'Binance'"
-            v-bind:strategy="'小PV'"
+            v-bind:strategy="'小'"
             v-bind:col-count="10"
             v-bind:show-zero="false"
             ></position-map2> 
@@ -238,7 +238,7 @@
             v-bind:positions="prmOkexPositions" 
             v-bind:positions-loading="prmOkexPositionsLoading"
             v-bind:exchange="'Okex'"
-            v-bind:strategy="'小PV'"
+            v-bind:strategy="'小'"
             v-bind:col-count="10"
             v-bind:show-zero="false"
             ></position-map2> 
@@ -450,17 +450,17 @@ export default {
             // 策略的Pnl Line(今年)
             pnlLines: {
                 'pivot_reversal': {
-                    'name': '大PV',
+                    'name': '大',
                     'data': null,
                     'available': false
                 },
                 'plunge_back': {
-                    'name': '抄底',
+                    'name': '底',
                     'data': null,
                     'available': false
                 },
                 'pivot_reversal_mini': {
-                    'name': '小PV',
+                    'name': '小',
                     'data': null,
                     'available': false
                 },                                 

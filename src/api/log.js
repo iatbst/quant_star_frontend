@@ -9,8 +9,12 @@ export function getLogsByWorkerAndTs(worker, min_ts, max_ts, host=null) {
   })
 }
 
-export function getLogsByTrade(trade, host=null) {
+export function getLogsByTrade(trade, host=null, page=null) {
   var url = ((host == null) ? '' : host + '/logs/' + '?trade_id=' + trade.id)
+  if (page != null){
+    // 指定page
+    url += '&page=' + page
+  }
   return request({
     // 注意要带上结尾的'/' ！
     url: url,
