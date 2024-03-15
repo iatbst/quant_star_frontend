@@ -45,7 +45,7 @@
                                 <el-option
                                 v-for="item in ['any'].concat(config.strategies)"
                                 :key="item"
-                                :label="item"
+                                :label="config.strategyAlias[item]"
                                 :value="item">
                                 </el-option>
                             </el-select>  
@@ -283,7 +283,7 @@ export default {
                 var startDt = this.datetimeRange[0].toISOString().slice(0, 19).replace('T', ' ')    // UTC
                 var endDt = this.datetimeRange[1].toISOString().slice(0, 19).replace('T', ' ')      // UTC
             } else {
-                var days = 3    // 默认展示最近3天
+                var days = 1    // 默认展示最近24H
                 var startDt = new Date(Date.now() - 24 * 3600 * 1000 * days).toISOString().slice(0, 19).replace('T', ' ')    // UTC
                 var endDt = new Date().toISOString().slice(0, 19).replace('T', ' ')      // UTC                   
             }

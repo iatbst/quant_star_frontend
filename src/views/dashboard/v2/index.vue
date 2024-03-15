@@ -256,7 +256,7 @@
       </el-col>
     </el-row>
 
-    <!----------------------------------- 订单(3天内) ---------------------------------------
+    <!----------------------------------- 订单(1天内) ---------------------------------------
         函数:fetchOrders
         更新频率: ?
     ---> 
@@ -273,7 +273,7 @@
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
                     <div slot="content">
-                        3日内订单: 每间隔5分钟刷新1次(非整点)
+                        24H内订单: 每间隔5分钟刷新1次(非整点)
                     </div>
                     <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
                 </el-tooltip>

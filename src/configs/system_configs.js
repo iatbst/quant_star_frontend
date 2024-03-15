@@ -116,10 +116,15 @@ const strategies = [
 
 const strategyAlias = {
     'pivot-reversal': '大',
+    'pivot_reversal': '大',
     'pr': '大',
+
     'pivot-reversal-mini': '小',
+    'pivot_reversal_mini': '小',
     'prm': '小',
+
     'plunge-back': '底',
+    'plunge_back': '底',
     'pb': '底'
 }
 
