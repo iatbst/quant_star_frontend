@@ -41,7 +41,10 @@ export default {
 
             colors: {
                 'binance': '#70ace9',
-                'okex': '#85ea72'
+                'okex': '#85ea72',
+                'ftx': 'orange',
+                'huobi': 'yellow'
+
             },
 
             // 月度柱状图

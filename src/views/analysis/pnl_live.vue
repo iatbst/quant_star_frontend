@@ -298,11 +298,11 @@ export default {
                     }
                     workerPnls = workerPnls.concat(pnls)
 
-                    // alert('从host('+ response.config.baseURL + ')爬取数据成功.')
+                    alert('从host('+ response.config.baseURL + ')爬取数据成功.')
 
                     if (count === this.pfoHosts.length){
                         // 处理数据
-                        // alert('所有数据爬取完成.')
+                        alert('所有数据爬取完成.')
                         this.parsePnl(workerPnls)
                         // alert('所有数据分析完成.')
                         this.pnlDatasLoading = false

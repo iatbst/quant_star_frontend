@@ -60,7 +60,7 @@ export default {
         fetchDatas() {
             this.iconRefreshActive = false
             this.iconLoadingActive = true
-            getSubAccountDatas(config.masterHost, 'subaccount,volumes').then(response => {
+            getSubAccountDatas(config.masterHost, 'subaccount,volumes', true).then(response => {
                     this.subaccountDatas = response.results    
                     this.subaccountDatasAvailable = true 
                     this.$message.success('成交量数据已更新.')  

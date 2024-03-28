@@ -3,7 +3,7 @@
         <div style="width: 95%; margin-top: 20px" v-if="feeFilterAvailable">
             <el-row>
                 <el-col :span="4">
-                    <el-select v-model="feeFilter.acctName" placeholder="请选择">
+                    <el-select v-model="feeFilter.acctName" placeholder="账户">
                         <el-option
                         v-for="item in options.acctNames"
                         :key="item.value"
@@ -14,7 +14,7 @@
                 </el-col>
 
                 <el-col :span="4">
-                    <el-select v-model="feeFilter.subType" placeholder="请选择">
+                    <el-select v-model="feeFilter.subType" placeholder="产品类型">
                         <el-option
                         v-for="item in options.subTypes"
                         :key="item.value"
@@ -25,7 +25,7 @@
                 </el-col>
 
                 <el-col :span="4">
-                    <el-select v-model="feeFilter.feeType" placeholder="请选择">
+                    <el-select v-model="feeFilter.feeType" placeholder="费用类型">
                         <el-option
                         v-for="item in options.feeTypes"
                         :key="item.value"

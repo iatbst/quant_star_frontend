@@ -6,11 +6,11 @@
         :show-header="false"
         :cell-style="{ background: '#f2f2f2' }"
         style="width: 100%; background: #f2f2f2">
-        <el-table-column prop="col1" min-width="28%" align="center"> 
+        <el-table-column prop="col1" min-width="24%" align="center"> 
         </el-table-column>
-        <el-table-column prop="col2" min-width="28%" align="center"> 
+        <el-table-column prop="col2" min-width="24%" align="center"> 
         </el-table-column>
-        <el-table-column prop="col3" min-width="44%" align="center"> 
+        <el-table-column prop="col3" min-width="48%" align="center"> 
         </el-table-column>
         </el-table>
 
@@ -20,7 +20,7 @@
         :header-cell-style="addRightBorder"
         :cell-style="addRightBorder"
         style="width: 100%">
-            <el-table-column label="收益" min-width="14%" align="center" style="background: white"> 
+            <el-table-column label="收益" min-width="12%" align="center" style="background: white"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col1 >= 0">
                         {{toThousands(scope.row.col1)}}
@@ -30,7 +30,7 @@
                     </span>                
                 </template> 
             </el-table-column>
-            <el-table-column label="滑点" min-width="14%" align="center"> 
+            <el-table-column label="滑点" min-width="12%" align="center"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col2 >= 0">
                         {{scope.row.col2}}%
@@ -40,7 +40,7 @@
                     </span>                
                 </template> 
             </el-table-column>
-            <el-table-column label="收益" min-width="14%" align="center">
+            <el-table-column label="收益" min-width="12%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col3 >= 0">
                         {{toThousands(scope.row.col3)}}
@@ -50,7 +50,7 @@
                     </span>                
                 </template> 
             </el-table-column>
-            <el-table-column label="滑点" min-width="14%" align="center"> 
+            <el-table-column label="滑点" min-width="12%" align="center"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col4 >= 0">
                         {{scope.row.col4}}%
@@ -60,7 +60,7 @@
                     </span>               
                 </template> 
             </el-table-column>
-            <el-table-column label="收益" min-width="14%" align="center"> 
+            <el-table-column label="收益" min-width="12%" align="center"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col5 >= 0">
                         {{toThousands(scope.row.col5)}}
@@ -70,7 +70,7 @@
                     </span>                
                 </template> 
             </el-table-column>
-            <el-table-column label="滑点" min-width="14%" align="center">
+            <el-table-column label="滑点" min-width="12%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col6 >= 0">
                         {{scope.row.col6}}%
@@ -80,7 +80,9 @@
                     </span>               
                 </template>  
             </el-table-column>
-            <el-table-column label="" min-width="14%" align="center"> 
+            <el-table-column label="" min-width="12%" align="center"> 
+            </el-table-column>
+            <el-table-column label="" min-width="12%" align="center"> 
             </el-table-column>
         </el-table> 
 
@@ -90,21 +92,21 @@
         :header-cell-style="addRightBorder"
         :cell-style="addRightBorder"
         style="width: 100%">
-            <el-table-column label="交易次数" min-width="14%" align="center" style="background: white"> 
+            <el-table-column label="交易次数" min-width="12%" align="center" style="background: white"> 
                 <template slot-scope="scope">
                     <span style="">
                         {{toThousands(scope.row.col1)}}
                     </span>               
                 </template> 
             </el-table-column>
-            <el-table-column label="胜率" min-width="14%" align="center"> 
+            <el-table-column label="胜率" min-width="12%" align="center"> 
                 <template slot-scope="scope">
                     <span style="">
                         {{scope.row.col2}}%
                     </span>               
                 </template> 
             </el-table-column>
-            <el-table-column label="PV10H收益" min-width="14%" align="center">
+            <el-table-column label="PV10H收益" min-width="12%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col3 >= 0">
                         {{toThousands(scope.row.col3)}}
@@ -114,7 +116,7 @@
                     </span>                
                 </template> 
             </el-table-column>
-            <el-table-column label="PV20H收益" min-width="14%" align="center">
+            <el-table-column label="PV20H收益" min-width="12%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col4 >= 0">
                         {{toThousands(scope.row.col4)}}
@@ -124,24 +126,31 @@
                     </span>                
                 </template>  
             </el-table-column>
-            <el-table-column label="20%次数" min-width="14%" align="center"> 
+            <el-table-column label="16%次数" min-width="12%" align="center"> 
                 <template slot-scope="scope">
                     <span style="">
                         {{toThousands(scope.row.col5)}}
                     </span>               
                 </template> 
             </el-table-column>
-            <el-table-column label="30%次数" min-width="14%" align="center">
+            <el-table-column label="24%次数" min-width="12%" align="center">
                 <template slot-scope="scope">
                     <span style="">
                         {{toThousands(scope.row.col6)}}
                     </span>               
                 </template>  
             </el-table-column>
-            <el-table-column label="50%次数" min-width="14%" align="center">
+            <el-table-column label="36%次数" min-width="12%" align="center">
                 <template slot-scope="scope">
                     <span style="">
                         {{toThousands(scope.row.col7)}}
+                    </span>               
+                </template>  
+            </el-table-column>
+            <el-table-column label="54%次数" min-width="12%" align="center">
+                <template slot-scope="scope">
+                    <span style="">
+                        {{toThousands(scope.row.col8)}}
                     </span>               
                 </template>  
             </el-table-column>
@@ -153,7 +162,7 @@
         :header-cell-style="addRightBorder"
         :cell-style="addRightBorder"
         style="width: 100%">
-            <el-table-column label="单笔盈亏" min-width="14%" align="center" style="background: white"> 
+            <el-table-column label="单笔盈亏" min-width="12%" align="center" style="background: white"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col1 >= 0">
                         {{toThousands(scope.row.col1)}}
@@ -163,21 +172,21 @@
                     </span>                
                 </template> 
             </el-table-column>
-            <el-table-column label="交易币数" min-width="14%" align="center"> 
+            <el-table-column label="交易币数" min-width="12%" align="center"> 
                 <template slot-scope="scope">
                     <span style="">
                         {{toThousands(scope.row.col2)}}
                     </span>               
                 </template> 
             </el-table-column>
-            <el-table-column label="交易次数" min-width="14%" align="center"> 
+            <el-table-column label="交易次数" min-width="12%" align="center"> 
                 <template slot-scope="scope">
                     <span style="">
                         {{toThousands(scope.row.col3)}}({{ toThousands(scope.row.col32)}})
                     </span>               
                 </template> 
             </el-table-column>
-            <el-table-column label="单笔盈亏" min-width="14%" align="center"> 
+            <el-table-column label="单笔盈亏" min-width="12%" align="center"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col4 >= 0">
                         {{toThousands(scope.row.col4)}}
@@ -187,7 +196,7 @@
                     </span>                
                 </template> 
             </el-table-column>
-            <el-table-column label="20%收益" min-width="14%" align="center"> 
+            <el-table-column label="16%收益" min-width="12%" align="center"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col5 >= 0">
                         {{toThousands(scope.row.col5)}}
@@ -197,7 +206,7 @@
                     </span>                
                 </template> 
             </el-table-column>
-            <el-table-column label="30%收益" min-width="14%" align="center"> 
+            <el-table-column label="24%收益" min-width="12%" align="center"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col6 >= 0">
                         {{toThousands(scope.row.col6)}}
@@ -207,7 +216,7 @@
                     </span>                
                 </template> 
             </el-table-column>
-            <el-table-column label="50%收益" min-width="14%" align="center"> 
+            <el-table-column label="36%收益" min-width="12%" align="center"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col7 >= 0">
                         {{toThousands(scope.row.col7)}}
@@ -217,6 +226,16 @@
                     </span>                
                 </template> 
             </el-table-column>
+            <el-table-column label="54%收益" min-width="12%" align="center"> 
+                <template slot-scope="scope">
+                    <span style="color: green" v-if="scope.row.col8 >= 0">
+                        {{toThousands(scope.row.col8)}}
+                    </span>  
+                    <span style="color: red" v-else>
+                        {{toThousands(scope.row.col8)}}
+                    </span>                
+                </template> 
+            </el-table-column>            
         </el-table>  
     </div>      
 </template>
@@ -254,6 +273,7 @@ export default {
                 col5: null,
                 col6: null,
                 col7: null,
+                col8: null,
             }],
             perfData2: [{
                 col1: null,
@@ -263,6 +283,7 @@ export default {
                 col5: null,
                 col6: null,
                 col7: null,
+                col8: null,
             }],
             perfData3: [{
                 col1: null,
@@ -273,6 +294,7 @@ export default {
                 col5: null,
                 col6: null,
                 col7: null,
+                col8: null,
             }],
             
             // 大PV策略年初始时归零(和pnl曲线保持一致)
@@ -306,6 +328,7 @@ export default {
             this.perfData2[0].col5 = pbData.plunge_back_1.year_now.count
             this.perfData2[0].col6 = pbData.plunge_back_2.year_now.count
             this.perfData2[0].col7 = pbData.plunge_back_3.year_now.count
+            this.perfData2[0].col8 = pbData.plunge_back_4.year_now.count
             // 第三行
             this.perfData3[0].col1 = parseInt(prData.all.year_now.avg_pnl)
             this.perfData3[0].col2 = prData.all.year_now.symbol_count
@@ -315,6 +338,7 @@ export default {
             this.perfData3[0].col5 = parseInt(pbData.plunge_back_1.year_now.total_pnl)
             this.perfData3[0].col6 = parseInt(pbData.plunge_back_2.year_now.total_pnl)
             this.perfData3[0].col7 = parseInt(pbData.plunge_back_3.year_now.total_pnl)
+            this.perfData3[0].col8 = parseInt(pbData.plunge_back_4.year_now.total_pnl)
         },
 
         addRightBorder({rowIndex, columnIndex}){

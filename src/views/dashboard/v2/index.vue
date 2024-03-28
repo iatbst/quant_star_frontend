@@ -209,7 +209,7 @@
             v-bind:positions-loading="pbBinancePositionsLoading"
             v-bind:exchange="'Binance'"
             v-bind:strategy="'底'"
-            v-bind:col-count="7"
+            v-bind:col-count="5"
             v-bind:show-zero="false"
             ></position-map2> 
 
@@ -219,7 +219,7 @@
             v-bind:positions-loading="pbOkexPositionsLoading"
             v-bind:exchange="'Okex'"
             v-bind:strategy="'底'"
-            v-bind:col-count="7"
+            v-bind:col-count="5"
             v-bind:show-zero="false"
             ></position-map2> 
 
