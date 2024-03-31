@@ -108,7 +108,7 @@
                                     {{ chineseString(scope.row.row_head) }}
                                 </div>
                                 <div v-else>
-                                    {{ scope.row[col] }}
+                                    {{ formatStrategyPnls(scope.row.row_head, scope.row[col]) }}
                                 </div>
                             </template>
                         </el-table-column>
@@ -196,12 +196,17 @@ export default {
 
     methods: {
         search(){
-            // 默认
+            // 默认展示上个月度报告
             if (this.reportFilter.level == null){
-                this.reportFilter.level = 'week'
+                this.reportFilter.level = 'month'
             }
             if (this.reportFilter.dt_label == null){
-                this.reportFilter.dt_label = '2024-03-18'
+                // 获取上个月1号的日期: %Y-%m-%d
+                var date = new Date()
+                date.setDate(1)
+                date.setMonth(date.getMonth()-1)
+                var dateStr = date.toLocaleDateString("en-GB").split('/')
+                this.reportFilter.dt_label = dateStr[2] + '-' + dateStr[1] + '-' + dateStr[0]
             }
 
             var filters = 'level=' + this.reportFilter.level + '&dt_label=' + this.reportFilter.dt_label
@@ -228,6 +233,20 @@ export default {
                 var strategy = col.split('_').slice(0, -1).join('_')
                 var strategyId = col.split('_').slice(-1,)[0]
                 return this.strategyAlias[strategy] + '-' + strategyId
+            }
+        },
+
+        // 策略收益格式化
+        formatStrategyPnls(row_head, data){
+            if(data == null){
+                return data
+            }
+            if (row_head == 'pnl'){
+                return toThousands(Math.round(data))
+            } else if (row_head == 'pnl_ptg'){
+                return (data*100).toFixed(2) + '%'
+            } else {
+                return data
             }
         },
 

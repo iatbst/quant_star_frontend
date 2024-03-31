@@ -45,7 +45,7 @@ export function chineseString(s) {
 
             // 费用
             case 'trade': cs = '交易费'; break;
-            case 'swap_funding': cs = '永续资金费'; break;
+            case 'swap_funding': cs = '合约费'; break;
             case 'interest': cs = '借贷利息'; break;    
             
             // Worker状态
