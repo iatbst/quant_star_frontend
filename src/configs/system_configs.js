@@ -69,7 +69,7 @@ var development_hosts = [
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = development_hosts
+    var hostList = production_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
@@ -126,6 +126,17 @@ const strategyAlias = {
     'plunge-back': '底',
     'plunge_back': '底',
     'pb': '底'
+}
+
+// Trade错误代码(和后端的TRADE_FINAL_ERRORS保持一致)
+const tradeFinalErrors = {
+    '101': '账户保证金不足,无法开仓.',
+    '102': '平台标的杠杆率限制,无法开仓.',
+    '103': '信号延迟太大,未能及时开仓',
+
+    '201': '账户保证金不足,无法关仓.',
+    '202': '平台标的杠杆率限制,无法关仓.',
+    '203': '同时发送离场订单,仓位更新不及时导致过量离场.'
 }
 
 // 当前投资组合的初始资金
@@ -258,7 +269,8 @@ export default {
     spErrorTypes,
     strategyAlias,
     exchanges,
-    strategies
+    strategies,
+    tradeFinalErrors
 }
 
 

@@ -196,7 +196,21 @@ export const constantRoutes = [
   //     },
   //   ]
   // },
-  
+
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/report',
+    children: [
+      {
+        path: '/report',
+        name: '统计报告',
+        component: () => import('@/views/report/index'),
+        meta: { title: '统计报告', icon: 'el-icon-document-copy' }
+      }
+    ]
+  },
+
   {
     path: '/fee',
     component: Layout,

@@ -161,7 +161,7 @@
             <el-table-column align="center" label="标的" prop="symbol" min-width="15%">
             </el-table-column>  
 
-            <el-table-column align="center" label="状态" prop="status" min-width="10%">
+            <el-table-column align="center" label="状态" prop="status" min-width="5%">
               <template slot-scope="scope">
                 <span style="color:orange" v-if="scope.row.status == 'empty'">
                   空仓
@@ -175,7 +175,7 @@
               </template>
             </el-table-column>  
 
-            <el-table-column align="center" label="方向" prop="side" min-width="10%">
+            <el-table-column align="center" label="方向" prop="side" min-width="5%">
               <template slot-scope="scope">
                 <span style="color:green" v-if="scope.row.side == 'long'">
                   多
@@ -203,19 +203,31 @@
               </template>
             </el-table-column>  
 
-            <el-table-column align="center" label="" min-width="20%">
+            <el-table-column align="left" label="" min-width="30%">
               <template slot-scope="scope">
                 <div v-if="scope.row.summary != true && scope.row.flag_codes != '0'">
                   <el-form :inline="true" :model="tradeFinal" class="demo-form-inline" size="mini">
-                    <el-form-item label="" style="width: 70px; height: 10px">
+                    <el-form-item label="" style="width: 100px; height: 10px">
                       <el-select v-model="tradeFinal.final_flag" placeholder="最终标识" size="mini">
                         <el-option label="error" value="error"></el-option>
                         <el-option label="success" value="success"></el-option>
                         <el-option label="none" value="none"></el-option>
                       </el-select>
-                    </el-form-item>                     
-                    <el-form-item label="" style="width: 70px; height: 10px">
-                      <el-input v-model="tradeFinal.note" placeholder="原因"></el-input>
+                    </el-form-item> 
+                    
+                    <el-form-item label="" style="width: 100px; height: 10px" v-if="tradeFinal.final_flag == 'error'">
+                      <el-select v-model="tradeFinal.final_error" placeholder="错误原因" size="mini">
+                          <el-option
+                          v-for="code in Object.keys(config.tradeFinalErrors)"
+                          :key="code"
+                          :label="config.tradeFinalErrors[code]"
+                          :value="code">
+                          </el-option>
+                      </el-select>
+                    </el-form-item>                    
+                    
+                    <el-form-item label="" style="width: 100px; height: 10px">
+                      <el-input v-model="tradeFinal.note" placeholder="补充说明"></el-input>
                     </el-form-item>
                     <el-form-item>
                       <el-button type="primary" size="mini" @click="onSubmitTradeFinal(scope.row.id, scope.row)">标记</el-button>
@@ -326,6 +338,7 @@ export default {
   },
   data() {
     return {
+      config: config,
       host: null,
       portfolioList: null,
       portfolioListLoading: true,
@@ -357,6 +370,7 @@ export default {
 
       tradeFinal: {
         final_flag: null,
+        final_error: null,
         note: null,
       },
     }
@@ -494,18 +508,22 @@ export default {
 
     onSubmitTradeFinal(trade_id, row) {
       // 发送ajax, 更新后台
-      markTradeFinalFlag(trade_id, this.tradeFinal, this.host).then(response => {
-        // 更新UI
-        console.log(response)
-        row.flag_codes = response.data.trade_final_flag + '(' + response.data.note + ')'
-        // if (this.tradeFinal.mismatch_type == 'signal_mismatch'){
-        //   row.signal_status = 'mark'
-        //   row.signal_message += '(' + this.tradeFinal.note + ')'
-        // } else {
-        //   row.backtest_status = 'mark'
-        //   row.backtest_message += '(' + this.tradeFinal.note + ')'
-        // }
-      })
+      if (this.tradeFinal.final_flag == 'error' && this.tradeFinal.final_error == null){
+          alert('请注明错误原因.')
+      } else {
+        markTradeFinalFlag(trade_id, this.tradeFinal, this.host).then(response => {
+          // 更新UI
+          console.log(response)
+          row.flag_codes = response.data.trade_final_flag + '(' + response.data.trade_final_error + ')'
+          // if (this.tradeFinal.mismatch_type == 'signal_mismatch'){
+          //   row.signal_status = 'mark'
+          //   row.signal_message += '(' + this.tradeFinal.note + ')'
+          // } else {
+          //   row.backtest_status = 'mark'
+          //   row.backtest_message += '(' + this.tradeFinal.note + ')'
+          // }
+        })
+      }
     },
 
       showMissedBtTradesDialog() {

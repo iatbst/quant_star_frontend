@@ -4,7 +4,7 @@
         <el-col :span="24">
             <!-- 曲线 -->
             <highcharts :options="totalBalanceOptions" style="margin-top: 20px"></highcharts>
-            <div align="center" style="margin-bottom: 20px">
+            <div align="center" style="margin-bottom: 20px" v-if="showRange">
                 <el-button style="margin-left: 0px" type="info" size="mini"  @click="parseData()" :plain="buttonAllPlain">
                     全部
                 </el-button> 
@@ -56,10 +56,15 @@ export default {
             type: String,
             default: ''
         },
+        showRange: {
+            type: Boolean,
+            default: true
+        },
         range: {
             type: String,
             default: 'thisYear'
-        }
+        },
+
     },
 
     watch: {

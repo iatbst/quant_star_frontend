@@ -54,6 +54,23 @@ export function chineseString(s) {
             case 'normal': cs = '在线'; break;
             case 'disable': cs = '下线'; break;
 
+            // 报告
+            case 'week': cs = '周度报告'; break;
+            case 'month': cs = '月度报告'; break;
+            case 'quarter': cs = '季度报告'; break;
+            case 'year': cs = '年度报告'; break;  
+            
+            // 表现
+            case 'pnl': cs = '收益'; break;
+            case 'pnl_ptg': cs = '收益率'; break;   
+            case 'volume': cs = '交易金额'; break;
+            case 'trade_count': cs = '交易次数'; break;  
+            case 'order_count': cs = '订单次数'; break;
+            case 'slippage': cs = '滑点'; break;  
+            case 'fee': cs = '手续费'; break;
+            case 'swap_funding': cs = '合约费'; break;  
+            case 'op_fee': cs = '运维费'; break;                          
+
             default: cs = '翻译失败:' + s 
         }
         return cs
