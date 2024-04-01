@@ -125,7 +125,7 @@
                         <template slot-scope="scope">
                             <div v-if="scope.row.signal_delay != null">
                                 <span style="color: red" v-if="scope.row.signal_delay >= 5">
-                                {{ scope.row.signal_delay.toFixed(2) }}%
+                                {{ scope.row.signal_delay.toFixed(2) }}
                                 </span>
                                 <span style="" v-else>
                                 {{ scope.row.signal_delay.toFixed(2) }}
@@ -248,7 +248,7 @@
                         <template slot-scope="scope">
                             <div v-if="scope.row.signal_delay != null">
                                 <span style="color: red" v-if="scope.row.signal_delay >= 5">
-                                {{ scope.row.signal_delay.toFixed(2) }}%
+                                {{ scope.row.signal_delay.toFixed(2) }}
                                 </span>
                                 <span style="" v-else>
                                 {{ scope.row.signal_delay.toFixed(2) }}
