@@ -137,6 +137,27 @@
                 </el-table>
             </el-row>
 
+            <!--- 延迟统计表格 --->
+            <el-row :gutter="0" type="flex" style="margin-bottom: 50px" v-if="reportAvailable">
+                <el-table
+                :data="report.delay_stats.rows"
+                :header-cell-style="{ background: '#f2f2f2' }"
+                >
+                    <template v-for="col in [''].concat(report.delay_stats.col_header)">
+                        <el-table-column align="center" :label="getDelayCol(col)">
+                            <template slot-scope="scope">
+                                <div v-if="col == ''">
+                                    {{ scope.row.row_head }}
+                                </div>
+                                <div v-else>
+                                    {{ formatDelayStats(col, scope.row) }}
+                                </div>
+                            </template>
+                        </el-table-column>
+                    </template>
+                </el-table>
+            </el-row>
+
             <el-row>
                 <!--- 说明 --->
             </el-row>
@@ -198,15 +219,18 @@ export default {
         search(){
             // 默认展示上个月度报告
             if (this.reportFilter.level == null){
-                this.reportFilter.level = 'month'
+                this.reportFilter.level = 'week'
             }
             if (this.reportFilter.dt_label == null){
+                // TEST
+                this.reportFilter.dt_label = '2024-04-01'
+
                 // 获取上个月1号的日期: %Y-%m-%d
-                var date = new Date()
-                date.setDate(1)
-                date.setMonth(date.getMonth()-1)
-                var dateStr = date.toLocaleDateString("en-GB").split('/')
-                this.reportFilter.dt_label = dateStr[2] + '-' + dateStr[1] + '-' + dateStr[0]
+                // var date = new Date()
+                // date.setDate(1)
+                // date.setMonth(date.getMonth()-1)
+                // var dateStr = date.toLocaleDateString("en-GB").split('/')
+                // this.reportFilter.dt_label = dateStr[2] + '-' + dateStr[1] + '-' + dateStr[0]
             }
 
             var filters = 'level=' + this.reportFilter.level + '&dt_label=' + this.reportFilter.dt_label
@@ -233,6 +257,25 @@ export default {
                 var strategy = col.split('_').slice(0, -1).join('_')
                 var strategyId = col.split('_').slice(-1,)[0]
                 return this.strategyAlias[strategy] + '-' + strategyId
+            }
+        },
+
+        // 延迟表格表头汉化
+        getDelayCol(col){
+            if (col == ''){
+                return col
+            } else if (col == 'count'){
+                return '统计订单次数'
+            } else if (col == 'super_low_count'){
+                return '超低延迟(0~0.2秒)'
+            } else if (col == 'low_count'){
+                return '低延迟(0.2~1秒)'
+            } else if (col == 'medium_count'){
+                return '中延迟(1~5秒)'
+            } else if (col == 'high_count'){
+                return '高延迟(5~25秒)'
+            } else {
+                return '超高延迟(>25秒)'
             }
         },
 
@@ -263,6 +306,19 @@ export default {
                 return toThousands(Math.round(data))
             } else {
                 return data
+            }
+        },
+
+        // 策略统计格式化
+        formatDelayStats(col, data){
+            if(col == 'count'){
+                return data[col]
+            } else {
+                if(data['count'] > 0){
+                    return data[col] + ' / ' + (data[col]*100/data['count']).toFixed(1) + '%'
+                } else {
+                    return '0 / 0%'
+                }
             }
         },
 

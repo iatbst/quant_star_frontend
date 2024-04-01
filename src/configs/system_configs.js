@@ -69,7 +69,7 @@ var development_hosts = [
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = production_hosts
+    var hostList = development_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
@@ -136,7 +136,9 @@ const tradeFinalErrors = {
 
     '201': '账户保证金不足,无法关仓.',
     '202': '平台标的杠杆率限制,无法关仓.',
-    '203': '同时发送离场订单,仓位更新不及时导致过量离场.'
+    '203': '同时发送离场订单,仓位更新不及时导致过量离场.',
+
+    '301': '未知BUG,详情参考补充说明.'
 }
 
 // 当前投资组合的初始资金

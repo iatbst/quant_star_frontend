@@ -75,8 +75,14 @@
                             <el-col :span="1"></el-col>         
                     </div>
 
-                    <div v-if="scope.row.flags.final_flag_note">
+                    <div v-if="scope.row.final_error">
                         <el-col :span="24" align="left" style="color: red">
+                            {{ config.tradeFinalErrors[scope.row.final_error] }}
+                        </el-col>
+                    </div>
+
+                    <div v-if="scope.row.flags.final_flag_note">
+                        <el-col :span="24" align="left" style="">
                             {{ scope.row.flags.final_flag_note }}
                         </el-col>
                     </div>
@@ -199,6 +205,7 @@
 </template>
 
 <script>
+import config from '@/configs/system_configs'
 import { getSubOrdersByParentOrder } from '@/api/order'
 import { getLogsByWorkerAndTs, getLogsByTrade } from '@/api/log'
 import { formatTimestamp, utcToLocalTimestamp } from '@/utils/general'
@@ -234,6 +241,7 @@ export default {
 
     data() {
         return {
+            config: config,
             subOrdersLoading: false,
             subOrders: null,
             parentOrder: null, 
