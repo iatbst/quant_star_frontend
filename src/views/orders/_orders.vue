@@ -115,7 +115,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="策略" min-width="8%">
+                    <el-table-column align="center" label="策略" min-width="5%">
                         <template slot-scope="scope">
                             {{ strategyAlias.hasOwnProperty(scope.row.worker.name.split('_').slice(-2, -1)[0]) ? strategyAlias[scope.row.worker.name.split('_').slice(-2, -1)[0]] : '大' }}
                         </template>
@@ -190,7 +190,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="滑点" min-width="10%">
+                    <el-table-column align="center" label="滑点" min-width="5%">
                         <template slot-scope="scope">
                             <div v-if="scope.row.slippage !== null">
                                 <span style="color: red" v-if="scope.row.slippage < 0">
@@ -198,6 +198,19 @@
                                 </span>
                                 <span style="color: green" v-else>
                                 {{ (scope.row.slippage*100).toFixed(2) }}%
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="延迟(秒)" min-width="5%">
+                        <template slot-scope="scope">
+                            <div v-if="scope.row.signal_delay !== null">
+                                <span style="color: red" v-if="scope.row.signal_delay >= 5">
+                                {{ scope.row.signal_delay.toFixed(2) }}%
+                                </span>
+                                <span style="" v-else>
+                                {{ scope.row.signal_delay.toFixed(2) }}
                                 </span>
                             </div>
                         </template>

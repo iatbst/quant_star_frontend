@@ -120,6 +120,19 @@
                             </div>
                         </template>
                     </el-table-column>
+
+                    <el-table-column align="center" label="延迟(秒)" min-width="5%">
+                        <template slot-scope="scope">
+                            <div v-if="scope.row.signal_delay != null">
+                                <span style="color: red" v-if="scope.row.signal_delay >= 5">
+                                {{ scope.row.signal_delay.toFixed(2) }}%
+                                </span>
+                                <span style="" v-else>
+                                {{ scope.row.signal_delay.toFixed(2) }}
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
                 </el-table> 
             </el-row>
 
@@ -230,6 +243,19 @@
                             </div>
                         </template>
                     </el-table-column>
+
+                    <el-table-column align="center" label="延迟(秒)" min-width="5%">
+                        <template slot-scope="scope">
+                            <div v-if="scope.row.signal_delay != null">
+                                <span style="color: red" v-if="scope.row.signal_delay >= 5">
+                                {{ scope.row.signal_delay.toFixed(2) }}%
+                                </span>
+                                <span style="" v-else>
+                                {{ scope.row.signal_delay.toFixed(2) }}
+                                </span>
+                            </div>
+                        </template>
+                    </el-table-column>
                 </el-table> 
             </el-row>
         </div>
@@ -293,6 +319,20 @@ export default {
                 if (this.trade.orders[i].exec_size > 0){
                     this.orders.push(this.trade.orders[i])
                 }
+            }
+
+            // 计算平均延迟
+            var delay_sum = 0
+            var count = 0
+            for(var i = 0; i < this.trade.orders.length; i++){
+                if (this.trade.orders[i].signal_delay != null){
+                    delay_sum += this.trade.orders[i].signal_delay
+                    count += 1
+                }
+            }
+            if (count > 0){
+                this.trade.signal_delay = delay_sum/count
+                debugger
             }
         },
 
