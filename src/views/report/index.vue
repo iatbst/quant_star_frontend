@@ -158,6 +158,64 @@
                 </el-table>
             </el-row>
 
+            <!--- 错误交易表格 --->
+            <el-row :gutter="0" type="flex" v-if="reportAvailable">
+                <el-table
+                :data="report.error_trades"
+                :header-cell-style="{ background: '#f2f2f2' }"
+                @row-click="clickTrade"
+                :cell-style="{cursor: 'pointer'}"
+                >
+                    <el-table-column align="center" label="建仓时间" min-width="10%">
+                        <template slot-scope="scope">
+                            {{ utcToLocalTimestamp(scope.row.entry_dt) }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="交易所" min-width="5%">
+                        <template slot-scope="scope">
+                            {{ scope.row.exchange }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="策略" min-width="5%">
+                        <template slot-scope="scope">
+                            {{ scope.row.strategy_id }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="标的" min-width="5%">
+                        <template slot-scope="scope">
+                            {{ scope.row.symbol }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="错误" min-width="10%">
+                        <template slot-scope="scope">
+                            {{ config.tradeFinalErrors[scope.row.error] }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="补充说明" min-width="10%">
+                        <template slot-scope="scope">
+                            {{ scope.row.note }}
+                        </template>
+                    </el-table-column>
+                </el-table> 
+
+                <!-- Diaglog: Trade -->
+                <el-dialog title="" :visible.sync="dialogTradeVisible"  width="80%" append-to-body>
+                    <div style="background-color: white; margin-bottom: 10px; margin-top: -20px">
+                        <!-- 仓位详情 -->
+                        <trade-orders 
+                        v-bind:trade="trade"
+                        v-bind:orders-loading="tradeOrdersLoading"
+                        v-if="tradeAvailable" 
+                        ></trade-orders>
+                    </div>
+                </el-dialog>
+            </el-row>
+
             <el-row>
                 <!--- 说明 --->
             </el-row>
@@ -320,6 +378,10 @@ export default {
                     return '0 / 0%'
                 }
             }
+        },
+
+        clickTrade(){
+
         },
 
         utcToLocalTimestamp: utcToLocalTimestamp,

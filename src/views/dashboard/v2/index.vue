@@ -42,11 +42,12 @@
             
             <!--- Perf统计表 ---
                 函数: fetchParentPfoTradeStats
-                更新频率: ?
             --->
             <perf-table 
             v-bind:parentPfoTradeStats="parentPfoTradeStats" 
-            v-if="parentPfoTradeStatsAvailable">
+            v-bind:binanceBalancePtg="binanceBalancePtg"
+            v-bind:okexBalancePtg="okexBalancePtg"
+            v-if="parentPfoTradeStatsAvailable && subaccountDatasAvailable">
             </perf-table>
 
             <!--- 刷新说明 --->
@@ -416,6 +417,9 @@ export default {
             prmOkexPositionsAvailable: false,
             prmOkexPositionsLoading: false,
 
+            binanceBalancePtg: null,
+            okexBalancePtg: null,
+
             liveValueName: '实盘资金',
 
             // 记录策略回测资产曲线
@@ -729,11 +733,33 @@ export default {
         // 从Master获取所有subaccount data
         fetchSubAccountDatas() {
             this.subaccountDatas = []
-            getSubAccountDatas(config.masterHost, 'positions').then(response => {
+            getSubAccountDatas(config.masterHost, 'positions,wallet,subaccount').then(response => {
                     this.subaccountDatas = response.results
+                    this.calBalancePtg()    // 临时任务   
                     this.subaccountDatasAvailable = true
                 }
             )
+        },
+
+        // Temp: 临时计算Binance和Okex的资产百分比
+        calBalancePtg(){
+            var binanceBalance = null
+            var okexBalance = null
+            for(let data of this.subaccountDatas){
+                if(data.subaccount.account.name == 'binance_69174462@qq.com'){
+                    binanceBalance = data.wallet.usdt_amount
+                }
+                if(data.subaccount.account.name == 'okex_sunyoung.capital@gmail.com'){
+                    okexBalance = data.wallet.usdt_amount
+                }                
+            }
+            if (binanceBalance != null && okexBalance != null){
+                this.binanceBalancePtg = (binanceBalance*100/(binanceBalance + okexBalance)).toFixed(1) + '%'
+                this.okexBalancePtg = (okexBalance*100/(binanceBalance + okexBalance)).toFixed(1) + '%'
+            } else {
+                this.binanceBalancePtg = null
+                this.okexBalancePtg = null
+            }
         },
 
         // 从Pfo获取所有positions(normal workers)

@@ -80,9 +80,11 @@
                     </span>               
                 </template>  
             </el-table-column>
-            <el-table-column label="" min-width="12%" align="center"> 
+            <el-table-column label="Binance资产" min-width="12%" align="center"> 
+                {{binanceBalancePtg}}
             </el-table-column>
-            <el-table-column label="" min-width="12%" align="center"> 
+            <el-table-column label="Okex资产" min-width="12%" align="center"> 
+                {{okexBalancePtg}}
             </el-table-column>
         </el-table> 
 
@@ -250,7 +252,15 @@ export default {
         parentPfoTradeStats: {
             type:Object,
             default:{}
-        }   
+        },
+        binanceBalancePtg: {
+            type: String,
+            default: ''
+        },
+        okexBalancePtg: {
+            type: String,
+            default: ''
+        },
     },
 
     watch: {
