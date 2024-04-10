@@ -540,7 +540,7 @@ export default {
     //     }
     //   }
     // },
-
+    
     rowStyle({ row, rowIndex}){
       if (row.summary){
         if ( row.fail ) {

@@ -40,8 +40,7 @@
 
                     <el-table-column align="center" label="策略" min-width="5%">
                         <template slot-scope="scope">
-                            {{ strategyAlias.hasOwnProperty(scope.row.worker.name.split('_').slice(-2, -1)[0]) ? strategyAlias[scope.row.worker.name.split('_').slice(-2, -1)[0]] : '大' }}
-                            [{{ scope.row.order_type == 'temp' ? 'N/A' : scope.row.worker.name.slice(-1,) }}]
+                            {{ chineseStrategyID(scope.row.strategy_id) }}
                         </template>
                     </el-table-column>
 
@@ -145,7 +144,7 @@
                 >
                     <el-table-column align="center" label="时间" min-width="10%">
                         <template slot-scope="scope">
-                            {{ utcToLocalTimestamp(scope.row.exec_ts) }}
+                            {{ utcToLocalTimestamp(scope.row.exec_ts ? scope.row.exec_ts : scope.row.created_ts) }}
                         </template>
                     </el-table-column>
 
@@ -266,7 +265,7 @@
 import config from '@/configs/system_configs'
 import { utcToLocalTimestamp, formatTimestamp } from '@/utils/general'
 import {toThousands} from '@/utils/general'
-import { chineseString } from '@/utils/chinese'
+import { chineseString, chineseStrategyID } from '@/utils/chinese'
 import { toFixed } from  '@/utils/general'
 import { getTradeById } from '@/api/trade'
 
@@ -279,6 +278,11 @@ export default {
         },
 
         ordersLoading: {
+            type: Boolean,
+            default: true
+        },
+
+        onlyExecOrder: {
             type: Boolean,
             default: true
         }
@@ -316,7 +320,7 @@ export default {
             
             // 过滤掉没有成交的orders
             for(var i = 0; i < this.trade.orders.length; i++){
-                if (this.trade.orders[i].exec_size > 0){
+                if (!this.onlyExecOrder || this.trade.orders[i].exec_size > 0){
                     this.orders.push(this.trade.orders[i])
                 }
             }
@@ -332,13 +336,13 @@ export default {
             }
             if (count > 0){
                 this.trade.signal_delay = delay_sum/count
-                debugger
             }
         },
 
         utcToLocalTimestamp: utcToLocalTimestamp,
         toThousands: toThousands,
         chineseString: chineseString,
+        chineseStrategyID: chineseStrategyID,
         toFixed: toFixed,
         formatTimestamp: formatTimestamp,
 

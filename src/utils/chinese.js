@@ -78,3 +78,10 @@ export function chineseString(s) {
         return s
     }
 }
+
+import config from '@/configs/system_configs'
+export function chineseStrategyID(strategyID) {
+    var strategy = strategyID.split('_').slice(0, -1).join('_')
+    var strategyId = strategyID.split('_').slice(-1,)[0]
+    return config.strategyAlias[strategy] + '-' + strategyId
+}

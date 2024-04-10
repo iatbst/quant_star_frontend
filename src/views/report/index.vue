@@ -96,7 +96,7 @@
             </el-row>
 
             <!--- 策略收益表格 --->
-            <el-row :gutter="0" type="flex" style="margin-bottom: 50px" v-if="reportAvailable">
+            <el-row :gutter="0" type="flex" v-if="reportAvailable">
                 <el-table
                 :data="report.strategy_pnls.rows"
                 :header-cell-style="{ background: '#f2f2f2' }"
@@ -108,16 +108,31 @@
                                     {{ chineseString(scope.row.row_head) }}
                                 </div>
                                 <div v-else>
-                                    {{ formatStrategyPnls(scope.row.row_head, scope.row[col]) }}
+                                    <span style="color: red" v-if="scope.row[col] < 0">
+                                        {{ formatStrategyPnls(scope.row.row_head, scope.row[col]) }}
+                                    </span>
+                                    <span style="color: green" v-else>
+                                        {{ formatStrategyPnls(scope.row.row_head, scope.row[col]) }}
+                                    </span>                                    
                                 </div>
                             </template>
                         </el-table-column>
                     </template>
                 </el-table>
             </el-row>
+            <div style="margin-bottom: 50px" align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        此表格展示周期内不同策略的收益情况.
+                        <br/>
+                        收益率计算方式: 收益 / 初始总资金
+                    </div>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                </el-tooltip>
+            </div>
 
             <!--- 策略统计表格 --->
-            <el-row :gutter="0" type="flex" style="margin-bottom: 50px" v-if="reportAvailable">
+            <el-row :gutter="0" type="flex" v-if="reportAvailable">
                 <el-table
                 :data="report.strategy_stats.rows"
                 :header-cell-style="{ background: '#f2f2f2' }"
@@ -129,16 +144,48 @@
                                     {{ chineseString(scope.row.row_head) }}
                                 </div>
                                 <div v-else>
-                                    {{ formatStrategyStats(scope.row.row_head, scope.row[col]) }}
+                                    <span v-if="scope.row.row_head == 'slippage'">
+                                        <span style="color: red" v-if="scope.row[col] < 0">
+                                            {{ formatStrategyStats(scope.row.row_head, scope.row[col]) }}
+                                        </span>
+                                        <span style="color: green" v-else>
+                                            {{ formatStrategyStats(scope.row.row_head, scope.row[col]) }}
+                                        </span>                                        
+                                    </span>
+                                    <span v-else-if="scope.row.row_head == 'swap_funding'">
+                                        <span style="color: green" v-if="scope.row[col] >= 0">
+                                            {{ formatStrategyStats(scope.row.row_head, scope.row[col]) }}
+                                        </span>
+                                        <span v-else>
+                                            {{ formatStrategyStats(scope.row.row_head, scope.row[col]) }}
+                                        </span>                                        
+                                    </span>
+                                    <span v-else>
+                                        {{ formatStrategyStats(scope.row.row_head, scope.row[col]) }}
+                                    </span>
                                 </div>
                             </template>
                         </el-table-column>
                     </template>
                 </el-table>
             </el-row>
+            <div style="margin-bottom: 50px" align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        此表格展示周期内不同策略的交易情况.
+                        <br/>
+                        交易次数: 开仓+关仓为一次交易.
+                        <br/>
+                        费用说明: 负数表示支出;正数表示收入(目前只有合约费可能为正数).
+                        <br/>
+                        运维费: 根据近半年云服务(AWS)支出近似估计,每半年评估一次.
+                    </div>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                </el-tooltip>
+            </div>
 
             <!--- 延迟统计表格 --->
-            <el-row :gutter="0" type="flex" style="margin-bottom: 50px" v-if="reportAvailable">
+            <el-row :gutter="0" type="flex" v-if="reportAvailable">
                 <el-table
                 :data="report.delay_stats.rows"
                 :header-cell-style="{ background: '#f2f2f2' }"
@@ -150,20 +197,45 @@
                                     {{ scope.row.row_head }}
                                 </div>
                                 <div v-else>
-                                    {{ formatDelayStats(col, scope.row) }}
+                                    <span style="color: green" v-if="col == 'super_low_count'">
+                                        {{ formatDelayStats(col, scope.row) }}
+                                    </span>
+                                    <span style="color: orange" v-else-if="col == 'high_count'">
+                                        {{ formatDelayStats(col, scope.row) }}
+                                    </span>  
+                                    <span style="color: red" v-else-if="col == 'super_high_count'">
+                                        {{ formatDelayStats(col, scope.row) }}
+                                    </span>   
+                                    <span v-else>
+                                        {{ formatDelayStats(col, scope.row) }}
+                                    </span>                                                                    
                                 </div>
                             </template>
                         </el-table-column>
                     </template>
                 </el-table>
             </el-row>
+            <div style="margin-bottom: 50px" align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        此表格展示周期内不同交易所订单延迟情况.
+                        <br/>
+                        统计订单: 所有的非定时退出订单(定时退出订单暂不方便统计).
+                        <br/>
+                        延迟说明: 信号价格实际发生时间和系统接收到该价格的时间差.
+                        <br/>
+                        延迟可能原因: 交易所繁忙;网络延迟;自身系统繁忙(CPU/内存不够导致)等等.
+                    </div>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                </el-tooltip>
+            </div>
 
             <!--- 错误交易表格 --->
             <el-row :gutter="0" type="flex" v-if="reportAvailable">
                 <el-table
                 :data="report.error_trades"
                 :header-cell-style="{ background: '#f2f2f2' }"
-                @row-click="clickTrade"
+                @row-click="clickErrorTrade"
                 :cell-style="{cursor: 'pointer'}"
                 >
                     <el-table-column align="center" label="建仓时间" min-width="10%">
@@ -172,31 +244,31 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="交易所" min-width="5%">
+                    <el-table-column align="center" label="交易所" min-width="10%">
                         <template slot-scope="scope">
                             {{ scope.row.exchange }}
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="策略" min-width="5%">
+                    <el-table-column align="center" label="策略" min-width="10%">
                         <template slot-scope="scope">
-                            {{ scope.row.strategy_id }}
+                            {{ chineseStrategyID(scope.row.strategy_id) }}
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="标的" min-width="5%">
+                    <el-table-column align="center" label="标的" min-width="10%">
                         <template slot-scope="scope">
                             {{ scope.row.symbol }}
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="错误" min-width="10%">
+                    <el-table-column align="center" label="错误" min-width="30%">
                         <template slot-scope="scope">
                             {{ config.tradeFinalErrors[scope.row.error] }}
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="补充说明" min-width="10%">
+                    <el-table-column align="center" label="补充说明" min-width="30%">
                         <template slot-scope="scope">
                             {{ scope.row.note }}
                         </template>
@@ -204,37 +276,166 @@
                 </el-table> 
 
                 <!-- Diaglog: Trade -->
-                <el-dialog title="" :visible.sync="dialogTradeVisible"  width="80%" append-to-body>
+                <el-dialog title="" :visible.sync="dialogErrorTradeVisible"  width="80%" append-to-body>
                     <div style="background-color: white; margin-bottom: 10px; margin-top: -20px">
                         <!-- 仓位详情 -->
                         <trade-orders 
-                        v-bind:trade="trade"
-                        v-bind:orders-loading="tradeOrdersLoading"
-                        v-if="tradeAvailable" 
+                        v-bind:trade="errorTrade"
+                        v-bind:orders-loading="errorTradeOrdersLoading"
+                        v-bind:only-exec-order="false"
+                        v-if="errorTradeAvailable" 
                         ></trade-orders>
                     </div>
                 </el-dialog>
             </el-row>
+            <div style="margin-bottom: 50px" align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        此表格展示周期内所有错误的交易.
+                        <br/>
+                        错误交易: 分为开仓错误和关仓错误.
+                        <br/>
+                        开仓错误: 因为某种原因导致未能开仓(eg, 保证金不足,杠杆率限制,etc).
+                        <br/>
+                        关仓错误: 因为某种原因导致关仓不够或者过量关仓等等.
+                        <br/>
+                        点击行可以查看交易详情.
+                    </div>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                </el-tooltip>
+            </div>
 
-            <el-row>
-                <!--- 说明 --->
+            <!--- pivot_reversal_mini上线/下线表格 --->
+            <el-row :gutter="0" type="flex" v-if="reportAvailable && report.temp_stats.prm_online_offline">
+                <el-table
+                :data="prmOnlineOffline"
+                :header-cell-style="{ background: '#f2f2f2' }"
+                >
+                    <el-table-column align="center" label="交易所" min-width="15%">
+                        <template slot-scope="scope">
+                            {{ scope.row.exchange }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="期末标的" min-width="15%">
+                        <template slot-scope="scope">
+                            <span style="cursor: pointer" @click="clickPrmActiveCount(scope.row.exchange, scope.row.activeSymbols)">
+                                {{ scope.row.activeCount }}
+                            </span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="上线标的" min-width="15%">
+                        <template slot-scope="scope">
+                            <span style="cursor: pointer" @click="clickPrmSymbols(scope.row.exchange, scope.row.onlineSymbols, '上线标的')">
+                                {{ scope.row.onlineCount }}
+                            </span> 
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="实际上线标的" min-width="15%">
+                        <template slot-scope="scope">
+                            <span style="cursor: pointer" @click="clickPrmSymbols(scope.row.exchange, scope.row.validOnlineSymbols, '实际上线标的')">
+                                {{ scope.row.validOnlineCount }}
+                            </span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="定时下线标的" min-width="15%">
+                        <template slot-scope="scope">
+                            <span style="cursor: pointer" @click="clickPrmSymbols(scope.row.exchange, scope.row.timerDisableSymbols, '定时下线标的')">
+                                {{ scope.row.timerDisableCount}}
+                            </span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="不达标下线标的" min-width="15%">
+                        <template slot-scope="scope">
+                            <span style="cursor: pointer" @click="clickPrmSymbols(scope.row.exchange, scope.row.volumeDisableSymbols, '不达标下线标的')">
+                                {{ scope.row.volumeDisableCount }}
+                            </span>
+                        </template>
+                    </el-table-column>
+                </el-table> 
+
+                <!-- Diaglogs -->
+                <el-dialog title="" :visible.sync="dialogActiveSymbolsVisible"  width="10%" append-to-body>
+                    <div style="background-color: white; margin-bottom: 10px; margin-top: -20px">
+                        <h3 align="center">
+                            {{ prmExchange }}期末标的
+                        </h3>
+                        <ul v-for="symbol in activeSymbols">
+                            <li>
+                                {{ symbol }}
+                            </li>
+                        </ul>
+                    </div>
+                </el-dialog>
+                <el-dialog title="" :visible.sync="dialogPrmSymbolsVisible"  width="20%" append-to-body>
+                    <div style="background-color: white; margin-bottom: 10px; margin-top: -20px">
+                        <h3 align="center">
+                            {{ prmExchange }}{{prmDialogTitle}}
+                        </h3>
+                        <el-table
+                        :data="prmSymbols"
+                        :header-cell-style="{ background: '#f2f2f2' }"
+                        >
+                            <el-table-column align="center" label="标的" min-width="15%">
+                                <template slot-scope="scope">
+                                    {{ scope.row.symbol }}
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column align="center" label="日期" min-width="15%">
+                                <template slot-scope="scope">
+                                    {{ scope.row.dt }}
+                                </template>
+                            </el-table-column>
+                        </el-table> 
+                    </div>
+                </el-dialog>
             </el-row>
+            <div style="margin-bottom: 50px" align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        此表格展示周期内小PV策略上线/下线标的.
+                        <br/>
+                        期末标的: 周期结束时仍在线运行的标的.
+                        <br/>
+                        上线标的: 周期内交易所上线的新标的.
+                        <br/>
+                        实际上线标的: 周期内交易所上线的新标的中符合成交量要求而运行的标的.
+                        <br/>
+                        定时下线标的: 周期内因为定时原因下线的标的(eg, 只运行49天).
+                        <br/>
+                        成交量下线标的: 周期内因为初期成交量不足原因下线的标的(eg, 最初24H成交量不够).
+                        <br/>
+                        点击数字可以查看标的详情(上线/下线时间).
+                    </div>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                </el-tooltip>
+            </div>
+
         </div>
     </div>
 </template>
 
 <script>
+import tradeOrders from '@/views/orders/_trade_orders'
 import valueLine from '@/views/balance/_value_line'
 import config from '@/configs/system_configs'
 import { utcToLocalTimestamp } from '@/utils/general'
 import {toThousands} from '@/utils/general'
-import { chineseString } from '@/utils/chinese'
+import { chineseString, chineseStrategyID } from '@/utils/chinese'
 import { toFixed } from  '@/utils/general'
 import { getReport } from '@/api/report'
+import { getPortfolioByName } from '@/api/portfolio'
+import { getTradeById } from '@/api/trade'
 
 
 export default {
     components: {
+        tradeOrders,
         valueLine,
     },
 
@@ -262,6 +463,20 @@ export default {
             beginValue: null,
             endValue: null,
             valueChange: null,
+
+            dialogErrorTradeVisible: false,
+            errorTrade: null,
+            errorTradeAvailable: false,
+            errorTradeOrdersLoading: false,
+
+            //临时表格
+            prmOnlineOffline: [],
+            dialogActiveSymbolsVisible: false,
+            activeSymbols: null,
+            prmExchange: null,
+            prmDialogTitle: null,
+            dialogPrmSymbolsVisible: false,
+            prmSymbols: null,
 
             strategyAlias: config.strategyAlias, 
             config: config,
@@ -302,7 +517,51 @@ export default {
                 this.beginValue = Math.round(this.report.summary.begin_value)
                 this.endValue = Math.round(this.report.summary.end_value)
                 this.valueChange = (this.endValue - this.beginValue)/this.beginValue
+
+                // 准备pivot_reversal_mini策略上线/下线数据
+                if (this.report.temp_stats.prm_online_offline){
+                    this.preparePrmOnlineOffline()
+                }
             })
+        },
+
+        // 准备pivot_reversal_mini策略上线/下线数据
+        preparePrmOnlineOffline(){
+            for(let exchange in this.report.temp_stats.prm_online_offline){
+                var data = this.report.temp_stats.prm_online_offline[exchange]
+                var row = {}
+                row.exchange = exchange
+                row.activeCount = data.active_symbols.length
+                row.activeSymbols = data.active_symbols
+                row.onlineCount = Object.keys(data.online_symbols).length
+                row.onlineSymbols = data.online_symbols
+                row.validOnlineCount = Object.keys(data.valid_online_symbols).length
+                row.validOnlineSymbols = data.valid_online_symbols
+                row.timerDisableCount = Object.keys(data.timer_disable_symbols).length
+                row.timerDisableSymbols = data.timer_disable_symbols
+                row.volumeDisableCount = Object.keys(data.volume_disable_symbols).length
+                row.volumeDisableSymbols = data.volume_disable_symbols
+                this.prmOnlineOffline.push(row)
+            }
+        },
+
+        clickPrmActiveCount(exchange, symbols){
+            this.activeSymbols = symbols
+            this.prmExchange = exchange
+            this.dialogActiveSymbolsVisible = true
+        },
+
+        clickPrmSymbols(exchange, symbols, title){
+            this.prmSymbols = []
+            for(let symbol in symbols){
+                this.prmSymbols.push({
+                    symbol: symbol,
+                    dt: symbols[symbol]
+                })
+            }
+            this.prmExchange = exchange
+            this.prmDialogTitle = title
+            this.dialogPrmSymbolsVisible = true
         },
 
         // 策略表格表头汉化
@@ -312,11 +571,14 @@ export default {
             } else if (col == 'all'){
                 return '合计'
             } else {
-                var strategy = col.split('_').slice(0, -1).join('_')
-                var strategyId = col.split('_').slice(-1,)[0]
-                return this.strategyAlias[strategy] + '-' + strategyId
+                return chineseStrategyID(col)
+                // var strategy = col.split('_').slice(0, -1).join('_')
+                // var strategyId = col.split('_').slice(-1,)[0]
+                // return this.strategyAlias[strategy] + '-' + strategyId
             }
         },
+
+        // 
 
         // 延迟表格表头汉化
         getDelayCol(col){
@@ -380,13 +642,30 @@ export default {
             }
         },
 
-        clickTrade(){
+        //点击ErrorTrade
+        clickErrorTrade(row, ix){
+            this.errorTradeAvailable = false
+            this.errorTradeOrdersLoading = true
+            this.dialogErrorTradeVisible = true
+            this.fetchErrorTrade(row.trade_id, row.pfo)
+        },
 
+        // 从对应的host获取trade
+        fetchErrorTrade(id, pfo) {
+            getPortfolioByName(pfo, config.masterHost, 'host').then(response => {
+                var host = response.results[0].host
+                getTradeById(id, host).then(response => {
+                    this.errorTrade = response.results[0]
+                    this.errorTradeOrdersLoading = false
+                    this.errorTradeAvailable = true
+                })          
+            })
         },
 
         utcToLocalTimestamp: utcToLocalTimestamp,
         toThousands: toThousands,
         chineseString: chineseString,
+        chineseStrategyID: chineseStrategyID,
         toFixed: toFixed,
     }
 }
