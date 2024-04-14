@@ -7,12 +7,12 @@
             <el-row :gutter="5" type="flex" style="margin-bottom: 10px">
                 <!----------------------------------- 2024 年/季/月报选择 --------------------------------------->
                 <el-col :span="3"><div class="grid-content bg-2024" @click="choose('year', '2024-01-01')">2024</div></el-col>
-                <el-col :span="3"><div class="grid-content bg-2024" @click="choose('quarter', '2024-01-01')">2024-S1</div></el-col>
+                <el-col :span="3"><div class="grid-content bg-2024" ></div></el-col>
                 <el-col :span="3"><div class="grid-content bg-2024" @click="choose('quarter', '2024-04-01')">2024-S2</div></el-col>
                 <el-col :span="3"><div class="grid-content bg-2024" @click="choose('quarter', '2024-07-01')">2024-S3</div></el-col>
                 <el-col :span="3"><div class="grid-content bg-2024" @click="choose('quarter', '2024-10-01')">2024-S4</div></el-col>
-                <el-col :span="3"><div class="grid-content bg-2024" @click="choose('month', '2024-01-01')">2024-M1</div></el-col>
-                <el-col :span="3"><div class="grid-content bg-2024" @click="choose('month', '2024-02-01')">2024-M2</div></el-col>
+                <el-col :span="3"><div class="grid-content bg-2024" ></div></el-col>
+                <el-col :span="3"><div class="grid-content bg-2024" ></div></el-col>
                 <el-col :span="3"><div class="grid-content bg-2024" @click="choose('month', '2024-03-01')">2024-M3</div></el-col>
                 <el-col :span="3"><div class="grid-content bg-2024" @click="choose('month', '2024-04-01')">2024-M4</div></el-col>
                 <el-col :span="3"><div class="grid-content bg-2024" @click="choose('month', '2024-05-01')">2024-M5</div></el-col>
