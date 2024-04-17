@@ -318,7 +318,7 @@ export default {
                 // 特例
                 if (key == 'pivot_reversal'){
                     this.todayObj[key].longWinStop = null
-                    this.todayObj[key].shortWinStop = null                    
+                    // this.todayObj[key].shortWinStop = null                    
                 } else if (key == 'plunge_back') {
                     this.todayObj[key].shortOpen = null
                     this.todayObj[key].longFlip = null
@@ -330,7 +330,6 @@ export default {
                     this.todayObj[key].longFlip = null
                     this.todayObj[key].longTimer = null
                     this.todayObj[key].longWinStop = null
-                    this.todayObj[key].shortWinStop = null
                 }
             }
         },
