@@ -199,13 +199,16 @@
                 </span>                
                 <span style="color:red" v-else>
                   {{ scope.row.flag_codes }}
+                  <span v-if="scope.row.final_flag != null">
+                    ({{scope.row.final_flag}})
+                  </span>
                 </span>
               </template>
             </el-table-column>  
 
             <el-table-column align="left" label="" min-width="30%">
               <template slot-scope="scope">
-                <div v-if="scope.row.summary != true && scope.row.flag_codes != '0'">
+                <div v-if="scope.row.summary != true && scope.row.flag_codes != '0' && scope.row.final_flag == null">
                   <el-form :inline="true" :model="tradeFinal" class="demo-form-inline" size="mini">
                     <el-form-item label="" style="width: 100px; height: 10px">
                       <el-select v-model="tradeFinal.final_flag" placeholder="最终标识" size="mini">
@@ -477,6 +480,7 @@ export default {
               symbol: symbol,
               status: __data.status,
               flag_codes: __data.flag_codes,
+              final_flag: __data.final_flag
             }) 
             this.tradeCount += 1     
           }

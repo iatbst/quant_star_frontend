@@ -103,42 +103,6 @@
                 </el-col>
             </el-row>
 
-            <!---
-            <el-row :gutter="0" type="flex" style="margin-bottom: 10px">
-                <el-col :span="3" align="left">
-                    <el-row style="margin-left: 20px">
-                    <el-select v-model="reportFilter.level" placeholder="类型">
-                        <el-option
-                        v-for="level in Object.keys(reportLevels)"
-                        :key="level"
-                        :label="reportLevels[level]"
-                        :value="level">
-                        </el-option>
-                    </el-select>  
-                    </el-row>   
-                </el-col>
-
-                <el-col :span="3" align="left">
-                    <el-row style="margin-left: 20px">
-                        <el-input
-                            v-model="reportFilter.dt_label"
-                            placeholder="起始日期:年-月-日"
-                        ></el-input> 
-                    </el-row>      
-                </el-col>
-
-                <el-col :span="6" align="left">
-                    <el-row style="margin-left: 20px">
-                        <el-col :span="12" :offset="0">
-                            <el-button style="width: 100%" type="primary" @click="search()">
-                                查询
-                            </el-button>                             
-                        </el-col>
-                    </el-row>
-                </el-col>
-            </el-row>
-            --->
-
             <el-row v-if="reportAvailable" v-loading="reportLoading">
                 <!--- 说明 --->
                 <h1>
@@ -230,6 +194,13 @@
                     <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
                 </el-tooltip>
             </div>
+
+            <!--- 策略收益柱状图 --->
+            <el-row :gutter="0" type="flex" v-if="reportAvailable" v-loading="reportLoading">
+                <el-col :span="24">
+                    <highcharts :options="exchangePnlChart"></highcharts>
+                </el-col>           
+            </el-row>
 
             <!--- 策略统计表格 --->
             <el-row :gutter="0" type="flex" v-if="reportAvailable" v-loading="reportLoading">
@@ -531,12 +502,14 @@ import { toFixed } from  '@/utils/general'
 import { getReport } from '@/api/report'
 import { getPortfolioByName } from '@/api/portfolio'
 import { getTradeById } from '@/api/trade'
+import {Chart} from 'highcharts-vue'
 
 
 export default {
     components: {
         tradeOrders,
         valueLine,
+        highcharts: Chart
     },
 
     watch: {
@@ -587,6 +560,62 @@ export default {
             strategyAlias: config.strategyAlias, 
             config: config,
             pfoHosts: config.pfoHosts,
+
+            exchangePnlChart: {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '平台/策略收益',
+                },
+                xAxis: {
+                    categories: ['s1', 's2', 's3']
+                },
+                yAxis: {
+                    title: {
+                        text: '收益($)'
+                    },
+                    stackLabels: {
+                        enabled: true,
+                        style: {
+                            fontWeight: 'bold',
+                            color: 'gray'
+                        }
+                    }
+                },
+                
+                exporting: { enabled: false },
+                
+                legend: {
+                    enabled: false
+                },
+
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{series.name}: {point.y}'
+                },
+                plotOptions: {
+                    column: {
+                        dataLabels: {
+                            enabled: true,
+                            style: {
+                                textOutline: 0
+                            },                                        
+                        },
+                        borderWidth: 0
+                    }
+                },
+                series: [
+                    {
+                        name: 'binance',
+                        data: [1, 2, 3]
+                    },
+                    {
+                        name: 'okex',
+                        data: [4, 5, 6]
+                    },                    
+                ],                   
+            }
         }
     },
 

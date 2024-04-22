@@ -69,7 +69,7 @@ var development_hosts = [
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = development_hosts
+    var hostList = production_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
@@ -128,7 +128,24 @@ const strategyAlias = {
     'pb': '底'
 }
 
-// Trade错误代码(和后端的TRADE_FINAL_ERRORS保持一致)
+// Trade错误代码(和后端的TRADE_FLAG_CODES保持一致)
+const tradeFlagCodes = {
+    '0': '正常.',
+
+    '101': '交易没有建立任何头寸.',
+    '102': '交易被过滤, 不应该有任何订单.',
+
+    '201': '交易方向仓位值不一致.',
+
+    '301': '交易已结束, 仍有仓位.',
+    '302': '入场和离场执行头寸不一致.',
+
+    '401': '未获取到回测的当前交易.',
+    '402': '没有从回测的当前交易中找到对应交易.',
+    '403': '回测交易的对应属性不一致.',
+
+    '501': '订单被交易所取消.'
+}
 const tradeFinalErrors = {
     '101': '账户保证金不足,无法开仓.',
     '102': '平台标的杠杆率限制,无法开仓.',
@@ -274,7 +291,8 @@ export default {
     strategyAlias,
     exchanges,
     strategies,
-    tradeFinalErrors
+    tradeFinalErrors,
+    tradeFlagCodes
 }
 
 

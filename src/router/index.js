@@ -146,7 +146,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/worker-runs',
     name: '策略执行',
-    meta: { title: '策略执行', icon: 'el-icon-s-operation' },
+    meta: { title: '策略执行', icon: 'el-icon-s-promotion' },
     children: [
       {
         path: 'worker-runs',
@@ -277,6 +277,22 @@ export const constantRoutes = [
         name: 'Errors',
         component: () => import('@/views/monitor/error/index'),
         meta: { title: '警报事件', icon: 'el-icon-warning' }
+      }
+    ]
+  },
+
+  {
+    path: '/other_settings',
+    component: Layout,
+    redirect: '/other_settings',
+    name: '其他设置',
+    meta: { title: '其他设置', icon: 'el-icon-s-operation' },
+    children: [
+      {
+        path: 'product_leverages',
+        name: '仓位档位',
+        component: () => import('@/views/other_settings/product_leverages/index'),
+        meta: { title: '仓位档位', icon: 'el-icon-s-operation' }
       }
     ]
   },
