@@ -206,3 +206,9 @@ export function fillPieByArray(data_list, options) {
         options.series[0].data.push(data_list[i])
     }
 }
+
+// 平台颜色
+export const exchangeColors = {
+    'binance': '#eeb00f',
+    'okex': 'black'
+}

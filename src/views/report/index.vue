@@ -184,6 +184,11 @@
                     </template>
                 </el-table>
             </el-row>
+            <el-row :gutter="0" type="flex" v-if="reportAvailable" v-loading="reportLoading">
+                <el-col :span="24">
+                    <highcharts :options="exchangePnlChart"></highcharts>
+                </el-col>           
+            </el-row>
             <div style="margin-bottom: 50px" align="left">
                 <el-tooltip placement="top-start" align="left">
                     <div slot="content">
@@ -195,12 +200,13 @@
                 </el-tooltip>
             </div>
 
-            <!--- 策略收益柱状图 --->
-            <el-row :gutter="0" type="flex" v-if="reportAvailable" v-loading="reportLoading">
+            <!--- 策略收益柱状图 --
+            <el-row :gutter="0"  style="margin-bottom: 50px" type="flex" v-if="reportAvailable" v-loading="reportLoading">
                 <el-col :span="24">
                     <highcharts :options="exchangePnlChart"></highcharts>
                 </el-col>           
             </el-row>
+            -->
 
             <!--- 策略统计表格 --->
             <el-row :gutter="0" type="flex" v-if="reportAvailable" v-loading="reportLoading">
@@ -503,6 +509,7 @@ import { getReport } from '@/api/report'
 import { getPortfolioByName } from '@/api/portfolio'
 import { getTradeById } from '@/api/trade'
 import {Chart} from 'highcharts-vue'
+import { exchangeColors } from '@/utils/chart'
 
 
 export default {
@@ -566,10 +573,12 @@ export default {
                     type: 'column'
                 },
                 title: {
-                    text: '平台/策略收益',
+                    text: '',
                 },
                 xAxis: {
-                    categories: ['s1', 's2', 's3']
+                    categories: [
+                        // 's1', 's2', 's3'
+                    ]
                 },
                 yAxis: {
                     title: {
@@ -587,7 +596,7 @@ export default {
                 exporting: { enabled: false },
                 
                 legend: {
-                    enabled: false
+                    enabled: true
                 },
 
                 tooltip: {
@@ -606,14 +615,14 @@ export default {
                     }
                 },
                 series: [
-                    {
-                        name: 'binance',
-                        data: [1, 2, 3]
-                    },
-                    {
-                        name: 'okex',
-                        data: [4, 5, 6]
-                    },                    
+                    // {
+                    //     name: 'binance',
+                    //     data: [1, 2, 3]
+                    // },
+                    // {
+                    //     name: 'okex',
+                    //     data: [4, 5, 6]
+                    // },                    
                 ],                   
             }
         }
@@ -642,29 +651,30 @@ export default {
                 this.reportFilter.dt_label = this.getLastMonday(new Date(), 1)
             }
 
-            var filters = 'level=' + this.reportFilter.level + '&dt_label=' + this.reportFilter.dt_label
-            this.reportLoading = true
-            getReport(this.config.masterHost, null, filters).then(response => {
-                if (response.results.length == 0){
-                    alert(this.reportLevels[this.reportFilter.level] + ':' + this.reportFilter.dt_label + '不存在.')
-                    this.reportLoading = false
-                    return
-                }
+            this.choose(this.reportFilter.level, this.reportFilter.dt_label)
+            // var filters = 'level=' + this.reportFilter.level + '&dt_label=' + this.reportFilter.dt_label
+            // this.reportLoading = true
+            // getReport(this.config.masterHost, null, filters).then(response => {
+            //     if (response.results.length == 0){
+            //         alert(this.reportLevels[this.reportFilter.level] + ':' + this.reportFilter.dt_label + '不存在.')
+            //         this.reportLoading = false
+            //         return
+            //     }
 
-                this.level = this.reportFilter.level
-                this.dt_label = this.reportFilter.dt_label
-                this.report = response.results[0]
-                this.reportAvailable = true
-                this.beginValue = Math.round(this.report.summary.begin_value)
-                this.endValue = Math.round(this.report.summary.end_value)
-                this.valueChange = (this.endValue - this.beginValue)/this.beginValue
-                this.reportLoading = false
+            //     this.level = this.reportFilter.level
+            //     this.dt_label = this.reportFilter.dt_label
+            //     this.report = response.results[0]
+            //     this.reportAvailable = true
+            //     this.beginValue = Math.round(this.report.summary.begin_value)
+            //     this.endValue = Math.round(this.report.summary.end_value)
+            //     this.valueChange = (this.endValue - this.beginValue)/this.beginValue
 
-                // 准备pivot_reversal_mini策略上线/下线数据
-                if (this.report.temp_stats.prm_online_offline){
-                    this.preparePrmOnlineOffline()
-                }
-            })
+            //     // 准备pivot_reversal_mini策略上线/下线数据
+            //     if (this.report.temp_stats.prm_online_offline){
+            //         this.preparePrmOnlineOffline()
+            //     }
+            //     this.reportLoading = false
+            // })
         },
 
         choose(level, dt_label){
@@ -683,12 +693,27 @@ export default {
                 this.beginValue = Math.round(this.report.summary.begin_value)
                 this.endValue = Math.round(this.report.summary.end_value)
                 this.valueChange = (this.endValue - this.beginValue)/this.beginValue
-                this.reportLoading = false
+
+                // 准备pnl colume数据
+                this.exchangePnlChart.xAxis.categories = []
+                for(let exchange of this.report.strategy_pnls.col_header){
+                    this.exchangePnlChart.xAxis.categories.push(this.getStrategyCol(exchange))
+                }
+                if (this.report.strategy_pnls.exchange_pnls == null){
+                    this.exchangePnlChart.series = []
+                } else {
+                    this.exchangePnlChart.series = this.report.strategy_pnls.exchange_pnls
+                    for (let exchangeData of this.exchangePnlChart.series){
+                        // 赋予对应的颜色
+                        exchangeData['color'] = exchangeColors[exchangeData['name']]
+                    }
+                }
 
                 // 准备pivot_reversal_mini策略上线/下线数据
                 if (this.report.temp_stats.prm_online_offline){
                     this.preparePrmOnlineOffline()
                 }
+                this.reportLoading = false
             })
         },
 
