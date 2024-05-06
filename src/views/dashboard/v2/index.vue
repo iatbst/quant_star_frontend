@@ -120,16 +120,11 @@
                     title: pnlLines.plunge_back.name,
                     data: pnlLines.plunge_back.data
                 },
-                {
-                    title: pnlLines.pivot_reversal_mini.name,
-                    data: pnlLines.pivot_reversal_mini.data
-                },
             ]
             " 
             v-if="
             pnlLines.pivot_reversal.available && 
-            pnlLines.plunge_back.available &&
-            pnlLines.pivot_reversal_mini.available
+            pnlLines.plunge_back.available
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
@@ -156,7 +151,7 @@
           <div style="margin-bottom: 20px; width: 95%">
             <position-ranks2
             v-bind:positions="positions"
-            v-if="prBinancePositionsAvailable && prOkexPositionsAvailable && prmBinancePositionsAvailable && prmOkexPositionsAvailable && 
+            v-if="prBinancePositionsAvailable && prOkexPositionsAvailable && 
             pbBinancePositionsAvailable && pbOkexPositionsAvailable" 
             ></position-ranks2> 
 
@@ -224,7 +219,7 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- prm_binance -->
+            <!-- prm_binance
             <position-map2 
             v-bind:positions="prmBinancePositions" 
             v-bind:positions-loading="prmBinancePositionsLoading"
@@ -233,8 +228,9 @@
             v-bind:col-count="10"
             v-bind:show-zero="false"
             ></position-map2> 
+            -->
 
-            <!-- prm_okex -->
+            <!-- prm_okex
             <position-map2 
             v-bind:positions="prmOkexPositions" 
             v-bind:positions-loading="prmOkexPositionsLoading"
@@ -243,6 +239,7 @@
             v-bind:col-count="10"
             v-bind:show-zero="false"
             ></position-map2> 
+            -->
 
             <!--- 刷新说明 --->
             <div align="left">
@@ -364,8 +361,6 @@ export default {
             prOkexHosts: config.prOkexHosts,
             pbBinanceHosts: config.pbBinanceHosts,
             pbOkexHosts: config.pbOkexHosts,
-            prmBinanceHosts: config.prmBinanceHosts,
-            prmOkexHosts: config.prmOkexHosts,
             prBinanceSortWeights: config.prBinanceSortWeights,
             prOkexSortWeights: config.prOkexSortWeights,
 
@@ -410,12 +405,12 @@ export default {
             pbOkexPositions: [],
             pbOkexPositionsAvailable: false,
             pbOkexPositionsLoading: false,
-            prmBinancePositions: [],
-            prmBinancePositionsAvailable: false,
-            prmBinancePositionsLoading: false,
-            prmOkexPositions: [],
-            prmOkexPositionsAvailable: false,
-            prmOkexPositionsLoading: false,
+            // prmBinancePositions: [],
+            // prmBinancePositionsAvailable: false,
+            // prmBinancePositionsLoading: false,
+            // prmOkexPositions: [],
+            // prmOkexPositionsAvailable: false,
+            // prmOkexPositionsLoading: false,
 
             binanceBalancePtg: null,
             okexBalancePtg: null,
@@ -463,11 +458,11 @@ export default {
                     'data': null,
                     'available': false
                 },
-                'pivot_reversal_mini': {
-                    'name': '小',
-                    'data': null,
-                    'available': false
-                },                                 
+                // 'pivot_reversal_mini': {
+                //     'name': '小',
+                //     'data': null,
+                //     'available': false
+                // },                                 
             },
 
             refreshInterval: 1000,
@@ -724,8 +719,8 @@ export default {
                     this.pnlLines.pivot_reversal.available = true
                     this.pnlLines.plunge_back.data = parentPfoData.pnl_line.plunge_back.year_now
                     this.pnlLines.plunge_back.available = true
-                    this.pnlLines.pivot_reversal_mini.data = parentPfoData.pnl_line.pivot_reversal_mini.year_now
-                    this.pnlLines.pivot_reversal_mini.available = true                    
+                    // this.pnlLines.pivot_reversal_mini.data = parentPfoData.pnl_line.pivot_reversal_mini.year_now
+                    // this.pnlLines.pivot_reversal_mini.available = true                    
                 }
             )
         },
@@ -868,52 +863,52 @@ export default {
             }
     
             // prm binance
-            this.prmBinancePositions = []
-            var prmBinanceCount = 0
-            this.prmBinancePositionsLoading = true
-            this.prmBinancePositionsAvailable = false
-            for(var i = 0; i < this.prmBinanceHosts.length; i++){
-                getPositions(this.prmBinanceHosts[i], 'normal').then(response => {
-                        prmBinanceCount += 1
-                        var positions = response.results
-                        // 每个position添加host信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                        }
-                        this.prmBinancePositions = this.prmBinancePositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (prmBinanceCount === this.prmBinanceHosts.length ){
-                            // 排序
-                            this.prmBinancePositionsAvailable = true
-                            this.prmBinancePositionsLoading = false
-                        }
-                    }
-                )
-            }
+            // this.prmBinancePositions = []
+            // var prmBinanceCount = 0
+            // this.prmBinancePositionsLoading = true
+            // this.prmBinancePositionsAvailable = false
+            // for(var i = 0; i < this.prmBinanceHosts.length; i++){
+            //     getPositions(this.prmBinanceHosts[i], 'normal').then(response => {
+            //             prmBinanceCount += 1
+            //             var positions = response.results
+            //             // 每个position添加host信息
+            //             for (let j = 0; j < positions.length; j++){
+            //                 positions[j]['host'] = response.config.baseURL
+            //             }
+            //             this.prmBinancePositions = this.prmBinancePositions.concat(positions)
+            //             this.positions = this.positions.concat(positions)
+            //             if (prmBinanceCount === this.prmBinanceHosts.length ){
+            //                 // 排序
+            //                 this.prmBinancePositionsAvailable = true
+            //                 this.prmBinancePositionsLoading = false
+            //             }
+            //         }
+            //     )
+            // }
 
             // prm okex
-            this.prmOkexPositions = []
-            var prmOkexCount = 0
-            this.prmOkexPositionsLoading = true
-            this.prmOkexPositionsAvailable = false
-            for(var i = 0; i < this.prmOkexHosts.length; i++){
-                getPositions(this.prmOkexHosts[i], 'normal').then(response => {
-                        prmOkexCount += 1
-                        var positions = response.results
-                        // 每个position添加host信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                        }
-                        this.prmOkexPositions = this.prmOkexPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (prmOkexCount === this.prmOkexHosts.length ){
-                            // 排序
-                            this.prmOkexPositionsAvailable = true
-                            this.prmOkexPositionsLoading = false
-                        }
-                    }
-                )
-            }
+            // this.prmOkexPositions = []
+            // var prmOkexCount = 0
+            // this.prmOkexPositionsLoading = true
+            // this.prmOkexPositionsAvailable = false
+            // for(var i = 0; i < this.prmOkexHosts.length; i++){
+            //     getPositions(this.prmOkexHosts[i], 'normal').then(response => {
+            //             prmOkexCount += 1
+            //             var positions = response.results
+            //             // 每个position添加host信息
+            //             for (let j = 0; j < positions.length; j++){
+            //                 positions[j]['host'] = response.config.baseURL
+            //             }
+            //             this.prmOkexPositions = this.prmOkexPositions.concat(positions)
+            //             this.positions = this.positions.concat(positions)
+            //             if (prmOkexCount === this.prmOkexHosts.length ){
+            //                 // 排序
+            //                 this.prmOkexPositionsAvailable = true
+            //                 this.prmOkexPositionsLoading = false
+            //             }
+            //         }
+            //     )
+            // }
         },
 
         // 定时刷新数据函数

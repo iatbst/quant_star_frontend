@@ -15,12 +15,12 @@ const prBinanceHosts = [
 const prOkexHosts = [
     'http://ec2-18-162-154-126.ap-east-1.compute.amazonaws.com:8000/api'
 ]
-const prmBinanceHosts = [
-    'http://ec2-13-230-206-166.ap-northeast-1.compute.amazonaws.com:8000/api'
-]
-const prmOkexHosts = [
-    'http://ec2-16-162-187-219.ap-east-1.compute.amazonaws.com:8000/api'
-]
+// const prmBinanceHosts = [
+//     'http://ec2-13-230-206-166.ap-northeast-1.compute.amazonaws.com:8000/api'
+// ]
+// const prmOkexHosts = [
+//     'http://ec2-16-162-187-219.ap-east-1.compute.amazonaws.com:8000/api'
+// ]
 const pbBinanceHosts = [
     'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
@@ -47,11 +47,11 @@ var production_hosts = [
     'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-16-163-154-133.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-16-162-187-219.ap-east-1.compute.amazonaws.com:8000/api',
+    //'http://ec2-16-162-187-219.ap-east-1.compute.amazonaws.com:8000/api',
 
     // 东京: Binance
     'http://ec2-35-78-113-187.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-13-230-206-166.ap-northeast-1.compute.amazonaws.com:8000/api',
+    //'http://ec2-13-230-206-166.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-52-195-149-42.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-35-78-72-28.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-35-76-111-12.ap-northeast-1.compute.amazonaws.com:8000/api',
@@ -271,8 +271,6 @@ export default {
     prOkexHosts,
     pbBinanceHosts,
     pbOkexHosts,
-    prmBinanceHosts,
-    prmOkexHosts,
     pfoAlias,
     backtestHost,
     cryptoParentPfo,
