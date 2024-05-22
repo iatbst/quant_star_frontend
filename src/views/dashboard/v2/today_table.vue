@@ -246,7 +246,6 @@ export default {
             keys: [
                 'pivot_reversal',
                 'plunge_back',
-                'pivot_reversal_mini',
                 'all'
             ],
             todayObj: {
@@ -258,12 +257,6 @@ export default {
                 },
                 'plunge_back': {
                     strategy: '底',
-                    initPosition: null,
-                    position: null,
-                    fundingFees: null
-                },
-                'pivot_reversal_mini': {
-                    strategy: '小',
                     initPosition: null,
                     position: null,
                     fundingFees: null
@@ -325,11 +318,6 @@ export default {
                     this.todayObj[key].shortFlip = null  
                     this.todayObj[key].shortWinStop = null  
                     this.todayObj[key].shortTimer = null                  
-                } else if (key == 'pivot_reversal_mini'){
-                    this.todayObj[key].longOpen = null
-                    this.todayObj[key].longFlip = null
-                    this.todayObj[key].longTimer = null
-                    this.todayObj[key].longWinStop = null
                 }
             }
         },

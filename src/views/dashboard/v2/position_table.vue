@@ -48,20 +48,15 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="小头寸" min-width="10%" align="center">
-            <template slot-scope="scope">
-                <span style="color: red">
-                    {{toThousands(scope.row.prmPosition)}}
-                </span>              
-            </template>       
-        </el-table-column>
-
         <el-table-column label="底头寸" min-width="10%" align="center">
             <template slot-scope="scope">
                 <span style="color: green">
                     {{toThousands(scope.row.pbPosition)}}
                 </span>          
             </template>
+        </el-table-column>
+
+        <el-table-column label="" min-width="10%" align="center">
         </el-table-column>
     </el-table> 
 </template>
@@ -109,7 +104,6 @@ export default {
 
                 prLongPosition: null,
                 prShortPosition: null,
-                prmPosition: null,
                 pbPosition: null
             }],
         }
@@ -126,11 +120,9 @@ export default {
             // 策略仓位信息从系统后台获取
             var prData = this.parentPfoPositions.pivot_reversal
             var pbData = this.parentPfoPositions.plunge_back
-            var prmData = this.parentPfoPositions.pivot_reversal_mini
             this.positionDatas[0].prLongPosition = Math.round(prData.long)
             this.positionDatas[0].prShortPosition = Math.round(prData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
-            this.positionDatas[0].prmPosition = Math.round(prmData.short)
         },
 
         parseSubaccountDatas(){  

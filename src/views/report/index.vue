@@ -717,7 +717,7 @@ export default {
             })
         },
 
-        // 准备pivot_reversal_mini策略上线/下线数据
+        // 准备pivot_reversal_mini策略上线/下线数据(Deprecated)
         preparePrmOnlineOffline(){
             this.prmOnlineOffline = []
             for(let exchange in this.report.temp_stats.prm_online_offline){
