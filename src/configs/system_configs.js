@@ -112,6 +112,19 @@ const strategies = [
     // 'pivot-reversal-mini',
 ]
 
+const activeStrategyIDs = [
+    'pivot_reversal_1',
+    'pivot_reversal_2',
+    'pivot_reversal_3',
+    'pivot_reversal_4',
+    'plunge_back_1',
+    'plunge_back_2',
+    'plunge_back_3',
+    'plunge_back_4',
+    'plunge_back_5',
+    'plunge_back_6',
+]
+
 const strategyAlias = {
     'pivot-reversal': '大',
     'pivot_reversal': '大',
@@ -125,6 +138,8 @@ const strategyAlias = {
     'plunge_back': '底',
     'pb': '底'
 }
+
+
 
 // Trade错误代码(和后端的TRADE_FLAG_CODES保持一致)
 const tradeFlagCodes = {
@@ -288,7 +303,8 @@ export default {
     exchanges,
     strategies,
     tradeFinalErrors,
-    tradeFlagCodes
+    tradeFlagCodes,
+    activeStrategyIDs
 }
 
 

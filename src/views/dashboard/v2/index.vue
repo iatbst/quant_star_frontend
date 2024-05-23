@@ -168,6 +168,32 @@
       </el-col>
     </el-row>
 
+    <!----------------------------------- 策略仓位 ---------------------------------------
+        函数:fetchPositions 
+        更新频率: ?
+    --->  
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
+      <el-col :span="24" align="center">
+          <div style="margin-bottom: 20px; width: 95%">
+            <strategy-positions
+            v-bind:positions="positions"
+            v-if="prBinancePositionsAvailable && prOkexPositionsAvailable && 
+            pbBinancePositionsAvailable && pbOkexPositionsAvailable" 
+            ></strategy-positions> 
+
+            <!--- 刷新说明 --->
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        策略仓位: 每间隔5分钟刷新1次(非整点)
+                    </div>
+                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
+                </el-tooltip>
+            </div>
+          </div>
+      </el-col>
+    </el-row>
+
     <!----------------------------------- 仓位 ---------------------------------------
         函数:fetchPositions 
         更新频率: ?
@@ -218,28 +244,6 @@
             v-bind:col-count="5"
             v-bind:show-zero="false"
             ></position-map2> 
-
-            <!-- prm_binance
-            <position-map2 
-            v-bind:positions="prmBinancePositions" 
-            v-bind:positions-loading="prmBinancePositionsLoading"
-            v-bind:exchange="'Binance'"
-            v-bind:strategy="'小'"
-            v-bind:col-count="10"
-            v-bind:show-zero="false"
-            ></position-map2> 
-            -->
-
-            <!-- prm_okex
-            <position-map2 
-            v-bind:positions="prmOkexPositions" 
-            v-bind:positions-loading="prmOkexPositionsLoading"
-            v-bind:exchange="'Okex'"
-            v-bind:strategy="'小'"
-            v-bind:col-count="10"
-            v-bind:show-zero="false"
-            ></position-map2> 
-            -->
 
             <!--- 刷新说明 --->
             <div align="left">
@@ -295,7 +299,7 @@ import valueLine from '@/views/balance/_value_line'
 import twoValueLine from '@/views/balance/_two_value_line'
 import multiValueLine from '@/views/balance/_multi_value_line'
 import strategyLevelPositions from '@/views/position/_strategy_level_positions'
-import strategyPositions from '@/views/position/_strategy_positions'
+// import strategyPositions from '@/views/position/_strategy_positions'
 import exchangeBalanceDistributions from '@/views/balance/_exchange_balance_distributions'
 import positionMap2 from '@/views/position/position_map2'
 
@@ -304,6 +308,7 @@ import pfoBalances from '@/views/balance/pfo_balances'
 import balanceDistributions from '@/views/balance/balance_distributions'
 import totalPosition from '@/views/position/total_position'
 import positionRanks2 from '@/views/position/position_ranks2'
+import strategyPositions from '@/views/dashboard/v2/strategy_positions'
 import totalPerf from '@/views/performance/total_perf'
 import pfoPerfs from '@/views/performance/pfo_perfs'
 import profitRanks from '@/views/performance/profit_ranks'
@@ -775,9 +780,10 @@ export default {
                 getPositions(this.prBinanceHosts[i], 'normal').then(response => {
                         prBinanceCount += 1
                         var positions = response.results
-                        // 每个position添加host信息
+                        // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'pivot_reversal'
                         }
                         this.prBinancePositions = this.prBinancePositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -799,9 +805,10 @@ export default {
                 getPositions(this.prOkexHosts[i], 'normal').then(response => {
                         prOkexCount += 1
                         var positions = response.results
-                        // 每个position添加host信息
+                        // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'pivot_reversal'
                         }
                         this.prOkexPositions = this.prOkexPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -823,9 +830,10 @@ export default {
                 getPositions(this.pbBinanceHosts[i], 'normal').then(response => {
                         pbBinanceCount += 1
                         var positions = response.results
-                        // 每个position添加host信息
+                        // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'plunge_back'
                         }
                         this.pbBinancePositions = this.pbBinancePositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -847,9 +855,10 @@ export default {
                 getPositions(this.pbOkexHosts[i], 'normal').then(response => {
                         pbOkexCount += 1
                         var positions = response.results
-                        // 每个position添加host信息
+                        // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'plunge_back'
                         }
                         this.pbOkexPositions = this.pbOkexPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -861,54 +870,6 @@ export default {
                     }
                 )
             }
-    
-            // prm binance
-            // this.prmBinancePositions = []
-            // var prmBinanceCount = 0
-            // this.prmBinancePositionsLoading = true
-            // this.prmBinancePositionsAvailable = false
-            // for(var i = 0; i < this.prmBinanceHosts.length; i++){
-            //     getPositions(this.prmBinanceHosts[i], 'normal').then(response => {
-            //             prmBinanceCount += 1
-            //             var positions = response.results
-            //             // 每个position添加host信息
-            //             for (let j = 0; j < positions.length; j++){
-            //                 positions[j]['host'] = response.config.baseURL
-            //             }
-            //             this.prmBinancePositions = this.prmBinancePositions.concat(positions)
-            //             this.positions = this.positions.concat(positions)
-            //             if (prmBinanceCount === this.prmBinanceHosts.length ){
-            //                 // 排序
-            //                 this.prmBinancePositionsAvailable = true
-            //                 this.prmBinancePositionsLoading = false
-            //             }
-            //         }
-            //     )
-            // }
-
-            // prm okex
-            // this.prmOkexPositions = []
-            // var prmOkexCount = 0
-            // this.prmOkexPositionsLoading = true
-            // this.prmOkexPositionsAvailable = false
-            // for(var i = 0; i < this.prmOkexHosts.length; i++){
-            //     getPositions(this.prmOkexHosts[i], 'normal').then(response => {
-            //             prmOkexCount += 1
-            //             var positions = response.results
-            //             // 每个position添加host信息
-            //             for (let j = 0; j < positions.length; j++){
-            //                 positions[j]['host'] = response.config.baseURL
-            //             }
-            //             this.prmOkexPositions = this.prmOkexPositions.concat(positions)
-            //             this.positions = this.positions.concat(positions)
-            //             if (prmOkexCount === this.prmOkexHosts.length ){
-            //                 // 排序
-            //                 this.prmOkexPositionsAvailable = true
-            //                 this.prmOkexPositionsLoading = false
-            //             }
-            //         }
-            //     )
-            // }
         },
 
         // 定时刷新数据函数
