@@ -69,7 +69,11 @@ export function chineseString(s) {
             case 'slippage': cs = '滑点'; break;  
             case 'fee': cs = '手续费'; break;
             case 'swap_funding': cs = '合约费'; break;  
-            case 'op_fee': cs = '运维费'; break;                          
+            case 'op_fee': cs = '运维费'; break; 
+            
+            // 订单
+            case 'completed': cs = '成交'; break;
+            case 'partial': cs = '部分'; break;
 
             default: cs = '翻译失败:' + s 
         }

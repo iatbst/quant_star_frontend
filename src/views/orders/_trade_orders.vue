@@ -182,10 +182,29 @@
                         </template>
                     </el-table-column>
 
+                    <el-table-column align="center" label="状态" min-width="5%">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.status === 'completed'">
+                            {{ chineseString(scope.row.status) }}
+                            </span>
+                            <span style="color: red" v-else>
+                            {{ chineseString(scope.row.status) }}
+                            </span>
+                        </template>
+                    </el-table-column>
+                    
                     <el-table-column align="center" label="成交额" min-width="10%">
                         <template slot-scope="scope">
                             <div v-if="scope.row.volume !== null">
                                 {{ toThousands(Math.round(scope.row.volume)) }}
+                                <el-tooltip placement="top-start" align="left" effect="dark" v-if="scope.row.order_type === 'open'">
+                                    <div slot="content">
+                                        <li v-for="(value, key) in scope.row.size_data">
+                                            <span style="font-size: 15px">{{ key }}: {{ value}}</span>
+                                        </li>
+                                    </div>
+                                    <span style="color: lightgray; font-size: 15px"><i class="el-icon-question"></i></span>
+                                </el-tooltip>
                             </div>
                         </template>
                     </el-table-column>

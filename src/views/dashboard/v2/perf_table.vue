@@ -40,7 +40,7 @@
             </el-table-column>
             <el-table-column label="收益" min-width="12%" align="center"> 
                 <template slot-scope="scope">
-                    <span style="color: green" v-if="scope.row.col5 >= 0">
+                    <span style="color: green" v-if="scope.row.col3 >= 0">
                         {{toThousands(scope.row.col3)}}
                     </span>  
                     <span style="color: red" v-else>
@@ -50,7 +50,7 @@
             </el-table-column>
             <el-table-column label="滑点" min-width="12%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: green" v-if="scope.row.col6 >= 0">
+                    <span style="color: green" v-if="scope.row.col4 >= 0">
                         {{scope.row.col4}}%
                     </span>  
                     <span style="color: red" v-else>
