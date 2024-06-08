@@ -74,6 +74,7 @@ export function chineseString(s) {
             // 订单
             case 'completed': cs = '成交'; break;
             case 'partial': cs = '部分'; break;
+            case 'canceled': cs = '取消'; break;
 
             default: cs = '翻译失败:' + s 
         }
