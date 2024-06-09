@@ -188,11 +188,11 @@
                             {{ chineseString(scope.row.status) }}
                             </span>
                             <span style="color: red" v-else>
-                            {{ chineseString(scope.row.status) }}
+                            {{ chineseString(scope.row.status) }}({{ (scope.row.exec_size*100/scope.row.size).toFixed(0) }}%)
                             </span>
                         </template>
                     </el-table-column>
-                    
+
                     <el-table-column align="center" label="成交额" min-width="10%">
                         <template slot-scope="scope">
                             <div v-if="scope.row.volume !== null">
