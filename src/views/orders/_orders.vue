@@ -156,7 +156,6 @@
                     </el-table-column>
 
 
-                    <!--
                     <el-table-column align="center" label="状态" min-width="8%">
                         <template slot-scope="scope">
                             <span v-if="scope.row.status === 'completed'">
@@ -167,7 +166,6 @@
                             </span>
                         </template>
                     </el-table-column>
-                    -->
 
                     <el-table-column align="center" label="成交额" min-width="10%">
                         <template slot-scope="scope">
