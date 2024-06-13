@@ -8,10 +8,10 @@
         <el-table-column label="总仓位" min-width="10%" align="center">
             <template slot-scope="scope">
                 <span style="color: green" v-if="scope.row.totalPosition >= 0">
-                    {{toThousands(scope.row.totalPosition - 800000)}}
+                    {{toThousands(scope.row.totalPosition - 500000)}}
                 </span>   
                 <span style="color: red" v-else>
-                    {{toThousands(scope.row.totalPosition - 800000)}}
+                    {{toThousands(scope.row.totalPosition - 500000)}}
                 </span>             
             </template>   
         </el-table-column>
@@ -19,7 +19,7 @@
         <el-table-column label="总多头" min-width="10%" align="center">
             <template slot-scope="scope">
                 <span style="color: green">
-                    {{toThousands(scope.row.longPosition - 800000)}}
+                    {{toThousands(scope.row.longPosition - 500000)}}
                 </span>              
             </template>
         </el-table-column>
