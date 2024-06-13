@@ -7,7 +7,7 @@
 
         <el-table-column prop="totalBalance" label="总资产" min-width="10%" align="center">
             <template slot-scope="scope">
-                <b><u>${{toThousands(scope.row.totalBalance + 40000)}}</u></b>
+                <b><u>${{toThousands(scope.row.totalBalance + 30000)}}</u></b>
             </template>
         </el-table-column>
 
@@ -26,11 +26,11 @@
             <template slot-scope="scope">
                 <span v-if="scope.row.day1Diff > 0" style="color: green">
                     <i class="el-icon-top"></i>
-                    {{toThousands(scope.row.day1Diff + 40000)}}
+                    {{toThousands(scope.row.day1Diff + 30000)}}
                 </span>
                 <span style="color: red" v-else>
                     <i class="el-icon-bottom"></i>
-                    {{toThousands(scope.row.day1Diff + 40000)}}
+                    {{toThousands(scope.row.day1Diff + 30000)}}
                 </span>              
             </template>
         </el-table-column>
