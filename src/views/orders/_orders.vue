@@ -173,8 +173,8 @@
                                 {{ toThousands(Math.round(scope.row.volume)) }}
                                 <el-tooltip placement="top-start" align="left" effect="dark" v-if="scope.row.order_type === 'open'">
                                     <div slot="content">
-                                        <li v-for="(value, key) in scope.row.size_data">
-                                            <span style="font-size: 15px">{{ key }}: {{ value}}</span>
+                                        <li v-for="key in Object.keys(scope.row.size_data).sort()">
+                                            <span style="font-size: 15px">{{ key }}: {{ scope.row.size_data[key] }}</span>
                                         </li>
                                     </div>
                                     <span style="color: lightgray; font-size: 15px"><i class="el-icon-question"></i></span>
