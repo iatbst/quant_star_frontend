@@ -16,11 +16,13 @@
                 函数: 
                     - fetchParentPfoPositions
                     - fetchSubAccountDatas
+                    - fetchParentPfoAtrptg
             --->
             <position-table 
             v-bind:parentPfoPositions="parentPfoPositions" 
             v-bind:subaccountDatas="subaccountDatas" 
-            v-if="parentPfoPositionsAvailable && subaccountDatasAvailable">
+            v-bind:parentPfoAtrptg="parentPfoAtrptg" 
+            v-if="parentPfoPositionsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable">
             </position-table>
 
             <!--- 今日表 ---
@@ -388,6 +390,9 @@ export default {
             parentPfoPositionsAvailable: false,
             parentPfoPositionsHistory: null,
 
+            parentPfoAtrptg: null,
+            parentPfoAtrptgAvailable: false,
+
             totalBalanceValues: {},
             totalBalanceValuesAvailable: false,
 
@@ -489,6 +494,7 @@ export default {
             pnlLinesRefresh: null,
             positionsRefresh: null,
             ordersRefresh: null,
+            parentPfoAtrptgRefresh: null,
         }
     },
 
@@ -505,6 +511,7 @@ export default {
 
             // 表格2: 总体仓位信息
             this.fetchParentPfoPositions()
+            this.fetchParentPfoAtrptg()
             this.fetchSubAccountDatas()
 
             // 表格3: 总体今日信息
@@ -693,6 +700,16 @@ export default {
             getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'wallet').then(response => {
                 this.parentPfoWallet = response.results[0].wallet
                 this.parentPfoWalletAvailable = true
+            })
+        },
+
+
+        // 从Master获取Atrptg信息
+        fetchParentPfoAtrptg(){
+            this.parentPfoAtrptgRefresh = new Date()
+            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'market').then(response => {
+                this.parentPfoAtrptg = response.results[0].market.atrptg
+                this.parentPfoAtrptgAvailable = true
             })
         },
 
@@ -898,7 +915,12 @@ export default {
                     console.log(now + '刷新:fetchParentPfoPositions;fetchSubAccountDatas');
                     this.fetchParentPfoPositions()
                     this.fetchSubAccountDatas()
-                }   
+                }  
+                // Atrptg
+                if(minute >= 30 && date != this.parentPfoTradeStatsRefresh.getDate()){
+                    console.log(now + '刷新:fetchParentPfoAtrptg');
+                    this.fetchParentPfoAtrptg()
+                }  
                 // 今日表格
                 if(now - this.todayOrdersRefresh > 5*60*1000){
                     console.log(now + '刷新:fetchTodayOrders');

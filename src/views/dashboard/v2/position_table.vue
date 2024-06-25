@@ -56,8 +56,14 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="" min-width="10%" align="center">
+        <el-table-column label="波动率" min-width="10%" align="center">
+            <template slot-scope="scope">
+                <span>
+                    {{ (scope.row.atrptg*100).toFixed(2) }}%
+                </span>          
+            </template>
         </el-table-column>
+
     </el-table> 
 </template>
 
@@ -72,6 +78,10 @@ export default {
             type:Object,
             default:{}
         },
+        parentPfoAtrptg: {
+            type:Object,
+            default:{}
+        },
         subaccountDatas: {
             type:Object,
             default:{}
@@ -80,6 +90,13 @@ export default {
 
     watch: {
         parentPfoPositions: {
+            handler(val, oldVal){
+                this.parseParentPfoPositions()
+            },
+            deep: true
+        },
+
+        parentPfoAtrptg: {
             handler(val, oldVal){
                 this.parseParentPfoPositions()
             },
@@ -104,7 +121,9 @@ export default {
 
                 prLongPosition: null,
                 prShortPosition: null,
-                pbPosition: null
+                pbPosition: null,
+
+                atrptg: null
             }],
         }
     },
@@ -123,6 +142,8 @@ export default {
             this.positionDatas[0].prLongPosition = Math.round(prData.long)
             this.positionDatas[0].prShortPosition = Math.round(prData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
+
+            this.positionDatas[0].atrptg = this.parentPfoAtrptg.latest
         },
 
         parseSubaccountDatas(){  
