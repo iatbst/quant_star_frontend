@@ -361,8 +361,7 @@ export default {
     },
 
     data() {
-        return {
-          
+        return { 
             pfoHosts: config.pfoHosts,
             prBinanceHosts: config.prBinanceHosts,
             prOkexHosts: config.prOkexHosts,
