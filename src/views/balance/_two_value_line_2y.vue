@@ -26,8 +26,11 @@
                 <el-button type="info" size="mini"  @click="parseData('3Y')" :plain="button3YPlain">
                     3年
                 </el-button>  
-                <el-button type="info" size="mini"  @click.native="switchLineType()" :plain="buttonLogPlain">
-                    对数坐标
+                <el-button type="info" size="mini"  @click.native="switchLine1Type()" :plain="buttonLogPlain1">
+                    左Y对数坐标
+                </el-button>  
+                <el-button type="info" size="mini"  @click.native="switchLine2Type()" :plain="buttonLogPlain2">
+                    右Y对数坐标
                 </el-button>  
             </div>       
         </el-col>
@@ -47,22 +50,44 @@ export default {
     },
 
     props: {
-        values: {
-            type:Array,
-            default: []
+        values1: {
+            type:Object,
+            default:{}
         },
-        yType: {
+        title1: {
             type: String,
-            default: 'logarithmic'      // 默认对数坐标
+            default: ''
+        },
+        yType1: {
+            type: String,
+            default: ''
+        },
+        values2: {
+            type:Object,
+            default:{}
+        },
+        title2: {
+            type: String,
+            default: ''
+        },
+        yType2: {
+            type: String,
+            default: ''
         },
         range: {
             type: String,
-            default: 'thisYearHalf2'    // 默认展示下半年
+            default: 'thisYearHalf2'
         }
     },
 
     watch: {
-        values: {
+        values1: {
+            handler(val, oldVal){
+                this.parseData(this.range)
+            },
+            deep: true
+        },
+        values2: {
             handler(val, oldVal){
                 this.parseData(this.range)
             },
@@ -79,7 +104,8 @@ export default {
             button12MPlain: true,
             button2YPlain: true,
             button3YPlain: true,
-            buttonLogPlain: true,
+            buttonLogPlain1: true,
+            buttonLogPlain2: true,
 
             // 总资产曲线图
             totalBalanceOptions: {
@@ -95,11 +121,22 @@ export default {
                 },
                 yAxis: [
                     {
-                        type: this.yType,
+                        type: this.yType1,
+                        alignTicks: false,
+                        endOnTick: false,
                         title: {
-                            text: '美元'
-                        }  
-                    }                     
+                            text: '实盘'
+                        }
+                    },
+                    {
+                        type: this.yType2,
+                        alignTicks: false,
+                        endOnTick: false,
+                        opposite: true,
+                        title: {
+                            text: '回测'
+                        }
+                    },
                 ],
                 exporting: { enabled: false },
                 
@@ -124,10 +161,15 @@ export default {
 
     created() {
         // 分析Data
-        if (this.yType === ''){
-            this.buttonLogPlain = true
+        if (this.yType1 === ''){
+            this.buttonLogPlain1 = true
         } else {
-            this.buttonLogPlain = false
+            this.buttonLogPlain1 = false
+        }
+        if (this.yType2 === ''){
+            this.buttonLogPlain2 = true
+        } else {
+            this.buttonLogPlain2 = false
         }
         this.parseData(this.range)
     },
@@ -138,20 +180,27 @@ export default {
             // debugger
             this.totalBalanceOptions.series = []
             this._clearButtons()
-            for(let i = 0; i < this.values.length; i++){
-               addSingleLine(this.values[i].title, this.filterDates(this.values[i].data, range), this.totalBalanceOptions, false)
-            }
-            // addTwoLine(this.title1, this.filterDates(this.values1, range), this.title2, this.filterDates(this.values2, range), this.totalBalanceOptions)
+            addTwoLine(this.title1, this.filterDates(this.values1, range), this.title2, this.filterDates(this.values2, range), this.totalBalanceOptions)
             // debugger
         },
 
-        switchLineType(){
+        switchLine1Type(){
             if (this.totalBalanceOptions.yAxis[0].type === ''){
                 this.totalBalanceOptions.yAxis[0].type = 'logarithmic'
-                this.buttonLogPlain = false
+                this.buttonLogPlain1 = false
             } else {
                 this.totalBalanceOptions.yAxis[0].type = ''
-                this.buttonLogPlain = true
+                this.buttonLogPlain1 = true
+            }
+        },
+
+        switchLine2Type(){
+            if (this.totalBalanceOptions.yAxis[1].type === ''){
+                this.totalBalanceOptions.yAxis[1].type = 'logarithmic'
+                this.buttonLogPlain2 = false
+            } else {
+                this.totalBalanceOptions.yAxis[1].type = ''
+                this.buttonLogPlain2 = true
             }
         },
 

@@ -81,10 +81,18 @@
       <el-col :span="24" align="center">
           <div style="margin-bottom: 20px; width: 95%">
             <two-value-line 
-            v-bind:values1="totalBalanceValues" 
-            v-bind:title1="liveValueName"
-            v-bind:values2="btValueLines.all.data" 
-            v-bind:title2="btValueLines.all.name"
+            v-bind:values="
+            [
+                {
+                    title: liveValueName,
+                    data: totalBalanceValues
+                },
+                {
+                    title: btValueLines.all.name,
+                    data: btValueLines.all.data
+                },
+            ]
+            "
             v-if="totalBalanceValuesAvailable && btValueLines.all.available" 
             style="margin-bottom: 20px">
             </two-value-line>

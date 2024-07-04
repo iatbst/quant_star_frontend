@@ -14,7 +14,6 @@ export function addSingleLine(name, data_obj, options, reset_series=true, roundL
         lineData.data.push(Number(Number(data_obj[key]).toFixed(roundLevel)))
     }
     options.series.push(lineData)
-    debugger
 }
 
 // 添加双line(左右y轴表示不同的坐标)
