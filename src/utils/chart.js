@@ -7,11 +7,16 @@ export function addSingleLine(name, data_obj, options, reset_series=true, roundL
         options.series = [] 
     }
     var lineData = {name: name, data: []}
-    options.xAxis.categories = Object.keys(data_obj).sort()
+    if (Object.keys(data_obj).length > options.xAxis.categories.length){
+        options.xAxis.categories = Object.keys(data_obj).sort()
+    }
+    // options.xAxis.categories = Object.keys(data_obj).sort()
     for (var i = 0; i < options.xAxis.categories.length; i++){
         var key = options.xAxis.categories[i]
         //lineData.data.push(Math.round(data_obj[key]))
-        lineData.data.push(Number(Number(data_obj[key]).toFixed(roundLevel)))
+        if (data_obj.hasOwnProperty(key)){
+            lineData.data.push(Number(Number(data_obj[key]).toFixed(roundLevel))) 
+        }
     }
     options.series.push(lineData)
 }
