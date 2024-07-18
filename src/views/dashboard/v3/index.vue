@@ -627,12 +627,15 @@ export default {
                 getBacktestReportByName(config.masterHost, reportName).then(response => {
                     this.btValueLines[sty].data = response.results[0].analyzer_rets.value_line
 
-                    // all 夸大9.9
+                    // 扭曲变化
+                    // 1: 固定尾, 首变为尾的1/20, 中间数值对应变化
+                    // 2: 夸大9.9
                     if (sty == 'all'){
                         var _data = {}
                         for(let date in this.btValueLines[sty].data){
-                            _data[date] = this.btValueLines[sty].data[date] * 9.9
+                            _data[date] = this.btValueLines[sty].data[date] * 190.438
                         } 
+
                         this.btValueLines[sty].data = _data
                     }
 

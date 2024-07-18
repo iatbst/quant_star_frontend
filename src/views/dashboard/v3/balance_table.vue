@@ -135,9 +135,9 @@ export default {
             this.balanceDatas[0].day7Diff = parseInt(totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[day7])
             this.balanceDatas[0].yearDiff = 33655950
             
-            this.balanceDatas[0].drawdown = 0
-            this.balanceDatas[0].maxDrawdown = 29.7
-            this.balanceDatas[0].drawdownDays = 0
+            this.balanceDatas[0].drawdown = 1.1
+            this.balanceDatas[0].maxDrawdown = 39.7
+            this.balanceDatas[0].drawdownDays = 1
         },
 
         toThousands: toThousands,

@@ -5,11 +5,9 @@
             <!-- 曲线 -->
             <highcharts :options="totalBalanceOptions" style="margin-top: 20px"></highcharts>
             <div align="center" style="margin-bottom: 20px">
-                <!--
                 <el-button style="margin-left: 0px" type="info" size="mini"  @click="parseData()" :plain="buttonAllPlain">
                     全部
                 </el-button> 
-                -->
                 <el-button type="info" size="mini"  @click="parseData('thisYear')" :plain="buttonThisYearPlain">
                     今年
                 </el-button> 
@@ -25,11 +23,9 @@
                 <el-button type="info" size="mini"  @click="parseData('2Y')" :plain="button2YPlain">
                     2年
                 </el-button>  
-                <!--
                 <el-button type="info" size="mini"  @click="parseData('3Y')" :plain="button3YPlain">
                     3年
                 </el-button>  
-                -->
                 <el-button type="info" size="mini"  @click.native="switchLineType()" :plain="buttonLogPlain">
                     对数坐标
                 </el-button>  
