@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- 仓位排名 -->
+        <!-- 策略仓位 -->
         <el-col :span="24" style="margin-top: 20px;margin-bottom: 20px;">
             <highcharts :options="positionOptions"></highcharts>
         </el-col>   
@@ -15,6 +15,7 @@ import {addSingleColumn} from '@/utils/chart'
 import {quoteToUSD} from '@/utils/general'
 import {deepCopy} from '@/utils/general'
 import { getSignalPointsByWorker } from '@/api/signal_point'
+import { chineseString, chineseStrategyID } from '@/utils/chinese'
 
 export default {
     components: {
@@ -45,7 +46,7 @@ export default {
                 },
 
                 title: {
-                    text: '币种仓位排名',
+                    text: '策略仓位',
                 },
                 xAxis: {
                     categories: []
@@ -90,40 +91,35 @@ export default {
     methods: {
         // 处理父组件建传入data: positions
         parseData() {    
-            var coinPositions = {}   
-            var tops = 10     
+            var styPositions = {}     
             var columnDatas = []
             for(const data of this.positions){
-                var workerName = data.worker.name
-                var coin = workerName.split('/')[0].split('_').slice(-1,)[0].toUpperCase()
-                if (!(coin in coinPositions)){
-                    coinPositions[coin] = {
-                        'coin': coin,
+                var styID = data['sty'] + '_' + data.worker.name.slice(-1,)
+                if (!(styID in styPositions)){
+                    styPositions[styID] = {
+                        'styID': styID,
                         'size': 0
                     }
                 }
-                coinPositions[coin].size += data.usdt_size
+                styPositions[styID].size += data.usdt_size
             }
 
-            var sortPositions = Object.values(coinPositions).sort((a, b)=> b.size - a.size)
+            
             // 多头tops
-            for(const data of sortPositions.slice(0, tops)){
-                if (data.size > 0){
+            for(const styID of config.activeStrategyIDs){
+                var data = styPositions[styID]
+                if (data.size >= 0){
                     columnDatas.push({
-                        'x': data.coin,
+                        'x': chineseStrategyID(data.styID),
                         'y': Math.round((data.size/1000)),
                         'color': 'green'
                     })                   
-                }
-            }
-            // 空头tops
-            for(const data of sortPositions.slice(-tops,)){
-                if (data.size < 0){
+                } else {
                     columnDatas.push({
-                        'x': data.coin,
+                        'x': chineseStrategyID(data.styID),
                         'y': Math.round((Math.abs(data.size/1000))),
                         'color': 'red'
-                    })                   
+                    })                      
                 }
             }
 
