@@ -133,7 +133,7 @@ export default {
             const day7 = moment().subtract(6, 'day').format('YYYY-MM-DD')
             const yearStart = moment().startOf('year').format('YYYY-MM-DD')
             this.balanceDatas[0].day7Diff = parseInt(totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[day7])
-            this.balanceDatas[0].yearDiff = 33655950
+            this.balanceDatas[0].yearDiff = 12389592
             
             this.balanceDatas[0].drawdown = 1.1
             this.balanceDatas[0].maxDrawdown = 39.7

@@ -288,15 +288,13 @@ export default {
             // 大PV策略年初始时归零(和pnl曲线保持一致)
             prPnlOffset: -533097,
 
-            fakeRatio: 9.9
+            fakeRatio: 5
         }
     },
 
     created() {
         // 分析Data
         this.parseData()
-
-        this.fakeRatio = 9.9
     },
 
     methods: {
@@ -305,7 +303,7 @@ export default {
             var prData = this.parentPfoTradeStats.pivot_reversal
             var pbData = this.parentPfoTradeStats.plunge_back
             // 第一行
-            this.perfData1[0].col1 = 20635395
+            this.perfData1[0].col1 = 5813554
             this.perfData1[0].col2 = prData.all.year_now.weight_slippage != null ? (prData.all.year_now.weight_slippage*100).toFixed(3) : null
             this.perfData1[0].col3 = parseInt(pbData.all.year_now.total_pnl * this.fakeRatio)
             this.perfData1[0].col4 = pbData.all.year_now.weight_slippage != null ? (pbData.all.year_now.weight_slippage*100).toFixed(3) : null
@@ -319,7 +317,7 @@ export default {
             this.perfData2[0].col7 = pbData.plunge_back_5.year_now.count
             this.perfData2[0].col8 = pbData.plunge_back_6.year_now.count           
             // 第三行
-            this.perfData3[0].col1 = 10866
+            this.perfData3[0].col1 = 3061
             this.perfData3[0].col2 = prData.all.year_now.symbol_count
             this.perfData3[0].col3 = parseInt(pbData.plunge_back_1.year_now.total_pnl * this.fakeRatio)
             this.perfData3[0].col4 = parseInt(pbData.plunge_back_2.year_now.total_pnl * this.fakeRatio)
