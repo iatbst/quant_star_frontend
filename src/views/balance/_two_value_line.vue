@@ -62,12 +62,12 @@ export default {
     },
 
     watch: {
-        values: {
-            handler(val, oldVal){
-                this.parseData(this.range)
-            },
-            deep: true
-        },
+        // values: {
+        //     handler(val, oldVal){
+        //         this.parseData(this.range)
+        //     },
+        //     deep: true
+        // },
     },
     
     data() {
