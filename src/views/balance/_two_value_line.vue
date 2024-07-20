@@ -137,6 +137,7 @@ export default {
         parseData(range=null) {
             // debugger
             this.totalBalanceOptions.series = []
+            this.totalBalanceOptions.xAxis.categories = []
             this._clearButtons()
             for(let i = 0; i < this.values.length; i++){
                addSingleLine(this.values[i].title, this.filterDates(this.values[i].data, range), this.totalBalanceOptions, false)
