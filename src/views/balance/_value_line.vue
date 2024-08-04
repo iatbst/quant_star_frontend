@@ -139,6 +139,7 @@ export default {
         // 处理父组件建传入data: pfoDatas
         parseData(range=null) {
             this.totalBalanceOptions.series = []
+            this.totalBalanceOptions.xAxis.categories = []
             this._clearButtons()
             addSingleLine(this.title, this.filterDates(this.values, range), this.totalBalanceOptions)
         },
