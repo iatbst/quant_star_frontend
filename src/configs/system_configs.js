@@ -63,11 +63,11 @@ var development_hosts = [
     // 开发/测试
     'http://ec2-18-162-144-188.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-43-199-75-34.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-43-198-81-38.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-16-163-139-195.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-166-60-255.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-43-198-84-207.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-16-163-154-184.ap-east-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-43-198-81-38.ap-east-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-16-163-139-195.ap-east-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-18-166-60-255.ap-east-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-43-198-84-207.ap-east-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-16-163-154-184.ap-east-1.compute.amazonaws.com:8000/api',
 ]
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){

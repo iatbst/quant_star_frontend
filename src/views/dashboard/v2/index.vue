@@ -89,7 +89,8 @@
                 },
                 {
                     title: btValueLines.all.name,
-                    data: btValueLines.all.data
+                    data: btValueLines.all.data,
+                    color: 'lightgray'
                 },
             ]
             "

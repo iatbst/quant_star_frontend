@@ -2,11 +2,14 @@
 
 // 添加单line
 // data_obj: key -> x axis, value -> y axis
-export function addSingleLine(name, data_obj, options, reset_series=true, roundLevel=0){
+export function addSingleLine(name, data_obj, options, reset_series=true, roundLevel=0, color=null){
     if (reset_series){
         options.series = [] 
     }
     var lineData = {name: name, data: []}
+    if (color){
+        lineData['color'] = color
+    }
     if (Object.keys(data_obj).length > options.xAxis.categories.length){
         options.xAxis.categories = Object.keys(data_obj).sort()
     }
