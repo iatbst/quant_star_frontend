@@ -47,6 +47,7 @@ var production_hosts = [
     'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-16-163-154-133.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-166-189-96.ap-east-1.compute.amazonaws.com:8000/api',
 
     // 东京: Binance
     'http://ec2-35-78-113-187.ap-northeast-1.compute.amazonaws.com:8000/api',
@@ -56,12 +57,13 @@ var production_hosts = [
     'http://ec2-54-249-205-73.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-183-193-63.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api'
+    'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-179-212-104.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
 
 var development_hosts = [
     // 开发/测试
-    'http://ec2-18-162-144-188.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-43-198-55-0.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-43-199-75-34.ap-east-1.compute.amazonaws.com:8000/api',
     // 'http://ec2-43-198-81-38.ap-east-1.compute.amazonaws.com:8000/api',
     // 'http://ec2-16-163-139-195.ap-east-1.compute.amazonaws.com:8000/api',
@@ -72,7 +74,7 @@ var development_hosts = [
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = development_hosts
+    var hostList = production_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
