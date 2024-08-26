@@ -15,12 +15,12 @@ const prBinanceHosts = [
 const prOkexHosts = [
     'http://ec2-43-199-31-118.ap-east-1.compute.amazonaws.com:8000/api'
 ]
-// const prmBinanceHosts = [
-//     'http://ec2-13-230-206-166.ap-northeast-1.compute.amazonaws.com:8000/api'
-// ]
-// const prmOkexHosts = [
-//     'http://ec2-16-162-187-219.ap-east-1.compute.amazonaws.com:8000/api'
-// ]
+const deBinanceHosts = [
+    'http://ec2-18-179-212-104.ap-northeast-1.compute.amazonaws.com:8000/api'
+]
+const deOkexHosts = [
+    'http://ec2-18-166-189-96.ap-east-1.compute.amazonaws.com:8000/api'
+]
 const pbBinanceHosts = [
     'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
@@ -63,7 +63,7 @@ var production_hosts = [
 
 var development_hosts = [
     // 开发/测试
-    'http://ec2-43-198-55-0.ap-east-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-43-198-55-0.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-43-199-75-34.ap-east-1.compute.amazonaws.com:8000/api',
     // 'http://ec2-43-198-81-38.ap-east-1.compute.amazonaws.com:8000/api',
     // 'http://ec2-16-163-139-195.ap-east-1.compute.amazonaws.com:8000/api',
@@ -74,7 +74,7 @@ var development_hosts = [
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = production_hosts
+    var hostList = development_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
@@ -130,6 +130,7 @@ const activeStrategyIDs = [
     'plunge_back_4',
     'plunge_back_5',
     'plunge_back_6',
+    'delist_1'
 ]
 
 const strategyAlias = {
@@ -137,9 +138,9 @@ const strategyAlias = {
     'pivot_reversal': '大',
     'pr': '大',
 
-    'pivot-reversal-mini': '小',
-    'pivot_reversal_mini': '小',
-    'prm': '小',
+    'delist': '下',
+    'delist': '下',
+    'de': '下',
 
     'plunge-back': '底',
     'plunge_back': '底',
@@ -291,6 +292,8 @@ export default {
     prOkexHosts,
     pbBinanceHosts,
     pbOkexHosts,
+    deBinanceHosts,
+    deOkexHosts,
     pfoAlias,
     backtestHost,
     cryptoParentPfo,

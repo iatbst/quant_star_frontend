@@ -49,7 +49,8 @@
             v-bind:parentPfoTradeStats="parentPfoTradeStats" 
             v-bind:binanceBalancePtg="binanceBalancePtg"
             v-bind:okexBalancePtg="okexBalancePtg"
-            v-if="parentPfoTradeStatsAvailable && subaccountDatasAvailable">
+            v-bind:parentPfoAtrptg="parentPfoAtrptg" 
+            v-if="parentPfoTradeStatsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable">
             </perf-table>
 
             <!--- 刷新说明 --->
@@ -131,11 +132,16 @@
                     title: pnlLines.plunge_back.name,
                     data: pnlLines.plunge_back.data
                 },
+                {
+                    title: pnlLines.delist.name,
+                    data: pnlLines.delist.data
+                },                
             ]
             " 
             v-if="
             pnlLines.pivot_reversal.available && 
-            pnlLines.plunge_back.available
+            pnlLines.plunge_back.available && 
+            pnlLines.delist.available
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
@@ -163,7 +169,8 @@
             <position-ranks2
             v-bind:positions="positions"
             v-if="prBinancePositionsAvailable && prOkexPositionsAvailable && 
-            pbBinancePositionsAvailable && pbOkexPositionsAvailable" 
+            pbBinancePositionsAvailable && pbOkexPositionsAvailable && 
+            deBinancePositionsAvailable && deOkexPositionsAvailable"
             ></position-ranks2> 
 
             <!--- 刷新说明 --->
@@ -189,7 +196,8 @@
             <strategy-positions
             v-bind:positions="positions"
             v-if="prBinancePositionsAvailable && prOkexPositionsAvailable && 
-            pbBinancePositionsAvailable && pbOkexPositionsAvailable" 
+            pbBinancePositionsAvailable && pbOkexPositionsAvailable && 
+            deBinancePositionsAvailable && deOkexPositionsAvailable"
             ></strategy-positions> 
 
             <!--- 刷新说明 --->
@@ -252,6 +260,26 @@
             v-bind:positions-loading="pbOkexPositionsLoading"
             v-bind:exchange="'Okex'"
             v-bind:strategy="'底'"
+            v-bind:col-count="5"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- de_binance -->
+            <position-map2 
+            v-bind:positions="deBinancePositions" 
+            v-bind:positions-loading="deBinancePositionsLoading"
+            v-bind:exchange="'Binance'"
+            v-bind:strategy="'下'"
+            v-bind:col-count="5"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- de_okex -->
+            <position-map2 
+            v-bind:positions="deOkexPositions" 
+            v-bind:positions-loading="deOkexPositionsLoading"
+            v-bind:exchange="'Okex'"
+            v-bind:strategy="'下'"
             v-bind:col-count="5"
             v-bind:show-zero="false"
             ></position-map2> 
@@ -376,6 +404,8 @@ export default {
             prOkexHosts: config.prOkexHosts,
             pbBinanceHosts: config.pbBinanceHosts,
             pbOkexHosts: config.pbOkexHosts,
+            deBinanceHosts: config.deBinanceHosts,
+            deOkexHosts: config.deOkexHosts,
             prBinanceSortWeights: config.prBinanceSortWeights,
             prOkexSortWeights: config.prOkexSortWeights,
 
@@ -423,12 +453,12 @@ export default {
             pbOkexPositions: [],
             pbOkexPositionsAvailable: false,
             pbOkexPositionsLoading: false,
-            // prmBinancePositions: [],
-            // prmBinancePositionsAvailable: false,
-            // prmBinancePositionsLoading: false,
-            // prmOkexPositions: [],
-            // prmOkexPositionsAvailable: false,
-            // prmOkexPositionsLoading: false,
+            deBinancePositions: [],
+            deBinancePositionsAvailable: false,
+            deBinancePositionsLoading: false,
+            deOkexPositions: [],
+            deOkexPositionsAvailable: false,
+            deOkexPositionsLoading: false,
 
             binanceBalancePtg: null,
             okexBalancePtg: null,
@@ -476,11 +506,11 @@ export default {
                     'data': null,
                     'available': false
                 },
-                // 'pivot_reversal_mini': {
-                //     'name': '小',
-                //     'data': null,
-                //     'available': false
-                // },                                 
+                'delist': {
+                    'name': '下',
+                    'data': null,
+                    'available': false
+                },                                 
             },
 
             refreshInterval: 1000,
@@ -749,8 +779,8 @@ export default {
                     this.pnlLines.pivot_reversal.available = true
                     this.pnlLines.plunge_back.data = parentPfoData.pnl_line.plunge_back.year_now
                     this.pnlLines.plunge_back.available = true
-                    // this.pnlLines.pivot_reversal_mini.data = parentPfoData.pnl_line.pivot_reversal_mini.year_now
-                    // this.pnlLines.pivot_reversal_mini.available = true                    
+                    this.pnlLines.delist.data = parentPfoData.pnl_line.delist.year_now
+                    this.pnlLines.delist.available = true                    
                 }
             )
         },
@@ -891,6 +921,56 @@ export default {
                             // 排序
                             this.pbOkexPositionsAvailable = true
                             this.pbOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // de binance
+            this.deBinancePositions = []
+            var deBinanceCount = 0
+            this.deBinancePositionsLoading = true
+            this.deBinancePositionsAvailable = false
+            for(var i = 0; i < this.deBinanceHosts.length; i++){
+                getPositions(this.deBinanceHosts[i], 'normal').then(response => {
+                        deBinanceCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'delist'
+                        }
+                        this.deBinancePositions = this.deBinancePositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (deBinanceCount === this.deBinanceHosts.length ){
+                            // 排序
+                            this.deBinancePositionsAvailable = true
+                            this.deBinancePositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // de okex
+            this.deOkexPositions = []
+            var deOkexCount = 0
+            this.deOkexPositionsLoading = true
+            this.deOkexPositionsAvailable = false
+            for(var i = 0; i < this.deOkexHosts.length; i++){
+                getPositions(this.deOkexHosts[i], 'normal').then(response => {
+                        deOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'delist'
+                        }
+                        this.deOkexPositions = this.deOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (deOkexCount === this.deOkexHosts.length ){
+                            // 排序
+                            this.deOkexPositionsAvailable = true
+                            this.deOkexPositionsLoading = false
                         }
                     }
                 )

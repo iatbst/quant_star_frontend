@@ -57,11 +57,10 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="波动率" min-width="10%" align="center">
+            <el-table-column label="下头寸" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span>
-                        {{ (scope.row.atrptg*100).toFixed(2) }}%
-                        <i class="el-icon-data-line" style="cursor: pointer" @click="showHistoryAtrptg()"></i>
+                    <span style="color: red">
+                        {{toThousands(scope.row.dePosition)}}
                     </span>          
                 </template>
             </el-table-column>
@@ -171,6 +170,7 @@ export default {
                 prLongPosition: null,
                 prShortPosition: null,
                 pbPosition: null,
+                dePosition: null,
 
                 atrptg: null
             }],
@@ -190,9 +190,11 @@ export default {
             // 策略仓位信息从系统后台获取
             var prData = this.parentPfoPositions.pivot_reversal
             var pbData = this.parentPfoPositions.plunge_back
+            var deData = this.parentPfoPositions.delist
             this.positionDatas[0].prLongPosition = Math.round(prData.long)
             this.positionDatas[0].prShortPosition = Math.round(prData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
+            this.positionDatas[0].dePosition = Math.round(deData.short)
 
             this.positionDatas[0].atrptg = this.parentPfoAtrptg.latest
         },

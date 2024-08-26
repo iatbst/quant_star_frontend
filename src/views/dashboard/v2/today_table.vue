@@ -246,6 +246,7 @@ export default {
             keys: [
                 'pivot_reversal',
                 'plunge_back',
+                'delist',
                 'all'
             ],
             todayObj: {
@@ -261,6 +262,12 @@ export default {
                     position: null,
                     fundingFees: null
                 },
+                'delist': {
+                    strategy: '下',
+                    initPosition: null,
+                    position: null,
+                    fundingFees: null
+                },               
                 'all': {
                     strategy: '合计',
                     initPosition: 0,
@@ -318,6 +325,12 @@ export default {
                     this.todayObj[key].shortFlip = null  
                     this.todayObj[key].shortWinStop = null  
                     this.todayObj[key].shortTimer = null                  
+                } else if (key == 'delist') {
+                    this.todayObj[key].longOpen = null
+                    this.todayObj[key].shortFlip = null
+                    this.todayObj[key].longFlip = null  
+                    this.todayObj[key].longWinStop = null  
+                    this.todayObj[key].longTimer = null                  
                 }
             }
         },
