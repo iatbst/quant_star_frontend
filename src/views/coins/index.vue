@@ -119,7 +119,7 @@ export default {
                     this.orders = this.orders.concat(response.results)
 
                     // 排序
-                    this.orders.sort((a, b) => b.created_ts.localeCompare(a.created_ts))
+                    this.orders.sort((a, b) => a.created_ts.localeCompare(b.created_ts))
                     this.ordersLoading = false
                 }
             )
