@@ -38,7 +38,7 @@ export function formatTimestamp(ts) {
             ts *= 1000
         }
         const stillUtc = moment.utc(ts).toDate()
-        return moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss')
+        return moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss.SSS')
     } else {
         return '--'
     }

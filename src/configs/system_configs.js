@@ -13,7 +13,7 @@ const prBinanceHosts = [
     'http://ec2-35-78-113-187.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
 const prOkexHosts = [
-    'http://ec2-43-199-31-118.ap-east-1.compute.amazonaws.com:8000/api'
+    'http://ec2-18-163-61-14.ap-east-1.compute.amazonaws.com:8000/api'
 ]
 const deBinanceHosts = [
     'http://ec2-18-179-212-104.ap-northeast-1.compute.amazonaws.com:8000/api'
@@ -41,7 +41,7 @@ const pbOkexHosts = [
 
 var production_hosts = [
     // 香港: Okex
-    'http://ec2-43-199-31-118.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-163-61-14.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-113-187.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
@@ -63,8 +63,8 @@ var production_hosts = [
 
 var development_hosts = [
     // 开发/测试
-    // 'http://ec2-43-198-55-0.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-43-199-75-34.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-162-149-69.ap-east-1.compute.amazonaws.com:8000/api',
+     'http://ec2-43-199-75-34.ap-east-1.compute.amazonaws.com:8000/api',
     // 'http://ec2-43-198-81-38.ap-east-1.compute.amazonaws.com:8000/api',
     // 'http://ec2-16-163-139-195.ap-east-1.compute.amazonaws.com:8000/api',
     // 'http://ec2-18-166-60-255.ap-east-1.compute.amazonaws.com:8000/api',
