@@ -7,6 +7,138 @@
             </el-row>
         </div>
 
+        <h4>
+            当前持仓
+        </h4>
+        <div style="margin-left: 20px; margin-right: 20px; margin-bottom: 50px;">
+            <el-row :gutter="0" type="flex" >
+                <!----------------------------------- 持仓详情 --------------------------------------->
+                <el-table
+                :data="openPositions"
+                :header-cell-style="{ background: '#f2f2f2' }"
+                v-loading="openPositionsLoading"
+                show-summary
+                :summary-method="getSummaries1"
+                >
+                    <el-table-column align="center" label="币种" min-width="10%">
+                        <template slot-scope="scope">
+                            {{ scope.row.coin.toUpperCase() }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="持仓量" min-width="10%">
+                        <template slot-scope="scope">
+                            {{ scope.row.position }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="持仓额($)" min-width="10%">
+                        <template slot-scope="scope">
+                            {{ toThousands(toFixed(scope.row.position_sum, 0)) }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="持仓均价($)" min-width="10%">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.entry_price >= 1">
+                                {{ toFixed(scope.row.entry_price, 2) }}
+                            </span>
+                            <span v-else>
+                                {{ scope.row.entry_price }}
+                            </span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="实时价格($)" min-width="10%">
+                        <template slot-scope="scope">
+                            {{ scope.row.last_tick }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="价格变动" min-width="10%">
+                        <template slot-scope="scope">
+                            <span style="color: green" v-if="scope.row.entry_price_diff >= 0">
+                                {{ toFixed(scope.row.entry_price_diff*100, 2) }}%
+                            </span>
+                            <span style="color: red" v-else>
+                                {{ toFixed(scope.row.entry_price_diff*100, 2) }}%
+                            </span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="持仓收益($)" min-width="10%">
+                        <template slot-scope="scope">
+                            <span style="color: green" v-if="scope.row.pnl >= 0">
+                                {{ toThousands(toFixed(scope.row.pnl, 0)) }}
+                            </span>
+                            <span style="color: red" v-else>
+                                {{ toThousands(toFixed(scope.row.pnl, 0)) }}
+                            </span>
+                        </template>
+                    </el-table-column>
+                </el-table> 
+            </el-row>
+        </div>
+
+        <h4>
+            平仓记录
+        </h4>
+        <div style="margin-left: 20px; margin-right: 20px; margin-bottom: 50px;">
+            <el-row :gutter="0" type="flex" >
+                <!----------------------------------- 持仓详情 --------------------------------------->
+                <el-table
+                :data="closePositions"
+                :header-cell-style="{ background: '#f2f2f2' }"
+                v-loading="closePositionsLoading"
+                show-summary
+                :summary-method="getSummaries2"
+                >
+                    <el-table-column align="center" label="币种" min-width="10%">
+                        <template slot-scope="scope">
+                            {{ scope.row.coin.toUpperCase() }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="平仓量" min-width="10%">
+                        <template slot-scope="scope">
+                            {{ scope.row.position }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="平仓额($)" min-width="10%">
+                        <template slot-scope="scope">
+                            {{ toThousands(toFixed(scope.row.position_sum, 0)) }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="平仓均价($)" min-width="10%">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.exit_price >= 1">
+                                {{ toFixed(scope.row.exit_price, 2) }}
+                            </span>
+                            <span v-else>
+                                {{ scope.row.exit_price }}
+                            </span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="平仓收益($)" min-width="10%">
+                        <template slot-scope="scope">
+                            <span style="color: green" v-if="scope.row.pnl >= 0">
+                                {{ toThousands(toFixed(scope.row.pnl, 0)) }}
+                            </span>
+                            <span style="color: red" v-else>
+                                {{ toThousands(toFixed(scope.row.pnl, 0)) }}
+                            </span>
+                        </template>
+                    </el-table-column>
+                </el-table> 
+            </el-row>
+        </div>
+        
+        <h4>
+            订单详情
+        </h4>
         <div style="margin-left: 20px; margin-right: 20px;">
             <el-row :gutter="0" type="flex" >
                 <!----------------------------------- 订单详情 --------------------------------------->
@@ -14,7 +146,6 @@
                 :data="orders"
                 :header-cell-style="{ background: '#f2f2f2' }"
                 v-loading="ordersLoading"
-                :cell-style="{cursor: 'pointer'}"
                 >
                     <el-table-column align="center" label="币种" min-width="10%">
                         <template slot-scope="scope">
@@ -53,7 +184,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="价格" min-width="10%">
+                    <el-table-column align="center" label="价格($)" min-width="10%">
                         <template slot-scope="scope">
                             <div v-if="scope.row.exec_avg_price !== null">
                                 {{ toFixed(scope.row.exec_avg_price, 2) }}
@@ -61,7 +192,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" label="成交额" min-width="10%">
+                    <el-table-column align="center" label="成交额($)" min-width="10%">
                         <template slot-scope="scope">
                             <div v-if="scope.row.exec_size !== null && scope.row.exec_avg_price !== null">
                                 {{ toThousands(toFixed(scope.row.exec_avg_price * scope.row.exec_size, 0)) }}
@@ -89,6 +220,7 @@ import config from '@/configs/system_configs'
 import { utcToLocalTimestamp } from '@/utils/general'
 import {toThousands} from '@/utils/general'
 import { getOrders } from '@/api/order'
+import { getTradesByFinalFlag } from '@/api/trade'
 import { chineseString } from '@/utils/chinese'
 import { toFixed } from  '@/utils/general'
 
@@ -103,14 +235,105 @@ export default {
             masterHost: config.masterHost,
             orders: [],
             ordersLoading: false,
+
+            openPositions: [],
+            openPositionsLoading: false,
+
+            closePositions: [],
+            closePositionsLoading: false
         }
     },
 
     created() {
+        this.fetchParseTrades()
         this.fetchOrders()
     },
 
     methods: {   
+        fetchParseTrades(){
+            this.openPositions = []
+            this.openPositionsLoading = true
+            this.closePositions = []
+            this.closePositionsLoading = true
+            getTradesByFinalFlag('manual', this.masterHost).then(response => {
+                    var trades = response.results
+                    var openData = {}   // key: coin
+                    var closeData = {}  // key: coin
+
+                    for(let trade of trades){
+                        var coin = trade.worker.name.split('/')[0].split('_').slice(-1)[0]
+
+                        // 持仓
+                        if(trade.position > 0){
+                            if (!(coin in openData)){
+                                openData[coin] = {
+                                    'position': 0,
+                                    'entry_price_sum': 0,
+                                    'last_tick': null,
+                                    'last_tick_ts': null,
+                                    'pnl': 0
+                                }
+                            } 
+                            openData[coin].position += trade.position
+                            openData[coin].entry_price_sum += trade.entry_avg_price * trade.position
+                            openData[coin].pnl += trade.position_pnl  
+                            if (openData[coin].last_tick == null || trade.flags.last_tick_ts > openData[coin].last_tick_ts){
+                                openData[coin].last_tick = trade.flags.last_tick
+                                openData[coin].last_tick_ts = trade.flags.last_tick_ts
+                            }               
+                        }
+
+                        // 平仓
+                        for(let order in trade.orders){
+                            if(order.order_type == 'close'){
+                                // 平仓order
+                                if (!(coin in closeData)){
+                                    closeData[coin] = {
+                                        'position': 0,
+                                        'position_sum': 0,
+                                        'pnl': 0
+                                    }
+                                } 
+                                closeData[coin].position += order.exec_size
+                                closeData[coin].position_sum += order.exec_size * order.exec_avg_price
+                                closeData[coin].pnl += order.pnl                                
+                            }
+                        }
+                    }
+
+                    // 持仓总结
+                    for(let coin in openData){
+                        var data = openData[coin]
+                        data['coin'] = coin
+                        data['entry_price'] = data.entry_price_sum / data.position  // 持仓均价
+                        data['entry_price_diff'] = (data.last_tick - data.entry_price) / data.entry_price  // 价格变动
+                        data['position_sum'] = data.position * data.last_tick       // 持仓额度
+
+                        // 加入list
+                        this.openPositions.push(data)
+
+                        // 排序
+                        this.openPositions.sort((a, b) => b.position_sum - a.position_sum)
+                    }
+                    this.openPositionsLoading = false
+
+                    // 平仓总结
+                    for(let coin in closeData){
+                        var data = closeData[coin]
+                        data['coin'] = coin
+                        data['exit_price'] = data.position_sum / data.position  // 关仓均价
+
+                        // 加入list
+                        this.closePositions.push(data)
+
+                        // 排序
+                        this.closePositions.sort((a, b) => b.position_sum - a.position_sum)
+                    }
+                    this.closePositionsLoading = false
+                }
+            )
+        },
+
         fetchOrders(){
             this.orders = []
             this.ordersLoading = true
@@ -123,6 +346,70 @@ export default {
                     this.ordersLoading = false
                 }
             )
+        },
+
+        getSummaries1(param) {
+            const { columns, data } = param;
+            const sums = [];
+            columns.forEach((column, index) => {
+            if (index === 0) {
+                sums[index] = '合计';
+                return;
+            } else if(index == 2){
+                // 持仓额
+                var sum = 0
+                for(let i = 0; i < data.length; i++){
+                    sum += data[i].position_sum
+                }
+                sums[index] = toThousands(Math.round(sum))         
+                return;
+            } else if(index == 6){
+                // 持仓收益
+                var sum = 0
+                for(let i = 0; i < data.length; i++){
+                    sum += data[i].pnl
+                }
+                sums[index] = toThousands(Math.round(sum))         
+                return;              
+            } else {        
+                sums[index] = null
+                return;
+            }
+            });
+
+            return sums;
+        },
+
+        getSummaries2(param) {
+            const { columns, data } = param;
+            const sums = [];
+            columns.forEach((column, index) => {
+            if (index === 0) {
+                sums[index] = '合计';
+                return;
+            } else if(index == 2){
+                // 持仓额
+                var sum = 0
+                for(let i = 0; i < data.length; i++){
+                    sum += data[i].position_sum
+                }
+                sums[index] = toThousands(Math.round(sum))         
+                return;
+            } else if(index == 4){
+                // 持仓收益
+                var sum = 0
+                for(let i = 0; i < data.length; i++){
+                    sum += data[i].pnl
+                }
+                sums[index] = toThousands(Math.round(sum))         
+                return;              
+            } else {        
+                sums[index] = null
+                return;
+            }
+            });
+
+            return sums;
         },
 
         utcToLocalTimestamp: utcToLocalTimestamp,

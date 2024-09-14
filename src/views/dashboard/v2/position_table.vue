@@ -8,11 +8,11 @@
 
             <el-table-column label="总仓位" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: green" v-if="scope.row.totalPosition >= 0">
-                        {{toThousands(scope.row.totalPosition)}}
+                    <span style="color: green" v-if="scope.row.totalPosition + scope.row.holdPosition >= 0">
+                        {{toThousands(scope.row.totalPosition + scope.row.holdPosition)}}
                     </span>   
                     <span style="color: red" v-else>
-                        {{toThousands(scope.row.totalPosition)}}
+                        {{toThousands(scope.row.totalPosition + scope.row.holdPosition)}}
                     </span>             
                 </template>   
             </el-table-column>
@@ -20,7 +20,7 @@
             <el-table-column label="总多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
-                        {{toThousands(scope.row.longPosition)}}
+                        {{toThousands(scope.row.longPosition + scope.row.holdPosition)}}
                     </span>              
                 </template>
             </el-table-column>
@@ -61,6 +61,14 @@
                 <template slot-scope="scope">
                     <span style="color: red">
                         {{toThousands(scope.row.dePosition)}}
+                    </span>          
+                </template>
+            </el-table-column>
+
+            <el-table-column label="币头寸" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: green">
+                        {{toThousands(scope.row.holdPosition)}}
                     </span>          
                 </template>
             </el-table-column>
@@ -171,6 +179,7 @@ export default {
                 prShortPosition: null,
                 pbPosition: null,
                 dePosition: null,
+                holdPosition: null,
 
                 atrptg: null
             }],
@@ -191,11 +200,17 @@ export default {
             var prData = this.parentPfoPositions.pivot_reversal
             var pbData = this.parentPfoPositions.plunge_back
             var deData = this.parentPfoPositions.delist
+            var holdData = this.parentPfoPositions.hold
             this.positionDatas[0].prLongPosition = Math.round(prData.long)
             this.positionDatas[0].prShortPosition = Math.round(prData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
             this.positionDatas[0].dePosition = Math.round(deData.short)
+            this.positionDatas[0].holdPosition = Math.round(holdData.long)
 
+            // 币头寸叠加到总头寸
+            // this.positionDatas[0].totalPosition += this.positionDatas[0].holdPosition
+            // this.positionDatas[0].longPosition += this.positionDatas[0].holdPosition
+            
             this.positionDatas[0].atrptg = this.parentPfoAtrptg.latest
         },
 
