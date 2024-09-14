@@ -358,15 +358,19 @@ export default {
         parseParentPfoPositions(){  
             // 仓位数据(初始/此刻)
             for(let sty in this.parentPfoPositions){
-                var positionData = this.parentPfoPositions[sty]
-                this.todayObj[sty].position = Math.round(positionData.long + positionData.short)
+                if (sty in this.todayObj){
+                    var positionData = this.parentPfoPositions[sty]
+                    this.todayObj[sty].position = Math.round(positionData.long + positionData.short)
+                }
             }
             var ep = Math.round(Date.now()/1000)
             var yesterday = new Date((ep - 86400 + 3600*8)*1000).toISOString().slice(0, 10).replace('T', ' ')   // Beijing
             for(let sty in this.parentPfoPositionsHistory){
-                var positionHistoryData = this.parentPfoPositionsHistory[sty]
-                if(yesterday in positionHistoryData){
-                    this.todayObj[sty].initPosition = Math.round(positionHistoryData[yesterday].long + positionHistoryData[yesterday].short)
+                if (sty in this.todayObj){
+                    var positionHistoryData = this.parentPfoPositionsHistory[sty]
+                    if(yesterday in positionHistoryData){
+                        this.todayObj[sty].initPosition = Math.round(positionHistoryData[yesterday].long + positionHistoryData[yesterday].short)
+                    }
                 }
             }
             // alert(JSON.stringify(this.todayStrategyPnl))
