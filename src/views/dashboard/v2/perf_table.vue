@@ -123,35 +123,35 @@
                     </span>               
                 </template> 
             </el-table-column>
-            <el-table-column label="20%次数" min-width="10%" align="center">
+            <el-table-column label="22.5%次数" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="">
                         {{toThousands(scope.row.col4)}}
                     </span>               
                 </template>  
             </el-table-column>
-            <el-table-column label="25%次数" min-width="10%" align="center">
+            <el-table-column label="30%次数" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="">
                         {{toThousands(scope.row.col5)}}
                     </span>               
                 </template>  
             </el-table-column>
-            <el-table-column label="28.5%次数" min-width="10%" align="center">
+            <el-table-column label="40%次数" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="">
                         {{toThousands(scope.row.col6)}}
                     </span>               
                 </template>  
             </el-table-column>
-            <el-table-column label="38%次数" min-width="10%" align="center">
+            <el-table-column label="47.5%次数" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="">
                         {{toThousands(scope.row.col7)}}
                     </span>               
                 </template>  
             </el-table-column>
-            <el-table-column label="45%次数" min-width="10%" align="center">
+            <el-table-column label="55%次数" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="">
                         {{toThousands(scope.row.col8)}}
@@ -207,7 +207,7 @@
                     </span>                
                 </template> 
             </el-table-column>
-            <el-table-column label="20%收益" min-width="10%" align="center"> 
+            <el-table-column label="22.5%收益" min-width="10%" align="center"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col4 >= 0">
                         {{toThousands(scope.row.col4)}}
@@ -217,7 +217,7 @@
                     </span>                
                 </template> 
             </el-table-column>
-            <el-table-column label="25%收益" min-width="10%" align="center"> 
+            <el-table-column label="30%收益" min-width="10%" align="center"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col5 >= 0">
                         {{toThousands(scope.row.col5)}}
@@ -227,7 +227,7 @@
                     </span>                
                 </template> 
             </el-table-column>
-            <el-table-column label="28.5%收益" min-width="10%" align="center"> 
+            <el-table-column label="40%收益" min-width="10%" align="center"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col6 >= 0">
                         {{toThousands(scope.row.col6)}}
@@ -237,7 +237,7 @@
                     </span>                
                 </template> 
             </el-table-column> 
-            <el-table-column label="38%收益" min-width="10%" align="center"> 
+            <el-table-column label="47.5%收益" min-width="10%" align="center"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col7 >= 0">
                         {{toThousands(scope.row.col7)}}
@@ -247,7 +247,7 @@
                     </span>                
                 </template> 
             </el-table-column>
-             <el-table-column label="45%收益" min-width="10%" align="center"> 
+             <el-table-column label="55%收益" min-width="10%" align="center"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col8 >= 0">
                         {{toThousands(scope.row.col8)}}
