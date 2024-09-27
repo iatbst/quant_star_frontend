@@ -53,7 +53,7 @@ export default {
                 yAxis: {
                     min: 0,
                     title: {
-                        text: '仓位(10k$)'
+                        text: '仓位(k$)'
                     },
                 },
                 
