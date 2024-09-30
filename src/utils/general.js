@@ -190,3 +190,13 @@ export function getMaxDrawdown(valueLine, firstDate){
     }
     return mdd
 }
+
+// 处理特殊coin名称
+export function getCoinUnifiedName(coin){
+    // Binance的部分小价格币种以1000开头, eg, 1000SHIB, 1000FLOKI, etc
+    if (coin.startsWith('1000')){
+        coin = coin.slice(4,)
+    }
+
+    return coin
+}

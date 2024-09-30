@@ -13,7 +13,7 @@ import {Chart} from 'highcharts-vue'
 import {getWorkersBySymbol} from '@/api/worker'
 import {addSingleColumn} from '@/utils/chart'
 import {quoteToUSD} from '@/utils/general'
-import {deepCopy} from '@/utils/general'
+import {deepCopy, getCoinUnifiedName} from '@/utils/general'
 import { getSignalPointsByWorker } from '@/api/signal_point'
 
 export default {
@@ -96,6 +96,7 @@ export default {
             for(const data of this.positions){
                 var workerName = data.worker.name
                 var coin = workerName.split('/')[0].split('_').slice(-1,)[0].toUpperCase()
+                coin = getCoinUnifiedName(coin)
                 if (!(coin in coinPositions)){
                     coinPositions[coin] = {
                         'coin': coin,
