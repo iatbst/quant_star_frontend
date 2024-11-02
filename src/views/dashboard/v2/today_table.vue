@@ -246,6 +246,7 @@ export default {
             keys: [
                 'pivot_reversal',
                 'plunge_back',
+                'macd_cross_zero',
                 'delist',
                 'all'
             ],
@@ -262,6 +263,12 @@ export default {
                     position: null,
                     fundingFees: null
                 },
+                'macd_cross_zero': {
+                    strategy: 'M',
+                    initPosition: null,
+                    position: null,
+                    fundingFees: null
+                },                
                 'delist': {
                     strategy: '下',
                     initPosition: null,
@@ -331,6 +338,9 @@ export default {
                     this.todayObj[key].longFlip = null  
                     this.todayObj[key].longWinStop = null  
                     this.todayObj[key].longTimer = null                  
+                } else if (key == 'macd_cross_zero') {
+                    this.todayObj[key].longWinStop = null
+                    this.todayObj[key].shortWinStop = null                   
                 }
             }
         },

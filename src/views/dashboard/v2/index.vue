@@ -21,7 +21,6 @@
             <position-table 
             v-bind:parentPfoPositions="parentPfoPositions" 
             v-bind:subaccountDatas="subaccountDatas" 
-            v-bind:parentPfoAtrptg="parentPfoAtrptg" 
             v-if="parentPfoPositionsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable">
             </position-table>
 
@@ -135,13 +134,18 @@
                 {
                     title: pnlLines.delist.name,
                     data: pnlLines.delist.data
-                },                
+                },  
+                {
+                    title: pnlLines.macd_cross_zero.name,
+                    data: pnlLines.macd_cross_zero.data
+                },              
             ]
             " 
             v-if="
             pnlLines.pivot_reversal.available && 
             pnlLines.plunge_back.available && 
-            pnlLines.delist.available
+            pnlLines.delist.available &&
+            pnlLines.macd_cross_zero.available
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
@@ -168,9 +172,12 @@
           <div style="margin-bottom: 20px; width: 95%">
             <position-ranks2
             v-bind:positions="positions"
-            v-if="prBinancePositionsAvailable && prOkexPositionsAvailable && 
+            v-if="
+            prBinancePositionsAvailable && prOkexPositionsAvailable && 
             pbBinancePositionsAvailable && pbOkexPositionsAvailable && 
-            deBinancePositionsAvailable && deOkexPositionsAvailable"
+            deBinancePositionsAvailable && deOkexPositionsAvailable &&
+            mczBinancePositionsAvailable && mczOkexPositionsAvailable
+            "
             ></position-ranks2> 
 
             <!--- 刷新说明 --->
@@ -195,9 +202,12 @@
           <div style="margin-bottom: 20px; width: 95%">
             <strategy-positions
             v-bind:positions="positions"
-            v-if="prBinancePositionsAvailable && prOkexPositionsAvailable && 
+            v-if="
+            prBinancePositionsAvailable && prOkexPositionsAvailable && 
             pbBinancePositionsAvailable && pbOkexPositionsAvailable && 
-            deBinancePositionsAvailable && deOkexPositionsAvailable"
+            deBinancePositionsAvailable && deOkexPositionsAvailable &&
+            mczBinancePositionsAvailable && mczOkexPositionsAvailable
+            "
             ></strategy-positions> 
 
             <!--- 刷新说明 --->
@@ -282,6 +292,30 @@
             v-bind:strategy="'下'"
             v-bind:col-count="5"
             v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- mcz_binance -->
+            <position-map2 
+            v-bind:positions="mczBinancePositions" 
+            v-bind:positions-loading="mczBinancePositionsLoading"
+            v-bind:exchange="'Binance'"
+            v-bind:strategy="'M'"
+            v-bind:col-count="13"
+            v-bind:show-zero="true"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="prBinanceSortWeights"
+            ></position-map2> 
+
+            <!-- pr_okex -->
+            <position-map2 
+            v-bind:positions="mczOkexPositions" 
+            v-bind:positions-loading="mczOkexPositionsLoading"
+            v-bind:exchange="'Okex'"
+            v-bind:strategy="'M'"
+            v-bind:col-count="13"
+            v-bind:show-zero="true"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="prOkexSortWeights"
             ></position-map2> 
 
             <!--- 刷新说明 --->
@@ -406,6 +440,8 @@ export default {
             pbOkexHosts: config.pbOkexHosts,
             deBinanceHosts: config.deBinanceHosts,
             deOkexHosts: config.deOkexHosts,
+            mczBinanceHosts: config.mczBinanceHosts,
+            mczOkexHosts: config.mczOkexHosts,
             prBinanceSortWeights: config.prBinanceSortWeights,
             prOkexSortWeights: config.prOkexSortWeights,
 
@@ -459,6 +495,12 @@ export default {
             deOkexPositions: [],
             deOkexPositionsAvailable: false,
             deOkexPositionsLoading: false,
+            mczBinancePositions: [],
+            mczBinancePositionsAvailable: false,
+            mczBinancePositionsLoading: false,
+            mczOkexPositions: [],
+            mczOkexPositionsAvailable: false,
+            mczOkexPositionsLoading: false,
 
             binanceBalancePtg: null,
             okexBalancePtg: null,
@@ -510,7 +552,12 @@ export default {
                     'name': '下',
                     'data': null,
                     'available': false
-                },                                 
+                },
+                'macd_cross_zero': {
+                    'name': 'M',
+                    'data': null,
+                    'available': false
+                },                                  
             },
 
             refreshInterval: 1000,
@@ -780,7 +827,9 @@ export default {
                     this.pnlLines.plunge_back.data = parentPfoData.pnl_line.plunge_back.year_now
                     this.pnlLines.plunge_back.available = true
                     this.pnlLines.delist.data = parentPfoData.pnl_line.delist.year_now
-                    this.pnlLines.delist.available = true                    
+                    this.pnlLines.delist.available = true    
+                    this.pnlLines.macd_cross_zero.data = parentPfoData.pnl_line.macd_cross_zero.year_now
+                    this.pnlLines.macd_cross_zero.available = true                                     
                 }
             )
         },
@@ -971,6 +1020,56 @@ export default {
                             // 排序
                             this.deOkexPositionsAvailable = true
                             this.deOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // mcz binance
+            this.mczBinancePositions = []
+            var mczBinanceCount = 0
+            this.mczBinancePositionsLoading = true
+            this.mczBinancePositionsAvailable = false
+            for(var i = 0; i < this.mczBinanceHosts.length; i++){
+                getPositions(this.mczBinanceHosts[i], 'normal').then(response => {
+                        mczBinanceCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'macd_cross_zero'
+                        }
+                        this.mczBinancePositions = this.mczBinancePositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (mczBinanceCount === this.mczBinanceHosts.length ){
+                            // 排序
+                            this.mczBinancePositionsAvailable = true
+                            this.mczBinancePositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // mcz okex
+            this.mczOkexPositions = []
+            var mczOkexCount = 0
+            this.mczOkexPositionsLoading = true
+            this.mczOkexPositionsAvailable = false
+            for(var i = 0; i < this.mczOkexHosts.length; i++){
+                getPositions(this.mczOkexHosts[i], 'normal').then(response => {
+                        mczOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'macd_cross_zero'
+                        }
+                        this.mczOkexPositions = this.mczOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (mczOkexCount === this.mczOkexHosts.length ){
+                            // 排序
+                            this.mczOkexPositionsAvailable = true
+                            this.mczOkexPositionsLoading = false
                         }
                     }
                 )

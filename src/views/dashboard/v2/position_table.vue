@@ -57,6 +57,22 @@
                 </template>
             </el-table-column>
 
+            <el-table-column label="M多头" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: green">
+                        {{toThousands(scope.row.mczLongPosition)}}
+                    </span>               
+                </template>       
+            </el-table-column>
+
+            <el-table-column label="M空头" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: red">
+                        {{toThousands(scope.row.mczShortPosition)}}
+                    </span>        
+                </template>
+            </el-table-column>
+
             <el-table-column label="下头寸" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: red">
@@ -73,10 +89,6 @@
                 </template>
             </el-table-column>
         </el-table>
-        <el-dialog title="" :visible.sync="dialogHistoryAtrptgVisible" width="60%" >
-            <!-- 展示波动率历史曲线 -->
-            <highcharts :options="historyAtrptgOptions" style="margin-top: 0px"></highcharts>
-        </el-dialog>
     </div>
 </template>
 
@@ -98,10 +110,6 @@ export default {
             type:Object,
             default:{}
         },
-        parentPfoAtrptg: {
-            type:Object,
-            default:{}
-        },
         subaccountDatas: {
             type:Object,
             default:{}
@@ -116,12 +124,12 @@ export default {
             deep: true
         },
 
-        parentPfoAtrptg: {
-            handler(val, oldVal){
-                this.parseParentPfoPositions()
-            },
-            deep: true
-        },
+        // parentPfoAtrptg: {
+        //     handler(val, oldVal){
+        //         this.parseParentPfoPositions()
+        //     },
+        //     deep: true
+        // },
 
         subaccountDatas: {
             handler(val, oldVal){
@@ -177,14 +185,16 @@ export default {
 
                 prLongPosition: null,
                 prShortPosition: null,
+                mczLongPosition: null,
+                mczShortPosition: null,
                 pbPosition: null,
                 dePosition: null,
                 holdPosition: null,
 
-                atrptg: null
+                // atrptg: null
             }],
 
-            dialogHistoryAtrptgVisible: false,
+            // dialogHistoryAtrptgVisible: false,
         }
     },
 
@@ -198,11 +208,14 @@ export default {
         parseParentPfoPositions(){
             // 策略仓位信息从系统后台获取
             var prData = this.parentPfoPositions.pivot_reversal
+            var mczData = this.parentPfoPositions.macd_cross_zero
             var pbData = this.parentPfoPositions.plunge_back
             var deData = this.parentPfoPositions.delist
             var holdData = this.parentPfoPositions.hold
             this.positionDatas[0].prLongPosition = Math.round(prData.long)
             this.positionDatas[0].prShortPosition = Math.round(prData.short)
+            this.positionDatas[0].mczLongPosition = Math.round(mczData.long)
+            this.positionDatas[0].mczShortPosition = Math.round(mczData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
             this.positionDatas[0].dePosition = Math.round(deData.short)
             this.positionDatas[0].holdPosition = Math.round(holdData.long)
@@ -211,7 +224,7 @@ export default {
             // this.positionDatas[0].totalPosition += this.positionDatas[0].holdPosition
             // this.positionDatas[0].longPosition += this.positionDatas[0].holdPosition
             
-            this.positionDatas[0].atrptg = this.parentPfoAtrptg.latest
+            // this.positionDatas[0].atrptg = this.parentPfoAtrptg.latest
         },
 
         parseSubaccountDatas(){  
@@ -232,12 +245,12 @@ export default {
         },
 
         // 通过Dialog展示trades(注意, worker只包含id和name)
-        showHistoryAtrptg(){
-            this.dialogHistoryAtrptgVisible = true
-            if (this.historyAtrptgOptions.series.length == 0){
-                addSingleLine('波动率历史值', this.parentPfoAtrptg.history_values, this.historyAtrptgOptions, true, 4)
-            }
-        },
+        // showHistoryAtrptg(){
+        //     this.dialogHistoryAtrptgVisible = true
+        //     if (this.historyAtrptgOptions.series.length == 0){
+        //         addSingleLine('波动率历史值', this.parentPfoAtrptg.history_values, this.historyAtrptgOptions, true, 4)
+        //     }
+        // },
 
         toThousands: toThousands,
     },
