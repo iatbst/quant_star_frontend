@@ -49,7 +49,9 @@
             v-bind:binanceBalancePtg="binanceBalancePtg"
             v-bind:okexBalancePtg="okexBalancePtg"
             v-bind:parentPfoAtrptg="parentPfoAtrptg" 
-            v-if="parentPfoTradeStatsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable">
+            v-bind:jiaPnl="jiaPnl"
+            v-bind:sunPnl="sunPnl"
+            v-if="parentPfoTradeStatsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable && jiaPnlAvailable && sunPnlAvailable">
             </perf-table>
 
             <!--- 刷新说明 --->
@@ -390,6 +392,7 @@ import config from '@/configs/system_configs'
 import { getPortfolioDatas, getPortfolioDataByName } from '@/api/portfolio' 
 import { getSubAccountDatas} from '@/api/subaccount'
 import { getDelegateWorkerDatas } from '@/api/worker'
+import { getTradesByFlagCodes } from '@/api/trade'
 import { getPositions } from '@/api/position'
 import { getBacktestPlanByName } from '@/api/backtest_plan'
 import { getBacktestReportById, getBacktestReportByName } from '@/api/backtest_report'
@@ -502,6 +505,11 @@ export default {
             mczOkexPositionsAvailable: false,
             mczOkexPositionsLoading: false,
 
+            jiaPnl: 0,
+            jiaPnlAvailable: false,
+            sunPnl: 0,
+            sunPnlAvailable: false,
+
             binanceBalancePtg: null,
             okexBalancePtg: null,
 
@@ -580,6 +588,7 @@ export default {
             positionsRefresh: null,
             ordersRefresh: null,
             parentPfoAtrptgRefresh: null,
+            jiaSunPnlRefresh: null
         }
     },
 
@@ -606,6 +615,7 @@ export default {
 
             // 表格4: 总体策略表现
             this.fetchParentPfoTradeStats()
+            this.fetchHoldCoinPnl()
 
             // 图表1: 实盘资产 VS 回测资产
             this.fetchLiveValueline()   // 实盘资产曲线
@@ -843,6 +853,42 @@ export default {
                     this.subaccountDatasAvailable = true
                 }
             )
+        },
+
+        // Temp: 从Master获取Sun&Jia的囤币当前收益
+        fetchHoldCoinPnl(){
+            this.jiaSunPnlRefresh = new Date()
+            this.jiaPnlAvailable = false
+            this.sunPnlAvailable = false
+
+            // Jia的trades
+             getTradesByFlagCodes('jia', config.masterHost, 'pnl,position_pnl').then(response => {
+                    this.jiaPnl = 0
+                    for(let data of response.results){
+                        this.jiaPnl +=  data.position_pnl
+                        if (data.pnl != null){
+                            this.jiaPnl += data.pnl
+                        }
+                    }
+                    this.jiaPnl /= 1000
+                    this.jiaPnlAvailable = true
+                }
+            )  
+
+            // Sun的trades
+             getTradesByFlagCodes('sun', config.masterHost, 'pnl,position_pnl').then(response => {
+                    this.sunPnl = 0
+                    for(let data of response.results){
+                        this.sunPnl +=  data.position_pnl
+                        if (data.pnl != null){
+                            this.sunPnl += data.pnl
+                        }
+                    }
+
+                    this.sunPnl /= 1000
+                    this.sunPnlAvailable = true
+                }
+            )  
         },
 
         // Temp: 临时计算Binance和Okex的资产百分比
@@ -1108,6 +1154,11 @@ export default {
                     console.log(now + '刷新:fetchParentPfoAtrptg');
                     this.fetchParentPfoAtrptg()
                 }  
+                // Jia VS Sun Pnl
+                if(now - this.jiaSunPnlRefresh > 60*60*1000){
+                    console.log(now + '刷新:fetchHoldCoinPnl');
+                    this.fetchHoldCoinPnl()
+                } 
                 // 今日表格
                 if(now - this.todayOrdersRefresh > 5*60*1000){
                     console.log(now + '刷新:fetchTodayOrders');

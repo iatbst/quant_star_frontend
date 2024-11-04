@@ -27,6 +27,20 @@ export function getTradeById(id, host=null) {
   return request(req_obj)
 }
 
+export function getTradesByFlagCodes(flag_codes, host=null, fields=null) {
+  var url = '/trades/?flag_codes=' + flag_codes
+  if (fields != null){
+    // 指定fields
+    url += '&fields=' + fields
+  }
+  var req_obj = {
+    url: url,
+    method: 'get'
+  }
+  if (host) { req_obj['baseURL'] = host }
+  return request(req_obj)
+}
+
 export function getTradesByFinalFlag(final_flag, host=null, checked=false) {
   if (final_flag == 'error'){
     // 分为两种情况: checked vs unchecked

@@ -74,8 +74,22 @@
                     <i class="el-icon-data-line" style="cursor: pointer" @click="showHistoryAtrptg()"></i>
                 </span>                      
             </el-table-column>
-            <el-table-column label="" min-width="10%" align="center"> 
+            <el-table-column label="Sun VS Jia (k)" min-width="10%" align="center"> 
+                    <span style="color: green" v-if="sunPnl >= 0">
+                        {{sunPnl.toFixed(1)}}
+                    </span>  
+                    <span style="color: red" v-else>
+                        {{sunPnl.toFixed(1)}}
+                    </span>  
+                | 
+                    <span style="color: green" v-if="jiaPnl >= 0">
+                        {{jiaPnl.toFixed(1)}}
+                    </span>  
+                    <span style="color: red" v-else>
+                        {{jiaPnl.toFixed(1)}}
+                    </span> 
             </el-table-column>  
+
             <el-table-column label="收益" min-width="10%" align="center" style="background: white"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.col9 >= 0">
@@ -363,6 +377,14 @@ export default {
         parentPfoAtrptg: {
             type:Object,
             default:{}
+        },
+        jiaPnl: {
+            type: Number,
+            default: 0
+        },
+        sunPnl: {
+            type: Number,
+            default: 0
         },
     },
 
