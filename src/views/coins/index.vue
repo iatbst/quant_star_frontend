@@ -284,7 +284,7 @@ export default {
                         }
 
                         // 平仓
-                        for(let order in trade.orders){
+                        for(let order of trade.orders){
                             if(order.order_type == 'close'){
                                 // 平仓order
                                 if (!(coin in closeData)){
