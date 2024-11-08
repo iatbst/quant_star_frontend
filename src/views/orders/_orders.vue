@@ -117,7 +117,7 @@
 
                     <el-table-column align="center" label="策略" min-width="5%">
                         <template slot-scope="scope">
-                            {{ strategyAlias.hasOwnProperty(scope.row.worker.name.split('_').slice(-2, -1)[0]) ? strategyAlias[scope.row.worker.name.split('_').slice(-2, -1)[0]] : '大' }}
+                            {{ scope.row.worker.name.split('_').length == 5 ? strategyAlias[scope.row.worker.name.split('_').slice(-2, -1)[0]] : strategyAlias[scope.row.worker.name.split('_').slice(-1)[0].slice(0,-1)] }}
                         </template>
                     </el-table-column>
 

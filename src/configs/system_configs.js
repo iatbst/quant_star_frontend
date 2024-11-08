@@ -124,6 +124,8 @@ const subacctPfoAlias = [
 const strategies = [
     'pivot-reversal',
     'plunge-back',
+    'macd-cross-zero',
+    'delist'
     // 'pivot-reversal-mini',
 ]
 
@@ -150,6 +152,7 @@ const strategyAlias = {
     'delist': '下',
     'de': '下',
 
+    'macd-cross-zero': 'M',
     'macd_cross_zero': 'M',
     'mcz': 'M',
 
