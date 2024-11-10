@@ -13,7 +13,7 @@ const prBinanceHosts = [
     'http://ec2-54-250-145-172.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
 const prOkexHosts = [
-    'http://ec2-18-163-61-14.ap-east-1.compute.amazonaws.com:8000/api'
+    'http://ec2-16-162-121-210.ap-east-1.compute.amazonaws.com:8000/api'
 ]
 const deBinanceHosts = [
     'http://ec2-18-179-212-104.ap-northeast-1.compute.amazonaws.com:8000/api'
@@ -47,7 +47,7 @@ const pbOkexHosts = [
 
 var production_hosts = [
     // 香港: Okex
-    'http://ec2-18-163-61-14.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-16-162-121-210.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-113-187.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
