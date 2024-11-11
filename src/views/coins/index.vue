@@ -7,10 +7,28 @@
             </el-row>
         </div>
 
+        <div style="margin-left: 50px; margin-right: 50px; margin-bottom: 50px;">
+            <el-row style="margin-bottom: 20px">
+                <!-- 孙毅投资币种 -->
+                <el-col :span="24">
+                    <highcharts :options="sunTradesOptions"></highcharts>
+                </el-col>   
+            </el-row>
+        </div> 
+
+        <div style="margin-left: 50px; margin-right: 50px; margin-bottom: 50px;">
+            <el-row style="margin-bottom: 20px">
+                <!-- 杨嘉投资币种 -->
+                <el-col :span="24">
+                    <highcharts :options="jiaTradesOptions"></highcharts>
+                </el-col> 
+            </el-row>  
+        </div> 
+
         <h4>
             当前持仓
         </h4>
-        <div style="margin-left: 20px; margin-right: 20px; margin-bottom: 50px;">
+        <div style="margin-left: 50px; margin-right: 50px; margin-bottom: 50px;">
             <el-row :gutter="0" type="flex" >
                 <!----------------------------------- 持仓详情 --------------------------------------->
                 <el-table
@@ -83,7 +101,7 @@
         <h4>
             平仓记录
         </h4>
-        <div style="margin-left: 20px; margin-right: 20px; margin-bottom: 50px;">
+        <div style="margin-left: 50px; margin-right: 50px; margin-bottom: 50px;">
             <el-row :gutter="0" type="flex" >
                 <!----------------------------------- 持仓详情 --------------------------------------->
                 <el-table
@@ -139,7 +157,7 @@
         <h4>
             订单详情
         </h4>
-        <div style="margin-left: 20px; margin-right: 20px;">
+        <div style="margin-left: 50px; margin-right: 50px;">
             <el-row :gutter="0" type="flex" >
                 <!----------------------------------- 订单详情 --------------------------------------->
                 <el-table
@@ -215,6 +233,7 @@
 
 <script>
 // Components
+import {Chart} from 'highcharts-vue'
 import orders from '@/views/orders/_orders'
 import config from '@/configs/system_configs'
 import { utcToLocalTimestamp } from '@/utils/general'
@@ -223,15 +242,100 @@ import { getOrders } from '@/api/order'
 import { getTradesByFinalFlag } from '@/api/trade'
 import { chineseString } from '@/utils/chinese'
 import { toFixed } from  '@/utils/general'
+import {addSingleColumn} from '@/utils/chart'
 
 
 export default {
     components: {
-        orders
+        highcharts: Chart,
     },
 
     data() {
         return {
+            sunTradesOptions: {
+                chart: {
+                    type: 'column',
+                    height: 400
+                },
+
+                title: {
+                    text: '孙毅投资收益',
+                },
+                xAxis: {
+                    categories: []
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '收益(k$)'
+                    },
+                },
+                
+                exporting: { enabled: false },
+                
+                legend: {
+                    enabled: false
+                },
+
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{series.name}: ${point.y}k'
+                },
+                plotOptions: {
+                    column: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    },
+                },
+                series: [{
+                    name: '收益',
+                    data: [],
+                }],
+            },
+
+            jiaTradesOptions: {
+                chart: {
+                    type: 'column',
+                    height: 400
+                },
+
+                title: {
+                    text: '杨嘉投资收益',
+                },
+                xAxis: {
+                    categories: []
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '收益(k$)'
+                    },
+                },
+                
+                exporting: { enabled: false },
+                
+                legend: {
+                    enabled: false
+                },
+
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{series.name}: ${point.y}k'
+                },
+                plotOptions: {
+                    column: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    },
+                },
+                series: [{
+                    name: '收益',
+                    data: [],
+                }],
+            },
+
             masterHost: config.masterHost,
             orders: [],
             ordersLoading: false,
@@ -240,21 +344,29 @@ export default {
             openPositionsLoading: false,
 
             closePositions: [],
-            closePositionsLoading: false
+            closePositionsLoading: false,
+
+            sunTrades: [],
+            jiaTrades: [],
         }
     },
 
     created() {
-        this.fetchParseTrades()
+        this.fetchManualTrades()
         this.fetchOrders()
     },
 
     methods: {   
-        fetchParseTrades(){
+        // 获取所有的人工持仓
+        fetchManualTrades(){
             this.openPositions = []
             this.openPositionsLoading = true
             this.closePositions = []
             this.closePositionsLoading = true
+            var sunPnl = []
+            var jiaPnl = []
+            var sunPnlSum = 0
+            var jiaPnlSum = 0
             getTradesByFinalFlag('manual', this.masterHost).then(response => {
                     var trades = response.results
                     var openData = {}   // key: coin
@@ -299,7 +411,57 @@ export default {
                                 closeData[coin].pnl += order.pnl                                
                             }
                         }
+
+                        // Sun VS Jia
+                        if (trade.flag_codes == 'sun'){
+                            var coin = trade.worker.product.symbol.split('/')[0]
+                            var pnl = trade.position_pnl    // 持仓收益
+                            if (trade.pnl != null){
+                                pnl += trade.pnl            // 平仓收益
+                            }
+                            sunPnl.push({
+                                'coin': coin,
+                                'pnl': pnl
+                            })
+                            sunPnlSum += pnl
+                        }
+                        if (trade.flag_codes == 'jia'){
+                            var coin = trade.worker.product.symbol.split('/')[0]
+                            var pnl = trade.position_pnl    // 持仓收益
+                            if (trade.pnl != null){
+                                pnl += trade.pnl            // 平仓收益
+                            }
+                            jiaPnl.push({
+                                'coin': coin,
+                                'pnl': pnl
+                            })
+                            jiaPnlSum += pnl
+                        }                       
                     }
+
+                    // Sun VS Jia
+                    sunPnl.sort((a, b)=> b.pnl - a.pnl)
+                    jiaPnl.sort((a, b)=> b.pnl - a.pnl)
+                    var sunColDatas = []
+                    var jiaColDatas = []
+                    for(const data of sunPnl){
+                        sunColDatas.push({
+                            'x': data.coin,
+                            'y': Number((Math.abs((data.pnl/1000))).toFixed(1)),
+                            'color': data.pnl >= 0 ? 'green' : 'red'
+                        })                   
+                    }
+                    for(const data of jiaPnl){
+                        jiaColDatas.push({
+                            'x': data.coin,
+                            'y': Number((Math.abs((data.pnl/1000))).toFixed(1)),
+                            'color': data.pnl >= 0 ? 'green' : 'red'
+                        })                   
+                    }
+                    addSingleColumn(sunColDatas, this.sunTradesOptions)  
+                    addSingleColumn(jiaColDatas, this.jiaTradesOptions)  
+                    this.sunTradesOptions.title.text += '($' + toThousands(Math.round(sunPnlSum)) + ')'
+                    this.jiaTradesOptions.title.text += '($' + toThousands(Math.round(jiaPnlSum)) + ')'           
 
                     // 持仓总结
                     for(let coin in openData){
