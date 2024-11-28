@@ -9,7 +9,9 @@
             -->
             <balance-table 
             v-bind:parentPfoWallet="parentPfoWallet" 
-            v-if="parentPfoWalletAvailable" >
+            v-bind:subaccountDatas="subaccountDatas" 
+            v-bind:parentPfoPositions="parentPfoPositions" 
+            v-if="parentPfoWalletAvailable && subaccountDatasAvailable && parentPfoPositionsAvailable" >
             </balance-table>
 
             <!--- 仓位表 ---

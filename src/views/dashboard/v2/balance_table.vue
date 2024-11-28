@@ -71,6 +71,17 @@
                 </span>
             </template>         
         </el-table-column>
+
+        <el-table-column prop="maxDrawdown" label="系统杠杆率" min-width="10%" align="center">
+            <template slot-scope="scope">
+                <span v-if="scope.row.leverage >= 0" style="color: green">
+                    {{ scope.row.leverage.toFixed(2)}}X
+                </span>
+                <span style="color: red" v-else>
+                    {{ scope.row.leverage.toFixed(2)}}X
+                </span> 
+            </template>         
+        </el-table-column>
     </el-table>
 </template>
 
@@ -84,7 +95,15 @@ export default {
         parentPfoWallet: {
             type:Object,
             default:{}
-        }      
+        },
+        subaccountDatas: {
+            type:Object,
+            default:{}
+        },
+        parentPfoPositions: {
+            type:Object,
+            default:{}
+        },   
     },
 
     watch: {
@@ -94,6 +113,18 @@ export default {
             },
             deep: true
         },
+        subaccountDatas: {
+            handler(val, oldVal){
+                this.parseData()
+            },
+            deep: true
+        },   
+        parentPfoPositions: {
+            handler(val, oldVal){
+                this.parseData()
+            },
+            deep: true
+        },    
     },
 
     data() {
@@ -110,6 +141,7 @@ export default {
                 maxDrawdown: null,
                 usdTotalBalance: null,
                 coinTotalBalance: null,
+                leverage: null
             }],
         }
     },
@@ -136,6 +168,16 @@ export default {
             this.balanceDatas[0].drawdown = (totalBalanceInfo.drawdown*100).toFixed(2)
             this.balanceDatas[0].maxDrawdown = (totalBalanceInfo.max_drawdown*100).toFixed(2)
             this.balanceDatas[0].drawdownDays = totalBalanceInfo.drawdown_days
+
+            // 当前系统杠杆率
+            var holdData = this.parentPfoPositions.hold
+            var totalPosition = 0
+            for(var i = 0; i < this.subaccountDatas.length; i++){
+                var summary = this.subaccountDatas[i].positions.summary
+                totalPosition += summary.usdt_long
+                totalPosition += summary.usdt_short
+            }
+            this.balanceDatas[0].leverage = (totalPosition + holdData.long)/this.balanceDatas[0].totalBalance          
         },
 
         toThousands: toThousands,

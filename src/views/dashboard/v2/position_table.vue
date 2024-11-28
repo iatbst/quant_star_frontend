@@ -28,7 +28,7 @@
             <el-table-column label="总空头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: red">
-                        {{toThousands(-scope.row.shortPosition)}}
+                        {{toThousands(scope.row.shortPosition)}}
                     </span>               
                 </template>
             </el-table-column>
