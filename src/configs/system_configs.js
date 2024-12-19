@@ -152,6 +152,8 @@ const backtestHost = 'http://ec2-52-195-236-169.ap-northeast-1.compute.amazonaws
 const exchanges = [
     'binance',
     'okex',
+    'bybit',
+    'bitget'
     //'huobi'
 ]
 
