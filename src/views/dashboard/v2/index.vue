@@ -136,10 +136,6 @@
                     data: pnlLines.plunge_back.data
                 },
                 {
-                    title: pnlLines.delist.name,
-                    data: pnlLines.delist.data
-                },  
-                {
                     title: pnlLines.macd_cross_zero.name,
                     data: pnlLines.macd_cross_zero.data
                 },              
@@ -147,8 +143,7 @@
             " 
             v-if="
             pnlLines.pivot_reversal.available && 
-            pnlLines.plunge_back.available && 
-            pnlLines.delist.available &&
+            pnlLines.plunge_back.available &&
             pnlLines.macd_cross_zero.available
             " 
             style="margin-bottom: 20px">
@@ -179,7 +174,6 @@
             v-if="
             prBinancePositionsAvailable && prOkexPositionsAvailable && prBybitPositionsAvailable && prBitgetPositionsAvailable &&
             pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
-            deBinancePositionsAvailable && deOkexPositionsAvailable &&
             mczBinancePositionsAvailable && mczOkexPositionsAvailable && mczBybitPositionsAvailable && mczBitgetPositionsAvailable
             "
             ></position-ranks2> 
@@ -209,7 +203,6 @@
             v-if="
             prBinancePositionsAvailable && prOkexPositionsAvailable && prBybitPositionsAvailable && prBitgetPositionsAvailable &&
             pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
-            deBinancePositionsAvailable && deOkexPositionsAvailable &&
             mczBinancePositionsAvailable && mczOkexPositionsAvailable && mczBybitPositionsAvailable && mczBitgetPositionsAvailable
             "
             ></strategy-positions> 
@@ -318,26 +311,6 @@
             v-bind:positions-loading="pbBitgetPositionsLoading"
             v-bind:exchange="'Bitget'"
             v-bind:strategy="'底'"
-            v-bind:col-count="5"
-            v-bind:show-zero="false"
-            ></position-map2> 
-
-            <!-- de_binance -->
-            <position-map2 
-            v-bind:positions="deBinancePositions" 
-            v-bind:positions-loading="deBinancePositionsLoading"
-            v-bind:exchange="'Binance'"
-            v-bind:strategy="'下'"
-            v-bind:col-count="5"
-            v-bind:show-zero="false"
-            ></position-map2> 
-
-            <!-- de_okex -->
-            <position-map2 
-            v-bind:positions="deOkexPositions" 
-            v-bind:positions-loading="deOkexPositionsLoading"
-            v-bind:exchange="'Okex'"
-            v-bind:strategy="'下'"
             v-bind:col-count="5"
             v-bind:show-zero="false"
             ></position-map2> 
@@ -515,8 +488,6 @@ export default {
             pbOkexHosts: config.pbOkexHosts,
             pbBybitHosts: config.pbBybitHosts,
             pbBitgetHosts: config.pbBitgetHosts,
-            deBinanceHosts: config.deBinanceHosts,
-            deOkexHosts: config.deOkexHosts,
             mczBinanceHosts: config.mczBinanceHosts,
             mczOkexHosts: config.mczOkexHosts,
             mczBybitHosts: config.mczBybitHosts,
@@ -582,12 +553,6 @@ export default {
             pbBitgetPositions: [],
             pbBitgetPositionsAvailable: false,
             pbBitgetPositionsLoading: false,
-            deBinancePositions: [],
-            deBinancePositionsAvailable: false,
-            deBinancePositionsLoading: false,
-            deOkexPositions: [],
-            deOkexPositionsAvailable: false,
-            deOkexPositionsLoading: false,
             mczBinancePositions: [],
             mczBinancePositionsAvailable: false,
             mczBinancePositionsLoading: false,
@@ -649,11 +614,6 @@ export default {
                 },
                 'plunge_back': {
                     'name': '底',
-                    'data': null,
-                    'available': false
-                },
-                'delist': {
-                    'name': '下',
                     'data': null,
                     'available': false
                 },
@@ -931,9 +891,7 @@ export default {
                     this.pnlLines.pivot_reversal.data = parentPfoData.pnl_line.pivot_reversal.year_now
                     this.pnlLines.pivot_reversal.available = true
                     this.pnlLines.plunge_back.data = parentPfoData.pnl_line.plunge_back.year_now
-                    this.pnlLines.plunge_back.available = true
-                    this.pnlLines.delist.data = parentPfoData.pnl_line.delist.year_now
-                    this.pnlLines.delist.available = true    
+                    this.pnlLines.plunge_back.available = true  
                     this.pnlLines.macd_cross_zero.data = parentPfoData.pnl_line.macd_cross_zero.year_now
                     this.pnlLines.macd_cross_zero.available = true                                     
                 }
@@ -1212,56 +1170,6 @@ export default {
                             // 排序
                             this.pbBitgetPositionsAvailable = true
                             this.pbBitgetPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // de binance
-            this.deBinancePositions = []
-            var deBinanceCount = 0
-            this.deBinancePositionsLoading = true
-            this.deBinancePositionsAvailable = false
-            for(var i = 0; i < this.deBinanceHosts.length; i++){
-                getPositions(this.deBinanceHosts[i], 'normal').then(response => {
-                        deBinanceCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'delist'
-                        }
-                        this.deBinancePositions = this.deBinancePositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (deBinanceCount === this.deBinanceHosts.length ){
-                            // 排序
-                            this.deBinancePositionsAvailable = true
-                            this.deBinancePositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // de okex
-            this.deOkexPositions = []
-            var deOkexCount = 0
-            this.deOkexPositionsLoading = true
-            this.deOkexPositionsAvailable = false
-            for(var i = 0; i < this.deOkexHosts.length; i++){
-                getPositions(this.deOkexHosts[i], 'normal').then(response => {
-                        deOkexCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'delist'
-                        }
-                        this.deOkexPositions = this.deOkexPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (deOkexCount === this.deOkexHosts.length ){
-                            // 排序
-                            this.deOkexPositionsAvailable = true
-                            this.deOkexPositionsLoading = false
                         }
                     }
                 )

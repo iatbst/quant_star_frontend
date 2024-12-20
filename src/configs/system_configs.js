@@ -21,12 +21,12 @@ const prBybitHosts = [
 const prBitgetHosts = [
     'http://ec2-47-129-152-44.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
-const deBinanceHosts = [
-    'http://ec2-18-179-212-104.ap-northeast-1.compute.amazonaws.com:8000/api'
-]
-const deOkexHosts = [
-    'http://ec2-18-166-189-96.ap-east-1.compute.amazonaws.com:8000/api'
-]
+// const deBinanceHosts = [
+//     'http://ec2-18-179-212-104.ap-northeast-1.compute.amazonaws.com:8000/api'
+// ]
+// const deOkexHosts = [
+//     'http://ec2-18-166-189-96.ap-east-1.compute.amazonaws.com:8000/api'
+// ]
 const mczBinanceHosts = [
     'http://ec2-13-114-16-29.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
@@ -43,33 +43,33 @@ const pbBinanceHosts = [
     'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-183-193-63.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-54-178-111-65.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-35-76-111-12.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-35-78-72-28.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-52-195-149-42.ap-northeast-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-54-178-111-65.ap-northeast-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-35-76-111-12.ap-northeast-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-35-78-72-28.ap-northeast-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-52-195-149-42.ap-northeast-1.compute.amazonaws.com:8000/api',
 ]
 
 const pbOkexHosts = [
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-113-187.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',  
-    'http://ec2-16-163-154-133.ap-east-1.compute.amazonaws.com:8000/api',  
+    // 'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',  
+    // 'http://ec2-16-163-154-133.ap-east-1.compute.amazonaws.com:8000/api',  
 ]
 
 const pbBybitHosts = [
     'http://ec2-47-129-221-92.ap-southeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-52-77-215-97.ap-southeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-13-250-51-216.ap-southeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-54-255-212-211.ap-southeast-1.compute.amazonaws.com:8000/api',  
-    'http://ec2-47-129-218-220.ap-southeast-1.compute.amazonaws.com:8000/api',  
+    // 'http://ec2-54-255-212-211.ap-southeast-1.compute.amazonaws.com:8000/api',  
+    // 'http://ec2-47-129-218-220.ap-southeast-1.compute.amazonaws.com:8000/api',  
 ]
 
 const pbBitgetHosts = [
     'http://ec2-13-213-7-38.ap-southeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-255-128-30.ap-southeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-52-77-236-31.ap-southeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-13-212-153-244.ap-southeast-1.compute.amazonaws.com:8000/api', 
+    // 'http://ec2-13-212-153-244.ap-southeast-1.compute.amazonaws.com:8000/api', 
 ]
 
 
@@ -79,17 +79,17 @@ var production_hosts = [
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-113-187.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-16-163-154-133.ap-east-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-16-163-154-133.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-189-96.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-162-230-116.ap-east-1.compute.amazonaws.com:8000/api',
 
     // 东京: Binance
     'http://ec2-54-250-145-172.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-52-195-149-42.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-35-78-72-28.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-35-76-111-12.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-54-178-111-65.ap-northeast-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-52-195-149-42.ap-northeast-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-35-78-72-28.ap-northeast-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-35-76-111-12.ap-northeast-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-54-178-111-65.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-183-193-63.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
@@ -102,8 +102,8 @@ var production_hosts = [
     'http://ec2-47-129-221-92.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_1
     'http://ec2-52-77-215-97.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_2
     'http://ec2-13-250-51-216.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_3
-    'http://ec2-54-255-212-211.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_4
-    'http://ec2-47-129-218-220.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_5
+    // 'http://ec2-54-255-212-211.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_4
+    // 'http://ec2-47-129-218-220.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_5
 
     // 新加坡: Bitget
     'http://ec2-47-129-152-44.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pr_1
@@ -111,7 +111,7 @@ var production_hosts = [
     'http://ec2-13-213-7-38.ap-southeast-1.compute.amazonaws.com:8000/api',     // bitget_pb_1
     'http://ec2-54-255-128-30.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pb_2
     'http://ec2-52-77-236-31.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pb_3
-    'http://ec2-13-212-153-244.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pb_4
+    // 'http://ec2-13-212-153-244.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pb_4
 ]
 
 var development_hosts = [
@@ -180,7 +180,7 @@ const strategies = [
     'pivot-reversal',
     'plunge-back',
     'macd-cross-zero',
-    'delist'
+    // 'delist'
     // 'pivot-reversal-mini',
 ]
 
@@ -193,9 +193,6 @@ const activeStrategyIDs = [
     'plunge_back_2',
     'plunge_back_3',
     'plunge_back_4',
-    'plunge_back_5',
-    'plunge_back_6',
-    'delist_1',
     'macd_cross_zero_1'
 ]
 
@@ -204,8 +201,8 @@ const strategyAlias = {
     'pivot_reversal': '大',
     'pr': '大',
 
-    'delist': '下',
-    'de': '下',
+    // 'delist': '下',
+    // 'de': '下',
 
     'macd-cross-zero': 'M',
     'macd_cross_zero': 'M',
@@ -365,8 +362,6 @@ export default {
     pbOkexHosts,
     pbBybitHosts,
     pbBitgetHosts,
-    deBinanceHosts,
-    deOkexHosts,
     mczBinanceHosts,
     mczOkexHosts,
     mczBybitHosts,
