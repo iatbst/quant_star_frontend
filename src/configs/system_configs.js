@@ -81,7 +81,7 @@ var production_hosts = [
     'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
     // 'http://ec2-18-166-31-102.ap-east-1.compute.amazonaws.com:8000/api',
     // 'http://ec2-16-163-154-133.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-166-189-96.ap-east-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-18-166-189-96.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-162-230-116.ap-east-1.compute.amazonaws.com:8000/api',
 
     // 东京: Binance
@@ -93,7 +93,7 @@ var production_hosts = [
     'http://ec2-18-183-193-63.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-179-212-104.ap-northeast-1.compute.amazonaws.com:8000/api',
+    // 'http://ec2-18-179-212-104.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-13-114-16-29.ap-northeast-1.compute.amazonaws.com:8000/api',
 
     // 新加坡: Bybit
