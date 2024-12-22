@@ -9,9 +9,7 @@
             -->
             <balance-table 
             v-bind:parentPfoWallet="parentPfoWallet" 
-            v-bind:subaccountDatas="subaccountDatas" 
-            v-bind:parentPfoPositions="parentPfoPositions" 
-            v-if="parentPfoWalletAvailable && subaccountDatasAvailable && parentPfoPositionsAvailable" >
+            v-if="parentPfoWalletAvailable" >
             </balance-table>
 
             <!--- 仓位表 ---
@@ -23,8 +21,21 @@
             <position-table 
             v-bind:parentPfoPositions="parentPfoPositions" 
             v-bind:subaccountDatas="subaccountDatas" 
-            v-if="parentPfoPositionsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable">
+            v-bind:parentPfoWallet="parentPfoWallet" 
+            v-if="parentPfoPositionsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable && parentPfoWalletAvailable">
             </position-table>
+
+            <!--- 平台表 ---
+                函数: 
+                    - fetchSubAccountDatas
+                    - fetchHoldCoinPnl
+            --->
+            <exchange-table 
+            v-bind:subaccountDatas="subaccountDatas" 
+            v-bind:jiaPnl="jiaPnl"
+            v-bind:sunPnl="sunPnl"
+            v-if="subaccountDatasAvailable && jiaPnlAvailable && sunPnlAvailable">
+            </exchange-table>
 
             <!--- 今日表 ---
                 函数: 
@@ -48,12 +59,7 @@
             --->
             <perf-table 
             v-bind:parentPfoTradeStats="parentPfoTradeStats" 
-            v-bind:binanceBalancePtg="binanceBalancePtg"
-            v-bind:okexBalancePtg="okexBalancePtg"
-            v-bind:parentPfoAtrptg="parentPfoAtrptg" 
-            v-bind:jiaPnl="jiaPnl"
-            v-bind:sunPnl="sunPnl"
-            v-if="parentPfoTradeStatsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable && jiaPnlAvailable && sunPnlAvailable">
+            v-if="parentPfoTradeStatsAvailable">
             </perf-table>
 
             <!--- 刷新说明 --->
@@ -232,7 +238,7 @@
             v-bind:positions="prBinancePositions" 
             v-bind:positions-loading="prBinancePositionsLoading"
             v-bind:exchange="'Binance'"
-            v-bind:strategy="'大'"
+            v-bind:strategy="'P'"
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
@@ -244,7 +250,7 @@
             v-bind:positions="prOkexPositions" 
             v-bind:positions-loading="prOkexPositionsLoading"
             v-bind:exchange="'Okex'"
-            v-bind:strategy="'大'"
+            v-bind:strategy="'P'"
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
@@ -256,7 +262,7 @@
             v-bind:positions="prBybitPositions" 
             v-bind:positions-loading="prBybitPositionsLoading"
             v-bind:exchange="'Bybit'"
-            v-bind:strategy="'大'"
+            v-bind:strategy="'P'"
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
@@ -268,7 +274,7 @@
             v-bind:positions="prBitgetPositions" 
             v-bind:positions-loading="prBitgetPositionsLoading"
             v-bind:exchange="'Bitget'"
-            v-bind:strategy="'大'"
+            v-bind:strategy="'P'"
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
@@ -280,7 +286,7 @@
             v-bind:positions="pbBinancePositions" 
             v-bind:positions-loading="pbBinancePositionsLoading"
             v-bind:exchange="'Binance'"
-            v-bind:strategy="'底'"
+            v-bind:strategy="'B'"
             v-bind:col-count="5"
             v-bind:show-zero="false"
             ></position-map2> 
@@ -290,7 +296,7 @@
             v-bind:positions="pbOkexPositions" 
             v-bind:positions-loading="pbOkexPositionsLoading"
             v-bind:exchange="'Okex'"
-            v-bind:strategy="'底'"
+            v-bind:strategy="'B'"
             v-bind:col-count="5"
             v-bind:show-zero="false"
             ></position-map2> 
@@ -300,7 +306,7 @@
             v-bind:positions="pbBybitPositions" 
             v-bind:positions-loading="pbBybitPositionsLoading"
             v-bind:exchange="'Bybit'"
-            v-bind:strategy="'底'"
+            v-bind:strategy="'B'"
             v-bind:col-count="5"
             v-bind:show-zero="false"
             ></position-map2> 
@@ -310,7 +316,7 @@
             v-bind:positions="pbBitgetPositions" 
             v-bind:positions-loading="pbBitgetPositionsLoading"
             v-bind:exchange="'Bitget'"
-            v-bind:strategy="'底'"
+            v-bind:strategy="'B'"
             v-bind:col-count="5"
             v-bind:show-zero="false"
             ></position-map2> 
@@ -412,6 +418,7 @@ import orders from '@/views/orders/_orders'
 import todayTable from '@/views/dashboard/v2/today_table'
 import perfTable from '@/views/dashboard/v2/perf_table'
 import positionTable from '@/views/dashboard/v2/position_table'
+import exchangeTable from '@/views/dashboard/v2/exchange_table'
 import balanceTable from '@/views/dashboard/v2/balance_table'
 import valueLine from '@/views/balance/_value_line'
 import twoValueLine from '@/views/balance/_two_value_line'
@@ -450,6 +457,7 @@ export default {
 
         balanceTable,
         positionTable,
+        exchangeTable,
         perfTable,
         todayTable,
 
@@ -608,12 +616,12 @@ export default {
             // 策略的Pnl Line(今年)
             pnlLines: {
                 'pivot_reversal': {
-                    'name': '大',
+                    'name': 'P',
                     'data': null,
                     'available': false
                 },
                 'plunge_back': {
-                    'name': '底',
+                    'name': 'B',
                     'data': null,
                     'available': false
                 },
@@ -664,14 +672,16 @@ export default {
             this.fetchParentPfoAtrptg()
             this.fetchSubAccountDatas()
 
-            // 表格3: 总体今日信息
+            // 表格3: 平台资金仓位信息
+            this.fetchHoldCoinPnl()
+
+            // 表格4: 总体今日信息
             this.fetchTodayOrders()
             this.fetchTodayPnls()
             this.fetchTodayFundingFees()
 
-            // 表格4: 总体策略表现
+            // 表格5: 总体策略表现
             this.fetchParentPfoTradeStats()
-            this.fetchHoldCoinPnl()
 
             // 图表1: 实盘资产 VS 回测资产
             this.fetchLiveValueline()   // 实盘资产曲线

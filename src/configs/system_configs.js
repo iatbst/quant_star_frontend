@@ -189,17 +189,17 @@ const activeStrategyIDs = [
     'pivot_reversal_2',
     'pivot_reversal_3',
     'pivot_reversal_4',
+    'macd_cross_zero_1',
     'plunge_back_1',
     'plunge_back_2',
     'plunge_back_3',
     'plunge_back_4',
-    'macd_cross_zero_1'
 ]
 
 const strategyAlias = {
-    'pivot-reversal': '大',
-    'pivot_reversal': '大',
-    'pr': '大',
+    'pivot-reversal': 'P',
+    'pivot_reversal': 'P',
+    'pr': 'P',
 
     // 'delist': '下',
     // 'de': '下',
@@ -208,9 +208,9 @@ const strategyAlias = {
     'macd_cross_zero': 'M',
     'mcz': 'M',
 
-    'plunge-back': '底',
-    'plunge_back': '底',
-    'pb': '底'
+    'plunge-back': 'B',
+    'plunge_back': 'B',
+    'pb': 'B'
 }
 
 

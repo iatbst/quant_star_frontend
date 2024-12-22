@@ -33,7 +33,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="大多头" min-width="10%" align="center">
+            <el-table-column label="P多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
                         {{toThousands(scope.row.prLongPosition)}}
@@ -41,19 +41,11 @@
                 </template>       
             </el-table-column>
 
-            <el-table-column label="大空头" min-width="10%" align="center">
+            <el-table-column label="P空头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: red">
                         {{toThousands(scope.row.prShortPosition)}}
                     </span>        
-                </template>
-            </el-table-column>
-
-            <el-table-column label="底头寸" min-width="10%" align="center">
-                <template slot-scope="scope">
-                    <span style="color: green">
-                        {{toThousands(scope.row.pbPosition)}}
-                    </span>          
                 </template>
             </el-table-column>
 
@@ -73,21 +65,29 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="下头寸" min-width="10%" align="center">
+            <el-table-column label="B多头" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: red">
-                        {{toThousands(scope.row.dePosition)}}
+                    <span style="color: green">
+                        {{toThousands(scope.row.pbPosition)}}
                     </span>          
                 </template>
             </el-table-column>
 
-            <el-table-column label="币头寸" min-width="10%" align="center">
+            <el-table-column label="持币头寸" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
                         {{toThousands(scope.row.holdPosition)}}
                     </span>          
                 </template>
             </el-table-column>
+
+            <el-table-column label="系统杠杆率" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="">
+                        {{(scope.row.leverage).toFixed(2)}}X
+                    </span>          
+                </template>
+            </el-table-column>          
         </el-table>
     </div>
 </template>
@@ -113,7 +113,11 @@ export default {
         subaccountDatas: {
             type:Object,
             default:{}
-        }           
+        },
+        parentPfoWallet: {
+            type:Object,
+            default:{}
+        },           
     },
 
     watch: {
@@ -124,16 +128,16 @@ export default {
             deep: true
         },
 
-        // parentPfoAtrptg: {
-        //     handler(val, oldVal){
-        //         this.parseParentPfoPositions()
-        //     },
-        //     deep: true
-        // },
-
         subaccountDatas: {
             handler(val, oldVal){
                 this.parseSubaccountDatas()
+            },
+            deep: true
+        },
+
+        parentPfoWallet: {
+            handler(val, oldVal){
+                this.parseParentPfoWallet()
             },
             deep: true
         },
@@ -188,10 +192,9 @@ export default {
                 mczLongPosition: null,
                 mczShortPosition: null,
                 pbPosition: null,
-                dePosition: null,
                 holdPosition: null,
 
-                // atrptg: null
+                leverage: null
             }],
 
             // dialogHistoryAtrptgVisible: false,
@@ -202,6 +205,7 @@ export default {
         // 分析Data
         this.parseSubaccountDatas()
         this.parseParentPfoPositions()
+        this.parseParentPfoWallet()
     },
 
     methods: {
@@ -210,14 +214,12 @@ export default {
             var prData = this.parentPfoPositions.pivot_reversal
             var mczData = this.parentPfoPositions.macd_cross_zero
             var pbData = this.parentPfoPositions.plunge_back
-            var deData = this.parentPfoPositions.delist
             var holdData = this.parentPfoPositions.hold
             this.positionDatas[0].prLongPosition = Math.round(prData.long)
             this.positionDatas[0].prShortPosition = Math.round(prData.short)
             this.positionDatas[0].mczLongPosition = Math.round(mczData.long)
             this.positionDatas[0].mczShortPosition = Math.round(mczData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
-            this.positionDatas[0].dePosition = Math.round(deData.short)
             this.positionDatas[0].holdPosition = Math.round(holdData.long)
 
             // 币头寸叠加到总头寸
@@ -251,6 +253,18 @@ export default {
         //         addSingleLine('波动率历史值', this.parentPfoAtrptg.history_values, this.historyAtrptgOptions, true, 4)
         //     }
         // },
+
+        parseParentPfoWallet(){
+             // 更新系统杠杆率
+            var holdData = this.parentPfoPositions.hold
+            var totalPosition = 0
+            for(var i = 0; i < this.subaccountDatas.length; i++){
+                var summary = this.subaccountDatas[i].positions.summary
+                totalPosition += summary.usdt_long
+                totalPosition += summary.usdt_short
+            }
+            this.positionDatas[0].leverage = (totalPosition + holdData.long)/this.parentPfoWallet.usdt_amount           
+        },
 
         toThousands: toThousands,
     },

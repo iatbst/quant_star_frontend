@@ -154,13 +154,13 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="手续费" min-width="10%" align="center">
+        <el-table-column label="手续费" min-width="5%" align="center">
             <template slot-scope="scope">
                 {{ Math.round(scope.row.fee) }}            
             </template>
         </el-table-column>
 
-        <el-table-column label="资金费" min-width="10%" align="center">
+        <el-table-column label="资金费" min-width="5%" align="center">
             <template slot-scope="scope">  
                 <span v-if="scope.row.fundingFees !== null">
                     <span v-if="scope.row.fundingFees >= 0" style="color: green">
@@ -245,20 +245,19 @@ export default {
             todayDatasLoading: true,
             keys: [
                 'pivot_reversal',
-                'plunge_back',
                 'macd_cross_zero',
-                'delist',
+                'plunge_back',
                 'all'
             ],
             todayObj: {
                 'pivot_reversal': {
-                    strategy: '大',
+                    strategy: 'P',
                     initPosition: null,
                     position: null,
                     fundingFees: null
                 },
                 'plunge_back': {
-                    strategy: '底',
+                    strategy: 'B',
                     initPosition: null,
                     position: null,
                     fundingFees: null
@@ -268,13 +267,7 @@ export default {
                     initPosition: null,
                     position: null,
                     fundingFees: null
-                },                
-                'delist': {
-                    strategy: '下',
-                    initPosition: null,
-                    position: null,
-                    fundingFees: null
-                },               
+                },              
                 'all': {
                     strategy: '合计',
                     initPosition: 0,
@@ -331,13 +324,7 @@ export default {
                     this.todayObj[key].longFlip = null
                     this.todayObj[key].shortFlip = null  
                     this.todayObj[key].shortWinStop = null  
-                    this.todayObj[key].shortTimer = null                  
-                } else if (key == 'delist') {
-                    this.todayObj[key].longOpen = null
-                    this.todayObj[key].shortFlip = null
-                    this.todayObj[key].longFlip = null  
-                    this.todayObj[key].longWinStop = null  
-                    this.todayObj[key].longTimer = null                  
+                    this.todayObj[key].shortTimer = null                                 
                 } else if (key == 'macd_cross_zero') {
                     this.todayObj[key].longWinStop = null
                     this.todayObj[key].shortWinStop = null                   
