@@ -23,8 +23,71 @@
 
 
       <el-col :span="20">
-        <div class="grid-content bg-purple" style="margin-top: 20px">
-          <!-- 总表 -->
+        <div class="grid-content bg-purple" style="margin-top: 20px" v-if="allSummary">
+          <!-- 所有Pfo汇总表 -->
+          <el-table
+            v-loading="allSummaryTableLoading"
+            :data="allSummaryTable"
+            style="width: 100%; margin-bottom: 20px; margin-top: 45px;"
+            header-cell-style="background: lightgray; padding:5px"
+            border
+            cell-style="padding:5px"
+          >
+            <el-table-column align="center" label="投资组合" min-width="15%">
+              <template slot-scope="scope">
+                <span style="cursor: pointer" v-on:click="fetchMonitorStatsByPfo(scope.row.pfo)">
+                  {{ scope.row.pfo_name }}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="交易所" min-width="15%">
+              <template slot-scope="scope">
+                {{ scope.row.exchange }}
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="账号" min-width="15%">
+              <template slot-scope="scope">
+                {{ scope.row.username }}
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="类型" min-width="15%">
+              <template slot-scope="scope">
+                {{ scope.row.sub_type }}
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="交易异常" min-width="15%">
+              <template slot-scope="scope">
+                <span style="color:red" v-if="scope.row.code_errors > 0">
+                {{ scope.row.code_errors }}
+                </span>
+                <span v-else>
+                  <i style="font-size:20px; color: lightgreen " class="el-icon-success"></i>
+                </span>
+              </template>
+            </el-table-column>
+
+
+            <el-table-column align="center" label="仓位异常" min-width="15%">
+              <template slot-scope="scope">
+                <div v-if="scope.row.position_fail == 0">
+                  <i style="font-size:20px; color: lightgreen " class="el-icon-success"></i>
+                </div>
+                <div v-else>
+                  <span style="color: red">
+                    {{ scope.row.position_fail }}
+                  </span>              
+                </div>
+              </template>            
+            </el-table-column>
+          </el-table>
+        </div>  
+
+        <div class="grid-content bg-purple" style="margin-top: 20px" v-else>
+          <!-- Pfo总表 -->
           <el-table
             v-loading="summaryTableLoading"
             :data="Object.values(monitorStat)"
@@ -33,6 +96,12 @@
             border
             cell-style="padding:5px"
           >
+            <el-table-column align="center" label="投资组合" min-width="15%">
+              <template slot-scope="scope">
+                  {{ scope.row.pfo_name }}
+              </template>
+            </el-table-column>
+
             <el-table-column align="center" label="交易所" min-width="5%">
               <template slot-scope="scope">
                 {{ scope.row.exchange }}
@@ -355,12 +424,15 @@ export default {
       shortTradeCount: 0,   // 空头数量
 
       monitorStat: {},
+      allSummary: true, // 右侧是否显示all summary
       summaryTableLoading: true,
       signalSuccessRate: null,  // 信号成功率
       backtestSuccessRate: null,  // 回测成功率
       //summaryTableDataList: [],
       detailTableLoading: true,
       detailTableDataList: [],
+      allSummaryTable: [],
+      allSummaryTableLoading: false,
 
       workerTrades: null,
       dialogWorkerTradesVisible: false,
@@ -411,27 +483,58 @@ export default {
             // pfo加载完成
             this.portfolioList.sort((a, b) => a.name.localeCompare(b.name))
             this.portfolioListLoading = false
-            this.choosePortfolio(this.portfolioList[0])
+            // this.choosePortfolio(this.portfolioList[0])
+
+            // 添加summary
+            this.portfolioList.unshift({'name': 'Summary'})
+            this.showAllSummary()
           }
         })
       }
     },
-    choosePortfolio(pfo) {
-      this.host = pfo.host
-      this.fetchMonitorStatsByPfo(this.portfolioList[0])
+    showAllSummary(){
+      this.allSummaryTable = []
+      this.allSummaryTableLoading = true
+      this.allSummary = true
+      for(let pfo of this.portfolioList){
+        if (pfo.name == 'Summary'){
+          continue
+        }
+        getOpenTradeMonitorStatsByPortfolio(pfo).then(response => {
+          var monitorStat = response.results[0].data
+          var data = Object.values(monitorStat)[0]
+          data.pfo_name = pfo.name
+          data.pfo = pfo
+          this.allSummaryTable.push(data)
+          if (this.allSummaryTable.length == this.portfolioList.length - 1){
+            // Sort
+            this.allSummaryTable.sort((a, b) => a.pfo_name.localeCompare(b.pfo_name))
+            this.allSummaryTableLoading = false
+          }
+        })
+      }
     },
+    // choosePortfolio(pfo) {
+    //   this.host = pfo.host
+    //   this.fetchMonitorStatsByPfo(this.portfolioList[0])
+    // },
     fetchMonitorStatsByPfo(pfo) {
-      this.host = pfo.host
-      this.summaryTableLoading = true
-      this.detailTableLoading = true
-      getOpenTradeMonitorStatsByPortfolio(pfo).then(response => {
-        this.monitorStat = response.results[0].data
-        this.summaryTableLoading = false
-        this.detailTableLoading = false
-        this.parseMonitorStat()
-        document.body.scrollTop = document.documentElement.scrollTop = 0;
-      })
-      // document.body.scrollTop = document.documentElement.scrollTop = 0
+      if (pfo.name == 'Summary'){
+        this.showAllSummary()
+      } else {
+        this.allSummary = false
+        this.host = pfo.host
+        this.summaryTableLoading = true
+        this.detailTableLoading = true
+        getOpenTradeMonitorStatsByPortfolio(pfo).then(response => {
+          this.monitorStat = response.results[0].data
+          Object.values(this.monitorStat)[0].pfo_name = pfo.name
+          this.summaryTableLoading = false
+          this.detailTableLoading = false
+          this.parseMonitorStat()
+          document.body.scrollTop = document.documentElement.scrollTop = 0;
+        })
+      }
     },
     parseMonitorStat(){
       // Summary Table
