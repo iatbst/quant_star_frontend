@@ -56,62 +56,20 @@ export const constantRoutes = [
   },
 
   {
-    path: '/performances',
+    path: '/position',
     component: Layout,
-    redirect: '/performances/history_pnl',
-    name: '历史收益',
-    meta: { title: '历史收益', icon: 'el-icon-s-data' },
+    redirect: '/position',
+    name: '所有仓位',
+    meta: { title: '所有仓位', icon: 'el-icon-wind-power' },
     children: [
       {
-        path: '/performances/history_pnl',
-        name: '合计收益',
-        component: () => import('@/views/performance/history_pnl'),
-        meta: { title: '合计收益', icon: 'el-icon-document' }
-      },
-      {
-        path: '/performances/history_pnl_stack',
-        name: '策略收益',
-        component: () => import('@/views/performance/history_pnl_stack'),
-        meta: { title: '策略收益', icon: 'el-icon-s-marketing' }
+        path: 'position',
+        name: '所有仓位',
+        component: () => import('@/views/position/index'),
+        meta: { title: '所有仓位', icon: 'el-icon-wind-power' }
       }
     ]
   },
-
-  {
-    path: '/analysis',
-    component: Layout,
-    redirect: '/analysis/pnl',
-    name: '收益分析',
-    meta: { title: '收益分析', icon: 'el-icon-data-analysis' },
-    children: [
-      {
-        path: '/analysis/pnl_live',
-        name: '实盘收益',
-        component: () => import('@/views/analysis/pnl_live'),
-        meta: { title: '实盘收益', icon: 'el-icon-data-analysis' }
-      },
-      {
-        path: '/analysis/pnl',
-        name: '实盘VS回测',
-        component: () => import('@/views/analysis/pnl'),
-        meta: { title: '实盘VS回测', icon: 'el-icon-data-analysis' }
-      } 
-    ]
-  },
-
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/balances/summary',
-  //   children: [
-  //     {
-  //       path: '/balances/summary',
-  //       name: '资金管理',
-  //       component: () => import('@/views/balance/index'),
-  //       meta: { title: '资金管理', icon: 'el-icon-wallet' }
-  //     }
-  //   ]
-  // },
 
   {
     path: '/',
@@ -307,6 +265,50 @@ export const constantRoutes = [
         name: '囤币记录',
         component: () => import('@/views/coins/index'),
         meta: { title: '囤币记录', icon: 'el-icon-s-order' }
+      }
+    ]
+  },
+
+  {
+    path: '/analysis',
+    component: Layout,
+    redirect: '/analysis/pnl',
+    name: '收益分析',
+    meta: { title: '收益分析', icon: 'el-icon-data-analysis' },
+    children: [
+      {
+        path: '/analysis/pnl_live',
+        name: '实盘收益',
+        component: () => import('@/views/analysis/pnl_live'),
+        meta: { title: '实盘收益', icon: 'el-icon-data-analysis' }
+      },
+      {
+        path: '/analysis/pnl',
+        name: '实盘VS回测',
+        component: () => import('@/views/analysis/pnl'),
+        meta: { title: '实盘VS回测', icon: 'el-icon-data-analysis' }
+      } 
+    ]
+  },
+
+  {
+    path: '/performances',
+    component: Layout,
+    redirect: '/performances/history_pnl',
+    name: '历史收益',
+    meta: { title: '历史收益', icon: 'el-icon-s-data' },
+    children: [
+      {
+        path: '/performances/history_pnl',
+        name: '合计收益',
+        component: () => import('@/views/performance/history_pnl'),
+        meta: { title: '合计收益', icon: 'el-icon-document' }
+      },
+      {
+        path: '/performances/history_pnl_stack',
+        name: '策略收益',
+        component: () => import('@/views/performance/history_pnl_stack'),
+        meta: { title: '策略收益', icon: 'el-icon-s-marketing' }
       }
     ]
   },

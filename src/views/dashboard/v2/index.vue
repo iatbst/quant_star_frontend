@@ -229,11 +229,9 @@
     <!----------------------------------- 仓位 ---------------------------------------
         函数:fetchPositions 
         更新频率: ?
-    --->  
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
       <el-col :span="24" align="center">
           <div style="margin-bottom: 20px; width: 95%">
-            <!-- pr_binance -->
             <position-map2 
             v-bind:positions="prBinancePositions" 
             v-bind:positions-loading="prBinancePositionsLoading"
@@ -245,7 +243,6 @@
             v-bind:sort-coin-weights="prBinanceSortWeights"
             ></position-map2> 
 
-            <!-- pr_okex -->
             <position-map2 
             v-bind:positions="prOkexPositions" 
             v-bind:positions-loading="prOkexPositionsLoading"
@@ -257,7 +254,6 @@
             v-bind:sort-coin-weights="prOkexSortWeights"
             ></position-map2> 
 
-            <!-- pr_bybit -->
             <position-map2 
             v-bind:positions="prBybitPositions" 
             v-bind:positions-loading="prBybitPositionsLoading"
@@ -269,7 +265,6 @@
             v-bind:sort-coin-weights="prBybitSortWeights"
             ></position-map2> 
 
-            <!-- pr_bitget -->
             <position-map2 
             v-bind:positions="prBitgetPositions" 
             v-bind:positions-loading="prBitgetPositionsLoading"
@@ -281,7 +276,6 @@
             v-bind:sort-coin-weights="prBitgetSortWeights"
             ></position-map2> 
 
-            <!-- pb_binance -->
             <position-map2 
             v-bind:positions="pbBinancePositions" 
             v-bind:positions-loading="pbBinancePositionsLoading"
@@ -291,7 +285,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- pb_okex -->
             <position-map2 
             v-bind:positions="pbOkexPositions" 
             v-bind:positions-loading="pbOkexPositionsLoading"
@@ -301,7 +294,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- pb_bybit -->
             <position-map2 
             v-bind:positions="pbBybitPositions" 
             v-bind:positions-loading="pbBybitPositionsLoading"
@@ -311,7 +303,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- pb_bitget -->
             <position-map2 
             v-bind:positions="pbBitgetPositions" 
             v-bind:positions-loading="pbBitgetPositionsLoading"
@@ -321,7 +312,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- mcz_binance -->
             <position-map2 
             v-bind:positions="mczBinancePositions" 
             v-bind:positions-loading="mczBinancePositionsLoading"
@@ -333,7 +323,6 @@
             v-bind:sort-coin-weights="prBinanceSortWeights"
             ></position-map2> 
 
-            <!-- mcz_okex -->
             <position-map2 
             v-bind:positions="mczOkexPositions" 
             v-bind:positions-loading="mczOkexPositionsLoading"
@@ -345,7 +334,6 @@
             v-bind:sort-coin-weights="prOkexSortWeights"
             ></position-map2> 
 
-            <!-- mcz_bybit -->
             <position-map2 
             v-bind:positions="mczBybitPositions" 
             v-bind:positions-loading="mczBybitPositionsLoading"
@@ -357,7 +345,6 @@
             v-bind:sort-coin-weights="prBybitSortWeights"
             ></position-map2> 
 
-            <!-- mcz_bitget -->
             <position-map2 
             v-bind:positions="mczBitgetPositions" 
             v-bind:positions-loading="mczBitgetPositionsLoading"
@@ -369,7 +356,6 @@
             v-bind:sort-coin-weights="prBitgetSortWeights"
             ></position-map2> 
 
-            <!--- 刷新说明 --->
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
                     <div slot="content">
@@ -381,6 +367,7 @@
          </div>
       </el-col>
     </el-row>
+    --->
 
     <!----------------------------------- 订单(1天内) ---------------------------------------
         函数:fetchOrders
