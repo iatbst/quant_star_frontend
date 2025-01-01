@@ -57,7 +57,7 @@ export default {
         },
         range: {
             type: String,
-            default: 'thisYearHalf2'    // 默认展示下半年
+            default: 'thisYear'    // 默认展示下半年
         }
     },
 
@@ -178,7 +178,7 @@ export default {
                 this.button12MPlain = false
             } else if (range == 'thisYear'){
                 // 今年
-                startDate = moment().year() + '-' + '01-01'
+                startDate = moment().year() - 1 + '-' + '12-31'
                 this.buttonThisYearPlain = false
             } else if (range == 'thisYearHalf2'){
                 // 今年下半年
