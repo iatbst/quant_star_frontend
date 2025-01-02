@@ -87,7 +87,10 @@
             <el-table-column label="交易次/笔均盈亏" min-width="10%" align="center"> 
                 <template slot-scope="scope">
                     <span>
-                        {{scope.row.col8_1}}|
+                        <span>
+                            {{scope.row.col8_1}}
+                        </span>
+                        |
                         <span style="color: green" v-if="scope.row.col8_2 >= 0">
                             {{toThousands(scope.row.col8_2)}}
                         </span>  
