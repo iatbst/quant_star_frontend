@@ -124,6 +124,7 @@ export default {
         parentPfoPositions: {
             handler(val, oldVal){
                 this.parseParentPfoPositions()
+                this.updateLeverage()
             },
             deep: true
         },
@@ -131,13 +132,14 @@ export default {
         subaccountDatas: {
             handler(val, oldVal){
                 this.parseSubaccountDatas()
+                this.updateLeverage()
             },
             deep: true
         },
 
         parentPfoWallet: {
             handler(val, oldVal){
-                this.parseParentPfoWallet()
+                this.updateLeverage()
             },
             deep: true
         },
@@ -205,7 +207,7 @@ export default {
         // 分析Data
         this.parseSubaccountDatas()
         this.parseParentPfoPositions()
-        this.parseParentPfoWallet()
+        this.updateLeverage()
     },
 
     methods: {
@@ -254,7 +256,7 @@ export default {
         //     }
         // },
 
-        parseParentPfoWallet(){
+        updateLeverage(){
              // 更新系统杠杆率
             var holdData = this.parentPfoPositions.hold
             var totalPosition = 0
@@ -263,7 +265,10 @@ export default {
                 totalPosition += summary.usdt_long
                 totalPosition += summary.usdt_short
             }
-            this.positionDatas[0].leverage = (totalPosition + holdData.long)/this.parentPfoWallet.usdt_amount           
+            // 有时未能获取到subaccountDatas(此时不要更新leverage, 不准确!)
+            if (this.subaccountDatas.length > 0){
+                this.positionDatas[0].leverage = (totalPosition + holdData.long)/this.parentPfoWallet.usdt_amount   
+            }       
         },
 
         toThousands: toThousands,
