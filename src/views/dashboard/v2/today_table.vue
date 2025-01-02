@@ -6,9 +6,9 @@
     v-loading="todayDatasLoading"
     style="width: 100%">
 
-        <el-table-column label="策略" min-width="10%" align="center">
+        <el-table-column label="策略/交易所" min-width="10%" align="center">
             <template slot-scope="scope">
-                {{ scope.row.strategy }}
+                {{ scope.row.name }}
             </template>
         </el-table-column>
 
@@ -202,6 +202,10 @@ export default {
             type:Object,
             default:{}
         },
+        todayExchangePnl: {
+            type:Object,
+            default:{}
+        },        
         todayFundingFees: {
             type:Array,
             default:[]
@@ -225,7 +229,7 @@ export default {
 
         todayStrategyPnl: {
             handler(val, oldVal){
-                this.parseTodayStrategyPnl()
+                this.parseTodayPnl()
             },
             deep: true
         },
@@ -243,33 +247,67 @@ export default {
             // 今日分类数据
             todayDatas: [],
             todayDatasLoading: true,
+            exchanges: [
+                'binance',
+                'okex',
+                'bybit',
+                'bitget'
+            ],
             keys: [
                 'pivot_reversal',
                 'macd_cross_zero',
                 'plunge_back',
+                'binance',
+                'okex',
+                'bybit',
+                'bitget',                
                 'all'
             ],
             todayObj: {
                 'pivot_reversal': {
-                    strategy: 'P',
+                    name: 'P',
                     initPosition: null,
                     position: null,
                     fundingFees: null
                 },
                 'plunge_back': {
-                    strategy: 'B',
+                    name: 'B',
                     initPosition: null,
                     position: null,
                     fundingFees: null
                 },
                 'macd_cross_zero': {
-                    strategy: 'M',
+                    name: 'M',
                     initPosition: null,
                     position: null,
                     fundingFees: null
+                },  
+                'binance': {
+                    name: 'Binance',
+                    initPosition: null,
+                    position: null,
+                    fundingFees: 0
+                },
+                'okex': {
+                    name: 'Okex',
+                    initPosition: null,
+                    position: null,
+                    fundingFees: 0
+                },
+                'bybit': {
+                    name: 'Bybit',
+                    initPosition: null,
+                    position: null,
+                    fundingFees: 0
                 },              
+                'bitget': {
+                    name: 'Bitget',
+                    initPosition: 0,
+                    position: 0,
+                    fundingFees: 0
+                },                           
                 'all': {
-                    strategy: '合计',
+                    name: '合计',
                     initPosition: 0,
                     position: 0,
                     fundingFees: 0
@@ -286,7 +324,7 @@ export default {
         this.parseTodayOrders()
 
         // 分析3
-        this.parseTodayStrategyPnl()
+        this.parseTodayPnl()
 
         // 分析4
         this.parseTodayFundingFees()
@@ -332,12 +370,15 @@ export default {
             }
         },
 
-        // 根据todayStrategyPnl分析
-        parseTodayStrategyPnl(){
+        // 根据todayStrategyPnl/todayExchangePnl分析
+        parseTodayPnl(){
             this.todayObj.all.pnl = 0
             for(let sty in this.todayStrategyPnl){
                 this.todayObj[sty].pnl = this.todayStrategyPnl[sty]
                 this.todayObj.all.pnl += this.todayStrategyPnl[sty]
+            }
+            for(let exchange in this.todayExchangePnl){
+                this.todayObj[exchange].pnl = this.todayExchangePnl[exchange]
             }
             // alert('parseTodayStrategyPnl')
         },
@@ -345,8 +386,12 @@ export default {
         // 根据todayFundingFees分析
         parseTodayFundingFees(){
             this.todayObj.all.fundingFees = 0
+            for(let exchange of this.exchanges){
+                this.todayObj[exchange].fundingFees = 0
+            }
             for(let fee of this.todayFundingFees){
-                
+                var exchange = fee.exchange_name
+                this.todayObj[exchange].fundingFees += fee.amount
                 this.todayObj.all.fundingFees += fee.amount
             }
         },
@@ -354,19 +399,19 @@ export default {
         // 根据parentPfoData分析
         parseParentPfoPositions(){  
             // 仓位数据(初始/此刻)
-            for(let sty in this.parentPfoPositions){
-                if (sty in this.todayObj){
-                    var positionData = this.parentPfoPositions[sty]
-                    this.todayObj[sty].position = Math.round(positionData.long + positionData.short)
+            for(let label in this.parentPfoPositions){
+                if (label in this.todayObj){
+                    var positionData = this.parentPfoPositions[label]
+                    this.todayObj[label].position = Math.round(positionData.long + positionData.short)
                 }
             }
             var ep = Math.round(Date.now()/1000)
             var yesterday = new Date((ep - 86400 + 3600*8)*1000).toISOString().slice(0, 10).replace('T', ' ')   // Beijing
-            for(let sty in this.parentPfoPositionsHistory){
-                if (sty in this.todayObj){
-                    var positionHistoryData = this.parentPfoPositionsHistory[sty]
+            for(let label in this.parentPfoPositionsHistory){
+                if (label in this.todayObj){
+                    var positionHistoryData = this.parentPfoPositionsHistory[label]
                     if(yesterday in positionHistoryData){
-                        this.todayObj[sty].initPosition = Math.round(positionHistoryData[yesterday].long + positionHistoryData[yesterday].short)
+                        this.todayObj[label].initPosition = Math.round(positionHistoryData[yesterday].long + positionHistoryData[yesterday].short)
                     }
                 }
             }
@@ -380,6 +425,7 @@ export default {
 
             for(let order of this.todayOrders){
                 var sty = order.worker.strategy_name.replaceAll('-', '_')
+                var exchange = order.worker.name.split('_')[0]
 
                 // 交易额
                 if (order.volume !== null){
@@ -387,9 +433,11 @@ export default {
                         // 开仓
                         if(order.side == 'buy'){
                             this.todayObj[sty].longOpen += order.volume
+                            this.todayObj[exchange].longOpen += order.volume
                             this.todayObj.all.longOpen += order.volume
                         } else {
                             this.todayObj[sty].shortOpen += order.volume
+                            this.todayObj[exchange].shortOpen += order.volume
                             this.todayObj.all.shortOpen += order.volume
                         }
                     } else {
@@ -397,25 +445,31 @@ export default {
                         if(order.order_type == 'flip' || order.order_type == 'lose_stop'){  // 止损暂时也算做flip
                             if(order.side == 'buy'){
                                 this.todayObj[sty].shortFlip += order.volume
+                                this.todayObj[exchange].shortFlip += order.volume
                                 this.todayObj.all.shortFlip += order.volume
                             } else {
                                 this.todayObj[sty].longFlip += order.volume
+                                this.todayObj[exchange].longFlip += order.volume
                                 this.todayObj.all.longFlip += order.volume
                             }
                         } else if(order.order_type == 'timer'){
                             if(order.side == 'buy'){
                                 this.todayObj[sty].shortTimer += order.volume
+                                this.todayObj[exchange].shortTimer += order.volume
                                 this.todayObj.all.shortTimer += order.volume
                             } else {
                                 this.todayObj[sty].longTimer += order.volume
+                                this.todayObj[exchange].longTimer += order.volume
                                 this.todayObj.all.longTimer += order.volume
                             }
                         } else if(order.order_type == 'win_stop'){
                             if(order.side == 'buy'){
                                 this.todayObj[sty].shortWinStop += order.volume
+                                this.todayObj[exchange].shortWinStop += order.volume
                                 this.todayObj.all.shortWinStop += order.volume
                             } else {
                                 this.todayObj[sty].longWinStop += order.volume
+                                this.todayObj[exchange].longWinStop += order.volume
                                 this.todayObj.all.longWinStop += order.volume
                             }                      
                         }
@@ -425,22 +479,25 @@ export default {
                 // 滑点
                 if (order.slippage !== null && order.volume !== null){
                     this.todayObj[sty].slippageSum += order.slippage*order.volume
+                    this.todayObj[exchange].slippageSum += order.slippage*order.volume
                     this.todayObj.all.slippageSum += order.slippage*order.volume
                     this.todayObj[sty].volume += order.volume
+                    this.todayObj[exchange].volume += order.volume
                     this.todayObj.all.volume += order.volume
                 }
 
                 // 手续费
                 if (order.fee !== null){
                     this.todayObj[sty].fee += order.fee
+                    this.todayObj[exchange].fee += order.fee
                     this.todayObj.all.fee += order.fee
                 }
             }
 
             // 滑点汇总
-            for(let sty in this.todayObj){
-                if (this.todayObj[sty].volume > 0){
-                    this.todayObj[sty].slippage = this.todayObj[sty].slippageSum/this.todayObj[sty].volume
+            for(let label in this.todayObj){
+                if (this.todayObj[label].volume > 0){
+                    this.todayObj[label].slippage = this.todayObj[label].slippageSum/this.todayObj[label].volume
                 }
             }
         },

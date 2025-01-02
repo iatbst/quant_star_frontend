@@ -49,6 +49,7 @@
             v-bind:parentPfoPositionsHistory="parentPfoPositionsHistory" 
             v-bind:todayOrders="todayOrders" 
             v-bind:todayStrategyPnl="todayStrategyPnl"
+            v-bind:todayExchangePnl="todayExchangePnl"
             v-bind:todayFundingFees="todayFundingFees" 
             v-if="parentPfoPositionsAvailable && todayOrdersAvailable && todayPnlAvailable && todayFundingFeesAvailable"
             >
@@ -499,6 +500,7 @@ export default {
             todayOrdersAvailable: false,
             todayPnlAvailable: false,
             todayStrategyPnl: null,
+            todayExchangePnl: null,
             todayFundingFeesAvailable: false,
 
             parentPfoTradeStats: null,
@@ -709,9 +711,11 @@ export default {
                                 // 只处理startDt和endDt都存在的pnl
                                 var pnl = response.results[i]["pnl_line"][endDt] - response.results[i]["pnl_line"][startDt]
                                 var strategy = response.results[i].worker.strategy_name.replaceAll('-', '_')
+                                var exchange = response.results[i].worker.name.split('_')[0]
                                 pnls.push({
                                     'pnl': pnl,
                                     'strategy': strategy,
+                                    'exchange': exchange
                                 })
                             }
                         }
@@ -730,6 +734,7 @@ export default {
         // 把原始的workerPnl进行分组: 相同的strategy分为一组
         parsePnl(workerPnls){
             this.todayStrategyPnl = {}
+            this.todayExchangePnl = {}
             for(const data of workerPnls){
                 var sty = data.strategy
                 if (!(sty in this.todayStrategyPnl)){
@@ -737,6 +742,14 @@ export default {
                 }
                 if (data.pnl != null && data.pnl != 0){
                     this.todayStrategyPnl[sty] += data.pnl              
+                }
+
+                var exchange = data.exchange
+                if (!(exchange in this.todayExchangePnl)){
+                    this.todayExchangePnl[exchange] = 0             
+                }
+                if (data.pnl != null && data.pnl != 0){
+                    this.todayExchangePnl[exchange] += data.pnl              
                 }
             }
         },
@@ -812,7 +825,7 @@ export default {
             var startDt = new Date((ep - ep%86400 - 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')    // UTC 
             var host = config.masterHost
             var filters = 'fee_type=swap_funding&ts__gte=' + startDt
-            var fields = 'amount'
+            var fields = null
             getFees(host, fields, filters).then(response => {
                     this.todayFundingFees = response.results
                     this.todayFundingFeesAvailable = true

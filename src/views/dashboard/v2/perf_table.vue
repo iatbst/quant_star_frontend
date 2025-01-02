@@ -381,8 +381,10 @@ export default {
                 col12: null   
             }],
             
-            // 大PV策略年初始时归零(和pnl曲线保持一致)
-            prPnlOffset: 0,
+            // PV策略年初始时归零(和pnl曲线保持一致)
+            // pnl曲线计算是精确的,tradeStats计算的pnl值不精准的(根据trade整体计算的)
+            prPnlOffset: 161473,
+            mczPnlPffset: 134212,
 
             // dialogHistoryAtrptgVisible: false,
 
@@ -442,7 +444,7 @@ export default {
             this.perfData1[0].col2_2 = prData.all.year_now.win_lose_pnl_ratio != null ? prData.all.year_now.win_lose_pnl_ratio.toFixed(3) : null  
             this.perfData1[0].col3 = prData.all.year_now.weight_slippage != null ? (prData.all.year_now.weight_slippage*100).toFixed(3) : null
 
-            this.perfData1[0].col4 = parseInt(mczData.all.year_now.total_pnl)
+            this.perfData1[0].col4 = parseInt(mczData.all.year_now.total_pnl) + this.mczPnlPffset
             this.perfData1[0].col5_1 = (mczData.all.year_now.win_ratio*100).toFixed(1)
             this.perfData1[0].col5_2 = mczData.all.year_now.win_lose_pnl_ratio != null ? mczData.all.year_now.win_lose_pnl_ratio.toFixed(3) : null  
             this.perfData1[0].col6 = mczData.all.year_now.weight_slippage != null ? (mczData.all.year_now.weight_slippage*100).toFixed(3) : null
