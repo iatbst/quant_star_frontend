@@ -198,7 +198,7 @@ export default {
                 this.button12MPlain = false
             } else if (range == 'thisYear'){
                 // 今年
-                startDate = moment().year() + '-' + '01-01'
+                startDate = moment().year() - 1 + '-' + '12-31'
                 this.buttonThisYearPlain = false
             } else if (range == '2Y') {
                 // 过去2年
