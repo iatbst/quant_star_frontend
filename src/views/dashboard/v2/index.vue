@@ -437,6 +437,7 @@ import { getBacktestReportById, getBacktestReportByName } from '@/api/backtest_r
 import { getOrders } from '@/api/order'
 import { getNormalWorkerDatas } from '@/api/worker'
 import { getFees } from '@/api/fee'
+import moment from 'moment' 
 
 
 export default {
@@ -903,7 +904,13 @@ export default {
                     this.pnlLines.plunge_back.data = parentPfoData.pnl_line.plunge_back.year_now
                     this.pnlLines.plunge_back.available = true  
                     this.pnlLines.macd_cross_zero.data = parentPfoData.pnl_line.macd_cross_zero.year_now
-                    this.pnlLines.macd_cross_zero.available = true                                     
+                    this.pnlLines.macd_cross_zero.available = true   
+                    
+                    // 添加上一年最后一日数据为起点数据(pnl = 0), 否则pnl的起点不是0
+                    var firstDate = moment().year() - 1 + '-' + '12-31'
+                    this.pnlLines.pivot_reversal.data[firstDate] = 0
+                    this.pnlLines.plunge_back.data[firstDate] = 0
+                    this.pnlLines.macd_cross_zero.data[firstDate] = 0
                 }
             )
         },
