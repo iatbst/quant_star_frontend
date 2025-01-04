@@ -383,8 +383,8 @@ export default {
             
             // PV策略年初始时归零(和pnl曲线保持一致)
             // pnl曲线计算是精确的,tradeStats计算的pnl值不精准的(根据trade整体计算的)
-            prPnlOffset: 161473,
-            mczPnlPffset: 134212,
+            prPnlOffset: 300492,
+            mczPnlPffset: 344565,
 
             // dialogHistoryAtrptgVisible: false,
 

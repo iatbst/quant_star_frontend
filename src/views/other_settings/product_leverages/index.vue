@@ -75,6 +75,13 @@
 
                 <el-table-column align="center" label="不满足计划建仓" min-width="10%">
                     <template slot-scope="scope">
+                        <span style="color: red;font-weight: bold;text-decoration: underline" v-if="scope.row.fatal_symbols > 0">
+                            {{ scope.row.fatal_symbols }}
+                        </span>
+                        <span v-else>
+                            {{ scope.row.fatal_symbols }}
+                        </span>
+                        &nbsp/&nbsp                   
                         <span style="color: red" v-if="scope.row.min_symbols > 0">
                             {{ scope.row.min_symbols }}
                         </span>
@@ -146,9 +153,12 @@
 
                 <el-table-column align="center" label="最大建仓(k$)" min-width="15%">
                     <template slot-scope="scope">
-                        <span style="color: red" v-if="scope.row.max_usdt_size < scope.row.target_usdt_position">
+                        <span style="color: red" v-if="scope.row.max_usdt_size < scope.row.target_usdt_position * 0.8">
                             {{ toThousands(Math.round(scope.row.max_usdt_size/1000)) }}
                         </span>
+                        <span style="color: orange" v-else-if="scope.row.max_usdt_size < scope.row.target_usdt_position">
+                            {{ toThousands(Math.round(scope.row.max_usdt_size/1000)) }}
+                        </span>                        
                         <span v-else>
                             {{ toThousands(Math.round(scope.row.max_usdt_size/1000)) }}
                         </span>
@@ -255,6 +265,7 @@ export default {
         this.leverageDatas = []
         var errors = 0
         var min_symbols = 0
+        var fatal_symbols = 0
         var low_leverages = 0
         for(let symbol in response.results[0].product_leverages.data){
             var data = response.results[0].product_leverages.data[symbol]
@@ -266,6 +277,9 @@ export default {
             if (data.max_usdt_size < data.target_usdt_position){
                 min_symbols += 1
             }
+            if (data.max_usdt_size < data.target_usdt_position * 0.8){
+                fatal_symbols += 1
+            }            
             if (data.leverage < this.low_leverage){
                 low_leverages += 1
             }
@@ -280,6 +294,7 @@ export default {
             leverage_avg: summary.leverage_avg,
             errors: errors,
             min_symbols: min_symbols,
+            fatal_symbols: fatal_symbols,
             low_leverages: low_leverages,
             symbols: Object.keys(response.results[0].product_leverages.data).length,
             params: response.results[0].product_leverages.params
