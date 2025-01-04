@@ -20,7 +20,8 @@
                     </span>   
                     <span style="color: red" v-else>
                         {{toThousands(Math.round(scope.row.binancePosition/1000))}}
-                    </span>             
+                    </span>  
+                    &nbsp|&nbsp{{ (Math.abs(scope.row.binancePosition)/scope.row.binanceBalance).toFixed(2) }}X          
                 </template>   
             </el-table-column>
 
@@ -39,7 +40,8 @@
                     </span>   
                     <span style="color: red" v-else>
                         {{toThousands(Math.round(scope.row.okexPosition/1000))}}
-                    </span>             
+                    </span> 
+                    &nbsp|&nbsp{{ (Math.abs(scope.row.okexPosition)/scope.row.okexBalance).toFixed(2) }}X              
                 </template>   
             </el-table-column>
 
@@ -58,7 +60,8 @@
                     </span>   
                     <span style="color: red" v-else>
                         {{toThousands(Math.round(scope.row.bybitPosition/1000))}}
-                    </span>             
+                    </span>  
+                    &nbsp|&nbsp{{ (Math.abs(scope.row.bybitPosition)/scope.row.bybitBalance).toFixed(2) }}X             
                 </template>   
             </el-table-column>
 
@@ -77,7 +80,8 @@
                     </span>   
                     <span style="color: red" v-else>
                         {{toThousands(Math.round(scope.row.bitgetPosition/1000))}}
-                    </span>             
+                    </span> 
+                    &nbsp|&nbsp{{ (Math.abs(scope.row.bitgetPosition)/scope.row.bitgetBalance).toFixed(2) }}X              
                 </template>   
             </el-table-column>
 

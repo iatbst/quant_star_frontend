@@ -33,7 +33,7 @@
             <el-table-column label="胜率/盈亏比" min-width="10%" align="center"> 
                 <template slot-scope="scope">
                     <span>
-                        {{scope.row.col2_1}}%|{{scope.row.col2_2}}
+                        {{scope.row.col2_1}}%&nbsp|&nbsp{{scope.row.col2_2}}
                     </span>                
                 </template> 
             </el-table-column>
@@ -60,7 +60,7 @@
             <el-table-column label="胜率/盈亏比" min-width="10%" align="center"> 
                 <template slot-scope="scope">
                     <span>
-                        {{scope.row.col5_1}}%|{{scope.row.col5_2}}
+                        {{scope.row.col5_1}}%&nbsp|&nbsp{{scope.row.col5_2}}
                     </span>                
                 </template> 
             </el-table-column>
@@ -103,7 +103,7 @@
             <el-table-column label="胜率/盈亏比" min-width="10%" align="center"> 
                 <template slot-scope="scope">
                     <span>
-                        {{scope.row.col9_1}}%|{{scope.row.col9_2}}
+                        {{scope.row.col9_1}}%&nbsp|&nbsp{{scope.row.col9_2}}
                     </span>                
                 </template> 
             </el-table-column>
