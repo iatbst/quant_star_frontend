@@ -486,7 +486,7 @@ export default {
             // this.choosePortfolio(this.portfolioList[0])
 
             // 添加summary
-            this.portfolioList.unshift({'name': 'Summary'})
+            this.portfolioList.unshift({'name': 'summary'})
             this.showAllSummary()
           }
         })
@@ -497,7 +497,7 @@ export default {
       this.allSummaryTableLoading = true
       this.allSummary = true
       for(let pfo of this.portfolioList){
-        if (pfo.name == 'Summary'){
+        if (pfo.name == 'summary'){
           continue
         }
         getOpenTradeMonitorStatsByPortfolio(pfo).then(response => {
@@ -519,7 +519,7 @@ export default {
     //   this.fetchMonitorStatsByPfo(this.portfolioList[0])
     // },
     fetchMonitorStatsByPfo(pfo) {
-      if (pfo.name == 'Summary'){
+      if (pfo.name == 'summary'){
         this.showAllSummary()
       } else {
         this.allSummary = false

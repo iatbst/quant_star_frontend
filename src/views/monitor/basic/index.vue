@@ -5,22 +5,6 @@
       <el-col :span="4">
         <div class="grid-content bg-purple">
           <el-table
-            :data="masterList"
-            style="width: 100%"
-          >
-            <el-table-column align="center" label="Master主机">
-              <template slot-scope="scope">
-                <el-button style="width: 100%" type="primary" v-on:click="chooseMasterHost(scope.row)" plain>
-                  {{ scope.row.name }}
-                </el-button>
-              </template>
-            </el-table-column>
-
-
-          </el-table>
-        </div>
-        <div class="grid-content bg-purple">
-          <el-table
             v-loading="portfolioListLoading"
             :data="portfolioList"
             style="width: 100%"
@@ -38,10 +22,152 @@
         </div>
       </el-col>
 
-      <el-col :span="20" v-loading="monitorStatListLoading">
+      <el-col :span="20" v-if="showSummaryTable">
+        <div class="grid-content bg-purple" style="margin-top: 20px">
+          <!-- 所有Pfo汇总表 -->
+          <el-table
+            v-loading="summaryTableLoading"
+            :data="summaryTable"
+            style="width: 100%; margin-bottom: 20px; margin-top: 45px;"
+            header-cell-style="background: lightgray; padding:5px"
+            border
+            cell-style="padding:5px"
+          >
+            <el-table-column align="center" label="投资组合" min-width="10%">
+              <template slot-scope="scope">
+                <span style="cursor: pointer" v-on:click="fetchMonitorStatsByPortfolio(scope.row.pfo)">
+                  {{ scope.row.pfo.name }}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="主进程状态" min-width="10%">
+              <template slot-scope="scope">
+                <span v-html="statusIcon(scope.row.process_status)"> </span>
+                <span style="color:red" v-if="moment().unix() - scope.row.process_ts > updateTimeout">
+                  ({{ scope.row.process_ts | epochToTimestamp }})
+                </span>
+                <span v-else>
+                  ({{ scope.row.process_ts | epochToTimestamp }})
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="子线程状态" min-width="10%">
+              <template slot-scope="scope" v-if="scope.row.thread_status">
+                <span v-html="statusIcon(scope.row.thread_status)"> </span>
+                <span style="color:red" v-if="moment().unix() - scope.row.thread_ts > updateTimeout">
+                  ({{ scope.row.thread_ts | epochToTimestamp }})
+                </span>
+                <span v-else>
+                  ({{ scope.row.thread_ts | epochToTimestamp }})
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="Host状态" min-width="10%">
+              <template slot-scope="scope">
+                <span v-html="statusIcon(scope.row.os_status)"> </span>
+                <span style="color:red" v-if="moment().unix() - scope.row.os_ts > updateTimeout">
+                  ({{ scope.row.os_ts | epochToTimestamp }})
+                </span>
+                <span v-else>
+                  ({{ scope.row.os_ts | epochToTimestamp }})
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="Disk" min-width="5%">
+              <template slot-scope="scope">
+                <span style="color: red" v-if="Number(scope.row.os_disk.slice(0, -1)) >= 90">
+                  {{ scope.row.os_disk }}
+                </span>
+                <span v-else>
+                  {{ scope.row.os_disk }}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="Mem" min-width="5%">
+              <template slot-scope="scope">
+                <span style="color: red" v-if="Number(scope.row.os_mem.slice(0, -1)) >= 90">
+                  {{ scope.row.os_mem }}
+                </span>
+                <span v-else>
+                  {{ scope.row.os_mem }}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="DB" min-width="3%">
+              <template slot-scope="scope">
+                <span style="color: red" v-if="Number(scope.row.os_db_conn) >= 20">
+                  {{ scope.row.os_db_conn }}
+                </span>
+                <span v-else>
+                  {{ scope.row.os_db_conn }}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="APIs状态" min-width="10%">
+              <template slot-scope="scope" v-if="scope.row.gw_status">
+                <span v-html="statusIcon(scope.row.gw_status)"> </span>
+                <span style="color:red" v-if="moment().unix() - scope.row.gw_ts > updateTimeout">
+                  ({{ scope.row.gw_ts | epochToTimestamp }})
+                </span>
+                <span v-else>
+                  ({{ scope.row.gw_ts | epochToTimestamp }})
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="APIs-小时" min-width="5%">
+              <template slot-scope="scope" v-if="scope.row.gw_status">
+                  <span style="color:red" v-if="scope.row.gw_hour_ratio < 0.9">
+                    {{ (scope.row.gw_hour_ratio*100).toFixed(2) }}%
+                  </span>
+                  <span v-else>
+                    {{ (scope.row.gw_hour_ratio*100).toFixed(2) }}%
+                  </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="APIs-今日" min-width="5%">
+              <template slot-scope="scope" v-if="scope.row.gw_status">
+                  <span style="color:red" v-if="scope.row.gw_day_ratio < 0.9">
+                    {{ (scope.row.gw_day_ratio*100).toFixed(2) }}%
+                  </span>
+                  <span v-else>
+                    {{ (scope.row.gw_day_ratio*100).toFixed(2) }}%
+                  </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="Feeds" min-width="5%">
+              <template slot-scope="scope" v-if="scope.row.feed_count > 0">
+                <span style="color: green">{{ scope.row.feed_success_count }}</span>/{{ scope.row.feed_count }}
+              </template>
+            </el-table-column> 
+
+            <el-table-column align="center" label="FEx" min-width="3%">
+              <template slot-scope="scope" v-if="scope.row.feed_count > 0">
+                  <span style="color:red" v-if="scope.row.feed_expire_count > 0">
+                    {{ scope.row.feed_expire_count }}
+                  </span>
+                  <span v-else>
+                    {{ scope.row.feed_expire_count }}
+                  </span>
+              </template>
+            </el-table-column>           
+          </el-table>
+        </div>        
+      </el-col>
+
+      <el-col :span="20" v-loading="monitorStatListLoading" v-else>
         <div class="grid-content" style="margin-top: 20px" >
           <!-- Processes -->
-          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px; margin-top: 45px">
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px; margin-top: 45px" v-if="monitorStatProcessData">
             <div class="text item">
               <el-row :gutter="15" class="el-row" style="margin-top: 10px; margin-bottom: 10px">
                 <el-col :span="5" align="left">   
@@ -64,7 +190,7 @@
           </el-card>
 
           <!-- Threads -->
-          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px" v-if="!masterHost">
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px" v-if="!masterHost && monitorStatThreadData">
             <div class="text item">
               <el-row :gutter="15" class="el-row" style="margin-top: 10px; margin-bottom: 10px">
                 <el-col :span="5" align="left">   
@@ -87,7 +213,7 @@
           </el-card>
 
           <!-- OS -->
-          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px">
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px" v-if="monitorStatOSData">
             <div class="text item">
               <el-row :gutter="15" class="el-row" style="margin-top: 10px; margin-bottom: 10px">
                 <el-col :span="5" align="left">   
@@ -128,7 +254,7 @@
           </el-card>
 
           <!-- Gateways -->
-          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px" v-if="!masterHost">
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px" v-if="!masterHost && monitorStatGatewayData">
             <div slot="header" class="clearfix" style="">
               <el-row :gutter="15" class="el-row">
                 <el-col :span="12" align="left">   
@@ -189,7 +315,7 @@
           </el-card>
 
           <!-- Strategy Feeds -->
-          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px;" v-if="!masterHost">
+          <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px;" v-if="!masterHost && monitorStatStyFeedData">
             <div slot="header" class="clearfix" style="">
               <el-row :gutter="15" class="el-row">
                 <el-col :span="12" align="left">
@@ -233,7 +359,7 @@
 
                 <el-table-column label="更新时间" min-width="20%" align="center">
                   <template slot-scope="scope">
-                    <span style="color:red" v-if="moment().unix() - monitorStatStyFeedData[scope.row][barLevel1].data.data_ts > barLevel1Timeout">
+                    <span style="color:red" v-if="moment().unix() - monitorStatStyFeedData[scope.row][barLevel1].data.data_ts > barTimeout">
                       {{ monitorStatStyFeedData[scope.row][barLevel1].data.data_ts | epochToTimestamp}}
                     </span>
                     <span v-else>
@@ -257,7 +383,7 @@
 
                 <el-table-column label="更新时间" min-width="20%" align="center">
                   <template slot-scope="scope">
-                    <span style="color:red" v-if="moment().unix() - monitorStatStyFeedData[scope.row][barLevel2].data.data_ts > barLevel2Timeout">
+                    <span style="color:red" v-if="moment().unix() - monitorStatStyFeedData[scope.row][barLevel2].data.data_ts > tickTimeout">
                       {{ monitorStatStyFeedData[scope.row][barLevel2].data.data_ts | epochToTimestamp}}
                     </span>
                     <span v-else>
@@ -320,7 +446,11 @@ export default {
       portfolioListLoading: false,
 
       monitorStatList: null,
-      monitorStatListLoading: false,
+      monitorStatListLoading: true,
+
+      showSummaryTable: true,
+      summaryTableLoading: false,
+      summaryTable: [],
 
       // Process
       monitorStatProcessData: null,
@@ -351,15 +481,13 @@ export default {
       // 时间戳过期
       updateTimeout: 1000,
       gatewayTimeout: 3600,
-      barLevel2Timeout: 180,  // Tick
-      barLevel1Timeout: 3600*2  // 小时K线
+      tickTimeout: 180,  // Tick
+      barTimeout: 3600*2  // 小时K线
 
     }
   },
   created() {
-    this.fetchMasterHosts()
     this.fetchPortfolios()
-
   },
   methods: {
     moment: moment,
@@ -372,7 +500,7 @@ export default {
       if (status === 'success'){
         return "<i style=\"font-size:20px; color: lightgreen \" class=\"el-icon-success\"></i>"
       } else if (status === 'fail') {
-        return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-error\"></i>"
+        return "<i style=\"font-size:20px; color: lightsalmon \" class=\"el-icon-warning\"></i>"
       } else {
         return "<i style=\"font-size:20px; color: gray \" class=\"el-icon-question\"></i>"
       }
@@ -382,54 +510,130 @@ export default {
       this.dialogJsonVisible = true
     },
 
-    fetchMasterHosts() {
-      this.masterList = [
-      {
-        name: 'master',
-        hostRole: 'master'
+    showSummary(){
+      this.summaryTableLoading = true
+      this.summaryTable = []
+      for(let pfoData of this.portfolioList){
+        if(pfoData.name == 'summary'){continue}
+
+        getBasicMonitorStats(pfoData.host).then(response => {
+          var summaryData = {
+            pfo: pfoData,
+            feed_count: 0,
+            feed_success_count: 0,
+            feed_expire_count: 0
+          }
+          for(let mtData of response.results){
+            if (mtData.type == 'mt_os'){
+              // 监控OS
+              summaryData.os_status = mtData.status
+              summaryData.os_disk = mtData.data.disk_usage
+              summaryData.os_mem = mtData.data.mem_usage
+              summaryData.os_db_conn = mtData.data.db_conn
+              summaryData.os_ts = mtData.data.ts
+            } else if (mtData.type == 'mt_thread'){
+              // 监控Threads
+              summaryData.thread_status = mtData.status
+              summaryData.thread_ts = mtData.data.ts              
+            } else if (mtData.type == 'mt_process'){
+              // 监控Processs
+              summaryData.process_status = mtData.status
+              summaryData.process_ts = mtData.data.ts
+            } else if (mtData.type == 'mt_gateway'){
+              // 监控APIs
+              var gwDayCount = mtData.data.api_stat['1d'].total.count
+              var gwDaySuccess = mtData.data.api_stat['1d'].total.success
+              summaryData.gw_day_ratio = gwDaySuccess/gwDayCount
+              var gwHourCount = mtData.data.api_stat['1h'].total.count
+              var gwHourSuccess = mtData.data.api_stat['1h'].total.success  
+              summaryData.gw_hour_ratio = gwHourSuccess/gwHourCount 
+              summaryData.gw_status = mtData.status
+              summaryData.gw_ts = mtData.data.ts
+            } else if (mtData.type == 'mt_sty_feed'){
+              // 监控策略Feeds
+              summaryData.feed_count += 1
+              if(mtData.status == 'success'){
+                summaryData.feed_success_count += 1
+              }
+              if (mtData.data.bar_level == 'tick' && moment().unix() - mtData.data.ts > this.tickTimeout){
+                summaryData.feed_expire_count += 1
+              } else if(mtData.data.bar_level != 'tick' && moment().unix() - mtData.data.ts > this.barTimeout){
+                summaryData.feed_expire_count += 1
+              }
+            }
+          }
+          this.summaryTable.push(summaryData)
+
+          if(this.summaryTable.length == this.portfolioList.length - 1){
+            this.summaryTableLoading = false
+            // Sort
+            this.summaryTable.sort((a, b) => b.pfo.name.localeCompare(a.pfo.name))
+          }
+
+        })
       }
-      // {
-      //  name: 'backtest',
-      //   hostRole: 'backtest'
-      // }
-      ]
-      this.fetchMasterMonitorStats()  // 默认展示master的monitorStats
     },
 
     fetchPortfolios() {
       this.portfolioListLoading = true
+      this.monitorStatListLoading = true
+      var headerList = [
+        {
+          name: 'summary',
+        },
+        {
+          name: 'master',
+          host: config.masterHost
+        }        
+      ]
       this.portfolioList = []
       for (var i = 0; i < config.pfoHosts.length; i++){
         getPortfolios(config.pfoHosts[i]).then(response => {
+          response.results[0].host = response.config.baseURL   // 添加host
           this.portfolioList = this.portfolioList.concat(response.results)
           if (this.portfolioList.length == config.pfoHosts.length){
             // pfo加载完成
             this.portfolioList.sort((a, b) => a.name.localeCompare(b.name))
+
+            // 添加summary/master
+            this.portfolioList = headerList.concat(this.portfolioList)
+
+            // 默认展示Summary
+            this.showSummaryTable = true
+            this.showSummary()
+
             this.portfolioListLoading = false
-            // this.choosePortfolio(this.portfolioList[0])
           }
         })
       }
     },
 
-    chooseMasterHost(masterHost) {
-      if (masterHost.hostRole == 'master'){
-        this.fetchMasterMonitorStats()
-      } else if (masterHost.hostRole == 'backtest'){
-        this.fetchBacktestMonitorStats()
-      }
-    },
-
     fetchMonitorStatsByPortfolio(pfo) {
-      //this.clearMonitorStatData()
       this.monitorStatListLoading = true
-      this.masterHost = false
-      getBasicMonitorStatsByPortfolio(pfo).then(response => {
-        this.monitorStatList = response.results
-        this.monitorStatListLoading = false
-        this.parseMonitorStatList()
-        console.log(this.monitorStatStyFeedData)
-      })
+      if(pfo.name == 'master'){
+        // 右侧展示master的基本状态
+        this.showSummaryTable = false
+        this.masterHost = true
+        getBasicMonitorStats(config.masterHost).then(response => {
+          this.monitorStatList = response.results
+          this.monitorStatListLoading = false
+          this.parseMasterMonitorStatList()
+        })
+      } else if(pfo.name == 'summary'){
+        // 右侧展示summary
+        this.showSummaryTable = true
+        this.showSummary()
+      } else {
+        // 右侧展示pfo的基本状态
+        this.showSummaryTable = false
+        this.masterHost = false
+        getBasicMonitorStatsByPortfolio(pfo).then(response => {
+          this.monitorStatList = response.results
+          this.monitorStatListLoading = false
+          this.parseMonitorStatList()
+          console.log(this.monitorStatStyFeedData)
+        })
+      }
     },
 
     fetchMasterMonitorStats() {
@@ -437,17 +641,6 @@ export default {
       this.monitorStatListLoading = true
       this.masterHost = true
       getBasicMonitorStats(config.masterHost).then(response => {
-        this.monitorStatList = response.results
-        this.monitorStatListLoading = false
-        this.parseMasterMonitorStatList()
-      })
-    },
-
-    fetchBacktestMonitorStats() {
-      //this.clearMonitorStatData()
-      this.monitorStatListLoading = true
-      this.masterHost = true
-      getBasicMonitorStats(config.backtestHost).then(response => {
         this.monitorStatList = response.results
         this.monitorStatListLoading = false
         this.parseMasterMonitorStatList()
