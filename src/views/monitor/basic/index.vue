@@ -165,7 +165,8 @@
       </el-col>
 
       <el-col :span="20" v-loading="monitorStatListLoading" v-else>
-        <div class="grid-content" style="margin-top: 20px" >
+        <span style="font-weight: bold">{{ currentPfo.name }}</span>
+        <div class="grid-content" style="margin-top: -10px" >
           <!-- Processes -->
           <el-card :class="{'box-card': true, 'el-card': true}" style="margin-bottom: 20px; margin-top: 45px" v-if="monitorStatProcessData">
             <div class="text item">
@@ -444,6 +445,7 @@ export default {
       masterList: null,
       portfolioList: null,
       portfolioListLoading: false,
+      currentPfo: null,
 
       monitorStatList: null,
       monitorStatListLoading: true,
@@ -610,6 +612,7 @@ export default {
 
     fetchMonitorStatsByPortfolio(pfo) {
       this.monitorStatListLoading = true
+      this.currentPfo = pfo
       if(pfo.name == 'master'){
         // 右侧展示master的基本状态
         this.showSummaryTable = false
