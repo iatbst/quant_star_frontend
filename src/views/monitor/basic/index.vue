@@ -150,7 +150,7 @@
               </template>
             </el-table-column> 
 
-            <el-table-column align="center" label="FEx" min-width="3%">
+            <el-table-column align="center" label="Fex" min-width="3%">
               <template slot-scope="scope" v-if="scope.row.feed_count > 0">
                   <span style="color:red" v-if="scope.row.feed_expire_count > 0">
                     {{ scope.row.feed_expire_count }}
@@ -569,7 +569,7 @@ export default {
           if(this.summaryTable.length == this.portfolioList.length - 1){
             this.summaryTableLoading = false
             // Sort
-            this.summaryTable.sort((a, b) => b.pfo.name.localeCompare(a.pfo.name))
+            this.summaryTable.sort((a, b) => a.pfo.name.localeCompare(b.pfo.name))
           }
 
         })
