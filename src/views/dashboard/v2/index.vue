@@ -145,13 +145,18 @@
                 {
                     title: pnlLines.macd_cross_zero.name,
                     data: pnlLines.macd_cross_zero.data
-                },              
+                },   
+                {
+                    title: pnlLines.hold.name,
+                    data: pnlLines.hold.data
+                },                            
             ]
             " 
             v-if="
             pnlLines.pivot_reversal.available && 
             pnlLines.plunge_back.available &&
-            pnlLines.macd_cross_zero.available
+            pnlLines.macd_cross_zero.available &&
+            pnlLines.hold.available
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
@@ -619,7 +624,12 @@ export default {
                     'name': 'M',
                     'data': null,
                     'available': false
-                },                                  
+                }, 
+                'hold': {
+                    'name': 'H',
+                    'data': null,
+                    'available': false
+                },                                                  
             },
 
             refreshInterval: 1000,
@@ -905,12 +915,15 @@ export default {
                     this.pnlLines.plunge_back.available = true  
                     this.pnlLines.macd_cross_zero.data = parentPfoData.pnl_line.macd_cross_zero.year_now
                     this.pnlLines.macd_cross_zero.available = true   
-                    
+                    this.pnlLines.hold.data = parentPfoData.pnl_line.hold.year_now
+                    this.pnlLines.hold.available = true 
+
                     // 添加上一年最后一日数据为起点数据(pnl = 0), 否则pnl的起点不是0
                     var firstDate = moment().year() - 1 + '-' + '12-31'
                     this.pnlLines.pivot_reversal.data[firstDate] = 0
                     this.pnlLines.plunge_back.data[firstDate] = 0
                     this.pnlLines.macd_cross_zero.data[firstDate] = 0
+                    this.pnlLines.hold.data[firstDate] = 0
                 }
             )
         },

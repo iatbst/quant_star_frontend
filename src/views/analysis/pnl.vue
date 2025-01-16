@@ -330,10 +330,12 @@ export default {
             var count = 0
             var exchanges = [
                 'binance',
-                'okex'
+                'okex',
+                'bybit',
+                'bitget'
             ]
             for(const exchange of exchanges){
-                var reportName = 'all_' + exchange + '_backtest'
+                var reportName = exchange + '_backtest'
                 getBacktestReportByName(config.masterHost, reportName).then(response => {
                         count += 1
                         var data = response.results[0].analyzer_rets.worker_pnls
