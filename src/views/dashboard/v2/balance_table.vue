@@ -167,7 +167,7 @@ export default {
             this.balanceDatas[0].day1DiffPtg = (totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[yesterday])/totalBalanceInfo.history_values[yesterday]
             // const day7 = moment().subtract(6, 'day').format('YYYY-MM-DD')
             // this.balanceDatas[0].day7Diff = parseInt(totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[day7])
-            const yearStart = moment().startOf('year').format('YYYY-MM-DD')
+            const yearStart = moment().startOf('year').subtract(1, 'day').format('YYYY-MM-DD')  // 去年最后一天
             this.balanceDatas[0].yearDiff = parseInt(totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[yearStart])
             this.balanceDatas[0].yearDiffPtg = (totalBalanceInfo.usdt_amount - totalBalanceInfo.history_values[yearStart])/totalBalanceInfo.history_values[yearStart]
             
