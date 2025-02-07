@@ -90,7 +90,7 @@
 
             <el-table-column align="center" label="Mem" min-width="5%">
               <template slot-scope="scope">
-                <span style="color: red" v-if="Number(scope.row.os_mem.slice(0, -1)) >= 90">
+                <span style="color: red" v-if="Number(scope.row.os_mem.slice(0, -1)) >= 95">
                   {{ scope.row.os_mem }}
                 </span>
                 <span v-else>
