@@ -11,36 +11,20 @@ const masterHost = 'http://ec2-16-163-25-203.ap-east-1.compute.amazonaws.com:800
 // }
 // const pfoHosts = pfoHostList
 
-const prBinanceHosts = [
+const tbBinanceHosts = [
     'http://ec2-54-250-145-172.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
-const prOkexHosts = [
+const tbOkexHosts = [
     'http://ec2-16-162-121-210.ap-east-1.compute.amazonaws.com:8000/api'
 ]
-const prBybitHosts = [
+const tbBybitHosts = [
     'http://ec2-18-138-239-229.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
-const prBitgetHosts = [
+const tbBitgetHosts = [
     'http://ec2-47-129-152-44.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
-// const deBinanceHosts = [
-//     'http://ec2-18-179-212-104.ap-northeast-1.compute.amazonaws.com:8000/api'
-// ]
-// const deOkexHosts = [
-//     'http://ec2-18-166-189-96.ap-east-1.compute.amazonaws.com:8000/api'
-// ]
-const mczBinanceHosts = [
-    'http://ec2-13-114-16-29.ap-northeast-1.compute.amazonaws.com:8000/api'
-]
-const mczOkexHosts = [
-    'http://ec2-18-162-230-116.ap-east-1.compute.amazonaws.com:8000/api'
-]
-const mczBybitHosts = [
-    'http://ec2-47-129-162-46.ap-southeast-1.compute.amazonaws.com:8000/api'
-]
-const mczBitgetHosts = [
-    'http://ec2-54-169-93-118.ap-southeast-1.compute.amazonaws.com:8000/api'
-]
+
+
 const pbBinanceHosts = [
     'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
@@ -150,19 +134,20 @@ const subacctPfoAlias = [
 
 // 策略名称和缩写的映射
 const strategies = [
-    'pivot-reversal',
+    'trendline-break',
     'plunge-back',
-    'macd-cross-zero',
+    // 'macd-cross-zero',
     // 'delist'
     // 'pivot-reversal-mini',
 ]
 
 const activeStrategyIDs = [
-    'pivot_reversal_1',
-    'pivot_reversal_2',
-    'pivot_reversal_3',
-    'pivot_reversal_4',
-    'macd_cross_zero_1',
+    'trendline_break_1',
+    'trendline_break_2',
+    'trendline_break_3',
+    'trendline_break_4',
+    'trendline_break_5',
+    'trendline_break_6',
     'plunge_back_1',
     'plunge_back_2',
     'plunge_back_3',
@@ -170,6 +155,10 @@ const activeStrategyIDs = [
 ]
 
 const strategyAlias = {
+    'trendline-break': 'T',
+    'trendline_break': 'T',
+    'tb': 'T',
+
     'pivot-reversal': 'P',
     'pivot_reversal': 'P',
     'pr': 'P',
@@ -260,7 +249,7 @@ const pfoAliasSortWeights = {
     ftx: 4,
     altbtc: 5,
 }
-const prBinanceSortWeights = {
+const tbBinanceSortWeights = {
     btc: 3,
     eth: 2,
     sol: 1,
@@ -272,7 +261,7 @@ const prBinanceSortWeights = {
     gas: 1,
     link: 1
 }
-const prOkexSortWeights = {
+const tbOkexSortWeights = {
     btc: 3,
     eth: 2,  
     ltc: 1,
@@ -328,18 +317,14 @@ const usdStableCoins = [
 export default {
     masterHost,
     pfoHosts,
-    prBinanceHosts,
-    prOkexHosts,
-    prBybitHosts,
-    prBitgetHosts,
+    tbBinanceHosts,
+    tbOkexHosts,
+    tbBybitHosts,
+    tbBitgetHosts,
     pbBinanceHosts,
     pbOkexHosts,
     pbBybitHosts,
     pbBitgetHosts,
-    mczBinanceHosts,
-    mczOkexHosts,
-    mczBybitHosts,
-    mczBitgetHosts,
     pfoAlias,
     backtestHost,
     cryptoParentPfo,
@@ -350,8 +335,8 @@ export default {
     initFundUSD,
     pfoSortWeights,
     pfoAliasSortWeights,
-    prBinanceSortWeights,
-    prOkexSortWeights,
+    tbBinanceSortWeights,
+    tbOkexSortWeights,
     riskRatio,
     subacctPfoAlias,
     spErrorTypes,

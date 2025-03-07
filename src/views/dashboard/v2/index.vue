@@ -135,17 +135,13 @@
             v-bind:values="
             [
                 {
-                    title: pnlLines.pivot_reversal.name,
-                    data: pnlLines.pivot_reversal.data
+                    title: pnlLines.trendline_break.name,
+                    data: pnlLines.trendline_break.data
                 },
                 {
                     title: pnlLines.plunge_back.name,
                     data: pnlLines.plunge_back.data
-                },
-                {
-                    title: pnlLines.macd_cross_zero.name,
-                    data: pnlLines.macd_cross_zero.data
-                },   
+                }, 
                 {
                     title: pnlLines.hold.name,
                     data: pnlLines.hold.data
@@ -153,9 +149,8 @@
             ]
             " 
             v-if="
-            pnlLines.pivot_reversal.available && 
+            pnlLines.trendline_break.available && 
             pnlLines.plunge_back.available &&
-            pnlLines.macd_cross_zero.available &&
             pnlLines.hold.available
             " 
             style="margin-bottom: 20px">
@@ -184,9 +179,8 @@
             <position-ranks2
             v-bind:positions="positions"
             v-if="
-            prBinancePositionsAvailable && prOkexPositionsAvailable && prBybitPositionsAvailable && prBitgetPositionsAvailable &&
-            pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
-            mczBinancePositionsAvailable && mczOkexPositionsAvailable && mczBybitPositionsAvailable && mczBitgetPositionsAvailable
+            tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
+            pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable 
             "
             ></position-ranks2> 
 
@@ -213,9 +207,8 @@
             <strategy-positions
             v-bind:positions="positions"
             v-if="
-            prBinancePositionsAvailable && prOkexPositionsAvailable && prBybitPositionsAvailable && prBitgetPositionsAvailable &&
-            pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
-            mczBinancePositionsAvailable && mczOkexPositionsAvailable && mczBybitPositionsAvailable && mczBitgetPositionsAvailable
+            tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
+            pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable
             "
             ></strategy-positions> 
 
@@ -482,22 +475,18 @@ export default {
     data() {
         return { 
             pfoHosts: config.pfoHosts,
-            prBinanceHosts: config.prBinanceHosts,
-            prOkexHosts: config.prOkexHosts,
-            prBybitHosts: config.prBybitHosts,
-            prBitgetHosts: config.prBitgetHosts,
+            tbBinanceHosts: config.tbBinanceHosts,
+            tbOkexHosts: config.tbOkexHosts,
+            tbBybitHosts: config.tbBybitHosts,
+            tbBitgetHosts: config.tbBitgetHosts,
             pbBinanceHosts: config.pbBinanceHosts,
             pbOkexHosts: config.pbOkexHosts,
             pbBybitHosts: config.pbBybitHosts,
             pbBitgetHosts: config.pbBitgetHosts,
-            mczBinanceHosts: config.mczBinanceHosts,
-            mczOkexHosts: config.mczOkexHosts,
-            mczBybitHosts: config.mczBybitHosts,
-            mczBitgetHosts: config.mczBitgetHosts,
-            prBinanceSortWeights: config.prBinanceSortWeights,
-            prOkexSortWeights: config.prOkexSortWeights,
-            prBybitSortWeights: config.prOkexSortWeights,
-            prBitgetSortWeights: config.prOkexSortWeights,
+            tbBinanceSortWeights: config.tbBinanceSortWeights,
+            tbOkexSortWeights: config.tbOkexSortWeights,
+            tbBybitSortWeights: config.tbOkexSortWeights,
+            tbBitgetSortWeights: config.tbOkexSortWeights,
 
             orders: [],
             ordersLoading: false,
@@ -532,18 +521,18 @@ export default {
             positionsAvailable: false,
             positionsLoading: false,
 
-            prBinancePositions: [],
-            prBinancePositionsAvailable: false,
-            prBinancePositionsLoading: false,
-            prOkexPositions: [],
-            prOkexPositionsAvailable: false,
-            prOkexPositionsLoading: false,
-            prBybitPositions: [],
-            prBybitPositionsAvailable: false,
-            prBybitPositionsLoading: false,
-            prBitgetositions: [],
-            prBitgetPositionsAvailable: false,
-            prBitgetPositionsLoading: false,
+            tbBinancePositions: [],
+            tbBinancePositionsAvailable: false,
+            tbBinancePositionsLoading: false,
+            tbOkexPositions: [],
+            tbOkexPositionsAvailable: false,
+            tbOkexPositionsLoading: false,
+            tbBybitPositions: [],
+            tbBybitPositionsAvailable: false,
+            tbBybitPositionsLoading: false,
+            tbBitgetositions: [],
+            tbBitgetPositionsAvailable: false,
+            tbBitgetPositionsLoading: false,
             pbBinancePositions: [],
             pbBinancePositionsAvailable: false,
             pbBinancePositionsLoading: false,
@@ -556,18 +545,6 @@ export default {
             pbBitgetPositions: [],
             pbBitgetPositionsAvailable: false,
             pbBitgetPositionsLoading: false,
-            mczBinancePositions: [],
-            mczBinancePositionsAvailable: false,
-            mczBinancePositionsLoading: false,
-            mczOkexPositions: [],
-            mczOkexPositionsAvailable: false,
-            mczOkexPositionsLoading: false,
-            mczBybitPositions: [],
-            mczBybitPositionsAvailable: false,
-            mczBybitPositionsLoading: false,
-            mczBitgetPositions: [],
-            mczBitgetPositionsAvailable: false,
-            mczBitgetPositionsLoading: false,
 
             jiaPnl: 0,
             jiaPnlAvailable: false,
@@ -610,8 +587,8 @@ export default {
 
             // 策略的Pnl Line(今年)
             pnlLines: {
-                'pivot_reversal': {
-                    'name': 'P',
+                'trendline_break': {
+                    'name': 'T',
                     'data': null,
                     'available': false
                 },
@@ -620,11 +597,6 @@ export default {
                     'data': null,
                     'available': false
                 },
-                'macd_cross_zero': {
-                    'name': 'M',
-                    'data': null,
-                    'available': false
-                }, 
                 'hold': {
                     'name': 'H',
                     'data': null,
@@ -909,20 +881,18 @@ export default {
             this.pnlLinesRefresh = new Date()
             getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'pnl_line').then(response => {
                     var parentPfoData = response.results[0]
-                    this.pnlLines.pivot_reversal.data = parentPfoData.pnl_line.pivot_reversal.year_now
-                    this.pnlLines.pivot_reversal.available = true
+                    this.pnlLines.trendline_break.data = parentPfoData.pnl_line.trendline_break.year_now
+                    this.pnlLines.trendline_break.available = true
                     this.pnlLines.plunge_back.data = parentPfoData.pnl_line.plunge_back.year_now
                     this.pnlLines.plunge_back.available = true  
-                    this.pnlLines.macd_cross_zero.data = parentPfoData.pnl_line.macd_cross_zero.year_now
-                    this.pnlLines.macd_cross_zero.available = true   
+
                     this.pnlLines.hold.data = parentPfoData.pnl_line.hold.year_now
                     this.pnlLines.hold.available = true 
 
                     // 添加上一年最后一日数据为起点数据(pnl = 0), 否则pnl的起点不是0
                     var firstDate = moment().year() - 1 + '-' + '12-31'
-                    this.pnlLines.pivot_reversal.data[firstDate] = 0
+                    this.pnlLines.trendline_break.data[firstDate] = 0
                     this.pnlLines.plunge_back.data[firstDate] = 0
-                    this.pnlLines.macd_cross_zero.data[firstDate] = 0
                     this.pnlLines.hold.data[firstDate] = 0
                 }
             )
@@ -1005,101 +975,101 @@ export default {
             this.positionsAvailable = false
             this.positionsLoading = true
 
-            // pr binance
-            this.prBinancePositions = []
-            var prBinanceCount = 0
-            this.prBinancePositionsLoading = true
-            this.prBinancePositionsAvailable = false
-            for(var i = 0; i < this.prBinanceHosts.length; i++){
-                getPositions(this.prBinanceHosts[i], 'normal').then(response => {
-                        prBinanceCount += 1
+            // tb binance
+            this.tbBinancePositions = []
+            var tbBinanceCount = 0
+            this.tbBinancePositionsLoading = true
+            this.tbBinancePositionsAvailable = false
+            for(var i = 0; i < this.tbBinanceHosts.length; i++){
+                getPositions(this.tbBinanceHosts[i], 'normal').then(response => {
+                        tbBinanceCount += 1
                         var positions = response.results
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal'
+                            positions[j]['sty'] = 'trendline_break'
                         }
-                        this.prBinancePositions = this.prBinancePositions.concat(positions)
+                        this.tbBinancePositions = this.tbBinancePositions.concat(positions)
                         this.positions = this.positions.concat(positions)
-                        if (prBinanceCount === this.prBinanceHosts.length ){
+                        if (tbBinanceCount === this.tbBinanceHosts.length ){
                             // 排序
-                            this.prBinancePositionsAvailable = true
-                            this.prBinancePositionsLoading = false
+                            this.tbBinancePositionsAvailable = true
+                            this.tbBinancePositionsLoading = false
                         }
                     }
                 )
             }
 
-            // pr okex
-            this.prOkexPositions = []
-            var prOkexCount = 0
-            this.prOkexPositionsLoading = true
-            this.prOkexPositionsAvailable = false
-            for(var i = 0; i < this.prOkexHosts.length; i++){
-                getPositions(this.prOkexHosts[i], 'normal').then(response => {
-                        prOkexCount += 1
+            // tb okex
+            this.tbOkexPositions = []
+            var tbOkexCount = 0
+            this.tbOkexPositionsLoading = true
+            this.tbOkexPositionsAvailable = false
+            for(var i = 0; i < this.tbOkexHosts.length; i++){
+                getPositions(this.tbOkexHosts[i], 'normal').then(response => {
+                        tbOkexCount += 1
                         var positions = response.results
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal'
+                            positions[j]['sty'] = 'trendline_break'
                         }
-                        this.prOkexPositions = this.prOkexPositions.concat(positions)
+                        this.tbOkexPositions = this.tbOkexPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
-                        if (prOkexCount === this.prOkexHosts.length ){
+                        if (tbOkexCount === this.tbOkexHosts.length ){
                             // 排序
-                            this.prOkexPositionsAvailable = true
-                            this.prOkexPositionsLoading = false
+                            this.tbOkexPositionsAvailable = true
+                            this.tbOkexPositionsLoading = false
                         }
                     }
                 )
             }
 
-            // pr bybit
-            this.prBybitPositions = []
-            var prBybitCount = 0
-            this.prBybitPositionsLoading = true
-            this.prBybitPositionsAvailable = false
-            for(var i = 0; i < this.prBybitHosts.length; i++){
-                getPositions(this.prBybitHosts[i], 'normal').then(response => {
-                        prBybitCount += 1
+            // tb bybit
+            this.tbBybitPositions = []
+            var tbBybitCount = 0
+            this.tbBybitPositionsLoading = true
+            this.tbBybitPositionsAvailable = false
+            for(var i = 0; i < this.tbBybitHosts.length; i++){
+                getPositions(this.tbBybitHosts[i], 'normal').then(response => {
+                        tbBybitCount += 1
                         var positions = response.results
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal'
+                            positions[j]['sty'] = 'trendline_break'
                         }
-                        this.prBybitPositions = this.prBybitPositions.concat(positions)
+                        this.tbBybitPositions = this.tbBybitPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
-                        if (prBybitCount === this.prBybitHosts.length ){
+                        if (tbBybitCount === this.tbBybitHosts.length ){
                             // 排序
-                            this.prBybitPositionsAvailable = true
-                            this.prBybitPositionsLoading = false
+                            this.tbBybitPositionsAvailable = true
+                            this.tbBybitPositionsLoading = false
                         }
                     }
                 )
             }
 
-            // pr bitget
-            this.prBitgetPositions = []
-            var prBitgetCount = 0
-            this.prBitgetPositionsLoading = true
-            this.prBitgetPositionsAvailable = false
-            for(var i = 0; i < this.prBitgetHosts.length; i++){
-                getPositions(this.prBitgetHosts[i], 'normal').then(response => {
-                        prBitgetCount += 1
+            // tb bitget
+            this.tbBitgetPositions = []
+            var tbBitgetCount = 0
+            this.tbBitgetPositionsLoading = true
+            this.tbBitgetPositionsAvailable = false
+            for(var i = 0; i < this.tbBitgetHosts.length; i++){
+                getPositions(this.tbBitgetHosts[i], 'normal').then(response => {
+                        tbBitgetCount += 1
                         var positions = response.results
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal'
+                            positions[j]['sty'] = 'trendline_break'
                         }
-                        this.prBitgetPositions = this.prBitgetPositions.concat(positions)
+                        this.tbBitgetPositions = this.tbBitgetPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
-                        if (prBitgetCount === this.prBitgetHosts.length ){
+                        if (tbBitgetCount === this.tbBitgetHosts.length ){
                             // 排序
-                            this.prBitgetPositionsAvailable = true
-                            this.prBitgetPositionsLoading = false
+                            this.tbBitgetPositionsAvailable = true
+                            this.tbBitgetPositionsLoading = false
                         }
                     }
                 )
@@ -1200,106 +1170,6 @@ export default {
                             // 排序
                             this.pbBitgetPositionsAvailable = true
                             this.pbBitgetPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // mcz binance
-            this.mczBinancePositions = []
-            var mczBinanceCount = 0
-            this.mczBinancePositionsLoading = true
-            this.mczBinancePositionsAvailable = false
-            for(var i = 0; i < this.mczBinanceHosts.length; i++){
-                getPositions(this.mczBinanceHosts[i], 'normal').then(response => {
-                        mczBinanceCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'macd_cross_zero'
-                        }
-                        this.mczBinancePositions = this.mczBinancePositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (mczBinanceCount === this.mczBinanceHosts.length ){
-                            // 排序
-                            this.mczBinancePositionsAvailable = true
-                            this.mczBinancePositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // mcz okex
-            this.mczOkexPositions = []
-            var mczOkexCount = 0
-            this.mczOkexPositionsLoading = true
-            this.mczOkexPositionsAvailable = false
-            for(var i = 0; i < this.mczOkexHosts.length; i++){
-                getPositions(this.mczOkexHosts[i], 'normal').then(response => {
-                        mczOkexCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'macd_cross_zero'
-                        }
-                        this.mczOkexPositions = this.mczOkexPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (mczOkexCount === this.mczOkexHosts.length ){
-                            // 排序
-                            this.mczOkexPositionsAvailable = true
-                            this.mczOkexPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // mcz bybit
-            this.mczBybitPositions = []
-            var mczBybitCount = 0
-            this.mczBybitPositionsLoading = true
-            this.mczBybitPositionsAvailable = false
-            for(var i = 0; i < this.mczBybitHosts.length; i++){
-                getPositions(this.mczBybitHosts[i], 'normal').then(response => {
-                        mczBybitCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'macd_cross_zero'
-                        }
-                        this.mczBybitPositions = this.mczBybitPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (mczBybitCount === this.mczBybitHosts.length ){
-                            // 排序
-                            this.mczBybitPositionsAvailable = true
-                            this.mczBybitPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // mcz bitget
-            this.mczBitgetPositions = []
-            var mczBitgetCount = 0
-            this.mczBitgetPositionsLoading = true
-            this.mczBitgetPositionsAvailable = false
-            for(var i = 0; i < this.mczBitgetHosts.length; i++){
-                getPositions(this.mczBitgetHosts[i], 'normal').then(response => {
-                        mczBitgetCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'macd_cross_zero'
-                        }
-                        this.mczBitgetPositions = this.mczBitgetPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (mczBitgetCount === this.mczBitgetHosts.length ){
-                            // 排序
-                            this.mczBitgetPositionsAvailable = true
-                            this.mczBitgetPositionsLoading = false
                         }
                     }
                 )

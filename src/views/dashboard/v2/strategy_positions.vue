@@ -103,6 +103,7 @@ export default {
                 }
                 styPositions[styID].size += data.usdt_size
             }
+            //debugger
 
             
             // 多头tops

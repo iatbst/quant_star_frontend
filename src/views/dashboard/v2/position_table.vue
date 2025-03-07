@@ -33,18 +33,18 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="P多头" min-width="10%" align="center">
+            <el-table-column label="T多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
-                        {{toThousands(scope.row.prLongPosition)}}
+                        {{toThousands(scope.row.tbLongPosition)}}
                     </span>               
                 </template>       
             </el-table-column>
 
-            <el-table-column label="P空头" min-width="10%" align="center">
+            <el-table-column label="T空头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: red">
-                        {{toThousands(scope.row.prShortPosition)}}
+                        {{toThousands(scope.row.tbShortPosition)}}
                     </span>        
                 </template>
             </el-table-column>
@@ -52,7 +52,6 @@
             <el-table-column label="M多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
-                        {{toThousands(scope.row.mczLongPosition)}}
                     </span>               
                 </template>       
             </el-table-column>
@@ -60,7 +59,6 @@
             <el-table-column label="M空头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: red">
-                        {{toThousands(scope.row.mczShortPosition)}}
                     </span>        
                 </template>
             </el-table-column>
@@ -189,10 +187,8 @@ export default {
                 longPosition: null,
                 shortPosition: null,
 
-                prLongPosition: null,
-                prShortPosition: null,
-                mczLongPosition: null,
-                mczShortPosition: null,
+                tbLongPosition: null,
+                tbShortPosition: null,
                 pbPosition: null,
                 holdPosition: null,
 
@@ -213,14 +209,11 @@ export default {
     methods: {
         parseParentPfoPositions(){
             // 策略仓位信息从系统后台获取
-            var prData = this.parentPfoPositions.pivot_reversal
-            var mczData = this.parentPfoPositions.macd_cross_zero
+            var tbData = this.parentPfoPositions.trendline_break
             var pbData = this.parentPfoPositions.plunge_back
             var holdData = this.parentPfoPositions.hold
-            this.positionDatas[0].prLongPosition = Math.round(prData.long)
-            this.positionDatas[0].prShortPosition = Math.round(prData.short)
-            this.positionDatas[0].mczLongPosition = Math.round(mczData.long)
-            this.positionDatas[0].mczShortPosition = Math.round(mczData.short)
+            this.positionDatas[0].tbLongPosition = Math.round(tbData.long)
+            this.positionDatas[0].tbShortPosition = Math.round(tbData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
             this.positionDatas[0].holdPosition = Math.round(holdData.long)
 

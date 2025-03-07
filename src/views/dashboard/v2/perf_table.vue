@@ -2,7 +2,7 @@
     <div>
         <!--- 表3: 策略表现(row0) --->
         <el-table
-        :data="[{col1: 'P今年', col2: 'M今年', col3: 'B今年'}]"
+        :data="[{col1: 'T今年', col2: '', col3: 'B今年'}]"
         :show-header="false"
         :cell-style="{ background: '#f2f2f2' }"
         style="width: 100%; background: #f2f2f2">
@@ -383,8 +383,8 @@ export default {
             
             // PV策略年初始时归零(和pnl曲线保持一致)
             // pnl曲线计算是精确的,tradeStats计算的pnl值不精准的(根据trade整体计算的)
-            prPnlOffset: -1566431,
-            mczPnlPffset: 77904,
+            // prPnlOffset: -1566431,
+            // mczPnlPffset: 77904,
 
             // dialogHistoryAtrptgVisible: false,
 
@@ -434,20 +434,19 @@ export default {
     methods: {
         parseData(){  
             // 策略表现(trade_stats)
-            var prData = this.parentPfoTradeStats.pivot_reversal
+            var tbData = this.parentPfoTradeStats.trendline_break
             var pbData = this.parentPfoTradeStats.plunge_back
-            var mczData = this.parentPfoTradeStats.macd_cross_zero
 
             // 第一行
-            this.perfData1[0].col1 = parseInt(prData.all.year_now.total_pnl) + this.prPnlOffset
-            this.perfData1[0].col2_1 = (prData.all.year_now.win_ratio*100).toFixed(1)
-            this.perfData1[0].col2_2 = prData.all.year_now.win_lose_pnl_ratio != null ? prData.all.year_now.win_lose_pnl_ratio.toFixed(3) : null  
-            this.perfData1[0].col3 = prData.all.year_now.weight_slippage != null ? (prData.all.year_now.weight_slippage*100).toFixed(3) : null
+            this.perfData1[0].col1 = parseInt(tbData.all.year_now.total_pnl) + this.prPnlOffset
+            this.perfData1[0].col2_1 = (tbData.all.year_now.win_ratio*100).toFixed(1)
+            this.perfData1[0].col2_2 = tbData.all.year_now.win_lose_pnl_ratio != null ? tbData.all.year_now.win_lose_pnl_ratio.toFixed(3) : null  
+            this.perfData1[0].col3 = tbData.all.year_now.weight_slippage != null ? (tbData.all.year_now.weight_slippage*100).toFixed(3) : null
 
-            this.perfData1[0].col4 = parseInt(mczData.all.year_now.total_pnl) + this.mczPnlPffset
-            this.perfData1[0].col5_1 = (mczData.all.year_now.win_ratio*100).toFixed(1)
-            this.perfData1[0].col5_2 = mczData.all.year_now.win_lose_pnl_ratio != null ? mczData.all.year_now.win_lose_pnl_ratio.toFixed(3) : null  
-            this.perfData1[0].col6 = mczData.all.year_now.weight_slippage != null ? (mczData.all.year_now.weight_slippage*100).toFixed(3) : null
+            // this.perfData1[0].col4 = parseInt(mczData.all.year_now.total_pnl) + this.mczPnlPffset
+            // this.perfData1[0].col5_1 = (mczData.all.year_now.win_ratio*100).toFixed(1)
+            // this.perfData1[0].col5_2 = mczData.all.year_now.win_lose_pnl_ratio != null ? mczData.all.year_now.win_lose_pnl_ratio.toFixed(3) : null  
+            // this.perfData1[0].col6 = mczData.all.year_now.weight_slippage != null ? (mczData.all.year_now.weight_slippage*100).toFixed(3) : null
 
             this.perfData1[0].col7 = parseInt(pbData.all.year_now.total_pnl)
             this.perfData1[0].col8_1 = pbData.all.year_now.count
@@ -457,13 +456,13 @@ export default {
             this.perfData1[0].col10 = pbData.all.year_now.weight_slippage != null ? (pbData.all.year_now.weight_slippage*100).toFixed(3) : null 
 
             // 第二行
-            this.perfData2[0].col1 = prData.all.year_now.count
-            this.perfData2[0].col2 = prData.all.year_now.win_count
-            this.perfData2[0].col3 = prData.all.year_now.lose_count
+            this.perfData2[0].col1 = tbData.all.year_now.count
+            this.perfData2[0].col2 = tbData.all.year_now.win_count
+            this.perfData2[0].col3 = tbData.all.year_now.lose_count
 
-            this.perfData2[0].col4 = mczData.all.year_now.count
-            this.perfData2[0].col5 = mczData.all.year_now.win_count
-            this.perfData2[0].col6 = mczData.all.year_now.lose_count
+            // this.perfData2[0].col4 = mczData.all.year_now.count
+            // this.perfData2[0].col5 = mczData.all.year_now.win_count
+            // this.perfData2[0].col6 = mczData.all.year_now.lose_count
 
             this.perfData2[0].col7 = pbData.plunge_back_1.year_now.count
             this.perfData2[0].col8 = pbData.plunge_back_2.year_now.count
@@ -472,13 +471,13 @@ export default {
             // debugger
 
             // 第三行
-            this.perfData3[0].col1 = parseInt(prData.all.year_now.avg_pnl)
-            this.perfData3[0].col2 = parseInt(prData.all.year_now.win_avg_pnl)
-            this.perfData3[0].col3 = parseInt(prData.all.year_now.lose_avg_pnl)
+            this.perfData3[0].col1 = parseInt(tbData.all.year_now.avg_pnl)
+            this.perfData3[0].col2 = parseInt(tbData.all.year_now.win_avg_pnl)
+            this.perfData3[0].col3 = parseInt(tbData.all.year_now.lose_avg_pnl)
 
-            this.perfData3[0].col4 = parseInt(mczData.all.year_now.avg_pnl)
-            this.perfData3[0].col5 = parseInt(mczData.all.year_now.win_avg_pnl)
-            this.perfData3[0].col6 = parseInt(mczData.all.year_now.lose_avg_pnl)
+            // this.perfData3[0].col4 = parseInt(mczData.all.year_now.avg_pnl)
+            // this.perfData3[0].col5 = parseInt(mczData.all.year_now.win_avg_pnl)
+            // this.perfData3[0].col6 = parseInt(mczData.all.year_now.lose_avg_pnl)
 
             this.perfData3[0].col7 = parseInt(pbData.plunge_back_1.year_now.avg_pnl)
             this.perfData3[0].col8 = parseInt(pbData.plunge_back_2.year_now.avg_pnl)

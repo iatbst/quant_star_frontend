@@ -254,8 +254,7 @@ export default {
                 'bitget'
             ],
             keys: [
-                'pivot_reversal',
-                'macd_cross_zero',
+                'trendline_break',
                 'plunge_back',
                 'binance',
                 'okex',
@@ -264,8 +263,8 @@ export default {
                 'all'
             ],
             todayObj: {
-                'pivot_reversal': {
-                    name: 'P',
+                'trendline_break': {
+                    name: 'T',
                     initPosition: null,
                     position: null,
                     fundingFees: null
@@ -276,12 +275,6 @@ export default {
                     position: null,
                     fundingFees: null
                 },
-                'macd_cross_zero': {
-                    name: 'M',
-                    initPosition: null,
-                    position: null,
-                    fundingFees: null
-                },  
                 'binance': {
                     name: 'Binance',
                     initPosition: null,
@@ -354,18 +347,16 @@ export default {
                 this.todayObj[key].fee = 0  
 
                 // 特例
-                if (key == 'pivot_reversal'){
+                if (key == 'trendline_break'){
                     this.todayObj[key].longWinStop = null
-                    // this.todayObj[key].shortWinStop = null                    
+                    this.todayObj[key].longTimer = null     
+                    this.todayObj[key].shortTimer = null                     
                 } else if (key == 'plunge_back') {
                     this.todayObj[key].shortOpen = null
                     this.todayObj[key].longFlip = null
                     this.todayObj[key].shortFlip = null  
                     this.todayObj[key].shortWinStop = null  
                     this.todayObj[key].shortTimer = null                                 
-                } else if (key == 'macd_cross_zero') {
-                    this.todayObj[key].longWinStop = null
-                    this.todayObj[key].shortWinStop = null                   
                 }
             }
         },
