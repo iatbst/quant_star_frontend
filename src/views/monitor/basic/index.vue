@@ -360,7 +360,7 @@
 
                 <el-table-column label="更新时间" min-width="20%" align="center">
                   <template slot-scope="scope">
-                    <span style="color:red" v-if="moment().unix() - monitorStatStyFeedData[scope.row][barLevel1].data.data_ts > barTimeout">
+                    <span style="color:red" v-if="moment().unix() - monitorStatStyFeedData[scope.row][barLevel1].data.data_ts > barTimeouts[barLevel1]">
                       {{ monitorStatStyFeedData[scope.row][barLevel1].data.data_ts | epochToTimestamp}}
                     </span>
                     <span v-else>
@@ -471,7 +471,7 @@ export default {
       gwHourSuccess: 0,
 
       // Strategy Feed
-      barLevel1: '1h',  // 不应该写死
+      barLevel1: null,  // 不应该写死
       barLevel2: 'tick',
       monitorStatStyFeedData: {},
       styFeedCount: 0,
@@ -484,6 +484,10 @@ export default {
       updateTimeout: 1000,
       gatewayTimeout: 3600,
       tickTimeout: 180,  // Tick
+      barTimeouts: {
+        '1h': 3600*2,  // 小时K线
+        '1d': 3600*24*2 // 日K线
+      },
       barTimeout: 3600*2  // 小时K线
 
     }
@@ -559,7 +563,7 @@ export default {
               }
               if (mtData.data.bar_level == 'tick' && moment().unix() - mtData.data.ts > this.tickTimeout){
                 summaryData.feed_expire_count += 1
-              } else if(mtData.data.bar_level != 'tick' && moment().unix() - mtData.data.ts > this.barTimeout){
+              } else if(mtData.data.bar_level != 'tick' && moment().unix() - mtData.data.ts > this.barTimeouts[mtData.data.bar_level]){
                 summaryData.feed_expire_count += 1
               }
             }
@@ -730,6 +734,9 @@ export default {
           var status = this.monitorStatList[i].status
           var symbol = this.monitorStatList[i].data['symbol']
           var bar_level = this.monitorStatList[i].data['bar_level']
+          if (bar_level != 'tick' && this.barLevel1 != bar_level){
+            this.barLevel1 = bar_level
+          }
           if (status == 'success'){ this.styFeedSuccess += 1 }
 
           if(symbol in this.monitorStatStyFeedData){
