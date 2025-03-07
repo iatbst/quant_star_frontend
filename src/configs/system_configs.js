@@ -1,3 +1,5 @@
+import { getProductDatas } from "@/api/product"
+
 // Master的Host地址
 const masterHost = 'http://ec2-16-163-25-203.ap-east-1.compute.amazonaws.com:8000/api'
 
@@ -79,25 +81,21 @@ var production_hosts = [
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-113-187.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-162-230-116.ap-east-1.compute.amazonaws.com:8000/api',
 
     // 东京: Binance
     'http://ec2-54-250-145-172.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-183-193-63.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-13-114-16-29.ap-northeast-1.compute.amazonaws.com:8000/api',
 
     // 新加坡: Bybit
     'http://ec2-18-138-239-229.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_pr_1
-    'http://ec2-47-129-162-46.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_mcz_1
     'http://ec2-47-129-221-92.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_1
     'http://ec2-52-77-215-97.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_2
     'http://ec2-13-250-51-216.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_3
 
     // 新加坡: Bitget
     'http://ec2-47-129-152-44.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pr_1
-    'http://ec2-54-169-93-118.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_mcz_1
     'http://ec2-13-213-7-38.ap-southeast-1.compute.amazonaws.com:8000/api',     // bitget_pb_1
     'http://ec2-54-255-128-30.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pb_2
     'http://ec2-52-77-236-31.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pb_3
@@ -105,12 +103,12 @@ var production_hosts = [
 
 var development_hosts = [
     // 开发/测试
-    'http://ec2-18-163-74-22.ap-east-1.compute.amazonaws.com:8000/api',  // bybit_pr_1
+    'http://ec2-43-199-42-56.ap-east-1.compute.amazonaws.com:8000/api',  // bybit_pr_1
 ]
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = development_hosts
+    var hostList = production_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
