@@ -28,13 +28,10 @@
             <!--- 平台表 ---
                 函数: 
                     - fetchSubAccountDatas
-                    - fetchHoldCoinPnl
             --->
             <exchange-table 
             v-bind:subaccountDatas="subaccountDatas" 
-            v-bind:jiaPnl="jiaPnl"
-            v-bind:sunPnl="sunPnl"
-            v-if="subaccountDatasAvailable && jiaPnlAvailable && sunPnlAvailable">
+            v-if="subaccountDatasAvailable">
             </exchange-table>
 
             <!--- 今日表 ---
@@ -57,13 +54,12 @@
             
             <!--- Perf统计表 ---
                 函数: fetchParentPfoTradeStats
-            --->
+
             <perf-table 
             v-bind:parentPfoTradeStats="parentPfoTradeStats" 
             v-if="parentPfoTradeStatsAvailable">
             </perf-table>
 
-            <!--- 刷新说明 --->
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
                     <div slot="content">
@@ -78,6 +74,7 @@
                     <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
                 </el-tooltip>
             </div>
+            -->
         </div>
       </el-col>
     </el-row>   
@@ -120,6 +117,36 @@
                     <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
                 </el-tooltip>
             </div>
+          </div>
+      </el-col>
+    </el-row>
+
+    <!---------------------------------- Perf Table -----------------------------------
+        函数: fetchParentPfoTradeStats
+    --->
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+      <el-col :span="24" align="center">
+          <div style="margin-bottom: 20px; margin-top: 20px; width: 95%">
+            <perf-table 
+            v-bind:parentPfoTradeStats="parentPfoTradeStats" 
+            v-if="parentPfoTradeStatsAvailable">
+            </perf-table>
+
+            <!--- 刷新说明 --->
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        资产表格: 每分钟第5秒刷新1次
+                        <br/>
+                        仓位表格: 每分钟第5秒刷新1次
+                        <br />
+                        今日表格: 每间隔5分钟刷新1次(非整点);盈亏列每小时第5分钟刷新1次;资金费每小时第30分钟刷新1次
+                        <br/>
+                        策略今年表现表格: 每小时第5分钟刷新1次
+                    </div>
+                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
+                </el-tooltip>
+            </div>            
           </div>
       </el-col>
     </el-row>
@@ -224,149 +251,6 @@
           </div>
       </el-col>
     </el-row>
-
-    <!----------------------------------- 仓位 ---------------------------------------
-        函数:fetchPositions 
-        更新频率: ?
-    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
-      <el-col :span="24" align="center">
-          <div style="margin-bottom: 20px; width: 95%">
-            <position-map2 
-            v-bind:positions="prBinancePositions" 
-            v-bind:positions-loading="prBinancePositionsLoading"
-            v-bind:exchange="'Binance'"
-            v-bind:strategy="'P'"
-            v-bind:col-count="5"
-            v-bind:show-zero="true"
-            v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prBinanceSortWeights"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="prOkexPositions" 
-            v-bind:positions-loading="prOkexPositionsLoading"
-            v-bind:exchange="'Okex'"
-            v-bind:strategy="'P'"
-            v-bind:col-count="5"
-            v-bind:show-zero="true"
-            v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prOkexSortWeights"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="prBybitPositions" 
-            v-bind:positions-loading="prBybitPositionsLoading"
-            v-bind:exchange="'Bybit'"
-            v-bind:strategy="'P'"
-            v-bind:col-count="5"
-            v-bind:show-zero="true"
-            v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prBybitSortWeights"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="prBitgetPositions" 
-            v-bind:positions-loading="prBitgetPositionsLoading"
-            v-bind:exchange="'Bitget'"
-            v-bind:strategy="'P'"
-            v-bind:col-count="5"
-            v-bind:show-zero="true"
-            v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prBitgetSortWeights"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="pbBinancePositions" 
-            v-bind:positions-loading="pbBinancePositionsLoading"
-            v-bind:exchange="'Binance'"
-            v-bind:strategy="'B'"
-            v-bind:col-count="5"
-            v-bind:show-zero="false"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="pbOkexPositions" 
-            v-bind:positions-loading="pbOkexPositionsLoading"
-            v-bind:exchange="'Okex'"
-            v-bind:strategy="'B'"
-            v-bind:col-count="5"
-            v-bind:show-zero="false"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="pbBybitPositions" 
-            v-bind:positions-loading="pbBybitPositionsLoading"
-            v-bind:exchange="'Bybit'"
-            v-bind:strategy="'B'"
-            v-bind:col-count="5"
-            v-bind:show-zero="false"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="pbBitgetPositions" 
-            v-bind:positions-loading="pbBitgetPositionsLoading"
-            v-bind:exchange="'Bitget'"
-            v-bind:strategy="'B'"
-            v-bind:col-count="5"
-            v-bind:show-zero="false"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="mczBinancePositions" 
-            v-bind:positions-loading="mczBinancePositionsLoading"
-            v-bind:exchange="'Binance'"
-            v-bind:strategy="'M'"
-            v-bind:col-count="13"
-            v-bind:show-zero="true"
-            v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prBinanceSortWeights"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="mczOkexPositions" 
-            v-bind:positions-loading="mczOkexPositionsLoading"
-            v-bind:exchange="'Okex'"
-            v-bind:strategy="'M'"
-            v-bind:col-count="13"
-            v-bind:show-zero="true"
-            v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prOkexSortWeights"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="mczBybitPositions" 
-            v-bind:positions-loading="mczBybitPositionsLoading"
-            v-bind:exchange="'Bybit'"
-            v-bind:strategy="'M'"
-            v-bind:col-count="13"
-            v-bind:show-zero="true"
-            v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prBybitSortWeights"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="mczBitgetPositions" 
-            v-bind:positions-loading="mczBitgetPositionsLoading"
-            v-bind:exchange="'Bitget'"
-            v-bind:strategy="'M'"
-            v-bind:col-count="13"
-            v-bind:show-zero="true"
-            v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prBitgetSortWeights"
-            ></position-map2> 
-
-            <div align="left">
-                <el-tooltip placement="top-start" align="left">
-                    <div slot="content">
-                        策略仓位明细: 每间隔5分钟刷新1次(非整点)
-                    </div>
-                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
-                </el-tooltip>
-            </div>
-         </div>
-      </el-col>
-    </el-row>
-    --->
 
     <!----------------------------------- 订单(1天内) ---------------------------------------
         函数:fetchOrders
@@ -645,7 +529,7 @@ export default {
             this.fetchSubAccountDatas()
 
             // 表格3: 平台资金仓位信息
-            this.fetchHoldCoinPnl()
+            // this.fetchHoldCoinPnl()
 
             // 表格4: 总体今日信息
             this.fetchTodayOrders()
@@ -909,7 +793,7 @@ export default {
             )
         },
 
-        // Temp: 从Master获取Sun&Jia的囤币当前收益
+        // Temp: 从Master获取Sun&Jia的囤币当前收益(DEPRECATED)
         fetchHoldCoinPnl(){
             this.jiaSunPnlRefresh = new Date()
             this.jiaPnlAvailable = false
@@ -1209,10 +1093,10 @@ export default {
                     this.fetchParentPfoAtrptg()
                 }  
                 // Jia VS Sun Pnl
-                if(now - this.jiaSunPnlRefresh > 60*60*1000){
-                    console.log(now + '刷新:fetchHoldCoinPnl');
-                    this.fetchHoldCoinPnl()
-                } 
+                // if(now - this.jiaSunPnlRefresh > 60*60*1000){
+                //     console.log(now + '刷新:fetchHoldCoinPnl');
+                //     this.fetchHoldCoinPnl()
+                // } 
                 // 今日表格
                 if(now - this.todayOrdersRefresh > 5*60*1000){
                     console.log(now + '刷新:fetchTodayOrders');

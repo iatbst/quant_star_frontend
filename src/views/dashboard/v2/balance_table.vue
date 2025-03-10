@@ -4,13 +4,6 @@
     :data="balanceDatas"
     :header-cell-style="{ background: '#f2f2f2' }"
     style="width: 100%">
-
-        <el-table-column prop="totalBalance" label="总资产" min-width="10%" align="center">
-            <template slot-scope="scope">
-                <b><u>${{toThousands(scope.row.totalBalance)}}</u></b>
-            </template>
-        </el-table-column>
-
         <el-table-column prop="day1Diff" label="今日变化" min-width="10%" align="center">
             <template slot-scope="scope">
                 <span v-if="scope.row.day1Diff > 0" style="color: green">
@@ -93,17 +86,6 @@
                     {{ toThousands(scope.row.maxValue) }}
                 </span>
             </template>         
-        </el-table-column>
-
-        <el-table-column prop="totalReturn" label="历史收益率" min-width="10%" align="center">
-            <template slot-scope="scope">
-                <span v-if="scope.row.totalReturn > 0" style="color: green">
-                    {{scope.row.totalReturn}}%
-                </span>
-                <span v-else style="color: red">
-                    {{scope.row.totalReturn}}%
-                </span>              
-            </template>
         </el-table-column>
     </el-table>
 </template>

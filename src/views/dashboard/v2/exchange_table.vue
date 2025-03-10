@@ -83,28 +83,7 @@
                     </span> 
                     &nbsp|&nbsp{{ (Math.abs(scope.row.bitgetPosition)/scope.row.bitgetBalance).toFixed(2) }}X              
                 </template>   
-            </el-table-column>
-
-            <el-table-column label="SY持币(k)" min-width="10%" align="center">
-                <span style="color: green" v-if="sunPnl >= 0">
-                    {{sunPnl.toFixed(1)}}
-                </span>  
-                <span style="color: red" v-else>
-                    {{sunPnl.toFixed(1)}}
-                </span>            
-            </el-table-column>
-
-            <el-table-column label="YJ持币(k)" min-width="10%" align="center">
-                <span style="color: green" v-if="jiaPnl >= 0">
-                    {{jiaPnl.toFixed(1)}}
-                </span>  
-                <span style="color: red" v-else>
-                    {{jiaPnl.toFixed(1)}}
-                </span>            
-            </el-table-column>
-
-
-                   
+            </el-table-column>                   
         </el-table>
     </div>
 </template>
@@ -119,14 +98,14 @@ export default {
             type:Object,
             default:{}
         },
-        jiaPnl: {
-            type: Number,
-            default: 0
-        },
-        sunPnl: {
-            type: Number,
-            default: 0
-        },         
+        // jiaPnl: {
+        //     type: Number,
+        //     default: 0
+        // },
+        // sunPnl: {
+        //     type: Number,
+        //     default: 0
+        // },         
     },
 
     watch: {
@@ -150,8 +129,8 @@ export default {
                 okexBalance: null,
                 bybitBalance: null,
                 bitgetBalance: null,
-                sunPnl: null,
-                jiaPnl: null
+                // sunPnl: null,
+                // jiaPnl: null
             }],
         }
     },

@@ -154,13 +154,13 @@
             </template>
         </el-table-column>
 
-        <el-table-column label="手续费" min-width="5%" align="center">
+        <el-table-column label="手续费" min-width="10%" align="center">
             <template slot-scope="scope">
                 {{ Math.round(scope.row.fee) }}            
             </template>
         </el-table-column>
 
-        <el-table-column label="资金费" min-width="5%" align="center">
+        <el-table-column label="资金费" min-width="10%" align="center">
             <template slot-scope="scope">  
                 <span v-if="scope.row.fundingFees !== null">
                     <span v-if="scope.row.fundingFees >= 0" style="color: green">

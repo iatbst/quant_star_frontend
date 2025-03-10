@@ -6,6 +6,12 @@
         :header-cell-style="{ background: '#f2f2f2' }"
         style="width: 100%">
 
+            <el-table-column label="总资产" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <b><u>${{toThousands(scope.row.totalBalance)}}</u></b>
+                </template>
+            </el-table-column>
+
             <el-table-column label="总仓位" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.totalPosition + scope.row.holdPosition >= 0">
@@ -49,32 +55,10 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="M多头" min-width="10%" align="center">
-                <template slot-scope="scope">
-                    <span style="color: green">
-                    </span>               
-                </template>       
-            </el-table-column>
-
-            <el-table-column label="M空头" min-width="10%" align="center">
-                <template slot-scope="scope">
-                    <span style="color: red">
-                    </span>        
-                </template>
-            </el-table-column>
-
             <el-table-column label="B多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
                         {{toThousands(scope.row.pbPosition)}}
-                    </span>          
-                </template>
-            </el-table-column>
-
-            <el-table-column label="持币头寸" min-width="10%" align="center">
-                <template slot-scope="scope">
-                    <span style="color: green">
-                        {{toThousands(scope.row.holdPosition)}}
                     </span>          
                 </template>
             </el-table-column>
@@ -122,7 +106,7 @@ export default {
         parentPfoPositions: {
             handler(val, oldVal){
                 this.parseParentPfoPositions()
-                this.updateLeverage()
+                this.updateBalanceLeverage()
             },
             deep: true
         },
@@ -130,14 +114,14 @@ export default {
         subaccountDatas: {
             handler(val, oldVal){
                 this.parseSubaccountDatas()
-                this.updateLeverage()
+                this.updateBalanceLeverage()
             },
             deep: true
         },
 
         parentPfoWallet: {
             handler(val, oldVal){
-                this.updateLeverage()
+                this.updateBalanceLeverage()
             },
             deep: true
         },
@@ -183,6 +167,8 @@ export default {
 
             // 仓位
             positionDatas: [{
+                totalBalance: null,
+
                 totalPosition: null,
                 longPosition: null,
                 shortPosition: null,
@@ -203,7 +189,7 @@ export default {
         // 分析Data
         this.parseSubaccountDatas()
         this.parseParentPfoPositions()
-        this.updateLeverage()
+        this.updateBalanceLeverage()
     },
 
     methods: {
@@ -249,7 +235,10 @@ export default {
         //     }
         // },
 
-        updateLeverage(){
+        updateBalanceLeverage(){          
+            // 当前总资产
+            this.positionDatas[0].totalBalance = parseInt(this.parentPfoWallet.usdt_amount)
+
              // 更新系统杠杆率
             var holdData = this.parentPfoPositions.hold
             var totalPosition = 0
