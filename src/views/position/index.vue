@@ -7,52 +7,52 @@
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px;">
       <el-col :span="24" align="center">
           <div style="margin-bottom: 20px; width: 95%">
-            <!-- pr_binance -->
+            <!-- tb_binance -->
             <position-map2 
-            v-bind:positions="prBinancePositions" 
-            v-bind:positions-loading="prBinancePositionsLoading"
+            v-bind:positions="tbBinancePositions" 
+            v-bind:positions-loading="tbBinancePositionsLoading"
             v-bind:exchange="'Binance'"
-            v-bind:strategy="'P'"
+            v-bind:strategy="'T'"
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prBinanceSortWeights"
+            v-bind:sort-coin-weights="tbBinanceSortWeights"
             ></position-map2> 
 
-            <!-- pr_okex -->
+            <!-- tb_okex -->
             <position-map2 
-            v-bind:positions="prOkexPositions" 
-            v-bind:positions-loading="prOkexPositionsLoading"
+            v-bind:positions="tbOkexPositions" 
+            v-bind:positions-loading="tbOkexPositionsLoading"
             v-bind:exchange="'Okex'"
-            v-bind:strategy="'P'"
+            v-bind:strategy="'T'"
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prOkexSortWeights"
+            v-bind:sort-coin-weights="tbOkexSortWeights"
             ></position-map2> 
 
-            <!-- pr_bybit -->
+            <!-- tb_bybit -->
             <position-map2 
-            v-bind:positions="prBybitPositions" 
-            v-bind:positions-loading="prBybitPositionsLoading"
+            v-bind:positions="tbBybitPositions" 
+            v-bind:positions-loading="tbBybitPositionsLoading"
             v-bind:exchange="'Bybit'"
-            v-bind:strategy="'P'"
+            v-bind:strategy="'T'"
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prBybitSortWeights"
+            v-bind:sort-coin-weights="tbBybitSortWeights"
             ></position-map2> 
 
-            <!-- pr_bitget -->
+            <!-- tb_bitget -->
             <position-map2 
-            v-bind:positions="prBitgetPositions" 
-            v-bind:positions-loading="prBitgetPositionsLoading"
+            v-bind:positions="tbBitgetPositions" 
+            v-bind:positions-loading="tbBitgetPositionsLoading"
             v-bind:exchange="'Bitget'"
-            v-bind:strategy="'P'"
+            v-bind:strategy="'T'"
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prBitgetSortWeights"
+            v-bind:sort-coin-weights="tbBitgetSortWeights"
             ></position-map2> 
 
             <!-- pb_binance -->
@@ -95,54 +95,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- mcz_binance -->
-            <position-map2 
-            v-bind:positions="mczBinancePositions" 
-            v-bind:positions-loading="mczBinancePositionsLoading"
-            v-bind:exchange="'Binance'"
-            v-bind:strategy="'M'"
-            v-bind:col-count="13"
-            v-bind:show-zero="true"
-            v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prBinanceSortWeights"
-            ></position-map2> 
-
-            <!-- mcz_okex -->
-            <position-map2 
-            v-bind:positions="mczOkexPositions" 
-            v-bind:positions-loading="mczOkexPositionsLoading"
-            v-bind:exchange="'Okex'"
-            v-bind:strategy="'M'"
-            v-bind:col-count="13"
-            v-bind:show-zero="true"
-            v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prOkexSortWeights"
-            ></position-map2> 
-
-            <!-- mcz_bybit -->
-            <position-map2 
-            v-bind:positions="mczBybitPositions" 
-            v-bind:positions-loading="mczBybitPositionsLoading"
-            v-bind:exchange="'Bybit'"
-            v-bind:strategy="'M'"
-            v-bind:col-count="13"
-            v-bind:show-zero="true"
-            v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prBybitSortWeights"
-            ></position-map2> 
-
-            <!-- mcz_bitget -->
-            <position-map2 
-            v-bind:positions="mczBitgetPositions" 
-            v-bind:positions-loading="mczBitgetPositionsLoading"
-            v-bind:exchange="'Bitget'"
-            v-bind:strategy="'M'"
-            v-bind:col-count="13"
-            v-bind:show-zero="true"
-            v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="prBitgetSortWeights"
-            ></position-map2> 
-
             <!--- 刷新说明 --->
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
@@ -173,39 +125,35 @@ export default {
     data() {
         return { 
             pfoHosts: config.pfoHosts,
-            prBinanceHosts: config.prBinanceHosts,
-            prOkexHosts: config.prOkexHosts,
-            prBybitHosts: config.prBybitHosts,
-            prBitgetHosts: config.prBitgetHosts,
+            tbBinanceHosts: config.tbBinanceHosts,
+            tbOkexHosts: config.tbOkexHosts,
+            tbBybitHosts: config.tbBybitHosts,
+            tbBitgetHosts: config.tbBitgetHosts,
             pbBinanceHosts: config.pbBinanceHosts,
             pbOkexHosts: config.pbOkexHosts,
             pbBybitHosts: config.pbBybitHosts,
             pbBitgetHosts: config.pbBitgetHosts,
-            mczBinanceHosts: config.mczBinanceHosts,
-            mczOkexHosts: config.mczOkexHosts,
-            mczBybitHosts: config.mczBybitHosts,
-            mczBitgetHosts: config.mczBitgetHosts,
-            prBinanceSortWeights: config.prBinanceSortWeights,
-            prOkexSortWeights: config.prOkexSortWeights,
-            prBybitSortWeights: config.prOkexSortWeights,
-            prBitgetSortWeights: config.prOkexSortWeights,
+            tbBinanceSortWeights: config.tbBinanceSortWeights,
+            tbOkexSortWeights: config.tbOkexSortWeights,
+            tbBybitSortWeights: config.tbOkexSortWeights,
+            tbBitgetSortWeights: config.tbOkexSortWeights,
 
             positions: [],
             positionsAvailable: false,
             positionsLoading: false,
 
-            prBinancePositions: [],
-            prBinancePositionsAvailable: false,
-            prBinancePositionsLoading: false,
-            prOkexPositions: [],
-            prOkexPositionsAvailable: false,
-            prOkexPositionsLoading: false,
-            prBybitPositions: [],
-            prBybitPositionsAvailable: false,
-            prBybitPositionsLoading: false,
-            prBitgetositions: [],
-            prBitgetPositionsAvailable: false,
-            prBitgetPositionsLoading: false,
+            tbBinancePositions: [],
+            tbBinancePositionsAvailable: false,
+            tbBinancePositionsLoading: false,
+            tbOkexPositions: [],
+            tbOkexPositionsAvailable: false,
+            tbOkexPositionsLoading: false,
+            tbBybitPositions: [],
+            tbBybitPositionsAvailable: false,
+            tbBybitPositionsLoading: false,
+            tbBitgetositions: [],
+            tbBitgetPositionsAvailable: false,
+            tbBitgetPositionsLoading: false,
             pbBinancePositions: [],
             pbBinancePositionsAvailable: false,
             pbBinancePositionsLoading: false,
@@ -218,18 +166,6 @@ export default {
             pbBitgetPositions: [],
             pbBitgetPositionsAvailable: false,
             pbBitgetPositionsLoading: false,
-            mczBinancePositions: [],
-            mczBinancePositionsAvailable: false,
-            mczBinancePositionsLoading: false,
-            mczOkexPositions: [],
-            mczOkexPositionsAvailable: false,
-            mczOkexPositionsLoading: false,
-            mczBybitPositions: [],
-            mczBybitPositionsAvailable: false,
-            mczBybitPositionsLoading: false,
-            mczBitgetPositions: [],
-            mczBitgetPositionsAvailable: false,
-            mczBitgetPositionsLoading: false,
 
             refreshInterval: 1000,
             refreshIntervalId: null,
@@ -256,101 +192,101 @@ export default {
             this.positionsAvailable = false
             this.positionsLoading = true
 
-            // pr binance
-            this.prBinancePositions = []
-            var prBinanceCount = 0
-            this.prBinancePositionsLoading = true
-            this.prBinancePositionsAvailable = false
-            for(var i = 0; i < this.prBinanceHosts.length; i++){
-                getPositions(this.prBinanceHosts[i], 'normal').then(response => {
-                        prBinanceCount += 1
+            // tb binance
+            this.tbBinancePositions = []
+            var tbBinanceCount = 0
+            this.tbBinancePositionsLoading = true
+            this.tbBinancePositionsAvailable = false
+            for(var i = 0; i < this.tbBinanceHosts.length; i++){
+                getPositions(this.tbBinanceHosts[i], 'normal').then(response => {
+                        tbBinanceCount += 1
                         var positions = response.results
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
                             positions[j]['sty'] = 'pivot_reversal'
                         }
-                        this.prBinancePositions = this.prBinancePositions.concat(positions)
+                        this.tbBinancePositions = this.tbBinancePositions.concat(positions)
                         this.positions = this.positions.concat(positions)
-                        if (prBinanceCount === this.prBinanceHosts.length ){
+                        if (tbBinanceCount === this.tbBinanceHosts.length ){
                             // 排序
-                            this.prBinancePositionsAvailable = true
-                            this.prBinancePositionsLoading = false
+                            this.tbBinancePositionsAvailable = true
+                            this.tbBinancePositionsLoading = false
                         }
                     }
                 )
             }
 
-            // pr okex
-            this.prOkexPositions = []
-            var prOkexCount = 0
-            this.prOkexPositionsLoading = true
-            this.prOkexPositionsAvailable = false
-            for(var i = 0; i < this.prOkexHosts.length; i++){
-                getPositions(this.prOkexHosts[i], 'normal').then(response => {
-                        prOkexCount += 1
+            // tb okex
+            this.tbOkexPositions = []
+            var tbOkexCount = 0
+            this.tbOkexPositionsLoading = true
+            this.tbOkexPositionsAvailable = false
+            for(var i = 0; i < this.tbOkexHosts.length; i++){
+                getPositions(this.tbOkexHosts[i], 'normal').then(response => {
+                        tbOkexCount += 1
                         var positions = response.results
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
                             positions[j]['sty'] = 'pivot_reversal'
                         }
-                        this.prOkexPositions = this.prOkexPositions.concat(positions)
+                        this.tbOkexPositions = this.tbOkexPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
-                        if (prOkexCount === this.prOkexHosts.length ){
+                        if (tbOkexCount === this.tbOkexHosts.length ){
                             // 排序
-                            this.prOkexPositionsAvailable = true
-                            this.prOkexPositionsLoading = false
+                            this.tbOkexPositionsAvailable = true
+                            this.tbOkexPositionsLoading = false
                         }
                     }
                 )
             }
 
-            // pr bybit
-            this.prBybitPositions = []
-            var prBybitCount = 0
-            this.prBybitPositionsLoading = true
-            this.prBybitPositionsAvailable = false
-            for(var i = 0; i < this.prBybitHosts.length; i++){
-                getPositions(this.prBybitHosts[i], 'normal').then(response => {
-                        prBybitCount += 1
+            // tb bybit
+            this.tbBybitPositions = []
+            var tbBybitCount = 0
+            this.tbBybitPositionsLoading = true
+            this.tbBybitPositionsAvailable = false
+            for(var i = 0; i < this.tbBybitHosts.length; i++){
+                getPositions(this.tbBybitHosts[i], 'normal').then(response => {
+                        tbBybitCount += 1
                         var positions = response.results
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
                             positions[j]['sty'] = 'pivot_reversal'
                         }
-                        this.prBybitPositions = this.prBybitPositions.concat(positions)
+                        this.tbBybitPositions = this.tbBybitPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
-                        if (prBybitCount === this.prBybitHosts.length ){
+                        if (tbBybitCount === this.tbBybitHosts.length ){
                             // 排序
-                            this.prBybitPositionsAvailable = true
-                            this.prBybitPositionsLoading = false
+                            this.tbBybitPositionsAvailable = true
+                            this.tbBybitPositionsLoading = false
                         }
                     }
                 )
             }
 
-            // pr bitget
-            this.prBitgetPositions = []
-            var prBitgetCount = 0
-            this.prBitgetPositionsLoading = true
-            this.prBitgetPositionsAvailable = false
-            for(var i = 0; i < this.prBitgetHosts.length; i++){
-                getPositions(this.prBitgetHosts[i], 'normal').then(response => {
-                        prBitgetCount += 1
+            // tb bitget
+            this.tbBitgetPositions = []
+            var tbBitgetCount = 0
+            this.tbBitgetPositionsLoading = true
+            this.tbBitgetPositionsAvailable = false
+            for(var i = 0; i < this.tbBitgetHosts.length; i++){
+                getPositions(this.tbBitgetHosts[i], 'normal').then(response => {
+                        tbBitgetCount += 1
                         var positions = response.results
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
                             positions[j]['sty'] = 'pivot_reversal'
                         }
-                        this.prBitgetPositions = this.prBitgetPositions.concat(positions)
+                        this.tbBitgetPositions = this.tbBitgetPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
-                        if (prBitgetCount === this.prBitgetHosts.length ){
+                        if (tbBitgetCount === this.tbBitgetHosts.length ){
                             // 排序
-                            this.prBitgetPositionsAvailable = true
-                            this.prBitgetPositionsLoading = false
+                            this.tbBitgetPositionsAvailable = true
+                            this.tbBitgetPositionsLoading = false
                         }
                     }
                 )
@@ -451,106 +387,6 @@ export default {
                             // 排序
                             this.pbBitgetPositionsAvailable = true
                             this.pbBitgetPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // mcz binance
-            this.mczBinancePositions = []
-            var mczBinanceCount = 0
-            this.mczBinancePositionsLoading = true
-            this.mczBinancePositionsAvailable = false
-            for(var i = 0; i < this.mczBinanceHosts.length; i++){
-                getPositions(this.mczBinanceHosts[i], 'normal').then(response => {
-                        mczBinanceCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'macd_cross_zero'
-                        }
-                        this.mczBinancePositions = this.mczBinancePositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (mczBinanceCount === this.mczBinanceHosts.length ){
-                            // 排序
-                            this.mczBinancePositionsAvailable = true
-                            this.mczBinancePositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // mcz okex
-            this.mczOkexPositions = []
-            var mczOkexCount = 0
-            this.mczOkexPositionsLoading = true
-            this.mczOkexPositionsAvailable = false
-            for(var i = 0; i < this.mczOkexHosts.length; i++){
-                getPositions(this.mczOkexHosts[i], 'normal').then(response => {
-                        mczOkexCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'macd_cross_zero'
-                        }
-                        this.mczOkexPositions = this.mczOkexPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (mczOkexCount === this.mczOkexHosts.length ){
-                            // 排序
-                            this.mczOkexPositionsAvailable = true
-                            this.mczOkexPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // mcz bybit
-            this.mczBybitPositions = []
-            var mczBybitCount = 0
-            this.mczBybitPositionsLoading = true
-            this.mczBybitPositionsAvailable = false
-            for(var i = 0; i < this.mczBybitHosts.length; i++){
-                getPositions(this.mczBybitHosts[i], 'normal').then(response => {
-                        mczBybitCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'macd_cross_zero'
-                        }
-                        this.mczBybitPositions = this.mczBybitPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (mczBybitCount === this.mczBybitHosts.length ){
-                            // 排序
-                            this.mczBybitPositionsAvailable = true
-                            this.mczBybitPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // mcz bitget
-            this.mczBitgetPositions = []
-            var mczBitgetCount = 0
-            this.mczBitgetPositionsLoading = true
-            this.mczBitgetPositionsAvailable = false
-            for(var i = 0; i < this.mczBitgetHosts.length; i++){
-                getPositions(this.mczBitgetHosts[i], 'normal').then(response => {
-                        mczBitgetCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'macd_cross_zero'
-                        }
-                        this.mczBitgetPositions = this.mczBitgetPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (mczBitgetCount === this.mczBitgetHosts.length ){
-                            // 排序
-                            this.mczBitgetPositionsAvailable = true
-                            this.mczBitgetPositionsLoading = false
                         }
                     }
                 )
