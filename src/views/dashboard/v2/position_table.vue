@@ -14,11 +14,11 @@
 
             <el-table-column label="总仓位" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: green" v-if="scope.row.totalPosition + scope.row.holdPosition >= 0">
-                        {{toThousands(scope.row.totalPosition + scope.row.holdPosition)}}
+                    <span style="color: green" v-if="scope.row.totalPosition >= 0">
+                        {{toThousands(scope.row.totalPosition)}}
                     </span>   
                     <span style="color: red" v-else>
-                        {{toThousands(scope.row.totalPosition + scope.row.holdPosition)}}
+                        {{toThousands(scope.row.totalPosition)}}
                     </span>             
                 </template>   
             </el-table-column>
@@ -26,7 +26,7 @@
             <el-table-column label="总多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
-                        {{toThousands(scope.row.longPosition + scope.row.holdPosition)}}
+                        {{toThousands(scope.row.longPosition)}}
                     </span>              
                 </template>
             </el-table-column>
@@ -249,7 +249,7 @@ export default {
             }
             // 有时未能获取到subaccountDatas(此时不要更新leverage, 不准确!)
             if (this.subaccountDatas.length > 0){
-                this.positionDatas[0].leverage = (totalPosition + holdData.long)/this.parentPfoWallet.usdt_amount   
+                this.positionDatas[0].leverage = totalPosition/this.parentPfoWallet.usdt_amount   
             }       
         },
 

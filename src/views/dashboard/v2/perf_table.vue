@@ -172,6 +172,8 @@ export default {
 
     methods: {
         parseData(){  
+            this.perfData = []
+            
              // 策略表现(trade_stats)
             var tbData = this.parentPfoTradeStats.trendline_break
             var pbData = this.parentPfoTradeStats.plunge_back
