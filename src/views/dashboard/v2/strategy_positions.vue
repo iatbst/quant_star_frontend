@@ -11,7 +11,7 @@
 import config from '@/configs/system_configs'
 import {Chart} from 'highcharts-vue'
 import {getWorkersBySymbol} from '@/api/worker'
-import {addSingleColumn} from '@/utils/chart'
+import {addSingleColumn, addTwoColumns} from '@/utils/chart'
 import {quoteToUSD} from '@/utils/general'
 import {deepCopy} from '@/utils/general'
 import { getSignalPointsByWorker } from '@/api/signal_point'
@@ -26,6 +26,10 @@ export default {
         positions: {
             type:Array,
             default:[]
+        },
+        btPositions: {
+            type:Object,
+            default:{}      
         }
     },
 
@@ -34,6 +38,11 @@ export default {
             handler(val, oldVal){
                 this.parseData()
             }
+        },
+        btPositions: {
+            handler(val, oldVal){
+                this.parseData()
+            }  
         }
     },
 
@@ -61,7 +70,7 @@ export default {
                 exporting: { enabled: false },
                 
                 legend: {
-                    enabled: false
+                    enabled: true
                 },
 
                 tooltip: {
@@ -75,10 +84,16 @@ export default {
                         }
                     },
                 },
-                series: [{
-                    name: '仓位',
-                    data: [],
-                }],
+                series: [
+                    {
+                        name: '实盘仓位',
+                        data: [],
+                    },
+                    {
+                        name: '回测仓位',
+                        data: [],
+                    },
+                ],
             },
         }
     },
@@ -92,7 +107,8 @@ export default {
         // 处理父组件建传入data: positions
         parseData() {    
             var styPositions = {}     
-            var columnDatas = []
+            var livePositions = []
+            var btPositions = []
             for(const data of this.positions){
                 var styID = data['sty'] + '_' + data.worker.name.slice(-1,)
                 if (!(styID in styPositions)){
@@ -106,17 +122,17 @@ export default {
             //debugger
 
             
-            // 多头tops
+            // 实盘仓位
             for(const styID of config.activeStrategyIDs){
                 var data = styPositions[styID]
                 if (data.size >= 0){
-                    columnDatas.push({
+                    livePositions.push({
                         'x': chineseStrategyID(data.styID),
                         'y': Math.round((data.size/1000)),
                         'color': 'green'
                     })                   
                 } else {
-                    columnDatas.push({
+                    livePositions.push({
                         'x': chineseStrategyID(data.styID),
                         'y': Math.round((Math.abs(data.size/1000))),
                         'color': 'red'
@@ -124,7 +140,30 @@ export default {
                 }
             }
 
-            addSingleColumn(columnDatas, this.positionOptions)  
+            // 回测仓位(只加载和实盘策略名称完全一致的, eg, 不加载pb策略)
+            for(const styID in this.btPositions){
+                if (styID.replace('-', '_') in styPositions){
+                    var position = this.btPositions[styID]
+                    if (position >= 0){
+                        btPositions.push({
+                            'x': chineseStrategyID(styID),
+                            'y': Math.round((position/1000)),
+                            'color': 'lightgreen'
+                        })                   
+                    } else {
+                        btPositions.push({
+                            'x': chineseStrategyID(styID),
+                            'y': Math.round((Math.abs(position/1000))),
+                            'color': 'orange'
+                        })                      
+                    }                  
+                }
+            }
+
+            debugger
+
+            // addSingleColumn(livePositions, this.positionOptions)  
+            addTwoColumns(livePositions, btPositions, this.positionOptions)
         },
     }
 }

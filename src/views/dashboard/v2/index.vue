@@ -82,7 +82,7 @@
     <!---------------------------------- 资产曲线 -----------------------------------
         函数:
             - fetchLiveValueline 
-            - fetchBacktestValuelines
+            - fetchBacktestValuelinePosition
         更新频率: ?
     --->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
@@ -233,9 +233,11 @@
           <div style="margin-bottom: 20px; width: 95%">
             <strategy-positions
             v-bind:positions="positions"
+            v-bind:btPositions="btPositions.all.data"
             v-if="
             tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
-            pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable
+            pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
+            btPositions.all.available
             "
             ></strategy-positions> 
 
@@ -446,27 +448,16 @@ export default {
                     'name': '回测资金',
                     'data': null,
                     'available': false
-                },                
-                // 'pivot_reversal': {
-                //     'name': 'Pivot Reversal',
-                //     'data': null,
-                //     'available': false
-                // },
-                // 'pivot_reversal_v1': {
-                //     'name': 'Pivot Reversal(V1)',
-                //     'data': null,
-                //     'available': false
-                // }, 
-                // 'pivot_reversal_v2': {
-                //     'name': 'Pivot Reversal(V2)',
-                //     'data': null,
-                //     'available': false
-                // }, 
-                // 'plunge_back': {
-                //     'name': 'Plunge Back回测资金曲线',
-                //     'data': null,
-                //     'available': false
-                // },                               
+                },                                            
+            },
+
+            // 记录策略当前仓位
+            btPositions: {
+                'all': {
+                    'name': '回测仓位',
+                    'data': null,
+                    'available': false
+                },                                            
             },
 
             // 策略的Pnl Line(今年)
@@ -541,7 +532,7 @@ export default {
 
             // 图表1: 实盘资产 VS 回测资产
             this.fetchLiveValueline()   // 实盘资产曲线
-            this.fetchBacktestValuelines()  // 策略的回测资产曲线
+            this.fetchBacktestValuelinePosition()  // 策略的回测资产曲线
 
             // 图表2: 策略收益曲线
             this.fetchPnlLines()
@@ -700,15 +691,18 @@ export default {
             )
         },
 
-        // 从master获取各个策略的回测资产曲线
-        fetchBacktestValuelines(){
+        // 从master获取回测资产曲线和仓位(目前只获取all)
+        fetchBacktestValuelinePosition(){
             this.btBalanceValuesRefresh = new Date()
             for (const sty in this.btValueLines){
                 var reportName = sty + '_backtest'
                 this.btValueLines[sty].available = false
+                this.btPositions[sty].available = false
                 getBacktestReportByName(config.masterHost, reportName).then(response => {
                     this.btValueLines[sty].data = response.results[0].analyzer_rets.value_line
                     this.btValueLines[sty].available = true
+                    this.btPositions[sty].data = response.results[0].analyzer_rets.last_positions
+                    this.btPositions[sty].available = true
                 })
             }
         },
@@ -1121,8 +1115,8 @@ export default {
                     this.fetchLiveValueline()                   
                 }
                 if(hour >= 9 && date != this.btBalanceValuesRefresh.getDate()){
-                    console.log(now + '刷新:fetchBacktestValuelines');
-                    this.fetchBacktestValuelines()                   
+                    console.log(now + '刷新:fetchBacktestValuelinePosition');
+                    this.fetchBacktestValuelinePosition()                   
                 }
                 // 策略收益曲线
                 if(minute >= 30 && date != this.pnlLinesRefresh.getDate()){

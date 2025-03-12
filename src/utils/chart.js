@@ -128,6 +128,31 @@ export function addSingleColumn(data_list, options) {
     }
 }
 
+// 添加双columns(data1负责categories)
+export function addTwoColumns(data_list1, data_list2, options) {
+    options.xAxis.categories = []
+
+    // col1
+    options.series[0].data = []
+    for (var i = 0; i < data_list1.length; i++){
+        options.series[0].data.push({
+            y: data_list1[i].y,
+            color: data_list1[i].color
+        })  
+        options.xAxis.categories.push(data_list1[i].x)           
+    }
+
+    // col2
+    options.series[1].data = []
+    for (var i = 0; i < data_list2.length; i++){
+        options.series[1].data.push({
+            y: data_list2[i].y,
+            color: data_list2[i].color
+        })  
+        // options.xAxis.categories.push(data_list2[i].x)           
+    }
+}
+
 // 添加clickable column
 export function addSingleClickableColumn(data_list, options, onClick, onClickData='onClickData') {
     options.xAxis.categories = []
