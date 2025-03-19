@@ -160,8 +160,6 @@ export default {
                 }
             }
 
-            debugger
-
             // addSingleColumn(livePositions, this.positionOptions)  
             addTwoColumns(livePositions, btPositions, this.positionOptions)
         },

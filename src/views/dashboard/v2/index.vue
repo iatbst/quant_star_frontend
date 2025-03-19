@@ -168,17 +168,12 @@
                 {
                     title: pnlLines.plunge_back.name,
                     data: pnlLines.plunge_back.data
-                }, 
-                {
-                    title: pnlLines.hold.name,
-                    data: pnlLines.hold.data
-                },                            
+                }                            
             ]
             " 
             v-if="
             pnlLines.trendline_break.available && 
-            pnlLines.plunge_back.available &&
-            pnlLines.hold.available
+            pnlLines.plunge_back.available
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
@@ -322,6 +317,7 @@ import { getOrders } from '@/api/order'
 import { getNormalWorkerDatas } from '@/api/worker'
 import { getFees } from '@/api/fee'
 import moment from 'moment' 
+import { offset } from 'highcharts'
 
 
 export default {
@@ -471,12 +467,7 @@ export default {
                     'name': 'B',
                     'data': null,
                     'available': false
-                },
-                'hold': {
-                    'name': 'H',
-                    'data': null,
-                    'available': false
-                },                                                  
+                }                                                 
             },
 
             refreshInterval: 1000,
@@ -761,11 +752,20 @@ export default {
                     var parentPfoData = response.results[0]
                     this.pnlLines.trendline_break.data = parentPfoData.pnl_line.trendline_break.year_now
                     this.pnlLines.trendline_break.available = true
+                    // 临时修正: 2025-03-11的trendline_break的策略pnl归零,之后的日期都减去这个offset
+                    var offsetPnl = this.pnlLines.trendline_break.data['2025-03-11']
+                    for(let date in this.pnlLines.trendline_break.data){
+                        if(date >= '2025-03-11'){
+                            this.pnlLines.trendline_break.data[date] -= offsetPnl
+                        }
+                    }
+                    // debugger
+
                     this.pnlLines.plunge_back.data = parentPfoData.pnl_line.plunge_back.year_now
                     this.pnlLines.plunge_back.available = true  
 
-                    this.pnlLines.hold.data = parentPfoData.pnl_line.hold.year_now
-                    this.pnlLines.hold.available = true 
+                    // this.pnlLines.hold.data = parentPfoData.pnl_line.hold.year_now
+                    // this.pnlLines.hold.available = true 
 
                     // 添加上一年最后一日数据为起点数据(pnl = 0), 否则pnl的起点不是0
                     var firstDate = moment().year() - 1 + '-' + '12-31'

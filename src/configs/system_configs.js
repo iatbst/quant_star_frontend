@@ -87,12 +87,12 @@ var production_hosts = [
 
 var development_hosts = [
     // 开发/测试
-    'http://ec2-43-199-42-56.ap-east-1.compute.amazonaws.com:8000/api',  // bybit_pr_1
+    'http://ec2-18-163-100-37.ap-east-1.compute.amazonaws.com:8000/api',  // bybit_pr_1
 ]
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = production_hosts
+    var hostList = development_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
