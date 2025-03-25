@@ -65,9 +65,12 @@
 
             <el-table-column label="系统杠杆率" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="">
+                    <span style="color: green" v-if="scope.row.leverage >= 0">
                         {{(scope.row.leverage).toFixed(2)}}X
-                    </span>          
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{(scope.row.leverage).toFixed(2)}}X
+                    </span>        
                 </template>
             </el-table-column>          
         </el-table>
