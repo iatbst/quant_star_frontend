@@ -65,36 +65,44 @@ var production_hosts = [
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-113-187.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-43-198-14-240.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-162-207-233.ap-east-1.compute.amazonaws.com:8000/api',
 
     // 东京: Binance
     'http://ec2-54-250-145-172.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-183-193-63.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-35-78-96-216.ap-northeast-1.compute.amazonaws.com:8000/api',
 
     // 新加坡: Bybit
     'http://ec2-18-138-239-229.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_pr_1
     'http://ec2-47-129-221-92.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_1
     'http://ec2-52-77-215-97.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_2
     'http://ec2-13-250-51-216.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_pb_3
+    'http://ec2-54-254-225-48.ap-southeast-1.compute.amazonaws.com:8000/api',
 
     // 新加坡: Bitget
     'http://ec2-47-128-151-146.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pr_1
     'http://ec2-13-213-7-38.ap-southeast-1.compute.amazonaws.com:8000/api',     // bitget_pb_1
     'http://ec2-54-255-128-30.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pb_2
     'http://ec2-52-77-236-31.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pb_3
+    'http://ec2-3-1-102-206.ap-southeast-1.compute.amazonaws.com:8000/api',
 ]
 
 var development_hosts = [
     // 开发/测试
-    'http://ec2-18-163-100-37.ap-east-1.compute.amazonaws.com:8000/api',  // bybit_pr_1
-    'http://ec2-18-162-49-59.ap-east-1.compute.amazonaws.com:8000/api',
+    //'http://ec2-18-163-100-37.ap-east-1.compute.amazonaws.com:8000/api',  // test1
+    // 'http://ec2-18-162-49-59.ap-east-1.compute.amazonaws.com:8000/api',  // test2
+    'http://ec2-54-254-225-48.ap-southeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-3-1-102-206.ap-southeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-162-207-233.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-35-78-96-216.ap-northeast-1.compute.amazonaws.com:8000/api',
 ]
 
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = development_hosts
+    var hostList = production_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
@@ -174,7 +182,11 @@ const strategyAlias = {
 
     'plunge-back': 'B',
     'plunge_back': 'B',
-    'pb': 'B'
+    'pb': 'B',
+
+    'rsi-mini': 'RSI',
+    'rsi_mini': 'RSI',
+    'rsi': 'RSI',
 }
 
 

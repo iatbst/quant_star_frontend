@@ -117,13 +117,14 @@
 
                     <el-table-column align="center" label="策略" min-width="5%">
                         <template slot-scope="scope">
-                            {{ scope.row.worker.name.split('_').length == 5 ? strategyAlias[scope.row.worker.name.split('_').slice(-2, -1)[0]] : strategyAlias[scope.row.worker.name.split('_').slice(-1)[0].slice(0,-1)] }}
+                            {{ strategyAlias[scope.row.worker.name.split('_')[3]] }}
                         </template>
                     </el-table-column>
 
                     <el-table-column align="center" label="策略ID" min-width="5%">
                         <template slot-scope="scope">
-                            {{ scope.row.order_type == 'temp' ? 'N/A' : scope.row.worker.name.slice(-1,) }}
+                            {{ scope.row.order_type == 'temp' ? 'N/A' : 
+                            (scope.row.worker.name.split('_').length == 5 ? scope.row.worker.name.slice(-1,) :  scope.row.worker.name.split('_').slice(-2,).join('_') ) }}
                         </template>
                     </el-table-column>
 
