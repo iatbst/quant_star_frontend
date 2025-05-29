@@ -85,8 +85,12 @@ export function chineseString(s) {
 }
 
 import config from '@/configs/system_configs'
-export function chineseStrategyID(strategyID) {
+export function chineseStrategyID(strategyID, showID=true) {
     var strategy = strategyID.split('_').slice(0, -1).join('_')
-    var strategyId = strategyID.split('_').slice(-1,)[0]
-    return config.strategyAlias[strategy] + '-' + strategyId
+    if (showID){
+        var strategyId = strategyID.split('_').slice(-1,)[0]
+        return config.strategyAlias[strategy] + '-' + strategyId
+    } else {
+        return config.strategyAlias[strategy]
+    }
 }

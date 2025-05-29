@@ -63,6 +63,14 @@
                 </template>
             </el-table-column>
 
+            <el-table-column label="RSI多头" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: green">
+                        {{toThousands(scope.row.rsiPosition)}}
+                    </span>          
+                </template>
+            </el-table-column>
+
             <el-table-column label="系统杠杆率" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.leverage >= 0">
@@ -179,7 +187,8 @@ export default {
                 tbLongPosition: null,
                 tbShortPosition: null,
                 pbPosition: null,
-                holdPosition: null,
+                rsiPosition: null,
+
 
                 leverage: null
             }],
@@ -200,11 +209,12 @@ export default {
             // 策略仓位信息从系统后台获取
             var tbData = this.parentPfoPositions.trendline_break
             var pbData = this.parentPfoPositions.plunge_back
-            var holdData = this.parentPfoPositions.hold
+            var rsiData = this.parentPfoPositions.rsi_mini
             this.positionDatas[0].tbLongPosition = Math.round(tbData.long)
             this.positionDatas[0].tbShortPosition = Math.round(tbData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
-            this.positionDatas[0].holdPosition = Math.round(holdData.long)
+            this.positionDatas[0].rsiPosition = Math.round(rsiData.long)
+
 
             // 币头寸叠加到总头寸
             // this.positionDatas[0].totalPosition += this.positionDatas[0].holdPosition

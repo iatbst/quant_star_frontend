@@ -256,6 +256,7 @@ export default {
             keys: [
                 'trendline_break',
                 'plunge_back',
+                'rsi_mini',
                 'binance',
                 'okex',
                 'bybit',
@@ -275,6 +276,12 @@ export default {
                     position: null,
                     fundingFees: null
                 },
+                 'rsi_mini': {
+                    name: 'RSI',
+                    initPosition: null,
+                    position: null,
+                    fundingFees: null
+                },               
                 'binance': {
                     name: 'Binance',
                     initPosition: null,
@@ -357,6 +364,13 @@ export default {
                     this.todayObj[key].shortFlip = null  
                     this.todayObj[key].shortWinStop = null  
                     this.todayObj[key].shortTimer = null                                 
+                } else if (key == 'rsi_mini') {
+                    this.todayObj[key].shortOpen = null
+                    this.todayObj[key].shortFlip = null   
+                    this.todayObj[key].longTimer = null     
+                    this.todayObj[key].shortTimer = null
+                    this.todayObj[key].longWinStop = null
+                    this.todayObj[key].shortWinStop = null                   
                 }
             }
         },

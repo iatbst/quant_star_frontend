@@ -24,6 +24,19 @@ const tbBitgetHosts = [
     'http://ec2-47-128-151-146.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
 
+const rsiBinanceHosts = [
+    'http://ec2-35-78-96-216.ap-northeast-1.compute.amazonaws.com:8000/api'
+]
+const rsiOkexHosts = [
+    'http://ec2-18-162-207-233.ap-east-1.compute.amazonaws.com:8000/api'
+]
+const rsiBybitHosts = [
+    'http://ec2-54-254-225-48.ap-southeast-1.compute.amazonaws.com:8000/api'
+]
+const rsiBitgetHosts = [
+    'http://ec2-3-1-102-206.ap-southeast-1.compute.amazonaws.com:8000/api'
+]
+
 
 const pbBinanceHosts = [
     'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
@@ -92,11 +105,11 @@ var production_hosts = [
 var development_hosts = [
     // 开发/测试
     //'http://ec2-18-163-100-37.ap-east-1.compute.amazonaws.com:8000/api',  // test1
-    // 'http://ec2-18-162-49-59.ap-east-1.compute.amazonaws.com:8000/api',  // test2
-    'http://ec2-54-254-225-48.ap-southeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-3-1-102-206.ap-southeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-162-207-233.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-35-78-96-216.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-18-162-49-59.ap-east-1.compute.amazonaws.com:8000/api',  // test2
+    //'http://ec2-54-254-225-48.ap-southeast-1.compute.amazonaws.com:8000/api',
+    //'http://ec2-3-1-102-206.ap-southeast-1.compute.amazonaws.com:8000/api',
+    //'http://ec2-18-162-207-233.ap-east-1.compute.amazonaws.com:8000/api',
+    //'http://ec2-35-78-96-216.ap-northeast-1.compute.amazonaws.com:8000/api',
 ]
 
 // 当前投资组合的Hosts地址
@@ -162,6 +175,12 @@ const activeStrategyIDs = [
     'plunge_back_2',
     'plunge_back_3',
     'plunge_back_4',
+    'rsi_mini'
+]
+
+// 部分策略不展示子策略(只显示合并结果)
+const mergeStrategyIDs = [
+    'rsi_mini'
 ]
 
 const strategyAlias = {
@@ -339,6 +358,10 @@ export default {
     pbOkexHosts,
     pbBybitHosts,
     pbBitgetHosts,
+    rsiBinanceHosts,
+    rsiOkexHosts,
+    rsiBybitHosts,
+    rsiBitgetHosts,
     pfoAlias,
     backtestHost,
     cryptoParentPfo,
@@ -359,7 +382,8 @@ export default {
     strategies,
     tradeFinalErrors,
     tradeFlagCodes,
-    activeStrategyIDs
+    activeStrategyIDs,
+    mergeStrategyIDs
 }
 
 

@@ -1,108 +1,84 @@
 <template>
     <div>
-        <!--- 表3: 策略表现(row0) --->
-        <el-table
-        :data="[{col1: 'T今年', col2: 'B今年'}]"
-        :show-header="false"
-        :cell-style="{ background: '#f2f2f2' }"
-        style="width: 100%; background: #f2f2f2">
-            <el-table-column prop="col1" min-width="60%" align="center"> 
-            </el-table-column>
-            <el-table-column prop="col2" min-width="40%" align="center"> 
-            </el-table-column>
-        </el-table>
-
         <!--- 策略表现 --->
         <el-table
         :data="perfData"
-        :header-cell-style="addRightBorder"
-        :cell-style="addRightBorder"
+        :header-cell-style="{ background: '#f2f2f2' }"
         style="width: 100%">
-            <el-table-column label="" min-width="10%" align="center" style="background: white"> 
+            <el-table-column label="策略" min-width="10%" align="center" style="background: white"> 
                 <template slot-scope="scope">
                         {{ scope.row.name }}               
                 </template> 
             </el-table-column>
 
-            <el-table-column label="TB-1" min-width="10%" align="center"> 
+            <el-table-column label="交易次数" min-width="10%" align="center" style="background: white"> 
                 <template slot-scope="scope">
-                    <span>
-                        {{ scope.row[styTb + '_1'] }}   
-                    </span>                
+                        {{ scope.row.count }}               
                 </template> 
             </el-table-column>
 
-            <el-table-column label="TB-2" min-width="10%" align="center"> 
+            <el-table-column label="胜次" min-width="10%" align="center" style="background: white"> 
                 <template slot-scope="scope">
-                    <span>
-                        {{ scope.row[styTb + '_2'] }}   
-                    </span>                
-                </template> 
-            </el-table-column>   
-
-            <el-table-column label="TB-3" min-width="10%" align="center"> 
-                <template slot-scope="scope">
-                    <span>
-                        {{ scope.row[styTb + '_3'] }}   
-                    </span>                
+                        {{ scope.row.win_count }}               
                 </template> 
             </el-table-column>
 
-            <el-table-column label="TB-4" min-width="10%" align="center"> 
+            <el-table-column label="负次" min-width="10%" align="center" style="background: white"> 
                 <template slot-scope="scope">
-                    <span>
-                        {{ scope.row[styTb + '_4'] }}   
-                    </span>                
-                </template> 
-            </el-table-column>  
-
-            <el-table-column label="TB-5" min-width="10%" align="center"> 
-                <template slot-scope="scope">
-                    <span>
-                        {{ scope.row[styTb + '_5'] }}   
-                    </span>                
+                        {{ scope.row.lose_count }}               
                 </template> 
             </el-table-column>
 
-            <el-table-column label="TB-6" min-width="10%" align="center"> 
+            <el-table-column label="胜率" min-width="10%" align="center" style="background: white"> 
                 <template slot-scope="scope">
-                    <span>
-                        {{ scope.row[styTb + '_6'] }}   
-                    </span>                
+                        {{ scope.row.win_ratio }}               
                 </template> 
             </el-table-column> 
 
-            <el-table-column label="PB-1" min-width="10%" align="center"> 
+            <el-table-column label="平均胜时损益率" min-width="10%" align="center" style="background: white"> 
                 <template slot-scope="scope">
-                    <span>
-                        {{ scope.row[styPb + '_1'] }}   
-                    </span>                
+                        {{ scope.row.win_avg_pnl_ptg }}               
+                </template> 
+            </el-table-column> 
+
+            <el-table-column label="平均负时损益率" min-width="10%" align="center" style="background: white"> 
+                <template slot-scope="scope">
+                        {{ scope.row.lose_avg_pnl_ptg }}               
+                </template> 
+            </el-table-column> 
+
+            <el-table-column label="平均损益率" min-width="10%" align="center" style="background: white"> 
+                <template slot-scope="scope">
+                    <span style="color: green" v-if="scope.row.avg_pnl_ptg >= 0">
+                        {{ (scope.row.avg_pnl_ptg*100).toFixed(1) }}%
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{ (scope.row.avg_pnl_ptg*100).toFixed(1) }}%
+                    </span>   
+                </template>      
+            </el-table-column> 
+
+            <el-table-column label="滑点" min-width="10%" align="center" style="background: white"> 
+                <template slot-scope="scope">
+                    <span style="color: green" v-if="scope.row.weight_slippage >= 0">
+                        {{ (scope.row.weight_slippage*100).toFixed(3) }}%
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{ (scope.row.weight_slippage*100).toFixed(3) }}%
+                    </span>               
                 </template> 
             </el-table-column>  
 
-            <el-table-column label="PB-2" min-width="10%" align="center"> 
+            <el-table-column label="总损益额" min-width="10%" align="center" style="background: white"> 
                 <template slot-scope="scope">
-                    <span>
-                        {{ scope.row[styPb + '_2'] }}   
-                    </span>                
+                    <span style="color: green" v-if="scope.row.total_pnl >= 0">
+                        {{ toThousands(parseInt(scope.row.total_pnl)) }}
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{ toThousands(parseInt(scope.row.total_pnl)) }}
+                    </span>              
                 </template> 
-            </el-table-column>
-
-            <el-table-column label="PB-3" min-width="10%" align="center"> 
-                <template slot-scope="scope">
-                    <span>
-                        {{ scope.row[styPb + '_3'] }}   
-                    </span>                
-                </template> 
-            </el-table-column>
-
-            <el-table-column label="PB-4" min-width="10%" align="center"> 
-                <template slot-scope="scope">
-                    <span>
-                        {{ scope.row[styPb + '_4'] }}   
-                    </span>                
-                </template> 
-            </el-table-column>       
+            </el-table-column>                
         </el-table> 
     </div>      
 </template>
@@ -148,20 +124,8 @@ export default {
             perfData: [],
             styTb: 'trendline_break',
             styPb: 'plunge_back',
-            tbList: [
-                this.styTb + '_1', 
-                this.styTb + '_2', 
-                this.styTb + '_3', 
-                this.styTb + '_4', 
-                this.styTb + '_5', 
-                this.styTb + '_6' 
-            ],
-            pbList: [
-                this.styPb + '_1', 
-                this.styPb + '_2', 
-                this.styPb + '_3', 
-                this.styPb + '_4',                
-            ]
+            styRsi: 'rsi_mini',
+            strategyAlias: config.strategyAlias, 
         }
     },
 
@@ -177,110 +141,137 @@ export default {
              // 策略表现(trade_stats)
             var tbData = this.parentPfoTradeStats.trendline_break
             var pbData = this.parentPfoTradeStats.plunge_back
+            var rsiData = this.parentPfoTradeStats.rsi_mini
             var tbList = [
-                this.styTb + '_1', 
-                this.styTb + '_2', 
-                this.styTb + '_3', 
-                this.styTb + '_4', 
-                this.styTb + '_5', 
-                this.styTb + '_6' 
+                [this.styTb + '_1', 'T_1'],
+                [this.styTb + '_2', 'T_2'],
+                [this.styTb + '_3', 'T_3'],
+                [this.styTb + '_4', 'T_4'],
+                [this.styTb + '_5', 'T_5'],
+                [this.styTb + '_6', 'T_6'],
             ]
             var pbList = [
-                this.styPb + '_1', 
-                this.styPb + '_2', 
-                this.styPb + '_3', 
-                this.styPb + '_4'
+                [this.styPb + '_1', 'B_1'],
+                [this.styPb + '_2', 'B_2'],
+                [this.styPb + '_3', 'B_3'],
+                [this.styPb + '_4', 'B_4']
             ]
+            var rsiList = [
+                ['all', 'RSI']
+            ]   // 只展示合并stats
+            var dataList = [
+                [tbList, tbData],
+                [pbList, pbData],
+                [rsiList, rsiData],
+            ]
+            for(let data of dataList){
+                var styData = data[1]
+                for(let _data of data[0]){
+                    var key = _data[0]
+                    this.perfData.push({
+                        name: _data[1],
+                        count: styData[key].year_now.count,
+                        win_count: styData[key].year_now.win_count,
+                        lose_count: styData[key].year_now.lose_count,
+                        win_ratio: styData[key].year_now.win_ratio != null ? (styData[key].year_now.win_ratio*100).toFixed(1) + '%' : null,
+                        win_avg_pnl_ptg: styData[key].year_now.win_avg_pnl_ptg != null ? (styData[key].year_now.win_avg_pnl_ptg*100).toFixed(1) + '%' : null,
+                        lose_avg_pnl_ptg: styData[key].year_now.lose_avg_pnl_ptg != null ? (styData[key].year_now.lose_avg_pnl_ptg*100).toFixed(1) + '%' : null,
+                        avg_pnl_ptg: styData[key].year_now.avg_pnl_ptg != null ? styData[key].year_now.avg_pnl_ptg : null,
+                        weight_slippage: styData[key].year_now.weight_slippage != null ? styData[key].year_now.weight_slippage : null,
+                        total_pnl: styData[key].year_now.total_pnl
+                    })
+                }
+            }
 
-            // row1: 次数
-            var row = {'name': '交易次数'}
-            for(let key of tbList){
-                row[key] = tbData[key].year_now.count
-            }
-            for(let key of pbList){
-                row[key] = pbData[key].year_now.count
-            }
-            this.perfData.push(row)
+            // // row1: 次数
+            // var row = {'name': '交易次数'}
+            // for(let key of tbList){
+            //     row[key] = tbData[key].year_now.count
+            // }
+            // for(let key of pbList){
+            //     row[key] = pbData[key].year_now.count
+            // }
+            // this.perfData.push(row)
 
-            // row2: 胜次
-            row = {'name': '胜次'}
-            for(let key of tbList){
-                row[key] = tbData[key].year_now.win_count
-            }
-            for(let key of pbList){
-                row[key] = pbData[key].year_now.win_count
-            }
-            this.perfData.push(row)
+            // // row2: 胜次
+            // row = {'name': '胜次'}
+            // for(let key of tbList){
+            //     row[key] = tbData[key].year_now.win_count
+            // }
+            // for(let key of pbList){
+            //     row[key] = pbData[key].year_now.win_count
+            // }
+            // this.perfData.push(row)
 
-            // row3: 负次
-            row = {'name': '负次'}
-            for(let key of tbList){
-                row[key] = tbData[key].year_now.lose_count
-            }
-            for(let key of pbList){
-                row[key] = pbData[key].year_now.lose_count
-            }
-            this.perfData.push(row)
+            // // row3: 负次
+            // row = {'name': '负次'}
+            // for(let key of tbList){
+            //     row[key] = tbData[key].year_now.lose_count
+            // }
+            // for(let key of pbList){
+            //     row[key] = pbData[key].year_now.lose_count
+            // }
+            // this.perfData.push(row)
 
-            // row4: 胜率
-            row = {'name': '胜率'}
-            for(let key of tbList){
-                row[key] = tbData[key].year_now.win_ratio != null ? (tbData[key].year_now.win_ratio*100).toFixed(1) + '%' : null
-            }
-            for(let key of pbList){
-                row[key] = pbData[key].year_now.win_ratio != null ? (pbData[key].year_now.win_ratio*100).toFixed(1) + '%' : null
-            }
-            this.perfData.push(row)
+            // // row4: 胜率
+            // row = {'name': '胜率'}
+            // for(let key of tbList){
+            //     row[key] = tbData[key].year_now.win_ratio != null ? (tbData[key].year_now.win_ratio*100).toFixed(1) + '%' : null
+            // }
+            // for(let key of pbList){
+            //     row[key] = pbData[key].year_now.win_ratio != null ? (pbData[key].year_now.win_ratio*100).toFixed(1) + '%' : null
+            // }
+            // this.perfData.push(row)
 
-            // row5: 平均胜时损益率
-            row = {'name': '平均胜时损益率'}
-            for(let key of tbList){
-                row[key] = tbData[key].year_now.win_avg_pnl_ptg != null ? (tbData[key].year_now.win_avg_pnl_ptg*100).toFixed(1) + '%' : null
-            }
-            for(let key of pbList){
-                row[key] = pbData[key].year_now.win_avg_pnl_ptg != null ? (pbData[key].year_now.win_avg_pnl_ptg*100).toFixed(1) + '%' : null
-            }
-            this.perfData.push(row)
+            // // row5: 平均胜时损益率
+            // row = {'name': '平均胜时损益率'}
+            // for(let key of tbList){
+            //     row[key] = tbData[key].year_now.win_avg_pnl_ptg != null ? (tbData[key].year_now.win_avg_pnl_ptg*100).toFixed(1) + '%' : null
+            // }
+            // for(let key of pbList){
+            //     row[key] = pbData[key].year_now.win_avg_pnl_ptg != null ? (pbData[key].year_now.win_avg_pnl_ptg*100).toFixed(1) + '%' : null
+            // }
+            // this.perfData.push(row)
 
-            // row6: 平均负时损益率
-            row = {'name': '平均负时损益率'}
-            for(let key of tbList){
-                row[key] = tbData[key].year_now.lose_avg_pnl_ptg != null ? (tbData[key].year_now.lose_avg_pnl_ptg*100).toFixed(1) + '%' : null
-            }
-            for(let key of pbList){
-                row[key] = pbData[key].year_now.lose_avg_pnl_ptg != null ? (pbData[key].year_now.lose_avg_pnl_ptg*100).toFixed(1) + '%' : null
-            }
-            this.perfData.push(row)
+            // // row6: 平均负时损益率
+            // row = {'name': '平均负时损益率'}
+            // for(let key of tbList){
+            //     row[key] = tbData[key].year_now.lose_avg_pnl_ptg != null ? (tbData[key].year_now.lose_avg_pnl_ptg*100).toFixed(1) + '%' : null
+            // }
+            // for(let key of pbList){
+            //     row[key] = pbData[key].year_now.lose_avg_pnl_ptg != null ? (pbData[key].year_now.lose_avg_pnl_ptg*100).toFixed(1) + '%' : null
+            // }
+            // this.perfData.push(row)
 
-            // row7: 平均损益率
-            row = {'name': '平均损益率'}
-            for(let key of tbList){
-                row[key] = tbData[key].year_now.avg_pnl_ptg != null ? (tbData[key].year_now.avg_pnl_ptg*100).toFixed(1) + '%' : null
-            }
-            for(let key of pbList){
-                row[key] = pbData[key].year_now.avg_pnl_ptg != null ? (pbData[key].year_now.avg_pnl_ptg*100).toFixed(1) + '%' : null
-            }
-            this.perfData.push(row)
+            // // row7: 平均损益率
+            // row = {'name': '平均损益率'}
+            // for(let key of tbList){
+            //     row[key] = tbData[key].year_now.avg_pnl_ptg != null ? (tbData[key].year_now.avg_pnl_ptg*100).toFixed(1) + '%' : null
+            // }
+            // for(let key of pbList){
+            //     row[key] = pbData[key].year_now.avg_pnl_ptg != null ? (pbData[key].year_now.avg_pnl_ptg*100).toFixed(1) + '%' : null
+            // }
+            // this.perfData.push(row)
 
-            // row8: 滑点
-            row = {'name': '滑点'}
-            for(let key of tbList){
-                row[key] = tbData[key].year_now.weight_slippage != null ? (tbData[key].year_now.weight_slippage*100).toFixed(3) + '%' : null
-            }
-            for(let key of pbList){
-                row[key] = pbData[key].year_now.weight_slippage != null ? (pbData[key].year_now.weight_slippage*100).toFixed(3) + '%' : null
-            }
-            this.perfData.push(row)
+            // // row8: 滑点
+            // row = {'name': '滑点'}
+            // for(let key of tbList){
+            //     row[key] = tbData[key].year_now.weight_slippage != null ? (tbData[key].year_now.weight_slippage*100).toFixed(3) + '%' : null
+            // }
+            // for(let key of pbList){
+            //     row[key] = pbData[key].year_now.weight_slippage != null ? (pbData[key].year_now.weight_slippage*100).toFixed(3) + '%' : null
+            // }
+            // this.perfData.push(row)
 
-            // row9: 总损益额
-            row = {'name': '总损益额'}
-            for(let key of tbList){
-                row[key] = toThousands(parseInt(tbData[key].year_now.total_pnl))
-            }
-            for(let key of pbList){
-                row[key] = toThousands(parseInt(pbData[key].year_now.total_pnl))
-            }
-            this.perfData.push(row)
+            // // row9: 总损益额
+            // row = {'name': '总损益额'}
+            // for(let key of tbList){
+            //     row[key] = toThousands(parseInt(tbData[key].year_now.total_pnl))
+            // }
+            // for(let key of pbList){
+            //     row[key] = toThousands(parseInt(pbData[key].year_now.total_pnl))
+            // }
+            // this.perfData.push(row)
 
             // // 策略表现(trade_stats)
             // var tbData = this.parentPfoTradeStats.trendline_break

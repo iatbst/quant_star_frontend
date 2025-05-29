@@ -168,12 +168,17 @@
                 {
                     title: pnlLines.plunge_back.name,
                     data: pnlLines.plunge_back.data
+                },
+                {
+                    title: pnlLines.rsi_mini.name,
+                    data: pnlLines.rsi_mini.data
                 }                            
             ]
             " 
             v-if="
             pnlLines.trendline_break.available && 
-            pnlLines.plunge_back.available
+            pnlLines.plunge_back.available &&
+            pnlLines.rsi_mini.available
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
@@ -202,7 +207,8 @@
             v-bind:positions="positions"
             v-if="
             tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
-            pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable 
+            pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
+            rsiBinancePositionsAvailable && rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable
             "
             ></position-ranks2> 
 
@@ -232,6 +238,7 @@
             v-if="
             tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
             pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
+            rsiBinancePositionsAvailable && rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
             btPositions.all.available
             "
             ></strategy-positions> 
@@ -365,6 +372,10 @@ export default {
             pbOkexHosts: config.pbOkexHosts,
             pbBybitHosts: config.pbBybitHosts,
             pbBitgetHosts: config.pbBitgetHosts,
+            rsiBinanceHosts: config.rsiBinanceHosts,
+            rsiOkexHosts: config.rsiOkexHosts,
+            rsiBybitHosts: config.rsiBybitHosts,
+            rsiBitgetHosts: config.rsiBitgetHosts,
             tbBinanceSortWeights: config.tbBinanceSortWeights,
             tbOkexSortWeights: config.tbOkexSortWeights,
             tbBybitSortWeights: config.tbOkexSortWeights,
@@ -427,6 +438,18 @@ export default {
             pbBitgetPositions: [],
             pbBitgetPositionsAvailable: false,
             pbBitgetPositionsLoading: false,
+            rsiBinancePositions: [],
+            rsiBinancePositionsAvailable: false,
+            rsiBinancePositionsLoading: false,
+            rsiOkexPositions: [],
+            rsiOkexPositionsAvailable: false,
+            rsiOkexPositionsLoading: false,
+            rsiBybitPositions: [],
+            rsiBybitPositionsAvailable: false,
+            rsiBybitPositionsLoading: false,
+            rsiBitgetPositions: [],
+            rsiBitgetPositionsAvailable: false,
+            rsiBitgetPositionsLoading: false,
 
             jiaPnl: 0,
             jiaPnlAvailable: false,
@@ -467,7 +490,12 @@ export default {
                     'name': 'B',
                     'data': null,
                     'available': false
-                }                                                 
+                },
+                'rsi_mini': {
+                    'name': 'RSI',
+                    'data': null,
+                    'available': false
+                },                                              
             },
 
             refreshInterval: 1000,
@@ -750,6 +778,8 @@ export default {
             this.pnlLinesRefresh = new Date()
             getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'pnl_line').then(response => {
                     var parentPfoData = response.results[0]
+
+                    // trendline
                     this.pnlLines.trendline_break.data = parentPfoData.pnl_line.trendline_break.year_now
                     this.pnlLines.trendline_break.available = true
                     // 临时修正: 2025-03-11的trendline_break的策略pnl归零,之后的日期都减去这个offset
@@ -759,19 +789,20 @@ export default {
                             this.pnlLines.trendline_break.data[date] -= offsetPnl
                         }
                     }
-                    // debugger
 
+                    // plunge_back
                     this.pnlLines.plunge_back.data = parentPfoData.pnl_line.plunge_back.year_now
                     this.pnlLines.plunge_back.available = true  
 
-                    // this.pnlLines.hold.data = parentPfoData.pnl_line.hold.year_now
-                    // this.pnlLines.hold.available = true 
+                    // rsi_mini
+                    this.pnlLines.rsi_mini.data = parentPfoData.pnl_line.rsi_mini.year_now
+                    this.pnlLines.rsi_mini.available = true  
 
                     // 添加上一年最后一日数据为起点数据(pnl = 0), 否则pnl的起点不是0
                     var firstDate = moment().year() - 1 + '-' + '12-31'
                     this.pnlLines.trendline_break.data[firstDate] = 0
                     this.pnlLines.plunge_back.data[firstDate] = 0
-                    this.pnlLines.hold.data[firstDate] = 0
+                    this.pnlLines.rsi_mini.data[firstDate] = 0
                 }
             )
         },
@@ -1052,6 +1083,106 @@ export default {
                     }
                 )
             }
+
+            // rsi binance
+            this.rsiBinancePositions = []
+            var rsiBinanceCount = 0
+            this.rsiBinancePositionsLoading = true
+            this.rsiBinancePositionsAvailable = false
+            for(var i = 0; i < this.rsiBinanceHosts.length; i++){
+                getPositions(this.rsiBinanceHosts[i], 'normal').then(response => {
+                        rsiBinanceCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'rsi_mini'
+                        }
+                        this.rsiBinancePositions = this.rsiBinancePositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (rsiBinanceCount === this.rsiBinanceHosts.length ){
+                            // 排序
+                            this.rsiBinancePositionsAvailable = true
+                            this.rsiBinancePositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // rsi okex
+            this.rsiOkexPositions = []
+            var rsiOkexCount = 0
+            this.rsiOkexPositionsLoading = true
+            this.rsiOkexPositionsAvailable = false
+            for(var i = 0; i < this.rsiOkexHosts.length; i++){
+                getPositions(this.rsiOkexHosts[i], 'normal').then(response => {
+                        rsiOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'rsi_mini'
+                        }
+                        this.rsiOkexPositions = this.rsiOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (rsiOkexCount === this.rsiOkexHosts.length ){
+                            // 排序
+                            this.rsiOkexPositionsAvailable = true
+                            this.rsiOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // rsi bybit
+            this.rsiBybitPositions = []
+            var rsiBybitCount = 0
+            this.rsiBybitPositionsLoading = true
+            this.rsiBybitPositionsAvailable = false
+            for(var i = 0; i < this.rsiBybitHosts.length; i++){
+                getPositions(this.rsiBybitHosts[i], 'normal').then(response => {
+                        rsiBybitCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'rsi_mini'
+                        }
+                        this.rsiBybitPositions = this.rsiBybitPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (rsiBybitCount === this.rsiBybitHosts.length ){
+                            // 排序
+                            this.rsiBybitPositionsAvailable = true
+                            this.rsiBybitPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // rsi bitget
+            this.rsiBitgetPositions = []
+            var rsiBitgetCount = 0
+            this.rsiBitgetPositionsLoading = true
+            this.rsiBitgetPositionsAvailable = false
+            for(var i = 0; i < this.rsiBitgetHosts.length; i++){
+                getPositions(this.rsiBitgetHosts[i], 'normal').then(response => {
+                        rsiBitgetCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'rsi_mini'
+                        }
+                        this.rsiBitgetPositions = this.rsiBitgetPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (rsiBitgetCount === this.rsiBitgetHosts.length ){
+                            // 排序
+                            this.rsiBitgetPositionsAvailable = true
+                            this.rsiBitgetPositionsLoading = false
+                        }
+                    }
+                )
+            }           
         },
 
         // 定时刷新数据函数

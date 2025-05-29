@@ -110,7 +110,11 @@ export default {
             var livePositions = []
             var btPositions = []
             for(const data of this.positions){
-                var styID = data['sty'] + '_' + data.worker.name.slice(-1,)
+                if (config.mergeStrategyIDs.includes(data['sty'])){
+                    var styID = data['sty']
+                } else {
+                    var styID = data['sty'] + '_' + data.worker.name.slice(-1,)
+                }
                 if (!(styID in styPositions)){
                     styPositions[styID] = {
                         'styID': styID,
@@ -119,24 +123,41 @@ export default {
                 }
                 styPositions[styID].size += data.usdt_size
             }
-            //debugger
+            // debugger
 
             
             // 实盘仓位
             for(const styID of config.activeStrategyIDs){
-                var data = styPositions[styID]
-                if (data.size >= 0){
-                    livePositions.push({
-                        'x': chineseStrategyID(data.styID),
-                        'y': Math.round((data.size/1000)),
-                        'color': 'green'
-                    })                   
+                if (config.mergeStrategyIDs.includes(styID)){
+                    var data = styPositions[styID]
+                    if (data.size >= 0){
+                        livePositions.push({
+                            'x': chineseStrategyID(data.styID, false),
+                            'y': Math.round((data.size/1000)),
+                            'color': 'green'
+                        })                   
+                    } else {
+                        livePositions.push({
+                            'x': chineseStrategyID(data.styID, false),
+                            'y': Math.round((Math.abs(data.size/1000))),
+                            'color': 'red'
+                        })                      
+                    }
                 } else {
-                    livePositions.push({
-                        'x': chineseStrategyID(data.styID),
-                        'y': Math.round((Math.abs(data.size/1000))),
-                        'color': 'red'
-                    })                      
+                    var data = styPositions[styID]
+                    if (data.size >= 0){
+                        livePositions.push({
+                            'x': chineseStrategyID(data.styID),
+                            'y': Math.round((data.size/1000)),
+                            'color': 'green'
+                        })                   
+                    } else {
+                        livePositions.push({
+                            'x': chineseStrategyID(data.styID),
+                            'y': Math.round((Math.abs(data.size/1000))),
+                            'color': 'red'
+                        })                      
+                    }
                 }
             }
 
