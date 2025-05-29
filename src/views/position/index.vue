@@ -95,6 +95,55 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
+            <!-- rsi_binance -->
+            <position-map2 
+            v-bind:positions="rsiBinancePositions" 
+            v-bind:positions-loading="rsiBinancePositionsLoading"
+            v-bind:exchange="'Binance'"
+            v-bind:strategy="'RSI'"
+            v-bind:col-count="2"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- rsi_okex -->
+            <position-map2 
+            v-bind:positions="rsiOkexPositions" 
+            v-bind:positions-loading="rsiOkexPositionsLoading"
+            v-bind:exchange="'Okex'"
+            v-bind:strategy="'RSI'"
+            v-bind:col-count="2"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- rsi_bybit -->
+            <position-map2 
+            v-bind:positions="rsiBybitPositions" 
+            v-bind:positions-loading="rsiBybitPositionsLoading"
+            v-bind:exchange="'Bybit'"
+            v-bind:strategy="'RSI'"
+            v-bind:col-count="2"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- rsi_bitget -->
+            <position-map2 
+            v-bind:positions="rsiBitgetPositions" 
+            v-bind:positions-loading="rsiBitgetPositionsLoading"
+            v-bind:exchange="'Bitget'"
+            v-bind:strategy="'RSI'"
+            v-bind:col-count="2"
+            v-bind:show-zero="false"
+            ></position-map2> 
+            <!--- RSI策略排序说明 --->
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        策略展示顺序: 外循环根据k线级别;内循环根据参数顺序.(eg, 6h_1, 6h_2, 6h_3, 6h_4,  .... 48h_3, 48h_4)
+                    </div>
+                    <span style="color: gray; font-size: 10px"><i class="el-icon-info"></i>RSI策略顺序说明</span>
+                </el-tooltip>
+            </div>
+
             <!--- 刷新说明 --->
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
@@ -133,6 +182,10 @@ export default {
             pbOkexHosts: config.pbOkexHosts,
             pbBybitHosts: config.pbBybitHosts,
             pbBitgetHosts: config.pbBitgetHosts,
+            rsiBinanceHosts: config.rsiBinanceHosts,
+            rsiOkexHosts: config.rsiOkexHosts,
+            rsiBybitHosts: config.rsiBybitHosts,
+            rsiBitgetHosts: config.rsiBitgetHosts,
             tbBinanceSortWeights: config.tbBinanceSortWeights,
             tbOkexSortWeights: config.tbOkexSortWeights,
             tbBybitSortWeights: config.tbOkexSortWeights,
@@ -166,6 +219,18 @@ export default {
             pbBitgetPositions: [],
             pbBitgetPositionsAvailable: false,
             pbBitgetPositionsLoading: false,
+            rsiBinancePositions: [],
+            rsiBinancePositionsAvailable: false,
+            rsiBinancePositionsLoading: false,
+            rsiOkexPositions: [],
+            rsiOkexPositionsAvailable: false,
+            rsiOkexPositionsLoading: false,
+            rsiBybitPositions: [],
+            rsiBybitPositionsAvailable: false,
+            rsiBybitPositionsLoading: false,
+            rsiBitgetPositions: [],
+            rsiBitgetPositionsAvailable: false,
+            rsiBitgetPositionsLoading: false,
 
             refreshInterval: 1000,
             refreshIntervalId: null,
@@ -391,6 +456,106 @@ export default {
                     }
                 )
             }
+
+            // rsi binance
+            this.rsiBinancePositions = []
+            var rsiBinanceCount = 0
+            this.rsiBinancePositionsLoading = true
+            this.rsiBinancePositionsAvailable = false
+            for(var i = 0; i < this.rsiBinanceHosts.length; i++){
+                getPositions(this.rsiBinanceHosts[i], 'normal').then(response => {
+                        rsiBinanceCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'rsi_mini'
+                        }
+                        this.rsiBinancePositions = this.rsiBinancePositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (rsiBinanceCount === this.rsiBinanceHosts.length ){
+                            // 排序
+                            this.rsiBinancePositionsAvailable = true
+                            this.rsiBinancePositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // rsi okex
+            this.rsiOkexPositions = []
+            var rsiOkexCount = 0
+            this.rsiOkexPositionsLoading = true
+            this.rsiOkexPositionsAvailable = false
+            for(var i = 0; i < this.rsiOkexHosts.length; i++){
+                getPositions(this.rsiOkexHosts[i], 'normal').then(response => {
+                        rsiOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'rsi_mini'
+                        }
+                        this.rsiOkexPositions = this.rsiOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (rsiOkexCount === this.rsiOkexHosts.length ){
+                            // 排序
+                            this.rsiOkexPositionsAvailable = true
+                            this.rsiOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // rsi bybit
+            this.rsiBybitPositions = []
+            var rsiBybitCount = 0
+            this.rsiBybitPositionsLoading = true
+            this.rsiBybitPositionsAvailable = false
+            for(var i = 0; i < this.rsiBybitHosts.length; i++){
+                getPositions(this.rsiBybitHosts[i], 'normal').then(response => {
+                        rsiBybitCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'rsi_mini'
+                        }
+                        this.rsiBybitPositions = this.rsiBybitPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (rsiBybitCount === this.rsiBybitHosts.length ){
+                            // 排序
+                            this.rsiBybitPositionsAvailable = true
+                            this.rsiBybitPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // rsi bitget
+            this.rsiBitgetPositions = []
+            var rsiBitgetCount = 0
+            this.rsiBitgetPositionsLoading = true
+            this.rsiBitgetPositionsAvailable = false
+            for(var i = 0; i < this.rsiBitgetHosts.length; i++){
+                getPositions(this.rsiBitgetHosts[i], 'normal').then(response => {
+                        rsiBitgetCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'rsi_mini'
+                        }
+                        this.rsiBitgetPositions = this.rsiBitgetPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (rsiBitgetCount === this.rsiBitgetHosts.length ){
+                            // 排序
+                            this.rsiBitgetPositionsAvailable = true
+                            this.rsiBitgetPositionsLoading = false
+                        }
+                    }
+                )
+            }       
         },
 
         // 定时刷新数据函数

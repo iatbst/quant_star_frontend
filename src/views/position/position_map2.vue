@@ -166,6 +166,16 @@ export default {
     },
 
     methods: {
+        // 一些策略的id需要特殊处理
+        getStrategyId(workerName){
+            if(this.strategy == 'RSI'){
+                // 最后2位表示id(eg: 12h_1), 6h要转化为06h,否则无法正确排序
+                return workerName.replace('6h', '06h').split('_').slice(-2, ).join('_')
+            } else {
+                return workerName.slice(-1,)   // worker名称最后一位是strategyId
+            }
+        },
+
         // 处理父组件建传入data: pfoDatas
         parseData() {  
             // 初始化
@@ -178,7 +188,7 @@ export default {
                 var workerName = this.positions[i].worker.name
                 var workerId = this.positions[i].worker.id
                 var host = this.positions[i].host
-                var strategyId = workerName.slice(-1,)   // worker名称最后一位是strategyId
+                var strategyId = this.getStrategyId(workerName)
                 var coin = workerName.split('/')[0].split('_').slice(-1,)[0]
                 // var posTag = workerName[workerName.length-1]
                 var posSize = Math.round(this.positions[i].usdt_size)
@@ -246,7 +256,7 @@ export default {
                 }
                 currentRow[colKey] = {
                     coin: coin,
-                    positions: this.positionList1[coin].sort((a, b)=>a.strategy_id - b.strategy_id)
+                    positions: this.positionList1[coin].sort((a, b)=>a.strategy_id.localeCompare(b.strategy_id))
                 }
                 if (Object.keys(currentRow).length == this.colCount){
                     this.positionList2.push(currentRow)
