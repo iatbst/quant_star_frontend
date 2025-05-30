@@ -174,8 +174,8 @@
                                 {{ toThousands(Math.round(scope.row.volume)) }}
                                 <el-tooltip placement="top-start" align="left" effect="dark" v-if="scope.row.order_type === 'open'">
                                     <div slot="content">
-                                        <li v-for="key in Object.keys(scope.row.size_data).sort()">
-                                            <span style="font-size: 15px">{{ key }}: {{ scope.row.size_data[key] }}</span>
+                                        <li v-for="key in Object.keys(scoreSizeData(scope.row.size_data)).sort()">
+                                            <span style="font-size: 15px">{{ tranSizeData(key) }}: {{ scope.row.size_data[key] }}</span>
                                         </li>
                                     </div>
                                     <span style="color: lightgray; font-size: 15px"><i class="el-icon-question"></i></span>
@@ -322,6 +322,88 @@ export default {
                 var endDt = new Date().toISOString().slice(0, 19).replace('T', ' ')      // UTC                   
             }
             this.searchOrders(startDt, endDt)
+        },
+
+        // 给size_data打分(重要的属性排在前面)
+        scoreSizeData(sizeData){
+            // 核心参数
+            if('base_leverage' in sizeData){
+                sizeData['aa01_base_leverage'] = sizeData['base_leverage']
+                delete sizeData['base_leverage']
+            }
+            if('balance_14_low' in sizeData){
+                sizeData['aa02_balance_14_low'] = sizeData['balance_14_low']
+                delete sizeData['balance_14_low']
+            }
+            if('max_loss_ptg' in sizeData){
+                sizeData['aa03_max_loss_ptg'] = sizeData['max_loss_ptg']
+                delete sizeData['max_loss_ptg']
+            }
+            if('entry_risk' in sizeData){
+                sizeData['aa04_entry_risk'] = sizeData['entry_risk'].toFixed(4)
+                delete sizeData['entry_risk']
+            }
+            if('weight_ratio' in sizeData){
+                sizeData['aa05_weight_ratio'] = sizeData['weight_ratio'].toFixed(4)
+                delete sizeData['weight_ratio']
+            }
+
+            // tb策略
+            if('bb_leverage' in sizeData){
+                sizeData['aa06_bb_leverage'] = sizeData['bb_leverage']
+                delete sizeData['bb_leverage']
+            }
+            if('bb_score' in sizeData){
+                sizeData['aa07_bb_score'] = sizeData['bb_score']
+                delete sizeData['bb_score']
+            }
+            if('bb_ma_slope_score' in sizeData){
+                sizeData['aa08_bb_ma_slope_score'] = sizeData['bb_ma_slope_score']
+                delete sizeData['bb_ma_slope_score']
+            }
+            if('bb_sma_slope_score' in sizeData){
+                sizeData['aa09_bb_sma_slope_score'] = sizeData['bb_sma_slope_score']
+                delete sizeData['bb_sma_slope_score']
+            }
+            if('bb_adx_ma_score' in sizeData){
+                sizeData['aa10_bb_adx_ma_score'] = sizeData['bb_adx_ma_score']
+                delete sizeData['bb_adx_ma_score']
+            }
+            if('bb_macd_hist_slope_score' in sizeData){
+                sizeData['aa11_bb_macd_hist_slope_score'] = sizeData['bb_macd_hist_slope_score']
+                delete sizeData['bb_macd_hist_slope_score']
+            }
+            if('bb_trendline_score' in sizeData){
+                sizeData['aa12_bb_trendline_score'] = sizeData['bb_trendline_score']
+                delete sizeData['bb_trendline_score']
+            }
+
+            return sizeData
+        },
+        // 翻译size_data的key
+        tranSizeData(key){
+            var cKey = key
+            switch (key) {
+                // 核心参数
+                case 'aa01_base_leverage': cKey = '基础杠杆率';break;
+                case 'aa02_balance_14_low': cKey = '14日资产低值';break;
+                case 'aa03_max_loss_ptg': cKey = '最大损失系数';break;
+                case 'aa04_entry_risk': cKey = '入场风险系数';break;
+                case 'aa05_weight_ratio': cKey = '策略币种权重';break;
+
+                // tb策略
+                case 'aa06_bb_leverage': cKey = '趋势分杠杆率';break;
+                case 'aa07_bb_score': cKey = '趋势平均分数';break;
+                case 'aa08_bb_ma_slope_score': cKey = '趋势ma_slope分数';break;
+                case 'aa09_bb_sma_slope_score': cKey = '趋势sma_slope分数';break;
+                case 'aa10_bb_adx_ma_score': cKey = '趋势adx_ma分数';break;
+                case 'aa11_bb_macd_hist_slope_score': cKey = '趋势macd分数';break;
+                case 'aa12_bb_trendline_score': cKey = '趋势trendline分数';break;
+
+
+                // default: cKey = key
+            }
+            return cKey
         },
 
         // 搜索指定时间范围内的订单

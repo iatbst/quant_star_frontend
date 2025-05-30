@@ -159,6 +159,7 @@ const subacctPfoAlias = [
 const strategies = [
     'trendline-break',
     'plunge-back',
+    'rsi-mini'
     // 'macd-cross-zero',
     // 'delist'
     // 'pivot-reversal-mini',
