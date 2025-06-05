@@ -859,7 +859,7 @@ export default {
             var binanceBalance = null
             var okexBalance = null
             for(let data of this.subaccountDatas){
-                if(data.subaccount.account.name == 'binance_69174462@qq.com'){
+                if(data.subaccount.account.name == 'binance_18812552095@163.com'){
                     binanceBalance = data.wallet.usdt_amount
                 }
                 if(data.subaccount.account.name == 'okex_sunyoung.capital@gmail.com'){

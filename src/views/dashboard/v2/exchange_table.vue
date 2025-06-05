@@ -144,7 +144,7 @@ export default {
         parseSubaccountDatas(){  
             // 更新平台资产和仓位
             for(let data of this.subaccountDatas){
-                if(data.subaccount.account.name == 'binance_69174462@qq.com'){
+                if(data.subaccount.account.name == 'binance_18812552095@163.com'){
                     this.exchangeDatas[0].binanceBalance = data.wallet.usdt_amount
                     this.exchangeDatas[0].binancePosition = data.positions.summary.usdt_long + data.positions.summary.usdt_short
                 }
