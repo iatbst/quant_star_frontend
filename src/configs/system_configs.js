@@ -24,9 +24,6 @@ const tbBitgetHosts = [
     'http://ec2-47-128-151-146.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
 
-const rsiBinanceHosts = [
-    'http://ec2-35-78-96-216.ap-northeast-1.compute.amazonaws.com:8000/api'
-]
 const rsiOkexHosts = [
     'http://ec2-18-162-207-233.ap-east-1.compute.amazonaws.com:8000/api'
 ]
@@ -37,16 +34,6 @@ const rsiBitgetHosts = [
     'http://ec2-3-1-102-206.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
 
-
-const pbBinanceHosts = [
-    'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-183-193-63.ap-northeast-1.compute.amazonaws.com:8000/api',
-    // 'http://ec2-54-178-111-65.ap-northeast-1.compute.amazonaws.com:8000/api',
-    // 'http://ec2-35-76-111-12.ap-northeast-1.compute.amazonaws.com:8000/api',
-    // 'http://ec2-35-78-72-28.ap-northeast-1.compute.amazonaws.com:8000/api',
-    // 'http://ec2-52-195-149-42.ap-northeast-1.compute.amazonaws.com:8000/api',
-]
 
 const pbOkexHosts = [
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
@@ -82,10 +69,6 @@ var production_hosts = [
 
     // 东京: Binance
     'http://ec2-54-250-145-172.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-183-193-63.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-54-92-118-229.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-54-248-26-173.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-35-78-96-216.ap-northeast-1.compute.amazonaws.com:8000/api',
 
     // 新加坡: Bybit
     'http://ec2-18-138-239-229.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_pr_1
@@ -115,7 +98,7 @@ var development_hosts = [
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = development_hosts
+    var hostList = production_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
@@ -355,11 +338,9 @@ export default {
     tbOkexHosts,
     tbBybitHosts,
     tbBitgetHosts,
-    pbBinanceHosts,
     pbOkexHosts,
     pbBybitHosts,
     pbBitgetHosts,
-    rsiBinanceHosts,
     rsiOkexHosts,
     rsiBybitHosts,
     rsiBitgetHosts,

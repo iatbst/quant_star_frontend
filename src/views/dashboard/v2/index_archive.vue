@@ -168,7 +168,7 @@
             <position-ranks2
             v-bind:positions="positions"
             v-if="prBinancePositionsAvailable && prOkexPositionsAvailable && prmBinancePositionsAvailable && prmOkexPositionsAvailable && 
-            pbBinancePositionsAvailable && pbOkexPositionsAvailable" 
+                pbOkexPositionsAvailable" 
             ></position-ranks2> 
           </div>
       </el-col>
@@ -198,16 +198,6 @@
         v-bind:show-zero="true"
         v-bind:sort-coin="true"
         v-bind:sort-coin-weights="prOkexSortWeights"
-        ></position-map2> 
-
-        <!-- pb_binance -->
-        <position-map2 
-        v-bind:positions="pbBinancePositions" 
-        v-bind:positions-loading="pbBinancePositionsLoading"
-        v-bind:exchange="'Binance'"
-        v-bind:strategy="'抄底'"
-        v-bind:col-count="7"
-        v-bind:show-zero="false"
         ></position-map2> 
 
         <!-- pb_okex -->
@@ -322,7 +312,6 @@ export default {
             pfoHosts: config.pfoHosts,
             prBinanceHosts: config.prBinanceHosts,
             prOkexHosts: config.prOkexHosts,
-            pbBinanceHosts: config.pbBinanceHosts,
             pbOkexHosts: config.pbOkexHosts,
             prmBinanceHosts: config.prmBinanceHosts,
             prmOkexHosts: config.prmOkexHosts,
@@ -361,9 +350,6 @@ export default {
             prOkexPositions: [],
             prOkexPositionsAvailable: false,
             prOkexPositionsLoading: false,
-            pbBinancePositions: [],
-            pbBinancePositionsAvailable: false,
-            pbBinancePositionsLoading: false,
             pbOkexPositions: [],
             pbOkexPositionsAvailable: false,
             pbOkexPositionsLoading: false,
@@ -730,30 +716,6 @@ export default {
                             // 排序
                             this.prOkexPositionsAvailable = true
                             this.prOkexPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // pb binance
-            this.pbBinancePositions = []
-            var pbBinanceCount = 0
-            this.pbBinancePositionsLoading = true
-            this.pbBinancePositionsAvailable = false
-            for(var i = 0; i < this.pbBinanceHosts.length; i++){
-                getPositions(this.pbBinanceHosts[i], 'normal').then(response => {
-                        pbBinanceCount += 1
-                        var positions = response.results
-                        // 每个position添加host信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                        }
-                        this.pbBinancePositions = this.pbBinancePositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (pbBinanceCount === this.pbBinanceHosts.length ){
-                            // 排序
-                            this.pbBinancePositionsAvailable = true
-                            this.pbBinancePositionsLoading = false
                         }
                     }
                 )

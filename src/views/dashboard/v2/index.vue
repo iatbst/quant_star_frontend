@@ -207,8 +207,8 @@
             v-bind:positions="positions"
             v-if="
             tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
-            pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
-            rsiBinancePositionsAvailable && rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable
+            pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
+            rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable
             "
             ></position-ranks2> 
 
@@ -237,8 +237,8 @@
             v-bind:btPositions="btPositions.all.data"
             v-if="
             tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
-            pbBinancePositionsAvailable && pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
-            rsiBinancePositionsAvailable && rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
+            pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
+            rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
             btPositions.all.available
             "
             ></strategy-positions> 
@@ -368,11 +368,9 @@ export default {
             tbOkexHosts: config.tbOkexHosts,
             tbBybitHosts: config.tbBybitHosts,
             tbBitgetHosts: config.tbBitgetHosts,
-            pbBinanceHosts: config.pbBinanceHosts,
             pbOkexHosts: config.pbOkexHosts,
             pbBybitHosts: config.pbBybitHosts,
             pbBitgetHosts: config.pbBitgetHosts,
-            rsiBinanceHosts: config.rsiBinanceHosts,
             rsiOkexHosts: config.rsiOkexHosts,
             rsiBybitHosts: config.rsiBybitHosts,
             rsiBitgetHosts: config.rsiBitgetHosts,
@@ -426,9 +424,6 @@ export default {
             tbBitgetositions: [],
             tbBitgetPositionsAvailable: false,
             tbBitgetPositionsLoading: false,
-            pbBinancePositions: [],
-            pbBinancePositionsAvailable: false,
-            pbBinancePositionsLoading: false,
             pbOkexPositions: [],
             pbOkexPositionsAvailable: false,
             pbOkexPositionsLoading: false,
@@ -438,9 +433,6 @@ export default {
             pbBitgetPositions: [],
             pbBitgetPositionsAvailable: false,
             pbBitgetPositionsLoading: false,
-            rsiBinancePositions: [],
-            rsiBinancePositionsAvailable: false,
-            rsiBinancePositionsLoading: false,
             rsiOkexPositions: [],
             rsiOkexPositionsAvailable: false,
             rsiOkexPositionsLoading: false,
@@ -984,31 +976,6 @@ export default {
                 )
             }
 
-            // pb binance
-            this.pbBinancePositions = []
-            var pbBinanceCount = 0
-            this.pbBinancePositionsLoading = true
-            this.pbBinancePositionsAvailable = false
-            for(var i = 0; i < this.pbBinanceHosts.length; i++){
-                getPositions(this.pbBinanceHosts[i], 'normal').then(response => {
-                        pbBinanceCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'plunge_back'
-                        }
-                        this.pbBinancePositions = this.pbBinancePositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (pbBinanceCount === this.pbBinanceHosts.length ){
-                            // 排序
-                            this.pbBinancePositionsAvailable = true
-                            this.pbBinancePositionsLoading = false
-                        }
-                    }
-                )
-            }
-
             // pb okex
             this.pbOkexPositions = []
             var pbOkexCount = 0
@@ -1079,31 +1046,6 @@ export default {
                             // 排序
                             this.pbBitgetPositionsAvailable = true
                             this.pbBitgetPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // rsi binance
-            this.rsiBinancePositions = []
-            var rsiBinanceCount = 0
-            this.rsiBinancePositionsLoading = true
-            this.rsiBinancePositionsAvailable = false
-            for(var i = 0; i < this.rsiBinanceHosts.length; i++){
-                getPositions(this.rsiBinanceHosts[i], 'normal').then(response => {
-                        rsiBinanceCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'rsi_mini'
-                        }
-                        this.rsiBinancePositions = this.rsiBinancePositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (rsiBinanceCount === this.rsiBinanceHosts.length ){
-                            // 排序
-                            this.rsiBinancePositionsAvailable = true
-                            this.rsiBinancePositionsLoading = false
                         }
                     }
                 )

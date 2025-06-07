@@ -55,16 +55,6 @@
             v-bind:sort-coin-weights="tbBitgetSortWeights"
             ></position-map2> 
 
-            <!-- pb_binance -->
-            <position-map2 
-            v-bind:positions="pbBinancePositions" 
-            v-bind:positions-loading="pbBinancePositionsLoading"
-            v-bind:exchange="'Binance'"
-            v-bind:strategy="'B'"
-            v-bind:col-count="5"
-            v-bind:show-zero="false"
-            ></position-map2> 
-
             <!-- pb_okex -->
             <position-map2 
             v-bind:positions="pbOkexPositions" 
@@ -92,16 +82,6 @@
             v-bind:exchange="'Bitget'"
             v-bind:strategy="'B'"
             v-bind:col-count="5"
-            v-bind:show-zero="false"
-            ></position-map2> 
-
-            <!-- rsi_binance -->
-            <position-map2 
-            v-bind:positions="rsiBinancePositions" 
-            v-bind:positions-loading="rsiBinancePositionsLoading"
-            v-bind:exchange="'Binance'"
-            v-bind:strategy="'RSI'"
-            v-bind:col-count="2"
             v-bind:show-zero="false"
             ></position-map2> 
 
@@ -178,11 +158,9 @@ export default {
             tbOkexHosts: config.tbOkexHosts,
             tbBybitHosts: config.tbBybitHosts,
             tbBitgetHosts: config.tbBitgetHosts,
-            pbBinanceHosts: config.pbBinanceHosts,
             pbOkexHosts: config.pbOkexHosts,
             pbBybitHosts: config.pbBybitHosts,
             pbBitgetHosts: config.pbBitgetHosts,
-            rsiBinanceHosts: config.rsiBinanceHosts,
             rsiOkexHosts: config.rsiOkexHosts,
             rsiBybitHosts: config.rsiBybitHosts,
             rsiBitgetHosts: config.rsiBitgetHosts,
@@ -207,9 +185,6 @@ export default {
             tbBitgetositions: [],
             tbBitgetPositionsAvailable: false,
             tbBitgetPositionsLoading: false,
-            pbBinancePositions: [],
-            pbBinancePositionsAvailable: false,
-            pbBinancePositionsLoading: false,
             pbOkexPositions: [],
             pbOkexPositionsAvailable: false,
             pbOkexPositionsLoading: false,
@@ -219,9 +194,6 @@ export default {
             pbBitgetPositions: [],
             pbBitgetPositionsAvailable: false,
             pbBitgetPositionsLoading: false,
-            rsiBinancePositions: [],
-            rsiBinancePositionsAvailable: false,
-            rsiBinancePositionsLoading: false,
             rsiOkexPositions: [],
             rsiOkexPositionsAvailable: false,
             rsiOkexPositionsLoading: false,
@@ -357,31 +329,6 @@ export default {
                 )
             }
 
-            // pb binance
-            this.pbBinancePositions = []
-            var pbBinanceCount = 0
-            this.pbBinancePositionsLoading = true
-            this.pbBinancePositionsAvailable = false
-            for(var i = 0; i < this.pbBinanceHosts.length; i++){
-                getPositions(this.pbBinanceHosts[i], 'normal').then(response => {
-                        pbBinanceCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'plunge_back'
-                        }
-                        this.pbBinancePositions = this.pbBinancePositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (pbBinanceCount === this.pbBinanceHosts.length ){
-                            // 排序
-                            this.pbBinancePositionsAvailable = true
-                            this.pbBinancePositionsLoading = false
-                        }
-                    }
-                )
-            }
-
             // pb okex
             this.pbOkexPositions = []
             var pbOkexCount = 0
@@ -452,31 +399,6 @@ export default {
                             // 排序
                             this.pbBitgetPositionsAvailable = true
                             this.pbBitgetPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // rsi binance
-            this.rsiBinancePositions = []
-            var rsiBinanceCount = 0
-            this.rsiBinancePositionsLoading = true
-            this.rsiBinancePositionsAvailable = false
-            for(var i = 0; i < this.rsiBinanceHosts.length; i++){
-                getPositions(this.rsiBinanceHosts[i], 'normal').then(response => {
-                        rsiBinanceCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'rsi_mini'
-                        }
-                        this.rsiBinancePositions = this.rsiBinancePositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (rsiBinanceCount === this.rsiBinanceHosts.length ){
-                            // 排序
-                            this.rsiBinancePositionsAvailable = true
-                            this.rsiBinancePositionsLoading = false
                         }
                     }
                 )
