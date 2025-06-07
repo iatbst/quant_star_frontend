@@ -21,7 +21,7 @@ const tbBybitHosts = [
     'http://ec2-18-138-239-229.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
 const tbBitgetHosts = [
-    'http://ec2-47-128-151-146.ap-southeast-1.compute.amazonaws.com:8000/api'
+    'http://ec2-13-212-94-50.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
 
 const rsiOkexHosts = [
@@ -78,7 +78,7 @@ var production_hosts = [
     'http://ec2-54-254-225-48.ap-southeast-1.compute.amazonaws.com:8000/api',
 
     // 新加坡: Bitget
-    'http://ec2-47-128-151-146.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pr_1
+    'http://ec2-13-212-94-50.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pr_1
     'http://ec2-13-213-7-38.ap-southeast-1.compute.amazonaws.com:8000/api',     // bitget_pb_1
     'http://ec2-54-255-128-30.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pb_2
     'http://ec2-52-77-236-31.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pb_3
