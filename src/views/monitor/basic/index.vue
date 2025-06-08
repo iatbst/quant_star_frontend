@@ -79,7 +79,7 @@
 
             <el-table-column align="center" label="Disk" min-width="5%">
               <template slot-scope="scope">
-                <span style="color: red" v-if="Number(scope.row.os_disk.slice(0, -1)) >= 90">
+                <span style="color: red" v-if="Number(scope.row.os_disk.slice(0, -1)) >= 85">
                   {{ scope.row.os_disk }}
                 </span>
                 <span v-else>
