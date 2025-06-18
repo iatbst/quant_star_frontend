@@ -61,7 +61,7 @@ export default {
                     categories: []
                 },
                 yAxis: {
-                    min: 0,
+                    // min: 0,
                     title: {
                         text: '仓位(k$)'
                     },
@@ -134,13 +134,13 @@ export default {
                         livePositions.push({
                             'x': chineseStrategyID(data.styID, false),
                             'y': Math.round((data.size/1000)),
-                            'color': 'green'
+                            //'color': 'green'
                         })                   
                     } else {
                         livePositions.push({
                             'x': chineseStrategyID(data.styID, false),
-                            'y': Math.round((Math.abs(data.size/1000))),
-                            'color': 'red'
+                            'y': Math.round((data.size/1000)),
+                            //'color': 'red'
                         })                      
                     }
                 } else {
@@ -149,13 +149,13 @@ export default {
                         livePositions.push({
                             'x': chineseStrategyID(data.styID),
                             'y': Math.round((data.size/1000)),
-                            'color': 'green'
+                            //'color': 'green'
                         })                   
                     } else {
                         livePositions.push({
                             'x': chineseStrategyID(data.styID),
-                            'y': Math.round((Math.abs(data.size/1000))),
-                            'color': 'red'
+                            'y': Math.round((data.size/1000)),
+                            //'color': 'red'
                         })                      
                     }
                 }
@@ -169,13 +169,13 @@ export default {
                         btPositions.push({
                             'x': chineseStrategyID(styID),
                             'y': Math.round((position/1000)),
-                            'color': 'lightgreen'
+                            //'color': 'lightgreen'
                         })                   
                     } else {
                         btPositions.push({
                             'x': chineseStrategyID(styID),
-                            'y': Math.round((Math.abs(position/1000))),
-                            'color': 'orange'
+                            'y': Math.round((position/1000)),
+                            //'color': 'orange'
                         })                      
                     }                  
                 }
