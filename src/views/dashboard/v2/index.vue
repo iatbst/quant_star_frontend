@@ -172,13 +172,18 @@
                 {
                     title: pnlLines.rsi_mini.name,
                     data: pnlLines.rsi_mini.data
+                },
+                {
+                    title: pnlLines.boll_mini.name,
+                    data: pnlLines.boll_mini.data
                 }                            
             ]
             " 
             v-if="
             pnlLines.trendline_break.available && 
             pnlLines.plunge_back.available &&
-            pnlLines.rsi_mini.available
+            pnlLines.rsi_mini.available && 
+            pnlLines.boll_mini.available
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
@@ -208,7 +213,8 @@
             v-if="
             tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
             pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
-            rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable
+            rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
+            bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable
             "
             ></position-ranks2> 
 
@@ -239,6 +245,7 @@
             tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
             pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
+            bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable &&
             btPositions.all.available
             "
             ></strategy-positions> 
@@ -374,6 +381,9 @@ export default {
             rsiOkexHosts: config.rsiOkexHosts,
             rsiBybitHosts: config.rsiBybitHosts,
             rsiBitgetHosts: config.rsiBitgetHosts,
+            bollOkexHosts: config.bollOkexHosts,
+            bollBybitHosts: config.bollBybitHosts,
+            bollBitgetHosts: config.bollBitgetHosts,
             tbBinanceSortWeights: config.tbBinanceSortWeights,
             tbOkexSortWeights: config.tbOkexSortWeights,
             tbBybitSortWeights: config.tbOkexSortWeights,
@@ -442,6 +452,15 @@ export default {
             rsiBitgetPositions: [],
             rsiBitgetPositionsAvailable: false,
             rsiBitgetPositionsLoading: false,
+            bollOkexPositions: [],
+            bollOkexPositionsAvailable: false,
+            bollOkexPositionsLoading: false,
+            bollBybitPositions: [],
+            bollBybitPositionsAvailable: false,
+            bollBybitPositionsLoading: false,
+            bollBitgetPositions: [],
+            bollBitgetPositionsAvailable: false,
+            bollBitgetPositionsLoading: false,
 
             jiaPnl: 0,
             jiaPnlAvailable: false,
@@ -487,7 +506,12 @@ export default {
                     'name': 'RSI',
                     'data': null,
                     'available': false
-                },                                              
+                },
+                'boll_mini': {
+                    'name': 'BOLL',
+                    'data': null,
+                    'available': false
+                },                                                               
             },
 
             refreshInterval: 1000,
@@ -790,11 +814,16 @@ export default {
                     this.pnlLines.rsi_mini.data = parentPfoData.pnl_line.rsi_mini.year_now
                     this.pnlLines.rsi_mini.available = true  
 
+                    // boll_mini
+                    this.pnlLines.boll_mini.data = parentPfoData.pnl_line.boll_mini.year_now
+                    this.pnlLines.boll_mini.available = true  
+
                     // 添加上一年最后一日数据为起点数据(pnl = 0), 否则pnl的起点不是0
                     var firstDate = moment().year() - 1 + '-' + '12-31'
                     this.pnlLines.trendline_break.data[firstDate] = 0
                     this.pnlLines.plunge_back.data[firstDate] = 0
                     this.pnlLines.rsi_mini.data[firstDate] = 0
+                    this.pnlLines.boll_mini.data[firstDate] = 0
                 }
             )
         },
@@ -1124,7 +1153,82 @@ export default {
                         }
                     }
                 )
-            }           
+            }  
+
+            // boll okex
+            this.bollOkexPositions = []
+            var bollOkexCount = 0
+            this.bollOkexPositionsLoading = true
+            this.bollOkexPositionsAvailable = false
+            for(var i = 0; i < this.bollOkexHosts.length; i++){
+                getPositions(this.bollOkexHosts[i], 'normal').then(response => {
+                        bollOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'boll_mini'
+                        }
+                        this.bollOkexPositions = this.bollOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (bollOkexCount === this.bollOkexHosts.length ){
+                            // 排序
+                            this.bollOkexPositionsAvailable = true
+                            this.bollOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // boll bybit
+            this.bollBybitPositions = []
+            var bollBybitCount = 0
+            this.bollBybitPositionsLoading = true
+            this.bollBybitPositionsAvailable = false
+            for(var i = 0; i < this.bollBybitHosts.length; i++){
+                getPositions(this.bollBybitHosts[i], 'normal').then(response => {
+                        bollBybitCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'boll_mini'
+                        }
+                        this.bollBybitPositions = this.bollBybitPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (bollBybitCount === this.bollBybitHosts.length ){
+                            // 排序
+                            this.bollBybitPositionsAvailable = true
+                            this.bollBybitPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // boll bitget
+            this.bollBitgetPositions = []
+            var bollBitgetCount = 0
+            this.bollBitgetPositionsLoading = true
+            this.bollBitgetPositionsAvailable = false
+            for(var i = 0; i < this.bollBitgetHosts.length; i++){
+                getPositions(this.bollBitgetHosts[i], 'normal').then(response => {
+                        bollBitgetCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'boll_mini'
+                        }
+                        this.bollBitgetPositions = this.bollBitgetPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (bollBitgetCount === this.bollBitgetHosts.length ){
+                            // 排序
+                            this.bollBitgetPositionsAvailable = true
+                            this.bollBitgetPositionsLoading = false
+                        }
+                    }
+                )
+            }    
         },
 
         // 定时刷新数据函数

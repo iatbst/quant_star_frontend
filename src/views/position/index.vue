@@ -124,6 +124,45 @@
                 </el-tooltip>
             </div>
 
+            <!-- boll_okex -->
+            <position-map2 
+            v-bind:positions="bollOkexPositions" 
+            v-bind:positions-loading="bollOkexPositionsLoading"
+            v-bind:exchange="'Okex'"
+            v-bind:strategy="'BOLL'"
+            v-bind:col-count="2"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- boll_bybit -->
+            <position-map2 
+            v-bind:positions="bollBybitPositions" 
+            v-bind:positions-loading="bollBybitPositionsLoading"
+            v-bind:exchange="'Bybit'"
+            v-bind:strategy="'BOLL'"
+            v-bind:col-count="2"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- boll_bitget -->
+            <position-map2 
+            v-bind:positions="bollBitgetPositions" 
+            v-bind:positions-loading="bollBitgetPositionsLoading"
+            v-bind:exchange="'Bitget'"
+            v-bind:strategy="'BOLL'"
+            v-bind:col-count="2"
+            v-bind:show-zero="false"
+            ></position-map2> 
+            <!--- BOLL策略排序说明 --->
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        策略展示顺序: 外循环根据k线级别;内循环根据参数顺序.(eg, 6h_1, 6h_2, 6h_3, 6h_4,  .... 48h_3, 48h_4)
+                    </div>
+                    <span style="color: gray; font-size: 10px"><i class="el-icon-info"></i>BOLL策略顺序说明</span>
+                </el-tooltip>
+            </div>
+
             <!--- 刷新说明 --->
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
@@ -164,6 +203,9 @@ export default {
             rsiOkexHosts: config.rsiOkexHosts,
             rsiBybitHosts: config.rsiBybitHosts,
             rsiBitgetHosts: config.rsiBitgetHosts,
+            bollOkexHosts: config.bollOkexHosts,
+            bollBybitHosts: config.bollBybitHosts,
+            bollBitgetHosts: config.bollBitgetHosts,
             tbBinanceSortWeights: config.tbBinanceSortWeights,
             tbOkexSortWeights: config.tbOkexSortWeights,
             tbBybitSortWeights: config.tbOkexSortWeights,
@@ -203,6 +245,15 @@ export default {
             rsiBitgetPositions: [],
             rsiBitgetPositionsAvailable: false,
             rsiBitgetPositionsLoading: false,
+            bollOkexPositions: [],
+            bollOkexPositionsAvailable: false,
+            bollOkexPositionsLoading: false,
+            bollBybitPositions: [],
+            bollBybitPositionsAvailable: false,
+            bollBybitPositionsLoading: false,
+            bollBitgetPositions: [],
+            bollBitgetPositionsAvailable: false,
+            bollBitgetPositionsLoading: false,
 
             refreshInterval: 1000,
             refreshIntervalId: null,
@@ -477,7 +528,82 @@ export default {
                         }
                     }
                 )
-            }       
+            }  
+
+            // boll okex
+            this.bollOkexPositions = []
+            var bollOkexCount = 0
+            this.bollOkexPositionsLoading = true
+            this.bollOkexPositionsAvailable = false
+            for(var i = 0; i < this.bollOkexHosts.length; i++){
+                getPositions(this.bollOkexHosts[i], 'normal').then(response => {
+                        bollOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'boll_mini'
+                        }
+                        this.bollOkexPositions = this.bollOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (bollOkexCount === this.bollOkexHosts.length ){
+                            // 排序
+                            this.bollOkexPositionsAvailable = true
+                            this.bollOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // boll bybit
+            this.bollBybitPositions = []
+            var bollBybitCount = 0
+            this.bollBybitPositionsLoading = true
+            this.bollBybitPositionsAvailable = false
+            for(var i = 0; i < this.bollBybitHosts.length; i++){
+                getPositions(this.bollBybitHosts[i], 'normal').then(response => {
+                        bollBybitCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'boll_mini'
+                        }
+                        this.bollBybitPositions = this.bollBybitPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (bollBybitCount === this.bollBybitHosts.length ){
+                            // 排序
+                            this.bollBybitPositionsAvailable = true
+                            this.bollBybitPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // boll bitget
+            this.bollBitgetPositions = []
+            var bollBitgetCount = 0
+            this.bollBitgetPositionsLoading = true
+            this.bollBitgetPositionsAvailable = false
+            for(var i = 0; i < this.bollBitgetHosts.length; i++){
+                getPositions(this.bollBitgetHosts[i], 'normal').then(response => {
+                        bollBitgetCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'boll_mini'
+                        }
+                        this.bollBitgetPositions = this.bollBitgetPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (bollBitgetCount === this.bollBitgetHosts.length ){
+                            // 排序
+                            this.bollBitgetPositionsAvailable = true
+                            this.bollBitgetPositionsLoading = false
+                        }
+                    }
+                )
+            } 
         },
 
         // 定时刷新数据函数

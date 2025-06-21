@@ -125,6 +125,7 @@ export default {
             styTb: 'trendline_break',
             styPb: 'plunge_back',
             styRsi: 'rsi_mini',
+            styBoll: 'boll_mini',
             strategyAlias: config.strategyAlias, 
         }
     },
@@ -142,6 +143,7 @@ export default {
             var tbData = this.parentPfoTradeStats.trendline_break
             var pbData = this.parentPfoTradeStats.plunge_back
             var rsiData = this.parentPfoTradeStats.rsi_mini
+            var bollData = this.parentPfoTradeStats.boll_mini
             var tbList = [
                 [this.styTb + '_1', 'T_1'],
                 [this.styTb + '_2', 'T_2'],
@@ -159,10 +161,14 @@ export default {
             var rsiList = [
                 ['all', 'RSI']
             ]   // 只展示合并stats
+            var bollList = [
+                ['all', 'BOLL']
+            ]   // 只展示合并stats
             var dataList = [
                 [tbList, tbData],
                 [pbList, pbData],
                 [rsiList, rsiData],
+                [bollList, bollData],
             ]
             for(let data of dataList){
                 var styData = data[1]
@@ -181,148 +187,7 @@ export default {
                         total_pnl: styData[key].year_now.total_pnl
                     })
                 }
-            }
-
-            // // row1: 次数
-            // var row = {'name': '交易次数'}
-            // for(let key of tbList){
-            //     row[key] = tbData[key].year_now.count
-            // }
-            // for(let key of pbList){
-            //     row[key] = pbData[key].year_now.count
-            // }
-            // this.perfData.push(row)
-
-            // // row2: 胜次
-            // row = {'name': '胜次'}
-            // for(let key of tbList){
-            //     row[key] = tbData[key].year_now.win_count
-            // }
-            // for(let key of pbList){
-            //     row[key] = pbData[key].year_now.win_count
-            // }
-            // this.perfData.push(row)
-
-            // // row3: 负次
-            // row = {'name': '负次'}
-            // for(let key of tbList){
-            //     row[key] = tbData[key].year_now.lose_count
-            // }
-            // for(let key of pbList){
-            //     row[key] = pbData[key].year_now.lose_count
-            // }
-            // this.perfData.push(row)
-
-            // // row4: 胜率
-            // row = {'name': '胜率'}
-            // for(let key of tbList){
-            //     row[key] = tbData[key].year_now.win_ratio != null ? (tbData[key].year_now.win_ratio*100).toFixed(1) + '%' : null
-            // }
-            // for(let key of pbList){
-            //     row[key] = pbData[key].year_now.win_ratio != null ? (pbData[key].year_now.win_ratio*100).toFixed(1) + '%' : null
-            // }
-            // this.perfData.push(row)
-
-            // // row5: 平均胜时损益率
-            // row = {'name': '平均胜时损益率'}
-            // for(let key of tbList){
-            //     row[key] = tbData[key].year_now.win_avg_pnl_ptg != null ? (tbData[key].year_now.win_avg_pnl_ptg*100).toFixed(1) + '%' : null
-            // }
-            // for(let key of pbList){
-            //     row[key] = pbData[key].year_now.win_avg_pnl_ptg != null ? (pbData[key].year_now.win_avg_pnl_ptg*100).toFixed(1) + '%' : null
-            // }
-            // this.perfData.push(row)
-
-            // // row6: 平均负时损益率
-            // row = {'name': '平均负时损益率'}
-            // for(let key of tbList){
-            //     row[key] = tbData[key].year_now.lose_avg_pnl_ptg != null ? (tbData[key].year_now.lose_avg_pnl_ptg*100).toFixed(1) + '%' : null
-            // }
-            // for(let key of pbList){
-            //     row[key] = pbData[key].year_now.lose_avg_pnl_ptg != null ? (pbData[key].year_now.lose_avg_pnl_ptg*100).toFixed(1) + '%' : null
-            // }
-            // this.perfData.push(row)
-
-            // // row7: 平均损益率
-            // row = {'name': '平均损益率'}
-            // for(let key of tbList){
-            //     row[key] = tbData[key].year_now.avg_pnl_ptg != null ? (tbData[key].year_now.avg_pnl_ptg*100).toFixed(1) + '%' : null
-            // }
-            // for(let key of pbList){
-            //     row[key] = pbData[key].year_now.avg_pnl_ptg != null ? (pbData[key].year_now.avg_pnl_ptg*100).toFixed(1) + '%' : null
-            // }
-            // this.perfData.push(row)
-
-            // // row8: 滑点
-            // row = {'name': '滑点'}
-            // for(let key of tbList){
-            //     row[key] = tbData[key].year_now.weight_slippage != null ? (tbData[key].year_now.weight_slippage*100).toFixed(3) + '%' : null
-            // }
-            // for(let key of pbList){
-            //     row[key] = pbData[key].year_now.weight_slippage != null ? (pbData[key].year_now.weight_slippage*100).toFixed(3) + '%' : null
-            // }
-            // this.perfData.push(row)
-
-            // // row9: 总损益额
-            // row = {'name': '总损益额'}
-            // for(let key of tbList){
-            //     row[key] = toThousands(parseInt(tbData[key].year_now.total_pnl))
-            // }
-            // for(let key of pbList){
-            //     row[key] = toThousands(parseInt(pbData[key].year_now.total_pnl))
-            // }
-            // this.perfData.push(row)
-
-            // // 策略表现(trade_stats)
-            // var tbData = this.parentPfoTradeStats.trendline_break
-            // var pbData = this.parentPfoTradeStats.plunge_back
-
-            // // 第一行
-            // this.perfData1[0].col1 = parseInt(tbData.all.year_now.total_pnl) + this.prPnlOffset
-            // this.perfData1[0].col2_1 = (tbData.all.year_now.win_ratio*100).toFixed(1)
-            // this.perfData1[0].col2_2 = tbData.all.year_now.win_lose_pnl_ratio != null ? tbData.all.year_now.win_lose_pnl_ratio.toFixed(3) : null  
-            // this.perfData1[0].col3 = tbData.all.year_now.weight_slippage != null ? (tbData.all.year_now.weight_slippage*100).toFixed(3) : null
-
-            // // this.perfData1[0].col4 = parseInt(mczData.all.year_now.total_pnl) + this.mczPnlPffset
-            // // this.perfData1[0].col5_1 = (mczData.all.year_now.win_ratio*100).toFixed(1)
-            // // this.perfData1[0].col5_2 = mczData.all.year_now.win_lose_pnl_ratio != null ? mczData.all.year_now.win_lose_pnl_ratio.toFixed(3) : null  
-            // // this.perfData1[0].col6 = mczData.all.year_now.weight_slippage != null ? (mczData.all.year_now.weight_slippage*100).toFixed(3) : null
-
-            // this.perfData1[0].col7 = parseInt(pbData.all.year_now.total_pnl)
-            // this.perfData1[0].col8_1 = pbData.all.year_now.count
-            // this.perfData1[0].col8_2 = parseInt(pbData.all.year_now.avg_pnl)
-            // this.perfData1[0].col9_1 = (pbData.all.year_now.win_ratio*100).toFixed(1)
-            // this.perfData1[0].col9_2 = pbData.all.year_now.win_lose_pnl_ratio != null ? pbData.all.year_now.win_lose_pnl_ratio.toFixed(3) : null 
-            // this.perfData1[0].col10 = pbData.all.year_now.weight_slippage != null ? (pbData.all.year_now.weight_slippage*100).toFixed(3) : null 
-
-            // // 第二行
-            // this.perfData2[0].col1 = tbData.all.year_now.count
-            // this.perfData2[0].col2 = tbData.all.year_now.win_count
-            // this.perfData2[0].col3 = tbData.all.year_now.lose_count
-
-            // // this.perfData2[0].col4 = mczData.all.year_now.count
-            // // this.perfData2[0].col5 = mczData.all.year_now.win_count
-            // // this.perfData2[0].col6 = mczData.all.year_now.lose_count
-
-            // this.perfData2[0].col7 = pbData.plunge_back_1.year_now.count
-            // this.perfData2[0].col8 = pbData.plunge_back_2.year_now.count
-            // this.perfData2[0].col9 = pbData.plunge_back_3.year_now.count
-            // this.perfData2[0].col10 = pbData.plunge_back_4.year_now.count
-            // // debugger
-
-            // // 第三行
-            // this.perfData3[0].col1 = parseInt(tbData.all.year_now.avg_pnl)
-            // this.perfData3[0].col2 = parseInt(tbData.all.year_now.win_avg_pnl)
-            // this.perfData3[0].col3 = parseInt(tbData.all.year_now.lose_avg_pnl)
-
-            // // this.perfData3[0].col4 = parseInt(mczData.all.year_now.avg_pnl)
-            // // this.perfData3[0].col5 = parseInt(mczData.all.year_now.win_avg_pnl)
-            // // this.perfData3[0].col6 = parseInt(mczData.all.year_now.lose_avg_pnl)
-
-            // this.perfData3[0].col7 = parseInt(pbData.plunge_back_1.year_now.avg_pnl)
-            // this.perfData3[0].col8 = parseInt(pbData.plunge_back_2.year_now.avg_pnl)
-            // this.perfData3[0].col9 = parseInt(pbData.plunge_back_3.year_now.avg_pnl)
-            // this.perfData3[0].col10 = parseInt(pbData.plunge_back_4.year_now.avg_pnl)                    
+            }             
         },
 
 

@@ -151,7 +151,8 @@ const subacctPfoAlias = [
 const strategies = [
     'trendline-break',
     'plunge-back',
-    'rsi-mini'
+    'rsi-mini',
+    'boll-mini'
     // 'macd-cross-zero',
     // 'delist'
     // 'pivot-reversal-mini',
@@ -168,12 +169,14 @@ const activeStrategyIDs = [
     'plunge_back_2',
     'plunge_back_3',
     'plunge_back_4',
-    'rsi_mini'
+    'rsi_mini',
+    'boll_mini'
 ]
 
 // 部分策略不展示子策略(只显示合并结果)
 const mergeStrategyIDs = [
-    'rsi_mini'
+    'rsi_mini',
+    'boll_mini'
 ]
 
 const strategyAlias = {
@@ -199,6 +202,10 @@ const strategyAlias = {
     'rsi-mini': 'RSI',
     'rsi_mini': 'RSI',
     'rsi': 'RSI',
+
+    'boll-mini': 'BOLL',
+    'boll_mini': 'BOLL',
+    'boll': 'BOLL',
 }
 
 
@@ -353,6 +360,9 @@ export default {
     rsiOkexHosts,
     rsiBybitHosts,
     rsiBitgetHosts,
+    bollOkexHosts,
+    bollBybitHosts,
+    bollBitgetHosts,
     pfoAlias,
     backtestHost,
     cryptoParentPfo,
