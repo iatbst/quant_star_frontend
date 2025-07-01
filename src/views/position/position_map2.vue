@@ -168,7 +168,7 @@ export default {
     methods: {
         // 一些策略的id需要特殊处理
         getStrategyId(workerName){
-            if(this.strategy == 'RSI'){
+            if(this.strategy == 'RSI' || this.strategy == 'BOLL'){
                 // 最后2位表示id(eg: 12h_1), 6h要转化为06h,否则无法正确排序
                 return workerName.replace('6h', '06h').split('_').slice(-2, ).join('_')
             } else {
