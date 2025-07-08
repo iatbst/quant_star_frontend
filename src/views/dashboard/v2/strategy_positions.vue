@@ -1,7 +1,11 @@
 <template>
     <div>
         <!-- 策略仓位 -->
-        <el-col :span="24" style="margin-top: 20px;margin-bottom: 20px;">
+        <el-col :span="4" style="margin-top: 20px;margin-bottom: 20px;">
+            <highcharts :options="tbPositionOptions"></highcharts>
+        </el-col>
+        <!-- 策略仓位 -->
+        <el-col :span="20" style="margin-top: 20px;margin-bottom: 20px;">
             <highcharts :options="positionOptions"></highcharts>
         </el-col>   
     </div> 
@@ -48,6 +52,54 @@ export default {
 
     data() {
         return {
+            tbPositionOptions: {
+                chart: {
+                    type: 'column',
+                    height: 400
+                },
+
+                title: {
+                    text: 'T策略仓位合计',
+                },
+                xAxis: {
+                    categories: []
+                },
+                yAxis: {
+                    // min: 0,
+                    title: {
+                        text: '仓位(k$)'
+                    },
+                },
+                
+                exporting: { enabled: false },
+                
+                legend: {
+                    enabled: true
+                },
+
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{series.name}: ${point.y}k'
+                },
+                plotOptions: {
+                    column: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    },
+                },
+                series: [
+                    {
+                        name: '实盘仓位',
+                        data: [],
+                    },
+                    {
+                        name: '回测仓位',
+                        data: [],
+                    },
+                ],
+            },
+
             positionOptions: {
                 chart: {
                     type: 'column',
@@ -109,6 +161,8 @@ export default {
             var styPositions = {}     
             var livePositions = []
             var btPositions = []
+            var tbLivePositions = 0
+            var tbBtPositions = 0
             for(const data of this.positions){
                 if (config.mergeStrategyIDs.includes(data['sty'])){
                     var styID = data['sty']
@@ -130,58 +184,41 @@ export default {
             for(const styID of config.activeStrategyIDs){
                 if (config.mergeStrategyIDs.includes(styID)){
                     var data = styPositions[styID]
-                    if (data.size >= 0){
-                        livePositions.push({
-                            'x': chineseStrategyID(data.styID, false),
-                            'y': Math.round((data.size/1000)),
-                            //'color': 'green'
-                        })                   
-                    } else {
-                        livePositions.push({
-                            'x': chineseStrategyID(data.styID, false),
-                            'y': Math.round((data.size/1000)),
-                            //'color': 'red'
-                        })                      
-                    }
+                    livePositions.push({
+                        'x': chineseStrategyID(data.styID, false),
+                        'y': Math.round((data.size/1000)),
+                    })                   
                 } else {
                     var data = styPositions[styID]
-                    if (data.size >= 0){
-                        livePositions.push({
-                            'x': chineseStrategyID(data.styID),
-                            'y': Math.round((data.size/1000)),
-                            //'color': 'green'
-                        })                   
-                    } else {
-                        livePositions.push({
-                            'x': chineseStrategyID(data.styID),
-                            'y': Math.round((data.size/1000)),
-                            //'color': 'red'
-                        })                      
-                    }
+                    livePositions.push({
+                        'x': chineseStrategyID(data.styID),
+                        'y': Math.round((data.size/1000)),
+                    })                   
+                }
+
+                // tb策略合计实盘仓位统计
+                if(styID.includes('trendline_break')){
+                    tbLivePositions += data.size/1000
                 }
             }
 
-            // 回测仓位(只加载和实盘策略名称完全一致的, eg, 不加载pb策略)
+            // 回测仓位(只加载和实盘策略名称完全一致的, eg, 不加载pb等短线策略)
             for(const styID in this.btPositions){
+                var position = this.btPositions[styID]
                 if (styID.replace('-', '_') in styPositions){
-                    var position = this.btPositions[styID]
-                    if (position >= 0){
-                        btPositions.push({
-                            'x': chineseStrategyID(styID),
-                            'y': Math.round((position/1000)),
-                            //'color': 'lightgreen'
-                        })                   
-                    } else {
-                        btPositions.push({
-                            'x': chineseStrategyID(styID),
-                            'y': Math.round((position/1000)),
-                            //'color': 'orange'
-                        })                      
-                    }                  
+                    btPositions.push({
+                        'x': chineseStrategyID(styID),
+                        'y': Math.round((position/1000)),
+                    })                                   
+                }
+ 
+                 // tb策略合计回测仓位统计
+                if(styID.replace('-', '_').includes('trendline_break')){
+                    tbBtPositions += position/1000
                 }
             }
 
-            // addSingleColumn(livePositions, this.positionOptions)  
+            addTwoColumns([{'x': 'T-合计', 'y': Math.round(tbLivePositions)}], [{'x': 'T-合计', 'y': Math.round(tbBtPositions)}], this.tbPositionOptions)
             addTwoColumns(livePositions, btPositions, this.positionOptions)
         },
     }
