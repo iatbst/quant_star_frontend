@@ -100,8 +100,8 @@ var production_hosts = [
 
 var development_hosts = [
     // 开发/测试
-    // 'http://ec2-54-46-1-245.ap-east-1.compute.amazonaws.com:8000/api',  // test1
-    'http://ec2-16-162-190-111.ap-east-1.compute.amazonaws.com:8000/api',  // test2
+    'http://ec2-18-166-54-79.ap-east-1.compute.amazonaws.com:8000/api',  // test1
+    // 'http://ec2-16-162-190-111.ap-east-1.compute.amazonaws.com:8000/api',  // test2
 ]
 
 // 当前投资组合的Hosts地址
@@ -234,11 +234,13 @@ const tradeFinalErrors = {
     '103': '信号延迟太大,未能及时开仓',
     '104': '开仓订单被交易所取消,详情参考补充说明.',
     '105': '平台标的风控限制,无法开仓.',
+    '106': '程序被系统kill,无法开仓',
 
     '201': '账户保证金不足,无法关仓.',
     '202': '平台标的杠杆率限制,无法关仓.',
     '203': '同时发送离场订单,仓位更新不及时导致过量离场.',
     '204': '关仓订单被交易所取消,详情参考补充说明.',
+    '205': '程序被系统kill,无法关仓',
 
     '301': '未知BUG,详情参考补充说明.'
 }

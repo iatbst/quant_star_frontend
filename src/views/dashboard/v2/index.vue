@@ -34,6 +34,15 @@
             v-if="subaccountDatasAvailable">
             </exchange-table>
 
+            <!--- 其他信息 ---
+                函数: 
+                    - fetchParentPfoMacroStrategies
+            --->
+            <other-info-table 
+            v-bind:parentPfoMacroStrategies="parentPfoMacroStrategies" 
+            v-if="parentPfoMacroStrategiesAvailable">
+            </other-info-table>
+
             <!--- 今日表 ---
                 函数: 
                     - fetchParentPfoPositions
@@ -299,6 +308,7 @@ import orders from '@/views/orders/_orders'
 import todayTable from '@/views/dashboard/v2/today_table'
 import perfTable from '@/views/dashboard/v2/perf_table'
 import positionTable from '@/views/dashboard/v2/position_table'
+import otherInfoTable from '@/views/dashboard/v2/other_info_table'
 import exchangeTable from '@/views/dashboard/v2/exchange_table'
 import balanceTable from '@/views/dashboard/v2/balance_table'
 import valueLine from '@/views/balance/_value_line'
@@ -340,6 +350,7 @@ export default {
 
         balanceTable,
         positionTable,
+        otherInfoTable,
         exchangeTable,
         perfTable,
         todayTable,
@@ -404,6 +415,9 @@ export default {
 
             parentPfoWallet: null,
             parentPfoWalletAvailable: false,
+
+            parentPfoMacroStrategies: null,
+            parentPfoMacroStrategiesAvailable: false,
 
             parentPfoPositions: null,
             parentPfoPositionsAvailable: false,
@@ -523,6 +537,7 @@ export default {
             slowIntervalId: null,
 
             parentPfoWalletRefresh: null,
+            parentPfoMacroStrategiesRefresh: null,
             parentPfoPositionsRefresh: null,
             todayOrdersRefresh: null,
             todayFundingFeesRefresh: null,
@@ -554,8 +569,8 @@ export default {
             this.fetchParentPfoAtrptg()
             this.fetchSubAccountDatas()
 
-            // 表格3: 平台资金仓位信息
-            // this.fetchHoldCoinPnl()
+            // 表格4: 平台资金仓位信息
+            this.fetchParentPfoMacroStrategies()
 
             // 表格4: 总体今日信息
             this.fetchTodayOrders()
@@ -757,6 +772,15 @@ export default {
             getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'wallet').then(response => {
                 this.parentPfoWallet = response.results[0].wallet
                 this.parentPfoWalletAvailable = true
+            })
+        },
+
+        // 从Master获取资产信息
+        fetchParentPfoMacroStrategies(){
+            this.parentPfoMacroStrategiesRefresh = new Date()
+            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'macro_strategies').then(response => {
+                this.parentPfoMacroStrategies = response.results[0].macro_strategies
+                this.parentPfoMacroStrategiesAvailable = true
             })
         },
 
