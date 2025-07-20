@@ -53,17 +53,7 @@
             <el-table-column label="" min-width="10%" align="center">
                 <template slot-scope="scope">
                 </template>
-            </el-table-column>
-
-            <el-table-column label="" min-width="10%" align="center">
-                <template slot-scope="scope">
-                </template>
-            </el-table-column>
-
-            <el-table-column label="" min-width="10%" align="center">
-                <template slot-scope="scope">
-                </template>
-            </el-table-column>    
+            </el-table-column>  
         </el-table>
     </div>
 </template>
