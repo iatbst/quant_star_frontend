@@ -35,8 +35,14 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="" min-width="10%" align="center">
+            <el-table-column label="24H抄底订单" min-width="10%" align="center">
                 <template slot-scope="scope">
+                    <span style="color: red" v-if="scope.row.todayPbOrderCount > 0">
+                        <b>{{ scope.row.todayPbOrderCount }}</b>
+                    </span>   
+                    <span style="" v-else>
+                        {{ scope.row.todayPbOrderCount }}
+                    </span> 
                 </template>
             </el-table-column>
 
@@ -75,6 +81,10 @@ export default {
         parentPfoMacroStrategies: {
             type:Object,
             default:{}
+        }, 
+        todayPbOrderCount: {
+            type: Number,
+            default: null
         },         
     },
 
@@ -95,6 +105,9 @@ export default {
                 vsCandidateDt: null,
                 vsCandidateRight: null,
                 vsCandidateSurge: null,
+
+                // 24H内抄底订单
+                todayPbOrderCount: null
             }],
 
             // dialogHistoryAtrptgVisible: false,
@@ -115,6 +128,7 @@ export default {
             this.otherInfoDatas[0].vsCandidateDt = vsData.candidate_dt
             this.otherInfoDatas[0].vsCandidateRight = vsData.candidate_right
             this.otherInfoDatas[0].vsCandidateSurge = (vsData.candidate_surge*100).toFixed(1)
+            this.otherInfoDatas[0].todayPbOrderCount = this.todayPbOrderCount
         },
 
         toThousands: toThousands,

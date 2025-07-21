@@ -37,10 +37,12 @@
             <!--- 其他信息 ---
                 函数: 
                     - fetchParentPfoMacroStrategies
+                    - fetchTodayPbOrderCount
             --->
             <other-info-table 
             v-bind:parentPfoMacroStrategies="parentPfoMacroStrategies" 
-            v-if="parentPfoMacroStrategiesAvailable">
+            v-bind:todayPbOrderCount="todayPbOrderCount"
+            v-if="parentPfoMacroStrategiesAvailable && todayPbOrderCountAvailable">
             </other-info-table>
 
             <!--- 今日表 ---
@@ -409,6 +411,8 @@ export default {
             todayStrategyPnl: null,
             todayExchangePnl: null,
             todayFundingFeesAvailable: false,
+            todayPbOrderCount: null,
+            todayPbOrderCountAvailable: false,
 
             parentPfoTradeStats: null,
             parentPfoTradeStatsAvailable: false,
@@ -569,8 +573,9 @@ export default {
             this.fetchParentPfoAtrptg()
             this.fetchSubAccountDatas()
 
-            // 表格4: 平台资金仓位信息
+            // 表格4: 其他信息
             this.fetchParentPfoMacroStrategies()
+            this.fetchTodayPbOrderCount()
 
             // 表格4: 总体今日信息
             this.fetchTodayOrders()
@@ -694,6 +699,30 @@ export default {
             }
         },
 
+        // 获取今日抄底orders
+        fetchTodayPbOrderCount(){
+            this.todayPbOrderCount = 0
+            var ep = Math.round(Date.now()/1000)
+            ep += 8*3600
+            var startDt = new Date((ep - ep%86400 - 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')    // UTC 
+            var count = 0
+            var pbHosts = this.pbOkexHosts.concat(this.pbBybitHosts).concat(this.pbBitgetHosts)
+            for(var i = 0; i < pbHosts.length; i++){
+                // debugger
+                var host = pbHosts[i]
+                var filters = 'no_parent_order=true&exec_size__gt=0&exec_ts__gte=' + startDt
+                getOrders(host, null, filters).then(response => {
+                        count += 1
+                        this.todayPbOrderCount += response.results.length
+                        if (count === pbHosts.length){
+                            // 排序
+                            this.todayPbOrderCountAvailable = true
+                        }
+                    }
+                )
+            }
+        },
+
         // 获取今日orders
         fetchTodayOrders(){
             this.todayOrdersRefresh = new Date()
@@ -716,7 +745,8 @@ export default {
 
                         if (count === this.pfoHosts.length){
                             // 排序
-                            this.orders.sort((a, b) => b.exec_ts.localeCompare(a.exec_ts))
+                            // debugger
+                            this.todayOrders.sort((a, b) => b.exec_ts.localeCompare(a.exec_ts))
                             this.todayOrdersAvailable = true
                         }
                     }
