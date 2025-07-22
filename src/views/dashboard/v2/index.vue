@@ -62,30 +62,6 @@
             v-if="parentPfoPositionsAvailable && todayOrdersAvailable && todayPnlAvailable && todayFundingFeesAvailable"
             >
             </today-table>
-            
-            <!--- Perf统计表 ---
-                函数: fetchParentPfoTradeStats
-
-            <perf-table 
-            v-bind:parentPfoTradeStats="parentPfoTradeStats" 
-            v-if="parentPfoTradeStatsAvailable">
-            </perf-table>
-
-            <div align="left">
-                <el-tooltip placement="top-start" align="left">
-                    <div slot="content">
-                        资产表格: 每分钟第5秒刷新1次
-                        <br/>
-                        仓位表格: 每分钟第5秒刷新1次
-                        <br />
-                        今日表格: 每间隔5分钟刷新1次(非整点);盈亏列每小时第5分钟刷新1次;资金费每小时第30分钟刷新1次
-                        <br/>
-                        策略今年表现表格: 每小时第5分钟刷新1次
-                    </div>
-                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
-                </el-tooltip>
-            </div>
-            -->
         </div>
       </el-col>
     </el-row>   
@@ -187,14 +163,19 @@
                 {
                     title: pnlLines.boll_mini.name,
                     data: pnlLines.boll_mini.data
-                }                            
+                },
+                {
+                    title: pnlLines.long_short_ratio.name,
+                    data: pnlLines.long_short_ratio.data
+                }                               
             ]
             " 
             v-if="
             pnlLines.trendline_break.available && 
             pnlLines.plunge_back.available &&
             pnlLines.rsi_mini.available && 
-            pnlLines.boll_mini.available
+            pnlLines.boll_mini.available &&
+            pnlLines.long_short_ratio.available
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
@@ -225,7 +206,8 @@
             tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
             pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
-            bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable
+            bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable &&
+            lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBitgetPositionsAvailable
             "
             ></position-ranks2> 
 
@@ -257,6 +239,7 @@
             pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
             bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable &&
+            lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBitgetPositionsAvailable &&
             btPositions.all.available
             "
             ></strategy-positions> 
@@ -397,6 +380,9 @@ export default {
             bollOkexHosts: config.bollOkexHosts,
             bollBybitHosts: config.bollBybitHosts,
             bollBitgetHosts: config.bollBitgetHosts,
+            lrOkexHosts: config.lrOkexHosts,
+            lrBybitHosts: config.lrBybitHosts,
+            lrBitgetHosts: config.lrBitgetHosts,
             tbBinanceSortWeights: config.tbBinanceSortWeights,
             tbOkexSortWeights: config.tbOkexSortWeights,
             tbBybitSortWeights: config.tbOkexSortWeights,
@@ -479,6 +465,15 @@ export default {
             bollBitgetPositions: [],
             bollBitgetPositionsAvailable: false,
             bollBitgetPositionsLoading: false,
+            lrOkexPositions: [],
+            lrOkexPositionsAvailable: false,
+            lrOkexPositionsLoading: false,
+            lrBybitPositions: [],
+            lrBybitPositionsAvailable: false,
+            lrBybitPositionsLoading: false,
+            lrBitgetPositions: [],
+            lrBitgetPositionsAvailable: false,
+            lrBitgetPositionsLoading: false,
 
             jiaPnl: 0,
             jiaPnlAvailable: false,
@@ -529,7 +524,12 @@ export default {
                     'name': 'BOLL',
                     'data': null,
                     'available': false
-                },                                                               
+                }, 
+                'long_short_ratio': {
+                    'name': 'LR',
+                    'data': null,
+                    'available': false
+                },                                                                
             },
 
             refreshInterval: 1000,
@@ -872,12 +872,17 @@ export default {
                     this.pnlLines.boll_mini.data = parentPfoData.pnl_line.boll_mini.year_now
                     this.pnlLines.boll_mini.available = true  
 
+                    // long_short_ratio
+                    this.pnlLines.long_short_ratio.data = parentPfoData.pnl_line.long_short_ratio.year_now
+                    this.pnlLines.long_short_ratio.available = true 
+
                     // 添加上一年最后一日数据为起点数据(pnl = 0), 否则pnl的起点不是0
                     var firstDate = moment().year() - 1 + '-' + '12-31'
                     this.pnlLines.trendline_break.data[firstDate] = 0
                     this.pnlLines.plunge_back.data[firstDate] = 0
                     this.pnlLines.rsi_mini.data[firstDate] = 0
                     this.pnlLines.boll_mini.data[firstDate] = 0
+                    this.pnlLines.long_short_ratio.data[firstDate] = 0
                 }
             )
         },
@@ -1282,7 +1287,82 @@ export default {
                         }
                     }
                 )
-            }    
+            }  
+
+            // lr okex
+            this.lrOkexPositions = []
+            var lrOkexCount = 0
+            this.lrOkexPositionsLoading = true
+            this.lrOkexPositionsAvailable = false
+            for(var i = 0; i < this.lrOkexHosts.length; i++){
+                getPositions(this.lrOkexHosts[i], 'normal').then(response => {
+                        lrOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'long_short_ratio'
+                        }
+                        this.lrOkexPositions = this.lrOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (lrOkexCount === this.lrOkexHosts.length ){
+                            // 排序
+                            this.lrOkexPositionsAvailable = true
+                            this.lrOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // lr bybit
+            this.lrBybitPositions = []
+            var lrBybitCount = 0
+            this.lrBybitPositionsLoading = true
+            this.lrBybitPositionsAvailable = false
+            for(var i = 0; i < this.lrBybitHosts.length; i++){
+                getPositions(this.lrBybitHosts[i], 'normal').then(response => {
+                        lrBybitCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'long_short_ratio'
+                        }
+                        this.lrBybitPositions = this.lrBybitPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (lrBybitCount === this.lrBybitHosts.length ){
+                            // 排序
+                            this.lrBybitPositionsAvailable = true
+                            this.lrBybitPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // lr bitget
+            this.lrBitgetPositions = []
+            var lrBitgetCount = 0
+            this.lrBitgetPositionsLoading = true
+            this.lrBitgetPositionsAvailable = false
+            for(var i = 0; i < this.lrBitgetHosts.length; i++){
+                getPositions(this.lrBitgetHosts[i], 'normal').then(response => {
+                        lrBitgetCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'long_short_ratio'
+                        }
+                        this.lrBitgetPositions = this.lrBitgetPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (lrBitgetCount === this.lrBitgetHosts.length ){
+                            // 排序
+                            this.lrBitgetPositionsAvailable = true
+                            this.lrBitgetPositionsLoading = false
+                        }
+                    }
+                )
+            }  
         },
 
         // 定时刷新数据函数

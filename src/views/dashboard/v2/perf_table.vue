@@ -126,6 +126,7 @@ export default {
             styPb: 'plunge_back',
             styRsi: 'rsi_mini',
             styBoll: 'boll_mini',
+            styLr: 'long_short_ratio',
             strategyAlias: config.strategyAlias, 
         }
     },
@@ -144,6 +145,7 @@ export default {
             var pbData = this.parentPfoTradeStats.plunge_back
             var rsiData = this.parentPfoTradeStats.rsi_mini
             var bollData = this.parentPfoTradeStats.boll_mini
+            var lrData = this.parentPfoTradeStats.long_short_ratio
             var tbList = [
                 [this.styTb + '_1', 'T_1'],
                 [this.styTb + '_2', 'T_2'],
@@ -164,11 +166,15 @@ export default {
             var bollList = [
                 ['all', 'BOLL']
             ]   // 只展示合并stats
+            var lrList = [
+                ['all', 'LR']
+            ]   // 只展示合并stats
             var dataList = [
                 [tbList, tbData],
                 [pbList, pbData],
                 [rsiList, rsiData],
                 [bollList, bollData],
+                [lrList, lrData]
             ]
             for(let data of dataList){
                 var styData = data[1]

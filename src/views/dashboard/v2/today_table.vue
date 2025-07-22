@@ -258,6 +258,7 @@ export default {
                 'plunge_back',
                 'rsi_mini',
                 'boll_mini',
+                'long_short_ratio',
                 'binance',
                 'okex',
                 'bybit',
@@ -285,6 +286,12 @@ export default {
                 }, 
                 'boll_mini': {
                     name: 'BOLL',
+                    initPosition: null,
+                    position: null,
+                    fundingFees: null
+                }, 
+                'long_short_ratio': {
+                    name: 'LR',
                     initPosition: null,
                     position: null,
                     fundingFees: null
@@ -385,6 +392,13 @@ export default {
                     this.todayObj[key].shortTimer = null
                     this.todayObj[key].longWinStop = null
                     this.todayObj[key].shortWinStop = null                   
+                } else if (key == 'long_short_ratio') {
+                    this.todayObj[key].longOpen = null
+                    this.todayObj[key].longFlip = null   
+                    this.todayObj[key].longTimer = null     
+                    this.todayObj[key].shortTimer = null
+                    this.todayObj[key].longWinStop = null
+                    this.todayObj[key].shortWinStop = null                    
                 }
             }
         },

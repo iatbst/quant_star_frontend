@@ -85,8 +85,14 @@ export function chineseString(s) {
 }
 
 import config from '@/configs/system_configs'
-export function chineseStrategyID(strategyID, showID=true) {
-    var strategy = strategyID.split('_').slice(0, -1).join('_')
+export function chineseStrategyID(strategyID, showID=true, subStrategy=true) {
+    if (subStrategy){
+        // strategyID是子策略: eg trendline_break_1
+        var strategy = strategyID.split('_').slice(0, -1).join('_')
+    } else {
+        // strategyID是主策略: eg boll_mini, long_short_ratio
+        var strategy = strategyID
+    }
     if (showID){
         var strategyId = strategyID.split('_').slice(-1,)[0]
         return config.strategyAlias[strategy] + '-' + strategyId

@@ -36,6 +36,16 @@ const bollBitgetHosts = [
     'http://ec2-47-128-80-106.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
 
+const lrOkexHosts = [
+    'http://ec2-18-163-5-176.ap-east-1.compute.amazonaws.com:8000/api'
+]
+const lrBybitHosts = [
+    'http://ec2-18-140-97-85.ap-southeast-1.compute.amazonaws.com:8000/api'
+]
+const lrBitgetHosts = [
+    'http://ec2-13-212-121-193.ap-southeast-1.compute.amazonaws.com:8000/api'
+]
+
 
 const pbOkexHosts = [
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
@@ -142,10 +152,8 @@ const strategies = [
     'trendline-break',
     'plunge-back',
     'rsi-mini',
-    'boll-mini'
-    // 'macd-cross-zero',
-    // 'delist'
-    // 'pivot-reversal-mini',
+    'boll-mini',
+    'long-short-ratio'
 ]
 
 const activeStrategyIDs = [
@@ -160,13 +168,15 @@ const activeStrategyIDs = [
     'plunge_back_3',
     'plunge_back_4',
     'rsi_mini',
-    'boll_mini'
+    'boll_mini',
+    'long_short_ratio'
 ]
 
 // 部分策略不展示子策略(只显示合并结果)
 const mergeStrategyIDs = [
     'rsi_mini',
-    'boll_mini'
+    'boll_mini',
+    'long_short_ratio'
 ]
 
 const strategyAlias = {
@@ -196,6 +206,9 @@ const strategyAlias = {
     'boll-mini': 'BOLL',
     'boll_mini': 'BOLL',
     'boll': 'BOLL',
+
+    'long-short-ratio': 'LR',
+    'long_short_ratio': 'LR',
 }
 
 
@@ -355,6 +368,9 @@ export default {
     bollOkexHosts,
     bollBybitHosts,
     bollBitgetHosts,
+    lrOkexHosts,
+    lrBybitHosts,
+    lrBitgetHosts,
     pfoAlias,
     backtestHost,
     cryptoParentPfo,

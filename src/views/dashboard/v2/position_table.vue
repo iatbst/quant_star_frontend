@@ -79,6 +79,14 @@
                 </template>
             </el-table-column>
 
+            <el-table-column label="LR空头" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: green">
+                        {{toThousands(scope.row.lrPosition)}}
+                    </span>          
+                </template>
+            </el-table-column>
+
             <el-table-column label="系统杠杆率" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.leverage >= 0">
@@ -197,6 +205,7 @@ export default {
                 pbPosition: null,
                 rsiPosition: null,
                 bollPosition: null,
+                lrPosition: null,
 
 
                 leverage: null
@@ -220,11 +229,13 @@ export default {
             var pbData = this.parentPfoPositions.plunge_back
             var rsiData = this.parentPfoPositions.rsi_mini
             var bollData = this.parentPfoPositions.boll_mini
+            var lrData = this.parentPfoPositions.long_short_ratio
             this.positionDatas[0].tbLongPosition = Math.round(tbData.long)
             this.positionDatas[0].tbShortPosition = Math.round(tbData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
             this.positionDatas[0].rsiPosition = Math.round(rsiData.long)
             this.positionDatas[0].bollPosition = Math.round(bollData.long)
+            this.positionDatas[0].lrPosition = Math.round(lrData.long)
 
 
             // 币头寸叠加到总头寸

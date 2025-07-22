@@ -185,7 +185,7 @@ export default {
                 if (config.mergeStrategyIDs.includes(styID)){
                     var data = styPositions[styID]
                     livePositions.push({
-                        'x': chineseStrategyID(data.styID, false),
+                        'x': chineseStrategyID(data.styID, false, false),
                         'y': Math.round((data.size/1000)),
                     })                   
                 } else {
@@ -217,6 +217,7 @@ export default {
                     tbBtPositions += position/1000
                 }
             }
+            // debugger
 
             addTwoColumns([{'x': 'T-合计', 'y': Math.round(tbLivePositions)}], [{'x': 'T-合计', 'y': Math.round(tbBtPositions)}], this.tbPositionOptions)
             addTwoColumns(livePositions, btPositions, this.positionOptions)
