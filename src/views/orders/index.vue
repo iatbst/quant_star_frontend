@@ -22,7 +22,7 @@ import orders from '@/views/orders/_orders'
 import config from '@/configs/system_configs'
 import { utcToLocalTimestamp } from '@/utils/general'
 import {toThousands} from '@/utils/general'
-import { getOrders } from '@/api/order'
+import { getOrders } from '@/api/long_short_ratio'
 import { chineseString } from '@/utils/chinese'
 import { toFixed } from  '@/utils/general'
 

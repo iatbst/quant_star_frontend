@@ -38,11 +38,13 @@
                 函数: 
                     - fetchParentPfoMacroStrategies
                     - fetchTodayPbOrderCount
+                    - fetchLongShortRatios
             --->
             <other-info-table 
             v-bind:parentPfoMacroStrategies="parentPfoMacroStrategies" 
             v-bind:todayPbOrderCount="todayPbOrderCount"
-            v-if="parentPfoMacroStrategiesAvailable && todayPbOrderCountAvailable">
+            v-bind:longShortRatios="longShortRatios"
+            v-if="parentPfoMacroStrategiesAvailable && todayPbOrderCountAvailable && longShortRatiosAvailable">
             </other-info-table>
 
             <!--- 今日表 ---
@@ -322,6 +324,7 @@ import { getTradesByFlagCodes } from '@/api/trade'
 import { getPositions } from '@/api/position'
 import { getBacktestPlanByName } from '@/api/backtest_plan'
 import { getBacktestReportById, getBacktestReportByName } from '@/api/backtest_report'
+import { getLongShortRatios } from '@/api/long_short_ratio'
 import { getOrders } from '@/api/order'
 import { getNormalWorkerDatas } from '@/api/worker'
 import { getFees } from '@/api/fee'
@@ -425,6 +428,9 @@ export default {
             positions: [],
             positionsAvailable: false,
             positionsLoading: false,
+
+            longShortRatios: [],
+            longShortRatiosAvailable: false,
 
             tbBinancePositions: [],
             tbBinancePositionsAvailable: false,
@@ -576,6 +582,7 @@ export default {
             // 表格4: 其他信息
             this.fetchParentPfoMacroStrategies()
             this.fetchTodayPbOrderCount()
+            this.fetchLongShortRatios()
 
             // 表格4: 总体今日信息
             this.fetchTodayOrders()
@@ -665,6 +672,19 @@ export default {
                     this.todayExchangePnl[exchange] += data.pnl              
                 }
             }
+        },
+
+        // 获取最近24H的多空数据
+        fetchLongShortRatios(){
+            this.longShortRatios = []
+            this.longShortRatiosAvailable = false
+            var startMts = Date.now() - 25 * 3600 * 1000
+            var filters = 'show_exchange=true&mts__gte=' + startMts
+            getLongShortRatios(config.masterHost, filters).then(response => {
+                    this.longShortRatios = response.results
+                    this.longShortRatiosAvailable = true
+                }
+            )
         },
 
         // 获取最近24Horders

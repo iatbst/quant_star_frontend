@@ -212,7 +212,7 @@
 </template>
 
 <script>
-import { getSubOrdersByParentOrder } from '@/api/order'
+import { getSubOrdersByParentOrder } from '@/api/long_short_ratio'
 import { getLogsByWorkerAndTs } from '@/api/log'
 import { formatTimestamp } from '@/utils/general'
 import { chineseString } from '@/utils/chinese'

@@ -266,7 +266,7 @@ import { getSnapshotByDatetime } from '@/api/snapshot'
 import system_configs from '@/configs/system_configs'
 import { utcToLocalTimestamp } from '@/utils/general'
 import {toThousands} from '@/utils/general'
-import { getOrders } from '@/api/order'
+import { getOrders } from '@/api/long_short_ratio'
 import { chineseString } from '@/utils/chinese'
 import { toFixed } from  '@/utils/general'
 

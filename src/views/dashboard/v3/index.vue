@@ -257,7 +257,7 @@ import { getDelegateWorkerDatas } from '@/api/worker'
 import { getPositions } from '@/api/position'
 import { getBacktestPlanByName } from '@/api/backtest_plan'
 import { getBacktestReportById, getBacktestReportByName } from '@/api/backtest_report'
-import { getOrders } from '@/api/order'
+import { getOrders } from '@/api/long_short_ratio'
 import { getNormalWorkerDatas } from '@/api/worker'
 import { getFees } from '@/api/fee'
 

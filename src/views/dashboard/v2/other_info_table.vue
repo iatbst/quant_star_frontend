@@ -46,8 +46,19 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="" min-width="10%" align="center">
+            <el-table-column label="最新多头占比" min-width="10%" align="center">
                 <template slot-scope="scope">
+                    <span v-if="scope.row.longShortRatio == null">
+                        N/A
+                    </span>
+                    <span style="" v-else>
+                        <span style="color: green" v-if="scope.row.longShortRatio > 60">
+                            {{ scope.row.longShortRatio }}%
+                        </span>   
+                        <span style="" v-else>
+                            {{ scope.row.longShortRatio }}%
+                        </span> 
+                    </span>
                 </template>
             </el-table-column>
 
@@ -85,7 +96,11 @@ export default {
         todayPbOrderCount: {
             type: Number,
             default: null
-        },         
+        },   
+        longShortRatios: {
+            type: Array,
+            default: []
+        }      
     },
 
     watch: {
@@ -107,7 +122,10 @@ export default {
                 vsCandidateSurge: null,
 
                 // 24H内抄底订单
-                todayPbOrderCount: null
+                todayPbOrderCount: null,
+
+                // 最近的多空数据(平均值)
+                longShortRatio: null
             }],
 
             // dialogHistoryAtrptgVisible: false,
@@ -129,6 +147,47 @@ export default {
             this.otherInfoDatas[0].vsCandidateRight = vsData.candidate_right
             this.otherInfoDatas[0].vsCandidateSurge = (vsData.candidate_surge*100).toFixed(1)
             this.otherInfoDatas[0].todayPbOrderCount = this.todayPbOrderCount
+
+            // 分析long_short_ratios
+            this.otherInfoDatas[0].longShortRatio = this.getLastLongShortRatio()
+        },
+
+        getLastLongShortRatio(){
+            // 从4大平台的数据中分析出最近的值
+            this.longShortRatios.sort((a, b) => b.mts - a.mts)
+            var last_mts = null
+            var count = 0
+            var sum = 0
+            for(let data of this.longShortRatios){
+                // 找到第一组4个数据的mts值都一致的数据
+                if(last_mts == null || data.mts == last_mts){
+                    count += 1
+                    sum += data.long
+                    if (count == 4){
+                        return ((sum/4)*100).toFixed(1)
+                    }
+                } else {
+                    count = 1
+                    sum = data.long
+                    last_mts = data.mts
+                }
+            }
+
+            // 没找到
+            return null
+        },
+
+        // 获取最近24H的多空数据
+        fetchLongShortRatios(){
+            this.longShortRatios = []
+            this.longShortRatiosAvailable = true
+            var startMts = Date.now() - 25 * 3600 * 1000
+            var filters = 'show_exchange=true&mts__gte=' + startMts
+            getLongShortRatios(config.masterHost, filters).then(response => {
+                    this.longShortRatios = response.results
+                    this.longShortRatiosAvailable = true
+                }
+            )
         },
 
         toThousands: toThousands,
