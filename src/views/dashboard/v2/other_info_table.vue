@@ -59,6 +59,7 @@
                             {{ scope.row.longShortRatio }}%
                         </span> 
                     </span>
+                    <i class="el-icon-data-line" v-on:click="showLongShortRatioDialog()" style="cursor: pointer"></i>
                 </template>
             </el-table-column>
 
@@ -72,6 +73,12 @@
                 </template>
             </el-table-column>  
         </el-table>
+
+        <el-dialog width="80%" title="多空人数占比" :visible.sync="longShortRatioDialogVisible">
+            <div>
+                <highcharts :options="longShortRatiosOptions" style="margin-top: 20px"></highcharts>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -81,11 +88,14 @@ import {toThousands, getAnnualReturn, getMaxDrawdown} from '@/utils/general'
 import moment from 'moment'
 import {addSingleLine} from '@/utils/chart'
 import {Chart} from 'highcharts-vue'
+import { getLongShortRatios } from '@/api/long_short_ratio'
+import multiValueLine from '@/views/balance/_multi_value_line'
 
 
 export default {
     components: {
-        highcharts: Chart
+        highcharts: Chart,
+        multiValueLine,
     },
 
     props: {
@@ -128,7 +138,44 @@ export default {
                 longShortRatio: null
             }],
 
-            // dialogHistoryAtrptgVisible: false,
+            // 曲线图
+            longShortRatioLineData: null,
+            longSHortRatioLineDataAvailable: false,
+            longShortRatioDialogVisible: false,
+            longShortRatiosOptions: {
+                chart: {
+                    type: 'line',
+                    zoomType: 'x'
+                },
+                title: {
+                    text: '',
+                },
+                xAxis: {
+                    categories: []
+                },
+                yAxis: {
+                    type: this.yType,
+                    title: {
+                        text: '%'
+                    }
+                },
+                exporting: { enabled: false },
+                
+                plotOptions: {
+                    series: {
+                        label: {
+                            connectorAllowed: false
+                        },
+                    },
+                    line: {
+                        marker: {
+                            enabled: false
+                        },
+                    }			        
+                },
+                
+                series: [],  
+            },      
         }
     },
 
@@ -150,6 +197,11 @@ export default {
 
             // 分析long_short_ratios
             this.otherInfoDatas[0].longShortRatio = this.getLastLongShortRatio()
+        },
+
+        showLongShortRatioDialog(){
+            this.longShortRatioDialogVisible = true
+            this.fetchLongShortRatios()
         },
 
         getLastLongShortRatio(){
@@ -180,12 +232,68 @@ export default {
         // 获取最近24H的多空数据
         fetchLongShortRatios(){
             this.longShortRatios = []
-            this.longShortRatiosAvailable = true
+            this.longShortRatiosLoading = true
+            this.longSHortRatioLineDataAvailable = false
+            this.longShortRatioLineData = []
+            this.longShortRatiosOptions.series = []
             var startMts = Date.now() - 25 * 3600 * 1000
             var filters = 'show_exchange=true&mts__gte=' + startMts
             getLongShortRatios(config.masterHost, filters).then(response => {
                     this.longShortRatios = response.results
-                    this.longShortRatiosAvailable = true
+                    this.longShortRatiosLoading = false
+
+                    var datas = {}
+                    var sampleExchange = null
+                    var sampleDates = []
+                    for(let data of this.longShortRatios){
+                        var exchange = data.exchange.name
+                        if (!(exchange in datas)){
+                            datas[exchange] = {}
+                            if (sampleExchange == null){
+                                sampleExchange = exchange
+                            }
+                        }
+                        var ts = new Date((data.mts/1000 + 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')
+                        datas[exchange][ts] = data.long*100
+                        if (exchange == sampleExchange){
+                            sampleDates.push(ts)
+                        }
+                    }
+                    // debugger
+
+                    // 添加合并曲线
+                    var avg = {}
+                    for(let ts of sampleDates){
+                        var sum = 0
+                        var valid = true
+                        var count = 0
+                        for(let exchange in datas){
+                            if(ts in datas[exchange]){
+                                sum += datas[exchange][ts]
+                                count += 1
+                            } else {
+                                valid = false
+                                break
+                            }
+                        }
+                        if (valid){
+                            avg[ts] = sum/count
+                        }
+                    }
+                    datas['avg'] = avg
+
+                    for(let exchange in datas){
+                        addSingleLine(exchange, datas[exchange], this.longShortRatiosOptions, false, 1)
+                        // this.longShortRatioLineData.push({
+                        //     title: exchange,
+                        //     data: datas[exchange]
+                        // })
+                    }
+
+                    // for(let _data of this.longShortRatioLineData){
+                    //     addSingleLine(this.values[i].title, this.filterDates(this.values[i].data, range), this.totalBalanceOptions, false)
+                    // }
+                    // this.longSHortRatioLineDataAvailable = true
                 }
             )
         },
