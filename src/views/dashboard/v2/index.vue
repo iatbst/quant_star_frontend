@@ -550,6 +550,7 @@ export default {
             parentPfoMacroStrategiesRefresh: null,
             parentPfoPositionsRefresh: null,
             todayOrdersRefresh: null,
+            longShortRatioRefresh: null,
             todayFundingFeesRefresh: null,
             todayPnlsRefresh: null,
             parentPfoTradeStatsRefresh: null,
@@ -676,6 +677,7 @@ export default {
 
         // 获取最近24H的多空数据
         fetchLongShortRatios(){
+            this.longShortRatioRefresh = new Date()
             this.longShortRatios = []
             this.longShortRatiosAvailable = false
             var startMts = Date.now() - 25 * 3600 * 1000
@@ -1417,11 +1419,11 @@ export default {
                     console.log(now + '刷新:fetchParentPfoAtrptg');
                     this.fetchParentPfoAtrptg()
                 }  
-                // Jia VS Sun Pnl
-                // if(now - this.jiaSunPnlRefresh > 60*60*1000){
-                //     console.log(now + '刷新:fetchHoldCoinPnl');
-                //     this.fetchHoldCoinPnl()
-                // } 
+                // 多空占比数据(后台每个小时的20分钟时爬取多空数据)
+                if(minute >= 25 && now - this.longShortRatioRefresh > 3600*1000){
+                    console.log(now + '刷新:fetchLongShortRatios');
+                    this.fetchLongShortRatios()
+                }  
                 // 今日表格
                 if(now - this.todayOrdersRefresh > 5*60*1000){
                     console.log(now + '刷新:fetchTodayOrders');

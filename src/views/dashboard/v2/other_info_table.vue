@@ -114,12 +114,24 @@ export default {
     },
 
     watch: {
-        parentPfoMacroStrategies: {
-            handler(val, oldVal){
-                this.parseMacroStrategies()
-            },
-            deep: true
-        },
+        // parentPfoMacroStrategies: {
+        //     handler(val, oldVal){
+        //         this.parseMacroStrategies()
+        //     },
+        //     deep: true
+        // },
+        // todayPbOrderCount: {
+        //     handler(val, oldVal){
+        //         this.parseMacroStrategies()
+        //     },
+        //     deep: true
+        // },
+        // longShortRatios: {
+        //     handler(val, oldVal){
+        //         this.parseLongShortRatios()
+        //     },
+        //     deep: true
+        // },
     },
 
     data() {
@@ -140,7 +152,6 @@ export default {
 
             // 曲线图
             longShortRatioLineData: null,
-            longSHortRatioLineDataAvailable: false,
             longShortRatioDialogVisible: false,
             longShortRatiosOptions: {
                 chart: {
@@ -181,11 +192,11 @@ export default {
 
     created() {
         // 分析Data
-        this.parseMacroStrategies()
+        this.parse()
     },
 
     methods: {
-        parseMacroStrategies(){
+        parse(){
             // 宏观策略仓位信息从系统后台获取
             // debugger
             var vsData = this.parentPfoMacroStrategies.value_surge
@@ -193,9 +204,15 @@ export default {
             this.otherInfoDatas[0].vsCandidateDt = vsData.candidate_dt
             this.otherInfoDatas[0].vsCandidateRight = vsData.candidate_right
             this.otherInfoDatas[0].vsCandidateSurge = (vsData.candidate_surge*100).toFixed(1)
+
+            // 抄底订单
             this.otherInfoDatas[0].todayPbOrderCount = this.todayPbOrderCount
 
             // 分析long_short_ratios
+            this.otherInfoDatas[0].longShortRatio = this.getLastLongShortRatio()
+        },
+
+        parseLongShortRatios(){
             this.otherInfoDatas[0].longShortRatio = this.getLastLongShortRatio()
         },
 
@@ -232,15 +249,12 @@ export default {
         // 获取最近24H的多空数据
         fetchLongShortRatios(){
             this.longShortRatios = []
-            this.longShortRatiosLoading = true
-            this.longSHortRatioLineDataAvailable = false
             this.longShortRatioLineData = []
             this.longShortRatiosOptions.series = []
             var startMts = Date.now() - 25 * 3600 * 1000
             var filters = 'show_exchange=true&mts__gte=' + startMts
             getLongShortRatios(config.masterHost, filters).then(response => {
                     this.longShortRatios = response.results
-                    this.longShortRatiosLoading = false
 
                     var datas = {}
                     var sampleExchange = null
@@ -284,16 +298,10 @@ export default {
 
                     for(let exchange in datas){
                         addSingleLine(exchange, datas[exchange], this.longShortRatiosOptions, false, 1)
-                        // this.longShortRatioLineData.push({
-                        //     title: exchange,
-                        //     data: datas[exchange]
-                        // })
                     }
 
-                    // for(let _data of this.longShortRatioLineData){
-                    //     addSingleLine(this.values[i].title, this.filterDates(this.values[i].data, range), this.totalBalanceOptions, false)
-                    // }
-                    // this.longSHortRatioLineDataAvailable = true
+                    // 顺便更新
+                    this.parseLongShortRatios()
                 }
             )
         },
