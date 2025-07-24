@@ -206,7 +206,7 @@
 
 <script>
 import config from '@/configs/system_configs'
-import { getSubOrdersByParentOrder } from '@/api/long_short_ratio'
+import { getSubOrdersByParentOrder } from '@/api/order'
 import { getLogsByWorkerAndTs, getLogsByTrade } from '@/api/log'
 import { formatTimestamp, utcToLocalTimestamp } from '@/utils/general'
 import { chineseString } from '@/utils/chinese'
