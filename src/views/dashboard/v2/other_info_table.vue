@@ -251,7 +251,7 @@ export default {
             this.longShortRatios = []
             this.longShortRatioLineData = []
             this.longShortRatiosOptions.series = []
-            var startMts = Date.now() - 25 * 3600 * 1000
+            var startMts = Date.now() - 48 * 3600 * 1000
             var filters = 'show_exchange=true&mts__gte=' + startMts
             getLongShortRatios(config.masterHost, filters).then(response => {
                     this.longShortRatios = response.results
