@@ -107,7 +107,7 @@ var development_hosts = [
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = production_hosts
+    var hostList = development_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
@@ -184,16 +184,16 @@ const strategyAlias = {
     'trendline_break': 'T',
     'tb': 'T',
 
-    'pivot-reversal': 'P',
-    'pivot_reversal': 'P',
-    'pr': 'P',
+    // 'pivot-reversal': 'P',
+    // 'pivot_reversal': 'P',
+    // 'pr': 'P',
 
     // 'delist': '下',
     // 'de': '下',
 
-    'macd-cross-zero': 'M',
-    'macd_cross_zero': 'M',
-    'mcz': 'M',
+    // 'macd-cross-zero': 'M',
+    // 'macd_cross_zero': 'M',
+    // 'mcz': 'M',
 
     'plunge-back': 'B',
     'plunge_back': 'B',
@@ -209,6 +209,7 @@ const strategyAlias = {
 
     'long-short-ratio': 'LR',
     'long_short_ratio': 'LR',
+    'lr': 'LR'
 }
 
 

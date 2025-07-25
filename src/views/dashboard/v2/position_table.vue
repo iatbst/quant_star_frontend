@@ -81,7 +81,7 @@
 
             <el-table-column label="LR空头" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: green">
+                    <span style="color: red">
                         {{toThousands(scope.row.lrPosition)}}
                     </span>          
                 </template>
@@ -235,7 +235,7 @@ export default {
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
             this.positionDatas[0].rsiPosition = Math.round(rsiData.long)
             this.positionDatas[0].bollPosition = Math.round(bollData.long)
-            this.positionDatas[0].lrPosition = Math.round(lrData.long)
+            this.positionDatas[0].lrPosition = Math.round(lrData.short)
 
 
             // 币头寸叠加到总头寸
