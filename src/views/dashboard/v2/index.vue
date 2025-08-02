@@ -21,8 +21,7 @@
             <position-table 
             v-bind:parentPfoPositions="parentPfoPositions" 
             v-bind:subaccountDatas="subaccountDatas" 
-            v-bind:parentPfoWallet="parentPfoWallet" 
-            v-if="parentPfoPositionsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable && parentPfoWalletAvailable">
+            v-if="parentPfoPositionsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable">
             </position-table>
 
             <!--- 平台表 ---
@@ -31,7 +30,8 @@
             --->
             <exchange-table 
             v-bind:subaccountDatas="subaccountDatas" 
-            v-if="subaccountDatasAvailable">
+            v-bind:parentPfoWallet="parentPfoWallet" 
+            v-if="subaccountDatasAvailable && parentPfoWalletAvailable">
             </exchange-table>
 
             <!--- 其他信息 ---
@@ -44,7 +44,9 @@
             v-bind:parentPfoMacroStrategies="parentPfoMacroStrategies" 
             v-bind:todayPbOrderCount="todayPbOrderCount"
             v-bind:longShortRatios="longShortRatios"
-            v-if="parentPfoMacroStrategiesAvailable && todayPbOrderCountAvailable && longShortRatiosAvailable">
+            v-bind:subaccountDatas="subaccountDatas" 
+            v-bind:parentPfoWallet="parentPfoWallet" 
+            v-if="parentPfoMacroStrategiesAvailable && todayPbOrderCountAvailable && longShortRatiosAvailable && subaccountDatasAvailable && parentPfoWalletAvailable">
             </other-info-table>
 
             <!--- 今日表 ---

@@ -5,13 +5,6 @@
         :data="positionDatas"
         :header-cell-style="{ background: '#f2f2f2' }"
         style="width: 100%">
-
-            <el-table-column label="总资产" min-width="10%" align="center">
-                <template slot-scope="scope">
-                    <b><u>${{toThousands(scope.row.totalBalance)}}</u></b>
-                </template>
-            </el-table-column>
-
             <el-table-column label="总仓位" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.totalPosition >= 0">
@@ -85,18 +78,7 @@
                         {{toThousands(scope.row.lrPosition)}}
                     </span>          
                 </template>
-            </el-table-column>
-
-            <el-table-column label="系统杠杆率" min-width="10%" align="center">
-                <template slot-scope="scope">
-                    <span style="color: green" v-if="scope.row.leverage >= 0">
-                        {{(scope.row.leverage).toFixed(2)}}X
-                    </span>   
-                    <span style="color: red" v-else>
-                        {{(scope.row.leverage).toFixed(2)}}X
-                    </span>        
-                </template>
-            </el-table-column>          
+            </el-table-column>     
         </el-table>
     </div>
 </template>
@@ -123,17 +105,16 @@ export default {
             type:Object,
             default:{}
         },
-        parentPfoWallet: {
-            type:Object,
-            default:{}
-        },           
+        // parentPfoWallet: {
+        //     type:Object,
+        //     default:{}
+        // },           
     },
 
     watch: {
         parentPfoPositions: {
             handler(val, oldVal){
                 this.parseParentPfoPositions()
-                this.updateBalanceLeverage()
             },
             deep: true
         },
@@ -141,17 +122,16 @@ export default {
         subaccountDatas: {
             handler(val, oldVal){
                 this.parseSubaccountDatas()
-                this.updateBalanceLeverage()
             },
             deep: true
         },
 
-        parentPfoWallet: {
-            handler(val, oldVal){
-                this.updateBalanceLeverage()
-            },
-            deep: true
-        },
+        // parentPfoWallet: {
+        //     handler(val, oldVal){
+        //         this.updateBalanceLeverage()
+        //     },
+        //     deep: true
+        // },
     },
 
     data() {
@@ -219,7 +199,7 @@ export default {
         // 分析Data
         this.parseSubaccountDatas()
         this.parseParentPfoPositions()
-        this.updateBalanceLeverage()
+        // this.updateBalanceLeverage()
     },
 
     methods: {
@@ -261,14 +241,6 @@ export default {
             this.positionDatas[0].longPosition = Math.round(longPosition)
             this.positionDatas[0].shortPosition = Math.round(shortPosition)
         },
-
-        // 通过Dialog展示trades(注意, worker只包含id和name)
-        // showHistoryAtrptg(){
-        //     this.dialogHistoryAtrptgVisible = true
-        //     if (this.historyAtrptgOptions.series.length == 0){
-        //         addSingleLine('波动率历史值', this.parentPfoAtrptg.history_values, this.historyAtrptgOptions, true, 4)
-        //     }
-        // },
 
         updateBalanceLeverage(){          
             // 当前总资产

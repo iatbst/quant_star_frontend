@@ -5,6 +5,16 @@
         :data="otherInfoDatas"
         :header-cell-style="{ background: '#f2f2f2' }"
         style="width: 100%">
+            <el-table-column label="加权杠杆率" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: green" v-if="scope.row.weight_leverage >= 0">
+                        {{(scope.row.weight_leverage).toFixed(2)}}X
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{(scope.row.weight_leverage).toFixed(2)}}X
+                    </span>        
+                </template>
+            </el-table-column> 
 
             <el-table-column label="VS状态" min-width="10%" align="center">
                 <template slot-scope="scope">
@@ -99,6 +109,14 @@ export default {
     },
 
     props: {
+        subaccountDatas: {
+            type:Object,
+            default:{}
+        },
+        parentPfoWallet: {
+            type:Object,
+            default:{}
+        }, 
         parentPfoMacroStrategies: {
             type:Object,
             default:{}
@@ -137,6 +155,9 @@ export default {
     data() {
         return {
             otherInfoDatas: [{
+                // 加权杠杆率
+                weight_leverage: null,
+
                 // 宏观策略: value_surge
                 vsState: null,
                 vsCandidateDt: null,
@@ -197,6 +218,9 @@ export default {
 
     methods: {
         parse(){
+            // 计算加权杠杆率
+            this.otherInfoDatas[0].weight_leverage = this.cal_weight_leverage()
+
             // 宏观策略仓位信息从系统后台获取
             // debugger
             var vsData = this.parentPfoMacroStrategies.value_surge
@@ -212,6 +236,32 @@ export default {
             this.otherInfoDatas[0].longShortRatio = this.getLastLongShortRatio()
         },
 
+        cal_weight_leverage(){
+            // 计算根据btc/eth加权后的杠杆率
+            // 目前加权算法: btc * 0.33, eth * 0.66, 其他币种不变
+            var totalPosition = 0
+            var totalBtcPosition = 0
+            var totalEthPosition = 0
+            for(let data of this.subaccountDatas){
+                var summary = data.positions.summary
+                totalPosition += summary.usdt_long
+                totalPosition += summary.usdt_short
+
+                var symbolData = data.positions.data
+                for(let symbol in symbolData){
+                    if(symbol == 'BTC/USDT'){
+                        totalBtcPosition += symbolData[symbol].usdt_position
+                    }
+                    if(symbol == 'ETH/USDT'){
+                        totalEthPosition += symbolData[symbol].usdt_position
+                    }
+                }          
+            }
+            var otherPosition = totalPosition - totalBtcPosition - totalEthPosition
+            var totalWeightPosition = totalBtcPosition/3 + totalEthPosition*2/3 + otherPosition
+            return totalWeightPosition/this.parentPfoWallet.usdt_amount 
+        },
+        
         parseLongShortRatios(){
             this.otherInfoDatas[0].longShortRatio = this.getLastLongShortRatio()
         },

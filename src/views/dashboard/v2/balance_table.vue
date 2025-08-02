@@ -4,6 +4,12 @@
     :data="balanceDatas"
     :header-cell-style="{ background: '#f2f2f2' }"
     style="width: 100%">
+        <el-table-column label="总资产" min-width="10%" align="center">
+            <template slot-scope="scope">
+                <b><u>${{toThousands(scope.row.totalBalance)}}</u></b>
+            </template>
+        </el-table-column>
+
         <el-table-column prop="day1Diff" label="今日变化" min-width="10%" align="center">
             <template slot-scope="scope">
                 <span v-if="scope.row.day1Diff > 0" style="color: green">
