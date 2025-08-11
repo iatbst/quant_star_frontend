@@ -347,34 +347,38 @@ export default {
                 sizeData['aa05_weight_ratio'] = sizeData['weight_ratio'].toFixed(4)
                 delete sizeData['weight_ratio']
             }
+            if('sizer_risk_ratio' in sizeData){
+                sizeData['aa06_sizer_risk_ratio'] = sizeData['sizer_risk_ratio'].toFixed(2)
+                delete sizeData['sizer_risk_ratio']
+            }
 
             // tb策略
             if('bb_leverage' in sizeData){
-                sizeData['aa06_bb_leverage'] = sizeData['bb_leverage']
+                sizeData['aa07_bb_leverage'] = sizeData['bb_leverage']
                 delete sizeData['bb_leverage']
             }
             if('bb_score' in sizeData){
-                sizeData['aa07_bb_score'] = sizeData['bb_score']
+                sizeData['aa08_bb_score'] = sizeData['bb_score']
                 delete sizeData['bb_score']
             }
             if('bb_ma_slope_score' in sizeData){
-                sizeData['aa08_bb_ma_slope_score'] = sizeData['bb_ma_slope_score']
+                sizeData['aa09_bb_ma_slope_score'] = sizeData['bb_ma_slope_score']
                 delete sizeData['bb_ma_slope_score']
             }
             if('bb_sma_slope_score' in sizeData){
-                sizeData['aa09_bb_sma_slope_score'] = sizeData['bb_sma_slope_score']
+                sizeData['aa10_bb_sma_slope_score'] = sizeData['bb_sma_slope_score']
                 delete sizeData['bb_sma_slope_score']
             }
             if('bb_adx_ma_score' in sizeData){
-                sizeData['aa10_bb_adx_ma_score'] = sizeData['bb_adx_ma_score']
+                sizeData['aa11_bb_adx_ma_score'] = sizeData['bb_adx_ma_score']
                 delete sizeData['bb_adx_ma_score']
             }
             if('bb_macd_hist_slope_score' in sizeData){
-                sizeData['aa11_bb_macd_hist_slope_score'] = sizeData['bb_macd_hist_slope_score']
+                sizeData['aa12_bb_macd_hist_slope_score'] = sizeData['bb_macd_hist_slope_score']
                 delete sizeData['bb_macd_hist_slope_score']
             }
             if('bb_trendline_score' in sizeData){
-                sizeData['aa12_bb_trendline_score'] = sizeData['bb_trendline_score']
+                sizeData['aa13_bb_trendline_score'] = sizeData['bb_trendline_score']
                 delete sizeData['bb_trendline_score']
             }
 
@@ -390,15 +394,16 @@ export default {
                 case 'aa03_max_loss_ptg': cKey = '最大损失系数';break;
                 case 'aa04_entry_risk': cKey = '入场风险系数';break;
                 case 'aa05_weight_ratio': cKey = '策略币种权重';break;
+                case 'aa06_sizer_risk_ratio': cKey = '整体风险系数';break;
 
                 // tb策略
-                case 'aa06_bb_leverage': cKey = '趋势分杠杆率';break;
-                case 'aa07_bb_score': cKey = '趋势平均分数';break;
-                case 'aa08_bb_ma_slope_score': cKey = '趋势ma_slope分数';break;
-                case 'aa09_bb_sma_slope_score': cKey = '趋势sma_slope分数';break;
-                case 'aa10_bb_adx_ma_score': cKey = '趋势adx_ma分数';break;
-                case 'aa11_bb_macd_hist_slope_score': cKey = '趋势macd分数';break;
-                case 'aa12_bb_trendline_score': cKey = '趋势trendline分数';break;
+                case 'aa07_bb_leverage': cKey = '趋势分杠杆率';break;
+                case 'aa08_bb_score': cKey = '趋势平均分数';break;
+                case 'aa09_bb_ma_slope_score': cKey = '趋势ma_slope分数';break;
+                case 'aa10_bb_sma_slope_score': cKey = '趋势sma_slope分数';break;
+                case 'aa11_bb_adx_ma_score': cKey = '趋势adx_ma分数';break;
+                case 'aa12_bb_macd_hist_slope_score': cKey = '趋势macd分数';break;
+                case 'aa13_bb_trendline_score': cKey = '趋势trendline分数';break;
 
 
                 // default: cKey = key
