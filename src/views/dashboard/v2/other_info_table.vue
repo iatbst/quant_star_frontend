@@ -296,12 +296,13 @@ export default {
             return null
         },
 
-        // 获取最近24H的多空数据
+        // 获取最近N小时的多空数据
         fetchLongShortRatios(){
             this.longShortRatios = []
             this.longShortRatioLineData = []
             this.longShortRatiosOptions.series = []
-            var startMts = Date.now() - 48 * 3600 * 1000
+            var hours = 72  // 展示最近多久的数据
+            var startMts = Date.now() - hours * 3600 * 1000
             var filters = 'show_exchange=true&mts__gte=' + startMts
             getLongShortRatios(config.masterHost, filters).then(response => {
                     this.longShortRatios = response.results

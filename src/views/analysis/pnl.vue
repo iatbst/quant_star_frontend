@@ -361,6 +361,7 @@ export default {
 
                         // 回测数据获取后再获取实盘数据
                         if (count === exchanges.length){
+                            debugger
                             this.getLivePnl()
                         }
                     }
@@ -419,7 +420,26 @@ export default {
                                     var strategy = response.results[i].worker.strategy_name
                                     var strategyID = response.results[i].worker.name.slice(-1,)     //worker最后一位表示子策略
                                     var symbol = response.results[i].worker.product.symbol
-                                    var bt_key = exchange + '_' + strategy + '_' + strategyID + '_' + symbol
+
+                                    // TODO: 需要refactor!
+                                    // - bt_key目前需要根据不同的策略单独生成(否则无法和btPnlDatas中的key对应!)
+                                    // - boll/rsi策略应该根据bar_level展开显示
+                                    if (strategy == 'long-short-ratio'){
+                                        var bt_key = exchange + '_' + 'lr'  + '_' + symbol
+                                    } else if(strategy == 'rsi-mini'){
+                                        var rsiId = response.results[i].worker.name.split('_').slice(-2, ).join('_')
+                                        var bt_key = exchange + '_' + 'rsi_mini'  + '_' + rsiId + '_' + symbol
+                                    } else if(strategy == 'boll-mini'){
+                                        var bollId = response.results[i].worker.name.split('_').slice(-2, ).join('_')
+                                        var bt_key = exchange + '_' + 'boll'  + '_' + bollId + '_' + symbol
+                                    } else {
+                                        // 通用(目前只适用于tb策略)
+                                        var bt_key = exchange + '_' + strategy + '_' + strategyID + '_' + symbol
+                                    }
+                                    // if (!(bt_key in this.btPnlDatas) && bt_key.includes('boll')){
+                                    //     debugger
+                                    // }
+
                                     pnls.push({
                                         'pnl': pnl,
                                         'pnl_ptg': startDt in valueLine ? pnl/valueLine[startDt] : null,    // 实盘收益率
