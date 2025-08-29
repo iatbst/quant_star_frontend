@@ -100,7 +100,7 @@ var production_hosts = [
 
 var development_hosts = [
     // 开发/测试
-    'http://ec2-18-166-54-79.ap-east-1.compute.amazonaws.com:8000/api',  // test1
+    'http://ec2-18-162-53-226.ap-east-1.compute.amazonaws.com:8000/api',  // test1
     // 'http://ec2-16-162-190-111.ap-east-1.compute.amazonaws.com:8000/api',  // test2
 ]
 
