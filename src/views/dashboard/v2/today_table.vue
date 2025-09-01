@@ -259,6 +259,7 @@ export default {
                 'rsi_mini',
                 'boll_mini',
                 'long_short_ratio',
+                'id_nr',
                 'binance',
                 'okex',
                 'bybit',
@@ -295,7 +296,13 @@ export default {
                     initPosition: null,
                     position: null,
                     fundingFees: null
-                },                              
+                },  
+                'id_nr': {
+                    name: 'IN',
+                    initPosition: null,
+                    position: null,
+                    fundingFees: null
+                },                                             
                 'binance': {
                     name: 'Binance',
                     initPosition: null,
@@ -399,6 +406,11 @@ export default {
                     this.todayObj[key].shortTimer = null
                     this.todayObj[key].longWinStop = null
                     this.todayObj[key].shortWinStop = null                    
+                } else if (key == 'id_nr') {
+                    this.todayObj[key].longOpen = null
+                    this.todayObj[key].longFlip = null   
+                    this.todayObj[key].longTimer = null     
+                    this.todayObj[key].longWinStop = null               
                 }
             }
         },

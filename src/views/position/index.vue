@@ -193,6 +193,35 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
+            <!-- in_okex -->
+            <position-map2 
+            v-bind:positions="inOkexPositions" 
+            v-bind:positions-loading="inOkexPositionsLoading"
+            v-bind:exchange="'Okex'"
+            v-bind:strategy="'IN'"
+            v-bind:col-count="10"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- in_bybit -->
+            <position-map2 
+            v-bind:positions="inBybitPositions" 
+            v-bind:positions-loading="inBybitPositionsLoading"
+            v-bind:exchange="'Bybit'"
+            v-bind:strategy="'IN'"
+            v-bind:col-count="10"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- lr_bitget -->
+            <position-map2 
+            v-bind:positions="inBitgetPositions" 
+            v-bind:positions-loading="inBitgetPositionsLoading"
+            v-bind:exchange="'Bitget'"
+            v-bind:strategy="'IN'"
+            v-bind:col-count="10"
+            v-bind:show-zero="false"
+            ></position-map2> 
             <!--- 刷新说明 --->
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
@@ -239,6 +268,9 @@ export default {
             lrOkexHosts: config.lrOkexHosts,
             lrBybitHosts: config.lrBybitHosts,
             lrBitgetHosts: config.lrBitgetHosts,
+            inOkexHosts: config.inOkexHosts,
+            inBybitHosts: config.inBybitHosts,
+            inBitgetHosts: config.inBitgetHosts,
             tbBinanceSortWeights: config.tbBinanceSortWeights,
             tbOkexSortWeights: config.tbOkexSortWeights,
             tbBybitSortWeights: config.tbOkexSortWeights,
@@ -296,6 +328,15 @@ export default {
             lrBitgetPositions: [],
             lrBitgetPositionsAvailable: false,
             lrBitgetPositionsLoading: false,
+            inOkexPositions: [],
+            inOkexPositionsAvailable: false,
+            inOkexPositionsLoading: false,
+            inBybitPositions: [],
+            inBybitPositionsAvailable: false,
+            inBybitPositionsLoading: false,
+            inBitgetPositions: [],
+            inBitgetPositionsAvailable: false,
+            inBitgetPositionsLoading: false,
 
             refreshInterval: 1000,
             refreshIntervalId: null,
@@ -717,6 +758,81 @@ export default {
                             // 排序
                             this.lrBitgetPositionsAvailable = true
                             this.lrBitgetPositionsLoading = false
+                        }
+                    }
+                )
+            } 
+
+            // in okex
+            this.inOkexPositions = []
+            var inOkexCount = 0
+            this.inOkexPositionsLoading = true
+            this.inOkexPositionsAvailable = false
+            for(var i = 0; i < this.inOkexHosts.length; i++){
+                getPositions(this.inOkexHosts[i], 'normal').then(response => {
+                        inOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'long_short_ratio'
+                        }
+                        this.inOkexPositions = this.inOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (inOkexCount === this.inOkexHosts.length ){
+                            // 排序
+                            this.inOkexPositionsAvailable = true
+                            this.inOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // in bybit
+            this.inBybitPositions = []
+            var inBybitCount = 0
+            this.inBybitPositionsLoading = true
+            this.inBybitPositionsAvailable = false
+            for(var i = 0; i < this.inBybitHosts.length; i++){
+                getPositions(this.inBybitHosts[i], 'normal').then(response => {
+                        inBybitCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'long_short_ratio'
+                        }
+                        this.inBybitPositions = this.inBybitPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (inBybitCount === this.inBybitHosts.length ){
+                            // 排序
+                            this.inBybitPositionsAvailable = true
+                            this.inBybitPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // in bitget
+            this.inBitgetPositions = []
+            var inBitgetCount = 0
+            this.inBitgetPositionsLoading = true
+            this.inBitgetPositionsAvailable = false
+            for(var i = 0; i < this.inBitgetHosts.length; i++){
+                getPositions(this.inBitgetHosts[i], 'normal').then(response => {
+                        inBitgetCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'long_short_ratio'
+                        }
+                        this.inBitgetPositions = this.inBitgetPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (inBitgetCount === this.inBitgetHosts.length ){
+                            // 排序
+                            this.inBitgetPositionsAvailable = true
+                            this.inBitgetPositionsLoading = false
                         }
                     }
                 )

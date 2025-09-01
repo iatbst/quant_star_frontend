@@ -171,6 +171,10 @@
                 {
                     title: pnlLines.long_short_ratio.name,
                     data: pnlLines.long_short_ratio.data
+                },
+                {
+                    title: pnlLines.id_nr.name,
+                    data: pnlLines.id_nr.data
                 }                               
             ]
             " 
@@ -179,7 +183,8 @@
             pnlLines.plunge_back.available &&
             pnlLines.rsi_mini.available && 
             pnlLines.boll_mini.available &&
-            pnlLines.long_short_ratio.available
+            pnlLines.long_short_ratio.available &&
+            pnlLines.id_nr.available
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
@@ -211,7 +216,8 @@
             pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
             bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable &&
-            lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBitgetPositionsAvailable
+            lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBitgetPositionsAvailable &&
+            inOkexPositionsAvailable && inBybitPositionsAvailable && inBitgetPositionsAvailable
             "
             ></position-ranks2> 
 
@@ -244,6 +250,7 @@
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
             bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable &&
             lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBitgetPositionsAvailable &&
+            inOkexPositionsAvailable && inBybitPositionsAvailable && inBitgetPositionsAvailable &&
             btPositions.all.available
             "
             ></strategy-positions> 
@@ -388,6 +395,9 @@ export default {
             lrOkexHosts: config.lrOkexHosts,
             lrBybitHosts: config.lrBybitHosts,
             lrBitgetHosts: config.lrBitgetHosts,
+            inOkexHosts: config.inOkexHosts,
+            inBybitHosts: config.inBybitHosts,
+            inBitgetHosts: config.inBitgetHosts,
             tbBinanceSortWeights: config.tbBinanceSortWeights,
             tbOkexSortWeights: config.tbOkexSortWeights,
             tbBybitSortWeights: config.tbOkexSortWeights,
@@ -482,6 +492,15 @@ export default {
             lrBitgetPositions: [],
             lrBitgetPositionsAvailable: false,
             lrBitgetPositionsLoading: false,
+            inOkexPositions: [],
+            inOkexPositionsAvailable: false,
+            inOkexPositionsLoading: false,
+            inBybitPositions: [],
+            inBybitPositionsAvailable: false,
+            inBybitPositionsLoading: false,
+            inBitgetPositions: [],
+            inBitgetPositionsAvailable: false,
+            inBitgetPositionsLoading: false,
 
             jiaPnl: 0,
             jiaPnlAvailable: false,
@@ -537,7 +556,12 @@ export default {
                     'name': 'LR',
                     'data': null,
                     'available': false
-                },                                                                
+                },  
+                'id_nr': {
+                    'name': 'IN',
+                    'data': null,
+                    'available': false
+                },                                                               
             },
 
             refreshInterval: 1000,
@@ -900,6 +924,10 @@ export default {
                     this.pnlLines.long_short_ratio.data = parentPfoData.pnl_line.long_short_ratio.year_now
                     this.pnlLines.long_short_ratio.available = true 
 
+                    // id_nr
+                    this.pnlLines.id_nr.data = parentPfoData.pnl_line.id_nr.year_now
+                    this.pnlLines.id_nr.available = true 
+
                     // 添加上一年最后一日数据为起点数据(pnl = 0), 否则pnl的起点不是0
                     var firstDate = moment().year() - 1 + '-' + '12-31'
                     this.pnlLines.trendline_break.data[firstDate] = 0
@@ -907,6 +935,7 @@ export default {
                     this.pnlLines.rsi_mini.data[firstDate] = 0
                     this.pnlLines.boll_mini.data[firstDate] = 0
                     this.pnlLines.long_short_ratio.data[firstDate] = 0
+                    this.pnlLines.id_nr.data[firstDate] = 0
                 }
             )
         },
@@ -1383,6 +1412,81 @@ export default {
                             // 排序
                             this.lrBitgetPositionsAvailable = true
                             this.lrBitgetPositionsLoading = false
+                        }
+                    }
+                )
+            } 
+
+            // in okex
+            this.inOkexPositions = []
+            var inOkexCount = 0
+            this.inOkexPositionsLoading = true
+            this.inOkexPositionsAvailable = false
+            for(var i = 0; i < this.inOkexHosts.length; i++){
+                getPositions(this.inOkexHosts[i], 'normal').then(response => {
+                        inOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'id_nr'
+                        }
+                        this.inOkexPositions = this.inOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (inOkexCount === this.inOkexHosts.length ){
+                            // 排序
+                            this.inOkexPositionsAvailable = true
+                            this.inOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // in bybit
+            this.inBybitPositions = []
+            var inBybitCount = 0
+            this.inBybitPositionsLoading = true
+            this.inBybitPositionsAvailable = false
+            for(var i = 0; i < this.inBybitHosts.length; i++){
+                getPositions(this.inBybitHosts[i], 'normal').then(response => {
+                        inBybitCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'id_nr'
+                        }
+                        this.inBybitPositions = this.inBybitPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (inBybitCount === this.inBybitHosts.length ){
+                            // 排序
+                            this.inBybitPositionsAvailable = true
+                            this.inBybitPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // in bitget
+            this.inBitgetPositions = []
+            var inBitgetCount = 0
+            this.inBitgetPositionsLoading = true
+            this.inBitgetPositionsAvailable = false
+            for(var i = 0; i < this.inBitgetHosts.length; i++){
+                getPositions(this.inBitgetHosts[i], 'normal').then(response => {
+                        inBitgetCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'id_nr'
+                        }
+                        this.inBitgetPositions = this.inBitgetPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (inBitgetCount === this.inBitgetHosts.length ){
+                            // 排序
+                            this.inBitgetPositionsAvailable = true
+                            this.inBitgetPositionsLoading = false
                         }
                     }
                 )

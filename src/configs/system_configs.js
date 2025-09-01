@@ -46,6 +46,15 @@ const lrBitgetHosts = [
     'http://ec2-13-212-121-193.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
 
+const inOkexHosts = [
+    'http://ec2-43-198-80-40.ap-east-1.compute.amazonaws.com:8000/api'
+]
+const inBybitHosts = [
+    'http://ec2-13-214-187-16.ap-southeast-1.compute.amazonaws.com:8000/api'
+]
+const inBitgetHosts = [
+    'http://ec2-13-212-166-7.ap-southeast-1.compute.amazonaws.com:8000/api'
+]
 
 const pbOkexHosts = [
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
@@ -110,7 +119,7 @@ var development_hosts = [
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = development_hosts
+    var hostList = production_hosts
 } else {
     // 线上环境
     var hostList = production_hosts
@@ -156,7 +165,8 @@ const strategies = [
     'plunge-back',
     'rsi-mini',
     'boll-mini',
-    'long-short-ratio'
+    'long-short-ratio',
+    'id-nr'
 ]
 
 const activeStrategyIDs = [
@@ -172,14 +182,16 @@ const activeStrategyIDs = [
     'plunge_back_4',
     'rsi_mini',
     'boll_mini',
-    'long_short_ratio'
+    'long_short_ratio',
+    'id_nr'
 ]
 
 // 部分策略不展示子策略(只显示合并结果)
 const mergeStrategyIDs = [
     'rsi_mini',
     'boll_mini',
-    'long_short_ratio'
+    'long_short_ratio',
+    'id_nr'
 ]
 
 const strategyAlias = {
@@ -212,7 +224,11 @@ const strategyAlias = {
 
     'long-short-ratio': 'LR',
     'long_short_ratio': 'LR',
-    'lr': 'LR'
+    'lr': 'LR',
+
+    'id-nr': 'IN',
+    'id_nr': 'IN',
+    'in': 'IN'
 }
 
 
@@ -375,6 +391,9 @@ export default {
     lrOkexHosts,
     lrBybitHosts,
     lrBitgetHosts,
+    inOkexHosts,
+    inBybitHosts,
+    inBitgetHosts,
     pfoAlias,
     backtestHost,
     cryptoParentPfo,
