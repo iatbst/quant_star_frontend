@@ -4,7 +4,7 @@ import { getProductDatas } from "@/api/product"
 const masterHost = 'http://ec2-16-163-25-203.ap-east-1.compute.amazonaws.com:8000/api'
 
 const tbBinanceHosts = [
-    'http://ec2-54-250-145-172.ap-northeast-1.compute.amazonaws.com:8000/api'
+    'http://ec2-52-69-118-247.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
 const tbOkexHosts = [
     'http://ec2-16-162-121-210.ap-east-1.compute.amazonaws.com:8000/api'
@@ -87,7 +87,7 @@ var production_hosts = [
     'http://ec2-43-198-80-40.ap-east-1.compute.amazonaws.com:8000/api',         // okex_in_1
 
     // 东京: Binance
-    'http://ec2-54-250-145-172.ap-northeast-1.compute.amazonaws.com:8000/api',  // binance_tb_1
+    'http://ec2-52-69-118-247.ap-northeast-1.compute.amazonaws.com:8000/api',  // binance_tb_1
 
     // 新加坡: Bybit
     'http://ec2-18-138-239-229.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_tb_1
