@@ -56,6 +56,16 @@ const inBitgetHosts = [
     'http://ec2-13-212-166-7.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
 
+const prmOkexHosts = [
+    'http://ec2-95-40-4-125.ap-east-1.compute.amazonaws.com:8000/api'
+]
+const prmBybitHosts = [
+    'http://ec2-13-212-127-254.ap-southeast-1.compute.amazonaws.com:8000/api'
+]
+const prmBitgetHosts = [
+    'http://ec2-13-214-219-208.ap-southeast-1.compute.amazonaws.com:8000/api'
+]
+
 const pbOkexHosts = [
     'http://ec2-18-163-74-159.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-18-166-113-187.ap-east-1.compute.amazonaws.com:8000/api',
@@ -85,9 +95,10 @@ var production_hosts = [
     'http://ec2-43-199-47-49.ap-east-1.compute.amazonaws.com:8000/api',         // okex_boll_1
     'http://ec2-18-163-5-176.ap-east-1.compute.amazonaws.com:8000/api',         // okex_lr_1
     'http://ec2-43-198-80-40.ap-east-1.compute.amazonaws.com:8000/api',         // okex_in_1
+    'http://ec2-95-40-4-125.ap-east-1.compute.amazonaws.com:8000/api',          // okex_prm_1
 
     // 东京: Binance
-    'http://ec2-52-69-118-247.ap-northeast-1.compute.amazonaws.com:8000/api',  // binance_tb_1
+    'http://ec2-52-69-118-247.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_tb_1
 
     // 新加坡: Bybit
     'http://ec2-13-214-180-198.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_tb_1
@@ -98,9 +109,10 @@ var production_hosts = [
     'http://ec2-13-229-53-121.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_boll_1
     'http://ec2-18-140-97-85.ap-southeast-1.compute.amazonaws.com:8000/api',    // bybit_lr_1
     'http://ec2-13-214-187-16.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_in_1
+    'http://ec2-13-212-127-254.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_prm_1
 
     // 新加坡: Bitget
-    'http://ec2-47-129-121-93.ap-southeast-1.compute.amazonaws.com:8000/api',    // bitget_tb_1
+    'http://ec2-47-129-121-93.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_tb_1
     'http://ec2-13-213-7-38.ap-southeast-1.compute.amazonaws.com:8000/api',     // bitget_pb_1
     'http://ec2-54-255-128-30.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_pb_2
     'http://ec2-52-77-236-31.ap-southeast-1.compute.amazonaws.com:8000/api',    // bitget_pb_3
@@ -108,6 +120,7 @@ var production_hosts = [
     'http://ec2-47-128-80-106.ap-southeast-1.compute.amazonaws.com:8000/api',   // bitget_boll_1
     'http://ec2-13-212-121-193.ap-southeast-1.compute.amazonaws.com:8000/api',  // bitget_lr_1
     'http://ec2-13-212-166-7.ap-southeast-1.compute.amazonaws.com:8000/api',    // bitget_in_1
+    'http://ec2-13-214-219-208.ap-southeast-1.compute.amazonaws.com:8000/api',  // bitget_prm_1
 ]
 
 var development_hosts = [
@@ -394,6 +407,9 @@ export default {
     inOkexHosts,
     inBybitHosts,
     inBitgetHosts,
+    prmOkexHosts,
+    prmBybitHosts,
+    prmBitgetHosts,
     pfoAlias,
     backtestHost,
     cryptoParentPfo,
