@@ -128,6 +128,7 @@ export default {
             styBoll: 'boll_mini',
             styLr: 'long_short_ratio',
             styIn: 'id_nr',
+            styPrm: 'pivot_reversal_mini',
             strategyAlias: config.strategyAlias, 
         }
     },
@@ -148,6 +149,7 @@ export default {
             var bollData = this.parentPfoTradeStats.boll_mini
             var lrData = this.parentPfoTradeStats.long_short_ratio
             var inData = this.parentPfoTradeStats.id_nr
+            var prmData = this.parentPfoTradeStats.pivot_reversal_mini
             var tbList = [
                 [this.styTb + '_1', 'T_1'],
                 [this.styTb + '_2', 'T_2'],
@@ -174,6 +176,9 @@ export default {
             var inList = [
                 ['all', 'IN']
             ]   // 只展示合并stats
+            var prmList = [
+                ['all', 'PRM']
+            ]   // 只展示合并stats
             var dataList = [
                 [tbList, tbData],
                 [pbList, pbData],
@@ -181,6 +186,7 @@ export default {
                 [bollList, bollData],
                 [lrList, lrData],
                 [inList, inData],
+                [prmList, prmData]
             ]
             for(let data of dataList){
                 var styData = data[1]

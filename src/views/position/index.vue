@@ -213,12 +213,42 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- lr_bitget -->
+            <!-- in_bitget -->
             <position-map2 
             v-bind:positions="inBitgetPositions" 
             v-bind:positions-loading="inBitgetPositionsLoading"
             v-bind:exchange="'Bitget'"
             v-bind:strategy="'IN'"
+            v-bind:col-count="10"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- prm_okex -->
+            <position-map2 
+            v-bind:positions="prmOkexPositions" 
+            v-bind:positions-loading="prmOkexPositionsLoading"
+            v-bind:exchange="'Okex'"
+            v-bind:strategy="'PRM'"
+            v-bind:col-count="10"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- prm_bybit -->
+            <position-map2 
+            v-bind:positions="prmBybitPositions" 
+            v-bind:positions-loading="prmBybitPositionsLoading"
+            v-bind:exchange="'Bybit'"
+            v-bind:strategy="'PRM'"
+            v-bind:col-count="10"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <!-- prm_bitget -->
+            <position-map2 
+            v-bind:positions="prmBitgetPositions" 
+            v-bind:positions-loading="prmBitgetPositionsLoading"
+            v-bind:exchange="'Bitget'"
+            v-bind:strategy="'PRM'"
             v-bind:col-count="10"
             v-bind:show-zero="false"
             ></position-map2> 
@@ -271,6 +301,9 @@ export default {
             inOkexHosts: config.inOkexHosts,
             inBybitHosts: config.inBybitHosts,
             inBitgetHosts: config.inBitgetHosts,
+            prmOkexHosts: config.prmOkexHosts,
+            prmBybitHosts: config.prmBybitHosts,
+            prmBitgetHosts: config.prmBitgetHosts,
             tbBinanceSortWeights: config.tbBinanceSortWeights,
             tbOkexSortWeights: config.tbOkexSortWeights,
             tbBybitSortWeights: config.tbOkexSortWeights,
@@ -337,6 +370,15 @@ export default {
             inBitgetPositions: [],
             inBitgetPositionsAvailable: false,
             inBitgetPositionsLoading: false,
+            prmOkexPositions: [],
+            prmOkexPositionsAvailable: false,
+            prmOkexPositionsLoading: false,
+            prmBybitPositions: [],
+            prmBybitPositionsAvailable: false,
+            prmBybitPositionsLoading: false,
+            prmBitgetPositions: [],
+            prmBitgetPositionsAvailable: false,
+            prmBitgetPositionsLoading: false,
 
             refreshInterval: 1000,
             refreshIntervalId: null,
@@ -775,7 +817,7 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'long_short_ratio'
+                            positions[j]['sty'] = 'id_nr'
                         }
                         this.inOkexPositions = this.inOkexPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -800,7 +842,7 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'long_short_ratio'
+                            positions[j]['sty'] = 'id_nr'
                         }
                         this.inBybitPositions = this.inBybitPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -825,7 +867,7 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'long_short_ratio'
+                            positions[j]['sty'] = 'id_nr'
                         }
                         this.inBitgetPositions = this.inBitgetPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -833,6 +875,81 @@ export default {
                             // 排序
                             this.inBitgetPositionsAvailable = true
                             this.inBitgetPositionsLoading = false
+                        }
+                    }
+                )
+            } 
+
+            // prm okex
+            this.prmOkexPositions = []
+            var prmOkexCount = 0
+            this.prmOkexPositionsLoading = true
+            this.prmOkexPositionsAvailable = false
+            for(var i = 0; i < this.prmOkexHosts.length; i++){
+                getPositions(this.prmOkexHosts[i], 'normal').then(response => {
+                        prmOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'pivot_reversal_mini'
+                        }
+                        this.prmOkexPositions = this.prmOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (prmOkexCount === this.prmOkexHosts.length ){
+                            // 排序
+                            this.prmOkexPositionsAvailable = true
+                            this.prmOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // prm bybit
+            this.prmBybitPositions = []
+            var prmBybitCount = 0
+            this.prmBybitPositionsLoading = true
+            this.prmBybitPositionsAvailable = false
+            for(var i = 0; i < this.prmBybitHosts.length; i++){
+                getPositions(this.prmBybitHosts[i], 'normal').then(response => {
+                        prmBybitCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'pivot_reversal_mini'
+                        }
+                        this.prmBybitPositions = this.prmBybitPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (prmBybitCount === this.prmBybitHosts.length ){
+                            // 排序
+                            this.prmBybitPositionsAvailable = true
+                            this.prmBybitPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // prm bitget
+            this.prmBitgetPositions = []
+            var prmBitgetCount = 0
+            this.prmBitgetPositionsLoading = true
+            this.prmBitgetPositionsAvailable = false
+            for(var i = 0; i < this.prmBitgetHosts.length; i++){
+                getPositions(this.prmBitgetHosts[i], 'normal').then(response => {
+                        prmBitgetCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'pivot_reversal_mini'
+                        }
+                        this.prmBitgetPositions = this.prmBitgetPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (prmBitgetCount === this.prmBitgetHosts.length ){
+                            // 排序
+                            this.prmBitgetPositionsAvailable = true
+                            this.prmBitgetPositionsLoading = false
                         }
                     }
                 )

@@ -175,7 +175,11 @@
                 {
                     title: pnlLines.id_nr.name,
                     data: pnlLines.id_nr.data
-                }                               
+                },
+                {
+                    title: pnlLines.pivot_reversal_mini.name,
+                    data: pnlLines.pivot_reversal_mini.data
+                }                                  
             ]
             " 
             v-if="
@@ -184,7 +188,8 @@
             pnlLines.rsi_mini.available && 
             pnlLines.boll_mini.available &&
             pnlLines.long_short_ratio.available &&
-            pnlLines.id_nr.available
+            pnlLines.id_nr.available &&
+            pnlLines.pivot_reversal_mini.available
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
@@ -217,7 +222,8 @@
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
             bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable &&
             lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBitgetPositionsAvailable &&
-            inOkexPositionsAvailable && inBybitPositionsAvailable && inBitgetPositionsAvailable
+            inOkexPositionsAvailable && inBybitPositionsAvailable && inBitgetPositionsAvailable &&
+            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBitgetPositionsAvailable
             "
             ></position-ranks2> 
 
@@ -251,6 +257,7 @@
             bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable &&
             lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBitgetPositionsAvailable &&
             inOkexPositionsAvailable && inBybitPositionsAvailable && inBitgetPositionsAvailable &&
+            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBitgetPositionsAvailable &&
             btPositions.all.available
             "
             ></strategy-positions> 
@@ -398,6 +405,9 @@ export default {
             inOkexHosts: config.inOkexHosts,
             inBybitHosts: config.inBybitHosts,
             inBitgetHosts: config.inBitgetHosts,
+            prmOkexHosts: config.prmOkexHosts,
+            prmBybitHosts: config.prmBybitHosts,
+            prmBitgetHosts: config.prmBitgetHosts,
             tbBinanceSortWeights: config.tbBinanceSortWeights,
             tbOkexSortWeights: config.tbOkexSortWeights,
             tbBybitSortWeights: config.tbOkexSortWeights,
@@ -501,6 +511,15 @@ export default {
             inBitgetPositions: [],
             inBitgetPositionsAvailable: false,
             inBitgetPositionsLoading: false,
+            prmOkexPositions: [],
+            prmOkexPositionsAvailable: false,
+            prmOkexPositionsLoading: false,
+            prmBybitPositions: [],
+            prmBybitPositionsAvailable: false,
+            prmBybitPositionsLoading: false,
+            prmBitgetPositions: [],
+            prmBitgetPositionsAvailable: false,
+            prmBitgetPositionsLoading: false,
 
             jiaPnl: 0,
             jiaPnlAvailable: false,
@@ -559,6 +578,11 @@ export default {
                 },  
                 'id_nr': {
                     'name': 'IN',
+                    'data': null,
+                    'available': false
+                },  
+                'pivot_reversal_mini': {
+                    'name': 'PRM',
                     'data': null,
                     'available': false
                 },                                                               
@@ -928,6 +952,10 @@ export default {
                     this.pnlLines.id_nr.data = parentPfoData.pnl_line.id_nr.year_now
                     this.pnlLines.id_nr.available = true 
 
+                    // pivot_reversal_mini
+                    this.pnlLines.pivot_reversal_mini.data = parentPfoData.pnl_line.pivot_reversal_mini.year_now
+                    this.pnlLines.pivot_reversal_mini.available = true 
+
                     // 添加上一年最后一日数据为起点数据(pnl = 0), 否则pnl的起点不是0
                     var firstDate = moment().year() - 1 + '-' + '12-31'
                     this.pnlLines.trendline_break.data[firstDate] = 0
@@ -936,6 +964,7 @@ export default {
                     this.pnlLines.boll_mini.data[firstDate] = 0
                     this.pnlLines.long_short_ratio.data[firstDate] = 0
                     this.pnlLines.id_nr.data[firstDate] = 0
+                    this.pnlLines.pivot_reversal_mini.data[firstDate] = 0
                 }
             )
         },
@@ -1487,6 +1516,81 @@ export default {
                             // 排序
                             this.inBitgetPositionsAvailable = true
                             this.inBitgetPositionsLoading = false
+                        }
+                    }
+                )
+            }  
+
+            // prm okex
+            this.prmOkexPositions = []
+            var prmOkexCount = 0
+            this.prmOkexPositionsLoading = true
+            this.prmOkexPositionsAvailable = false
+            for(var i = 0; i < this.prmOkexHosts.length; i++){
+                getPositions(this.prmOkexHosts[i], 'normal').then(response => {
+                        prmOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'pivot_reversal_mini'
+                        }
+                        this.prmOkexPositions = this.prmOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (prmOkexCount === this.prmOkexHosts.length ){
+                            // 排序
+                            this.prmOkexPositionsAvailable = true
+                            this.prmOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // prm bybit
+            this.prmBybitPositions = []
+            var prmBybitCount = 0
+            this.prmBybitPositionsLoading = true
+            this.prmBybitPositionsAvailable = false
+            for(var i = 0; i < this.prmBybitHosts.length; i++){
+                getPositions(this.prmBybitHosts[i], 'normal').then(response => {
+                        prmBybitCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'pivot_reversal_mini'
+                        }
+                        this.prmBybitPositions = this.prmBybitPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (prmBybitCount === this.prmBybitHosts.length ){
+                            // 排序
+                            this.prmBybitPositionsAvailable = true
+                            this.prmBybitPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // prm bitget
+            this.prmBitgetPositions = []
+            var prmBitgetCount = 0
+            this.prmBitgetPositionsLoading = true
+            this.prmBitgetPositionsAvailable = false
+            for(var i = 0; i < this.prmBitgetHosts.length; i++){
+                getPositions(this.prmBitgetHosts[i], 'normal').then(response => {
+                        prmBitgetCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'pivot_reversal_mini'
+                        }
+                        this.prmBitgetPositions = this.prmBitgetPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (prmBitgetCount === this.prmBitgetHosts.length ){
+                            // 排序
+                            this.prmBitgetPositionsAvailable = true
+                            this.prmBitgetPositionsLoading = false
                         }
                     }
                 )

@@ -179,7 +179,8 @@ const strategies = [
     'rsi-mini',
     'boll-mini',
     'long-short-ratio',
-    'id-nr'
+    'id-nr',
+    'pivot-reversal-mini'
 ]
 
 const activeStrategyIDs = [
@@ -196,7 +197,8 @@ const activeStrategyIDs = [
     'rsi_mini',
     'boll_mini',
     'long_short_ratio',
-    'id_nr'
+    'id_nr',
+    'pivot_reversal_mini'
 ]
 
 // 部分策略不展示子策略(只显示合并结果)
@@ -204,7 +206,8 @@ const mergeStrategyIDs = [
     'rsi_mini',
     'boll_mini',
     'long_short_ratio',
-    'id_nr'
+    'id_nr',
+    'pivot_reversal_mini'
 ]
 
 const strategyAlias = {
@@ -241,7 +244,11 @@ const strategyAlias = {
 
     'id-nr': 'IN',
     'id_nr': 'IN',
-    'in': 'IN'
+    'in': 'IN',
+
+    'pivot-reversal-mini': 'PRM',
+    'pivot_reversal_mini': 'PRM',
+    'prm': 'PRM',
 }
 
 

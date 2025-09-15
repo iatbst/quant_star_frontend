@@ -260,6 +260,7 @@ export default {
                 'boll_mini',
                 'long_short_ratio',
                 'id_nr',
+                'pivot_reversal_mini',
                 'binance',
                 'okex',
                 'bybit',
@@ -302,7 +303,13 @@ export default {
                     initPosition: null,
                     position: null,
                     fundingFees: null
-                },                                             
+                },            
+                'pivot_reversal_mini': {
+                    name: 'PRM',
+                    initPosition: null,
+                    position: null,
+                    fundingFees: null
+                },                                                   
                 'binance': {
                     name: 'Binance',
                     initPosition: null,
@@ -410,6 +417,12 @@ export default {
                     this.todayObj[key].longOpen = null
                     this.todayObj[key].longFlip = null   
                     this.todayObj[key].longTimer = null     
+                    this.todayObj[key].longWinStop = null               
+                } else if (key == 'pivot_reversal_mini') {
+                    this.todayObj[key].longOpen = null
+                    this.todayObj[key].longFlip = null   
+                    this.todayObj[key].longTimer = null   
+                    this.todayObj[key].shortTimer = null  
                     this.todayObj[key].longWinStop = null               
                 }
             }
