@@ -269,25 +269,25 @@ export default {
             ],
             todayObj: {
                 'trendline_break': {
-                    name: 'T',
+                    name: 'TB',
                     initPosition: null,
                     position: null,
                     fundingFees: null
                 },
                 'plunge_back': {
-                    name: 'B',
+                    name: 'PB',
                     initPosition: null,
                     position: null,
                     fundingFees: null
                 },
                  'rsi_mini': {
-                    name: 'RSI',
+                    name: 'RS',
                     initPosition: null,
                     position: null,
                     fundingFees: null
                 }, 
                 'boll_mini': {
-                    name: 'BOLL',
+                    name: 'BL',
                     initPosition: null,
                     position: null,
                     fundingFees: null
@@ -305,7 +305,7 @@ export default {
                     fundingFees: null
                 },            
                 'pivot_reversal_mini': {
-                    name: 'PRM',
+                    name: 'PM',
                     initPosition: null,
                     position: null,
                     fundingFees: null

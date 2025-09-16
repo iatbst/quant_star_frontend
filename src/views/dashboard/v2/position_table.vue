@@ -32,7 +32,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="T多头" min-width="10%" align="center">
+            <el-table-column label="TB多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
                         {{toThousands(scope.row.tbLongPosition)}}
@@ -40,7 +40,7 @@
                 </template>       
             </el-table-column>
 
-            <el-table-column label="T空头" min-width="10%" align="center">
+            <el-table-column label="TB空头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: red">
                         {{toThousands(scope.row.tbShortPosition)}}
@@ -48,7 +48,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="B多头" min-width="10%" align="center">
+            <el-table-column label="PB多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
                         {{toThousands(scope.row.pbPosition)}}
@@ -56,7 +56,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="RSI多头" min-width="10%" align="center">
+            <el-table-column label="RS多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
                         {{toThousands(scope.row.rsiPosition)}}
@@ -64,7 +64,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="BOLL多头" min-width="10%" align="center">
+            <el-table-column label="BL多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
                         {{toThousands(scope.row.bollPosition)}}
@@ -89,7 +89,7 @@
             </el-table-column> 
 
 
-            <el-table-column label="PRM空头" min-width="10%" align="center">
+            <el-table-column label="PM空头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: red">
                         {{toThousands(scope.row.prmPosition)}}

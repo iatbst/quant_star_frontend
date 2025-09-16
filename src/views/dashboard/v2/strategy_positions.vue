@@ -59,7 +59,7 @@ export default {
                 },
 
                 title: {
-                    text: 'T策略仓位合计',
+                    text: 'TB策略仓位合计',
                 },
                 xAxis: {
                     categories: []
@@ -219,7 +219,7 @@ export default {
             }
             // debugger
 
-            addTwoColumns([{'x': 'T-合计', 'y': Math.round(tbLivePositions)}], [{'x': 'T-合计', 'y': Math.round(tbBtPositions)}], this.tbPositionOptions)
+            addTwoColumns([{'x': 'TB-合计', 'y': Math.round(tbLivePositions)}], [{'x': 'T-合计', 'y': Math.round(tbBtPositions)}], this.tbPositionOptions)
             addTwoColumns(livePositions, btPositions, this.positionOptions)
         },
     }

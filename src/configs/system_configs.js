@@ -211,32 +211,21 @@ const mergeStrategyIDs = [
 ]
 
 const strategyAlias = {
-    'trendline-break': 'T',
-    'trendline_break': 'T',
-    'tb': 'T',
+    'trendline-break': 'TB',
+    'trendline_break': 'TB',
+    'tb': 'TB',
 
-    // 'pivot-reversal': 'P',
-    // 'pivot_reversal': 'P',
-    // 'pr': 'P',
+    'plunge-back': 'PB',
+    'plunge_back': 'PB',
+    'pb': 'PB',
 
-    // 'delist': '下',
-    // 'de': '下',
+    'rsi-mini': 'RS',
+    'rsi_mini': 'RS',
+    'rsi': 'RS',
 
-    // 'macd-cross-zero': 'M',
-    // 'macd_cross_zero': 'M',
-    // 'mcz': 'M',
-
-    'plunge-back': 'B',
-    'plunge_back': 'B',
-    'pb': 'B',
-
-    'rsi-mini': 'RSI',
-    'rsi_mini': 'RSI',
-    'rsi': 'RSI',
-
-    'boll-mini': 'BOLL',
-    'boll_mini': 'BOLL',
-    'boll': 'BOLL',
+    'boll-mini': 'BL',
+    'boll_mini': 'BL',
+    'boll': 'BL',
 
     'long-short-ratio': 'LR',
     'long_short_ratio': 'LR',
@@ -246,9 +235,9 @@ const strategyAlias = {
     'id_nr': 'IN',
     'in': 'IN',
 
-    'pivot-reversal-mini': 'PRM',
-    'pivot_reversal_mini': 'PRM',
-    'prm': 'PRM',
+    'pivot-reversal-mini': 'PM',
+    'pivot_reversal_mini': 'PM',
+    'prm': 'PM',
 }
 
 

@@ -12,18 +12,6 @@
             v-if="parentPfoWalletAvailable" >
             </balance-table>
 
-            <!--- 仓位表 ---
-                函数: 
-                    - fetchParentPfoPositions
-                    - fetchSubAccountDatas
-                    - fetchParentPfoAtrptg
-            --->
-            <position-table 
-            v-bind:parentPfoPositions="parentPfoPositions" 
-            v-bind:subaccountDatas="subaccountDatas" 
-            v-if="parentPfoPositionsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable">
-            </position-table>
-
             <!--- 平台表 ---
                 函数: 
                     - fetchSubAccountDatas
@@ -49,6 +37,18 @@
             v-if="parentPfoMacroStrategiesAvailable && todayPbOrderCountAvailable && longShortRatiosAvailable && subaccountDatasAvailable && parentPfoWalletAvailable">
             </other-info-table>
 
+            <!--- 仓位表 ---
+                函数: 
+                    - fetchParentPfoPositions
+                    - fetchSubAccountDatas
+                    - fetchParentPfoAtrptg
+            --->
+            <position-table 
+            v-bind:parentPfoPositions="parentPfoPositions" 
+            v-bind:subaccountDatas="subaccountDatas" 
+            v-if="parentPfoPositionsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable">
+            </position-table>
+            
             <!--- 今日表 ---
                 函数: 
                     - fetchParentPfoPositions
@@ -552,22 +552,22 @@ export default {
             // 策略的Pnl Line(今年)
             pnlLines: {
                 'trendline_break': {
-                    'name': 'T',
+                    'name': 'TB',
                     'data': null,
                     'available': false
                 },
                 'plunge_back': {
-                    'name': 'B',
+                    'name': 'PB',
                     'data': null,
                     'available': false
                 },
                 'rsi_mini': {
-                    'name': 'RSI',
+                    'name': 'RS',
                     'data': null,
                     'available': false
                 },
                 'boll_mini': {
-                    'name': 'BOLL',
+                    'name': 'BL',
                     'data': null,
                     'available': false
                 }, 
@@ -582,7 +582,7 @@ export default {
                     'available': false
                 },  
                 'pivot_reversal_mini': {
-                    'name': 'PRM',
+                    'name': 'PM',
                     'data': null,
                     'available': false
                 },                                                               

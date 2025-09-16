@@ -151,24 +151,24 @@ export default {
             var inData = this.parentPfoTradeStats.id_nr
             var prmData = this.parentPfoTradeStats.pivot_reversal_mini
             var tbList = [
-                [this.styTb + '_1', 'T_1'],
-                [this.styTb + '_2', 'T_2'],
-                [this.styTb + '_3', 'T_3'],
-                [this.styTb + '_4', 'T_4'],
-                [this.styTb + '_5', 'T_5'],
-                [this.styTb + '_6', 'T_6'],
+                [this.styTb + '_1', 'TB_1'],
+                [this.styTb + '_2', 'TB_2'],
+                [this.styTb + '_3', 'TB_3'],
+                [this.styTb + '_4', 'TB_4'],
+                [this.styTb + '_5', 'TB_5'],
+                [this.styTb + '_6', 'TB_6'],
             ]
             var pbList = [
-                [this.styPb + '_1', 'B_1'],
-                [this.styPb + '_2', 'B_2'],
-                [this.styPb + '_3', 'B_3'],
-                [this.styPb + '_4', 'B_4']
+                [this.styPb + '_1', 'PB_1'],
+                [this.styPb + '_2', 'PB_2'],
+                [this.styPb + '_3', 'PB_3'],
+                [this.styPb + '_4', 'PB_4']
             ]
             var rsiList = [
-                ['all', 'RSI']
+                ['all', 'RS']
             ]   // 只展示合并stats
             var bollList = [
-                ['all', 'BOLL']
+                ['all', 'BL']
             ]   // 只展示合并stats
             var lrList = [
                 ['all', 'LR']
@@ -177,7 +177,7 @@ export default {
                 ['all', 'IN']
             ]   // 只展示合并stats
             var prmList = [
-                ['all', 'PRM']
+                ['all', 'PM']
             ]   // 只展示合并stats
             var dataList = [
                 [tbList, tbData],
