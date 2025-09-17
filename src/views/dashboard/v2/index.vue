@@ -27,14 +27,16 @@
                     - fetchParentPfoMacroStrategies
                     - fetchTodayPbOrderCount
                     - fetchLongShortRatios
+                    - fetchSwapFundingRates
             --->
             <other-info-table 
             v-bind:parentPfoMacroStrategies="parentPfoMacroStrategies" 
             v-bind:todayPbOrderCount="todayPbOrderCount"
             v-bind:longShortRatios="longShortRatios"
+            v-bind:swapFundingRates="swapFundingRates"
             v-bind:subaccountDatas="subaccountDatas" 
             v-bind:parentPfoWallet="parentPfoWallet" 
-            v-if="parentPfoMacroStrategiesAvailable && todayPbOrderCountAvailable && longShortRatiosAvailable && subaccountDatasAvailable && parentPfoWalletAvailable">
+            v-if="parentPfoMacroStrategiesAvailable && todayPbOrderCountAvailable && longShortRatiosAvailable && swapFundingRatesAvailable && subaccountDatasAvailable && parentPfoWalletAvailable">
             </other-info-table>
 
             <!--- 仓位表 ---
@@ -48,7 +50,7 @@
             v-bind:subaccountDatas="subaccountDatas" 
             v-if="parentPfoPositionsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable">
             </position-table>
-            
+
             <!--- 今日表 ---
                 函数: 
                     - fetchParentPfoPositions
@@ -341,6 +343,7 @@ import { getPositions } from '@/api/position'
 import { getBacktestPlanByName } from '@/api/backtest_plan'
 import { getBacktestReportById, getBacktestReportByName } from '@/api/backtest_report'
 import { getLongShortRatios } from '@/api/long_short_ratio'
+import { getSwapFundingRates } from '@/api/swap_funding_rate'
 import { getOrders } from '@/api/order'
 import { getNormalWorkerDatas } from '@/api/worker'
 import { getFees } from '@/api/fee'
@@ -453,6 +456,8 @@ export default {
 
             longShortRatios: [],
             longShortRatiosAvailable: false,
+            swapFundingRates: [],
+            swapFundingRatesAvailable: false,
 
             tbBinancePositions: [],
             tbBinancePositionsAvailable: false,
@@ -601,6 +606,7 @@ export default {
             parentPfoPositionsRefresh: null,
             todayOrdersRefresh: null,
             longShortRatioRefresh: null,
+            swapFundingRateRefresh: null,
             todayFundingFeesRefresh: null,
             todayPnlsRefresh: null,
             parentPfoTradeStatsRefresh: null,
@@ -634,6 +640,7 @@ export default {
             this.fetchParentPfoMacroStrategies()
             this.fetchTodayPbOrderCount()
             this.fetchLongShortRatios()
+            this.fetchSwapFundingRates()
 
             // 表格4: 总体今日信息
             this.fetchTodayOrders()
@@ -735,6 +742,20 @@ export default {
             getLongShortRatios(config.masterHost, filters).then(response => {
                     this.longShortRatios = response.results
                     this.longShortRatiosAvailable = true
+                }
+            )
+        },
+
+        // 获取最近24H的资金费率数据
+        fetchSwapFundingRates(){
+            this.swapFundingRateRefresh = new Date()
+            this.swapFundingRates = []
+            this.swapFundingRatesAvailable = false
+            var startMts = Date.now() - 25 * 3600 * 1000
+            var filters = 'mts__gte=' + startMts
+            getSwapFundingRates(config.masterHost, filters).then(response => {
+                    this.swapFundingRates = response.results
+                    this.swapFundingRatesAvailable = true
                 }
             )
         },
@@ -1633,7 +1654,12 @@ export default {
                 if(minute >= 25 && now - this.longShortRatioRefresh > 3600*1000){
                     console.log(now + '刷新:fetchLongShortRatios');
                     this.fetchLongShortRatios()
-                }  
+                } 
+                // 资金费率数据(后台每8个小时爬取资金费率数据)
+                if(now - this.swapFundingRateRefresh > 8*3600*1000){
+                    console.log(now + '刷新:fetchSwapFundingRates');
+                    this.fetchSwapFundingRates()
+                }   
                 // 今日表格
                 if(now - this.todayOrdersRefresh > 5*60*1000){
                     console.log(now + '刷新:fetchTodayOrders');

@@ -93,8 +93,20 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="" min-width="10%" align="center">
+            <el-table-column label="最新资金费率" min-width="10%" align="center">
                 <template slot-scope="scope">
+                    <span v-if="scope.row.swapFundingRate == null">
+                        N/A
+                    </span>
+                    <span style="" v-else>
+                        <span style="color: green" v-if="scope.row.swapFundingRate > 0">
+                            {{ scope.row.swapFundingRate }}%
+                        </span>   
+                        <span style="" v-else>
+                            {{ scope.row.swapFundingRate }}%
+                        </span> 
+                    </span>
+                    <i class="el-icon-data-line" v-on:click="showSwapFundingRateDialog()" style="cursor: pointer"></i>
                 </template>
             </el-table-column>
 
@@ -109,6 +121,12 @@
                 <highcharts :options="longShortRatiosOptions" style="margin-top: 20px"></highcharts>
             </div>
         </el-dialog>
+
+        <el-dialog width="80%" title="" :visible.sync="swapFundingRateDialogVisible">
+            <div>
+                <highcharts :options="swapFundingRatesOptions" style="margin-top: 20px"></highcharts>
+            </div>
+        </el-dialog>       
     </div>
 </template>
 
@@ -117,8 +135,10 @@ import config from '@/configs/system_configs'
 import {toThousands, getAnnualReturn, getMaxDrawdown} from '@/utils/general'
 import moment from 'moment'
 import {addSingleLine} from '@/utils/chart'
+import {addSingleColumn} from '@/utils/chart'
 import {Chart} from 'highcharts-vue'
 import { getLongShortRatios } from '@/api/long_short_ratio'
+import { getSwapFundingRates } from '@/api/swap_funding_rate'
 import multiValueLine from '@/views/balance/_multi_value_line'
 
 
@@ -148,7 +168,11 @@ export default {
         longShortRatios: {
             type: Array,
             default: []
-        }      
+        },   
+        swapFundingRates: {
+            type: Array,
+            default: []
+        }         
     },
 
     watch: {
@@ -188,11 +212,14 @@ export default {
                 todayPbOrderCount: null,
 
                 // 最近的多空数据(平均值)
-                longShortRatio: null
+                longShortRatio: null,
+
+                // 最近的资金费率(Binance:BTC)
+                swapFundingRate: null
             }],
 
-            // 曲线图
-            longShortRatioLineData: null,
+            // 曲线图: 多空占比
+            // longShortRatioLineData: null,
             longShortRatioDialogVisible: false,
             longShortRatiosOptions: {
                 chart: {
@@ -227,7 +254,87 @@ export default {
                 },
                 
                 series: [],  
-            },      
+            }, 
+
+            // 曲线图: 资金费率
+            // swapFundingRateLineData: null,
+            swapFundingRateDialogVisible: false,
+            // Column
+            swapFundingRatesOptions: {
+                chart: {
+                    type: 'column',
+                    height: 400
+                },
+
+                title: {
+                    text: 'BTC(Binance)资金费率',
+                },
+                xAxis: {
+                    categories: []
+                },
+                yAxis: {
+                    title: {
+                        text: '%'
+                    },
+                },
+                
+                exporting: { enabled: false },
+                
+                legend: {
+                    enabled: false
+                },
+
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{series.name}: {point.y}%'
+                },
+                plotOptions: {
+                    column: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    },
+                },
+                series: [{
+                    name: '费率',
+                    data: [],
+                }],
+            },
+            // Line
+            // swapFundingRatesOptions: {
+            //     chart: {
+            //         type: 'line',
+            //         zoomType: 'x'
+            //     },
+            //     title: {
+            //         text: '',
+            //     },
+            //     xAxis: {
+            //         categories: []
+            //     },
+            //     yAxis: {
+            //         type: this.yType,
+            //         title: {
+            //             text: '%'
+            //         }
+            //     },
+            //     exporting: { enabled: false },
+                
+            //     plotOptions: {
+            //         series: {
+            //             label: {
+            //                 connectorAllowed: false
+            //             },
+            //         },
+            //         line: {
+            //             marker: {
+            //                 enabled: false
+            //             },
+            //         }			        
+            //     },
+                
+            //     series: [],  
+            // }, 
         }
     },
 
@@ -262,6 +369,9 @@ export default {
 
             // 分析long_short_ratios
             this.otherInfoDatas[0].longShortRatio = this.getLastLongShortRatio()
+
+            // 分析swap_funding_rates
+            this.otherInfoDatas[0].swapFundingRate = this.getLastSwapFundingRate()
         },
 
         cal_weight_leverage(){
@@ -294,9 +404,18 @@ export default {
             this.otherInfoDatas[0].longShortRatio = this.getLastLongShortRatio()
         },
 
+        parseSwapFundingRates(){
+            this.otherInfoDatas[0].swapFundingRate = this.getLastSwapFundingRate()
+        },
+
         showLongShortRatioDialog(){
             this.longShortRatioDialogVisible = true
             this.fetchLongShortRatios()
+        },
+
+        showSwapFundingRateDialog(){
+            this.swapFundingRateDialogVisible = true
+            this.fetchSwapFundingRates()
         },
 
         getLastLongShortRatio(){
@@ -324,10 +443,21 @@ export default {
             return null
         },
 
+        getLastSwapFundingRate(){
+            // 从数据中分析出最近的值
+            this.swapFundingRates.sort((a, b) => b.mts - a.mts)
+            // debugger
+            if (this.swapFundingRates.length > 0){
+                return (this.swapFundingRates[0].rate*100).toFixed(3)
+            } else {
+                return null
+            }
+        },
+
         // 获取最近N小时的多空数据
         fetchLongShortRatios(){
             this.longShortRatios = []
-            this.longShortRatioLineData = []
+            // this.longShortRatioLineData = []
             this.longShortRatiosOptions.series = []
             var hours = 72  // 展示最近多久的数据
             var startMts = Date.now() - hours * 3600 * 1000
@@ -381,6 +511,44 @@ export default {
 
                     // 顺便更新
                     this.parseLongShortRatios()
+                }
+            )
+        },
+
+        // 获取最近N小时的资金费率数据
+        fetchSwapFundingRates(){
+            this.swapFundingRates = []
+            // this.swapFundingRateLineData = []
+            // this.swapFundingRatesOptions.series = []
+            var days = 30  // 展示最近多久的数据
+            var startMts = Date.now() - days * 24 * 3600 * 1000
+            var filters = 'mts__gte=' + startMts
+            getSwapFundingRates(config.masterHost, filters).then(response => {
+                    this.swapFundingRates = response.results
+                    this.swapFundingRates.sort((a, b) => a.mts - b.mts)
+
+                    // Line
+                    // var datas = {}
+                    // for(let data of this.swapFundingRates){
+                    //     var ts = new Date((data.mts/1000 + 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')
+                    //     datas[ts] = data.rate*100
+                    // }
+                    // addSingleLine('BTC(Binance)资金费率', datas, this.swapFundingRatesOptions, false, 3)
+
+                    // Column
+                    var colDatas = []
+                    for(let data of this.swapFundingRates){
+                        var ts = new Date((data.mts/1000 + 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')
+                        colDatas.push({
+                            'x': ts,
+                            'y': Number(((data.rate*100)).toFixed(4)),
+                            'color': data.rate >= 0 ? 'green' : 'red'
+                        })                   
+                    }
+                    addSingleColumn(colDatas, this.swapFundingRatesOptions) 
+
+                    // 顺便更新
+                    this.parseSwapFundingRates()
                 }
             )
         },
