@@ -110,8 +110,20 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="" min-width="10%" align="center">
+            <el-table-column label="最新趋势分" min-width="10%" align="center">
                 <template slot-scope="scope">
+                    <span v-if="scope.row.bullBearScore == null">
+                        N/A
+                    </span>
+                    <span style="" v-else>
+                        <span style="color: green" v-if="scope.row.bullBearScore >= 0.6">
+                            {{ scope.row.bullBearScore }}
+                        </span>   
+                        <span style="color: red" v-else>
+                            {{ scope.row.bullBearScore }}
+                        </span> 
+                    </span>
+                    <i class="el-icon-data-line" v-on:click="showBullBearDialog()" style="cursor: pointer"></i>
                 </template>
             </el-table-column>  
         </el-table>
@@ -126,7 +138,13 @@
             <div>
                 <highcharts :options="swapFundingRatesOptions" style="margin-top: 20px"></highcharts>
             </div>
-        </el-dialog>       
+        </el-dialog> 
+
+        <el-dialog width="80%" title="" :visible.sync="bullBearDialogVisible">
+            <div>
+                <highcharts :options="bullBearOptions" style="margin-top: 20px"></highcharts>
+            </div>
+        </el-dialog>        
     </div>
 </template>
 
@@ -172,7 +190,11 @@ export default {
         swapFundingRates: {
             type: Array,
             default: []
-        }         
+        },
+        bullBearData: {
+            type:Object,
+            default:{}
+        },                
     },
 
     watch: {
@@ -215,7 +237,10 @@ export default {
                 longShortRatio: null,
 
                 // 最近的资金费率(Binance:BTC)
-                swapFundingRate: null
+                swapFundingRate: null,
+
+                // 最近的趋势分
+                bullBearScore: null
             }],
 
             // 曲线图: 多空占比
@@ -335,6 +360,43 @@ export default {
                 
             //     series: [],  
             // }, 
+
+            // 曲线图: 多空占比
+            bullBearDialogVisible: false,
+            bullBearOptions: {
+                chart: {
+                    type: 'line',
+                    zoomType: 'x'
+                },
+                title: {
+                    text: '',
+                },
+                xAxis: {
+                    categories: []
+                },
+                yAxis: {
+                    type: this.yType,
+                    title: {
+                        text: ''
+                    }
+                },
+                exporting: { enabled: false },
+                
+                plotOptions: {
+                    series: {
+                        label: {
+                            connectorAllowed: false
+                        },
+                    },
+                    line: {
+                        marker: {
+                            enabled: false
+                        },
+                    }			        
+                },
+                
+                series: [],  
+            }, 
         }
     },
 
@@ -372,6 +434,9 @@ export default {
 
             // 分析swap_funding_rates
             this.otherInfoDatas[0].swapFundingRate = this.getLastSwapFundingRate()
+
+            // 分析bull_bear
+            this.otherInfoDatas[0].bullBearScore = this.getBullBearData()
         },
 
         cal_weight_leverage(){
@@ -418,6 +483,38 @@ export default {
             this.fetchSwapFundingRates()
         },
 
+        showBullBearDialog(){
+            this.bullBearDialogVisible = true
+            this.parseBullBearData()
+        },
+
+        parseBullBearData(){
+            // 分析bullBearData
+            this.bullBearOptions.series = []
+
+            // Line
+            var datas = {}
+            for(let dt of Object.keys(this.bullBearData).sort()){
+                datas[dt] = this.bullBearData[dt]
+            }
+            addSingleLine('趋势分(BTC)', datas, this.bullBearOptions, false, 1)
+
+            // Column
+            // var colDatas = []
+            // for(let data of this.swapFundingRates){
+            //     var ts = new Date((data.mts/1000 + 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')
+            //     colDatas.push({
+            //         'x': ts,
+            //         'y': Number(((data.rate*100)).toFixed(4)),
+            //         'color': data.rate >= 0 ? 'green' : 'red'
+            //     })                   
+            // }
+            // addSingleColumn(colDatas, this.swapFundingRatesOptions) 
+
+            // 顺便更新
+            this.otherInfoDatas[0].bullBearScore = this.getBullBearData()         
+        },
+
         getLastLongShortRatio(){
             // 从4大平台的数据中分析出最近的值
             this.longShortRatios.sort((a, b) => b.mts - a.mts)
@@ -449,6 +546,17 @@ export default {
             // debugger
             if (this.swapFundingRates.length > 0){
                 return (this.swapFundingRates[0].rate*100).toFixed(3)
+            } else {
+                return null
+            }
+        },
+
+        getBullBearData(){
+            // 从数据中分析出最近的值
+            var dates = Object.keys(this.bullBearData).sort()
+            if (dates.length > 0){
+                var last_dt = dates[dates.length - 1]
+                return this.bullBearData[last_dt]
             } else {
                 return null
             }

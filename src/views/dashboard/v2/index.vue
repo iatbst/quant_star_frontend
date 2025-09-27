@@ -28,6 +28,7 @@
                     - fetchTodayPbOrderCount
                     - fetchLongShortRatios
                     - fetchSwapFundingRates
+                    - fetchBullBearData
             --->
             <other-info-table 
             v-bind:parentPfoMacroStrategies="parentPfoMacroStrategies" 
@@ -35,8 +36,9 @@
             v-bind:longShortRatios="longShortRatios"
             v-bind:swapFundingRates="swapFundingRates"
             v-bind:subaccountDatas="subaccountDatas" 
-            v-bind:parentPfoWallet="parentPfoWallet" 
-            v-if="parentPfoMacroStrategiesAvailable && todayPbOrderCountAvailable && longShortRatiosAvailable && swapFundingRatesAvailable && subaccountDatasAvailable && parentPfoWalletAvailable">
+            v-bind:parentPfoWallet="parentPfoWallet"
+            v-bind:bullBearData="bullBearData" 
+            v-if="parentPfoMacroStrategiesAvailable && todayPbOrderCountAvailable && longShortRatiosAvailable && swapFundingRatesAvailable && subaccountDatasAvailable && parentPfoWalletAvailable && bullBearDataAvailable">
             </other-info-table>
 
             <!--- 仓位表 ---
@@ -601,6 +603,9 @@ export default {
             slowRefreshInterval: 300000,
             slowIntervalId: null,
 
+            bullBearData: null,
+            bullBearDataAvailable: false,
+
             parentPfoWalletRefresh: null,
             parentPfoMacroStrategiesRefresh: null,
             parentPfoPositionsRefresh: null,
@@ -641,6 +646,7 @@ export default {
             this.fetchTodayPbOrderCount()
             this.fetchLongShortRatios()
             this.fetchSwapFundingRates()
+            this.fetchBullBearData()
 
             // 表格4: 总体今日信息
             this.fetchTodayOrders()
@@ -878,6 +884,18 @@ export default {
                     this.btPositions[sty].available = true
                 })
             }
+        },
+
+        // 从master获取趋势分历史数据(从okex_backtest中获取)
+        fetchBullBearData(){
+            // this.btBalanceValuesRefresh = new Date()
+            var reportName = 'okex_backtest'
+            this.bullBearDataAvailable = false
+            getBacktestReportByName(config.masterHost, reportName).then(response => {
+                this.bullBearData = response.results[0].analyzer_rets.bull_bear
+                this.bullBearDataAvailable = true
+                debugger
+            })
         },
 
         // 从Master获取实盘资产曲线
