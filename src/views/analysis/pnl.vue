@@ -432,6 +432,10 @@ export default {
                                     } else if(strategy == 'boll-mini'){
                                         var bollId = response.results[i].worker.name.split('_').slice(-2, ).join('_')
                                         var bt_key = exchange + '_' + 'boll'  + '_' + bollId + '_' + symbol
+                                    } else if(strategy == 'pivot-reversal-mini'){
+                                        var bt_key = exchange + '_' + 'prm'  + '_' + strategyID + '_' + symbol    
+                                    } else if(strategy == 'id-nr'){
+                                        var bt_key = exchange + '_' + 'in'  + '_' + symbol                                                                         
                                     } else {
                                         // 通用(目前只适用于tb策略)
                                         var bt_key = exchange + '_' + strategy + '_' + strategyID + '_' + symbol
