@@ -433,11 +433,13 @@ export default {
                                         var bollId = response.results[i].worker.name.split('_').slice(-2, ).join('_')
                                         var bt_key = exchange + '_' + 'boll'  + '_' + bollId + '_' + symbol
                                     } else if(strategy == 'pivot-reversal-mini'){
-                                        var bt_key = exchange + '_' + 'prm'  + '_' + strategyID + '_' + symbol    
+                                        var bt_key = exchange + '_' + 'pivot_reversal_mini'  + '_' + strategyID + '_' + symbol    
                                     } else if(strategy == 'id-nr'){
-                                        var bt_key = exchange + '_' + 'in'  + '_' + symbol                                                                         
+                                        var bt_key = exchange + '_' + 'in'  + '_' + symbol   
+                                    } else if(strategy == 'trendline-break'){
+                                        var bt_key = exchange + '_' + 'trendline_break'  + '_' + strategyID + '_' + symbol                                                                                                        
                                     } else {
-                                        // 通用(目前只适用于tb策略)
+                                        // 通用
                                         var bt_key = exchange + '_' + strategy + '_' + strategyID + '_' + symbol
                                     }
                                     // if (!(bt_key in this.btPnlDatas) && bt_key.includes('boll')){
