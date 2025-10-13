@@ -158,6 +158,7 @@ export default {
     methods: {
         // 处理父组件建传入data: positions
         parseData() {    
+            debugger;
             var styPositions = {}     
             var livePositions = []
             var btPositions = []

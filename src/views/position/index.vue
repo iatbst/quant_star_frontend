@@ -18,8 +18,8 @@
             v-bind:sort-coin="true"
             v-bind:sort-coin-weights="tbBinanceSortWeights"
             ></position-map2> 
-
-            <!-- tb_okex -->
+            
+            <!--
             <position-map2 
             v-bind:positions="tbOkexPositions" 
             v-bind:positions-loading="tbOkexPositionsLoading"
@@ -31,7 +31,6 @@
             v-bind:sort-coin-weights="tbOkexSortWeights"
             ></position-map2> 
 
-            <!-- tb_bybit -->
             <position-map2 
             v-bind:positions="tbBybitPositions" 
             v-bind:positions-loading="tbBybitPositionsLoading"
@@ -41,9 +40,8 @@
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
             v-bind:sort-coin-weights="tbBybitSortWeights"
-            ></position-map2> 
+            ></position-map2>
 
-            <!-- tb_bitget -->
             <position-map2 
             v-bind:positions="tbBitgetPositions" 
             v-bind:positions-loading="tbBitgetPositionsLoading"
@@ -55,7 +53,6 @@
             v-bind:sort-coin-weights="tbBitgetSortWeights"
             ></position-map2> 
 
-            <!-- pb_okex -->
             <position-map2 
             v-bind:positions="pbOkexPositions" 
             v-bind:positions-loading="pbOkexPositionsLoading"
@@ -65,7 +62,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- pb_bybit -->
             <position-map2 
             v-bind:positions="pbBybitPositions" 
             v-bind:positions-loading="pbBybitPositionsLoading"
@@ -74,8 +70,7 @@
             v-bind:col-count="5"
             v-bind:show-zero="false"
             ></position-map2> 
-
-            <!-- pb_bitget -->
+            
             <position-map2 
             v-bind:positions="pbBitgetPositions" 
             v-bind:positions-loading="pbBitgetPositionsLoading"
@@ -84,8 +79,7 @@
             v-bind:col-count="5"
             v-bind:show-zero="false"
             ></position-map2> 
-
-            <!-- rsi_okex -->
+            
             <position-map2 
             v-bind:positions="rsiOkexPositions" 
             v-bind:positions-loading="rsiOkexPositionsLoading"
@@ -95,7 +89,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- rsi_bybit -->
             <position-map2 
             v-bind:positions="rsiBybitPositions" 
             v-bind:positions-loading="rsiBybitPositionsLoading"
@@ -104,8 +97,7 @@
             v-bind:col-count="2"
             v-bind:show-zero="false"
             ></position-map2> 
-
-            <!-- rsi_bitget -->
+          
             <position-map2 
             v-bind:positions="rsiBitgetPositions" 
             v-bind:positions-loading="rsiBitgetPositionsLoading"
@@ -114,7 +106,6 @@
             v-bind:col-count="2"
             v-bind:show-zero="false"
             ></position-map2> 
-            <!--- RSI策略排序说明 --->
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
                     <div slot="content">
@@ -123,8 +114,7 @@
                     <span style="color: gray; font-size: 10px"><i class="el-icon-info"></i>RSI策略顺序说明</span>
                 </el-tooltip>
             </div>
-
-            <!-- boll_okex -->
+            
             <position-map2 
             v-bind:positions="bollOkexPositions" 
             v-bind:positions-loading="bollOkexPositionsLoading"
@@ -134,7 +124,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- boll_bybit -->
             <position-map2 
             v-bind:positions="bollBybitPositions" 
             v-bind:positions-loading="bollBybitPositionsLoading"
@@ -144,7 +133,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- boll_bitget -->
             <position-map2 
             v-bind:positions="bollBitgetPositions" 
             v-bind:positions-loading="bollBitgetPositionsLoading"
@@ -153,7 +141,6 @@
             v-bind:col-count="2"
             v-bind:show-zero="false"
             ></position-map2> 
-            <!--- BOLL策略排序说明 --->
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
                     <div slot="content">
@@ -163,7 +150,6 @@
                 </el-tooltip>
             </div>
 
-            <!-- lr_okex -->
             <position-map2 
             v-bind:positions="lrOkexPositions" 
             v-bind:positions-loading="lrOkexPositionsLoading"
@@ -173,7 +159,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- lr_bybit -->
             <position-map2 
             v-bind:positions="lrBybitPositions" 
             v-bind:positions-loading="lrBybitPositionsLoading"
@@ -183,7 +168,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- lr_bitget -->
             <position-map2 
             v-bind:positions="lrBitgetPositions" 
             v-bind:positions-loading="lrBitgetPositionsLoading"
@@ -193,7 +177,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- in_okex -->
             <position-map2 
             v-bind:positions="inOkexPositions" 
             v-bind:positions-loading="inOkexPositionsLoading"
@@ -203,7 +186,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- in_bybit -->
             <position-map2 
             v-bind:positions="inBybitPositions" 
             v-bind:positions-loading="inBybitPositionsLoading"
@@ -213,7 +195,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- in_bitget -->
             <position-map2 
             v-bind:positions="inBitgetPositions" 
             v-bind:positions-loading="inBitgetPositionsLoading"
@@ -223,7 +204,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- prm_okex -->
             <position-map2 
             v-bind:positions="prmOkexPositions" 
             v-bind:positions-loading="prmOkexPositionsLoading"
@@ -233,7 +213,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- prm_bybit -->
             <position-map2 
             v-bind:positions="prmBybitPositions" 
             v-bind:positions-loading="prmBybitPositionsLoading"
@@ -243,7 +222,6 @@
             v-bind:show-zero="false"
             ></position-map2> 
 
-            <!-- prm_bitget -->
             <position-map2 
             v-bind:positions="prmBitgetPositions" 
             v-bind:positions-loading="prmBitgetPositionsLoading"
@@ -252,6 +230,8 @@
             v-bind:col-count="10"
             v-bind:show-zero="false"
             ></position-map2> 
+            -->
+
             <!--- 刷新说明 --->
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
@@ -429,7 +409,9 @@ export default {
                     }
                 )
             }
-
+            
+            // 暂时取消除了binance_tb之外的其他pfo
+            /*
             // tb okex
             this.tbOkexPositions = []
             var tbOkexCount = 0
@@ -954,6 +936,7 @@ export default {
                     }
                 )
             } 
+            */
         },
 
         // 定时刷新数据函数

@@ -221,13 +221,14 @@
             <position-ranks2
             v-bind:positions="positions"
             v-if="
-            tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
-            pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
-            rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
-            bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable &&
-            lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBitgetPositionsAvailable &&
-            inOkexPositionsAvailable && inBybitPositionsAvailable && inBitgetPositionsAvailable &&
-            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBitgetPositionsAvailable
+            tbBinancePositionsAvailable 
+            // && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
+            // pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
+            // rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
+            // bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable &&
+            // lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBitgetPositionsAvailable &&
+            // inOkexPositionsAvailable && inBybitPositionsAvailable && inBitgetPositionsAvailable &&
+            // prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBitgetPositionsAvailable
             "
             ></position-ranks2> 
 
@@ -255,14 +256,15 @@
             v-bind:positions="positions"
             v-bind:btPositions="btPositions.all.data"
             v-if="
-            tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
-            pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
-            rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
-            bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable &&
-            lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBitgetPositionsAvailable &&
-            inOkexPositionsAvailable && inBybitPositionsAvailable && inBitgetPositionsAvailable &&
-            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBitgetPositionsAvailable &&
-            btPositions.all.available
+            tbBinancePositionsAvailable 
+            // && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
+            // pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBitgetPositionsAvailable &&
+            // rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBitgetPositionsAvailable &&
+            // bollOkexPositionsAvailable && bollBybitPositionsAvailable && bollBitgetPositionsAvailable &&
+            // lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBitgetPositionsAvailable &&
+            // inOkexPositionsAvailable && inBybitPositionsAvailable && inBitgetPositionsAvailable &&
+            // prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBitgetPositionsAvailable &&
+            // btPositions.all.available
             "
             ></strategy-positions> 
 
@@ -633,6 +635,7 @@ export default {
     methods: {
         // 获取所有数据
         fetchDatas(){
+            debugger
             // 表格1: 总体资产信息
             this.fetchParentPfoWallet()
 
@@ -643,7 +646,7 @@ export default {
 
             // 表格4: 其他信息
             this.fetchParentPfoMacroStrategies()
-            this.fetchTodayPbOrderCount()
+            // this.fetchTodayPbOrderCount()
             this.fetchLongShortRatios()
             this.fetchSwapFundingRates()
             this.fetchBullBearData()
@@ -1078,6 +1081,7 @@ export default {
 
         // 从Pfo获取所有positions(normal workers)
         fetchPositions() {
+            debugger;
             this.positionsRefresh = new Date()
 
             // 所有positions
@@ -1090,6 +1094,7 @@ export default {
             var tbBinanceCount = 0
             this.tbBinancePositionsLoading = true
             this.tbBinancePositionsAvailable = false
+            debugger
             for(var i = 0; i < this.tbBinanceHosts.length; i++){
                 getPositions(this.tbBinanceHosts[i], 'normal').then(response => {
                         tbBinanceCount += 1
@@ -1105,11 +1110,13 @@ export default {
                             // 排序
                             this.tbBinancePositionsAvailable = true
                             this.tbBinancePositionsLoading = false
+                            debugger
                         }
                     }
                 )
             }
-
+            
+            /*
             // tb okex
             this.tbOkexPositions = []
             var tbOkexCount = 0
@@ -1634,6 +1641,7 @@ export default {
                     }
                 )
             }  
+            */
         },
 
         // 定时刷新数据函数
