@@ -190,15 +190,15 @@ const activeStrategyIDs = [
     'trendline_break_4',
     'trendline_break_5',
     'trendline_break_6',
-    'plunge_back_1',
-    'plunge_back_2',
-    'plunge_back_3',
-    'plunge_back_4',
-    'rsi_mini',
-    'boll_mini',
-    'long_short_ratio',
-    'id_nr',
-    'pivot_reversal_mini'
+    // 'plunge_back_1',
+    // 'plunge_back_2',
+    // 'plunge_back_3',
+    // 'plunge_back_4',
+    // 'rsi_mini',
+    // 'boll_mini',
+    // 'long_short_ratio',
+    // 'id_nr',
+    // 'pivot_reversal_mini'
 ]
 
 // 部分策略不展示子策略(只显示合并结果)

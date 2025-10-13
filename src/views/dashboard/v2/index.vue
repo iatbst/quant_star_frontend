@@ -38,7 +38,9 @@
             v-bind:subaccountDatas="subaccountDatas" 
             v-bind:parentPfoWallet="parentPfoWallet"
             v-bind:bullBearData="bullBearData" 
-            v-if="parentPfoMacroStrategiesAvailable && todayPbOrderCountAvailable && longShortRatiosAvailable && swapFundingRatesAvailable && subaccountDatasAvailable && parentPfoWalletAvailable && bullBearDataAvailable">
+            v-if="parentPfoMacroStrategiesAvailable && 
+            // todayPbOrderCountAvailable && 
+            longShortRatiosAvailable && swapFundingRatesAvailable && subaccountDatasAvailable && parentPfoWalletAvailable && bullBearDataAvailable">
             </other-info-table>
 
             <!--- 仓位表 ---
