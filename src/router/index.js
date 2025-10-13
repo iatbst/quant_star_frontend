@@ -255,19 +255,19 @@ export const constantRoutes = [
     ]
   },
 
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/coins',
-    children: [
-      {
-        path: '/coins',
-        name: '囤币记录',
-        component: () => import('@/views/coins/index'),
-        meta: { title: '囤币记录', icon: 'el-icon-s-order' }
-      }
-    ]
-  },
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/coins',
+  //   children: [
+  //     {
+  //       path: '/coins',
+  //       name: '囤币记录',
+  //       component: () => import('@/views/coins/index'),
+  //       meta: { title: '囤币记录', icon: 'el-icon-s-order' }
+  //     }
+  //   ]
+  // },
 
   {
     path: '/analysis',

@@ -158,7 +158,6 @@ export default {
     methods: {
         // 处理父组件建传入data: positions
         parseData() {    
-            debugger;
             var styPositions = {}     
             var livePositions = []
             var btPositions = []
@@ -178,8 +177,6 @@ export default {
                 }
                 styPositions[styID].size += data.usdt_size
             }
-            // debugger
-
             
             // 实盘仓位
             for(const styID of config.activeStrategyIDs){
@@ -218,7 +215,6 @@ export default {
                     tbBtPositions += position/1000
                 }
             }
-            // debugger
 
             addTwoColumns([{'x': 'TB-合计', 'y': Math.round(tbLivePositions)}], [{'x': 'T-合计', 'y': Math.round(tbBtPositions)}], this.tbPositionOptions)
             addTwoColumns(livePositions, btPositions, this.positionOptions)
