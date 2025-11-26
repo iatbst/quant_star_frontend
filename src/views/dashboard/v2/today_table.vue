@@ -257,7 +257,6 @@ export default {
                 'trendline_break',
                 'plunge_back',
                 'rsi_mini',
-                'boll_mini',
                 'long_short_ratio',
                 'id_nr',
                 'pivot_reversal_mini',
@@ -282,12 +281,6 @@ export default {
                 },
                  'rsi_mini': {
                     name: 'RS',
-                    initPosition: null,
-                    position: null,
-                    fundingFees: null
-                }, 
-                'boll_mini': {
-                    name: 'BL',
                     initPosition: null,
                     position: null,
                     fundingFees: null
@@ -398,14 +391,7 @@ export default {
                     this.todayObj[key].longTimer = null     
                     this.todayObj[key].shortTimer = null
                     this.todayObj[key].longWinStop = null
-                    this.todayObj[key].shortWinStop = null                   
-                } else if (key == 'boll_mini') {
-                    this.todayObj[key].shortOpen = null
-                    this.todayObj[key].shortFlip = null   
-                    this.todayObj[key].longTimer = null     
-                    this.todayObj[key].shortTimer = null
-                    this.todayObj[key].longWinStop = null
-                    this.todayObj[key].shortWinStop = null                   
+                    this.todayObj[key].shortWinStop = null                                 
                 } else if (key == 'long_short_ratio') {
                     this.todayObj[key].longOpen = null
                     this.todayObj[key].longFlip = null   

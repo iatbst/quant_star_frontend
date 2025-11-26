@@ -64,14 +64,6 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="BL多头" min-width="10%" align="center">
-                <template slot-scope="scope">
-                    <span style="color: green">
-                        {{toThousands(scope.row.bollPosition)}}
-                    </span>          
-                </template>
-            </el-table-column>
-
             <el-table-column label="LR空头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: red">
@@ -201,7 +193,6 @@ export default {
                 tbShortPosition: null,
                 pbPosition: null,
                 rsiPosition: null,
-                bollPosition: null,
                 lrPosition: null,
                 inPosition: null,
                 prmPosition: null,
@@ -235,7 +226,6 @@ export default {
             this.positionDatas[0].tbShortPosition = Math.round(tbData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
             this.positionDatas[0].rsiPosition = Math.round(rsiData.long)
-            this.positionDatas[0].bollPosition = Math.round(bollData.long)
             this.positionDatas[0].lrPosition = Math.round(lrData.short)
             this.positionDatas[0].inPosition = Math.round(inData.short)
             this.positionDatas[0].prmPosition = Math.round(prmData.short)

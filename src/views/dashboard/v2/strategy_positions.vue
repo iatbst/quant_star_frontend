@@ -177,6 +177,7 @@ export default {
                 }
                 styPositions[styID].size += data.usdt_size
             }
+
             
             // 实盘仓位
             for(const styID of config.activeStrategyIDs){

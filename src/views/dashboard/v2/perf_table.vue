@@ -125,7 +125,6 @@ export default {
             styTb: 'trendline_break',
             styPb: 'plunge_back',
             styRsi: 'rsi_mini',
-            styBoll: 'boll_mini',
             styLr: 'long_short_ratio',
             styIn: 'id_nr',
             styPrm: 'pivot_reversal_mini',
@@ -146,7 +145,6 @@ export default {
             var tbData = this.parentPfoTradeStats.trendline_break
             var pbData = this.parentPfoTradeStats.plunge_back
             var rsiData = this.parentPfoTradeStats.rsi_mini
-            var bollData = this.parentPfoTradeStats.boll_mini
             var lrData = this.parentPfoTradeStats.long_short_ratio
             var inData = this.parentPfoTradeStats.id_nr
             var prmData = this.parentPfoTradeStats.pivot_reversal_mini
@@ -167,9 +165,6 @@ export default {
             var rsiList = [
                 ['all', 'RS']
             ]   // 只展示合并stats
-            var bollList = [
-                ['all', 'BL']
-            ]   // 只展示合并stats
             var lrList = [
                 ['all', 'LR']
             ]   // 只展示合并stats
@@ -183,7 +178,6 @@ export default {
                 [tbList, tbData],
                 [pbList, pbData],
                 [rsiList, rsiData],
-                [bollList, bollData],
                 [lrList, lrData],
                 [inList, inData],
                 [prmList, prmData]
