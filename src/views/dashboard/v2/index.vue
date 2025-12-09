@@ -842,10 +842,10 @@ export default {
             }
         },
 
-        // 从master获取趋势分历史数据(从binance_backtest中获取)
+        // 从master获取趋势分历史数据(从bitget_backtest中获取)
         fetchBullBearData(){
             // this.btBalanceValuesRefresh = new Date()
-            var reportName = 'binance_backtest'
+            var reportName = 'bitget_backtest'
             this.bullBearDataAvailable = false
             getBacktestReportByName(config.masterHost, reportName).then(response => {
                 this.bullBearData = response.results[0].analyzer_rets.bull_bear
