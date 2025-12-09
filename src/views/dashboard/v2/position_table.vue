@@ -62,15 +62,7 @@
                         {{toThousands(scope.row.rsiPosition)}}
                     </span>          
                 </template>
-            </el-table-column>
-
-            <el-table-column label="LR空头" min-width="10%" align="center">
-                <template slot-scope="scope">
-                    <span style="color: red">
-                        {{toThousands(scope.row.lrPosition)}}
-                    </span>          
-                </template>
-            </el-table-column>     
+            </el-table-column>  
 
             <el-table-column label="IN空头" min-width="10%" align="center">
                 <template slot-scope="scope">
@@ -193,7 +185,6 @@ export default {
                 tbShortPosition: null,
                 pbPosition: null,
                 rsiPosition: null,
-                lrPosition: null,
                 inPosition: null,
                 prmPosition: null,
 
@@ -218,15 +209,12 @@ export default {
             var tbData = this.parentPfoPositions.trendline_break
             var pbData = this.parentPfoPositions.plunge_back
             var rsiData = this.parentPfoPositions.rsi_mini
-            var bollData = this.parentPfoPositions.boll_mini
-            var lrData = this.parentPfoPositions.long_short_ratio
             var inData = this.parentPfoPositions.id_nr
             var prmData = this.parentPfoPositions.pivot_reversal_mini
             this.positionDatas[0].tbLongPosition = Math.round(tbData.long)
             this.positionDatas[0].tbShortPosition = Math.round(tbData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
             this.positionDatas[0].rsiPosition = Math.round(rsiData.long)
-            this.positionDatas[0].lrPosition = Math.round(lrData.short)
             this.positionDatas[0].inPosition = Math.round(inData.short)
             this.positionDatas[0].prmPosition = Math.round(prmData.short)
 

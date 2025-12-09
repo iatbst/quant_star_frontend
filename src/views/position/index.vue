@@ -143,33 +143,6 @@
             </div>
 
             <position-map2 
-            v-bind:positions="lrBinancePositions" 
-            v-bind:positions-loading="lrBinancePositionsLoading"
-            v-bind:exchange="'Binance'"
-            v-bind:strategy="'LR'"
-            v-bind:col-count="2"
-            v-bind:show-zero="false"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="lrOkexPositions" 
-            v-bind:positions-loading="lrOkexPositionsLoading"
-            v-bind:exchange="'Okex'"
-            v-bind:strategy="'LR'"
-            v-bind:col-count="2"
-            v-bind:show-zero="false"
-            ></position-map2> 
-
-            <position-map2 
-            v-bind:positions="lrBybitPositions" 
-            v-bind:positions-loading="lrBybitPositionsLoading"
-            v-bind:exchange="'Bybit'"
-            v-bind:strategy="'LR'"
-            v-bind:col-count="2"
-            v-bind:show-zero="false"
-            ></position-map2> 
-
-            <position-map2 
             v-bind:positions="pbBinancePositions" 
             v-bind:positions-loading="pbBinancePositionsLoading"
             v-bind:exchange="'Binance'"
@@ -236,9 +209,6 @@ export default {
             rsiOkexHosts: config.rsiOkexHosts,
             rsiBybitHosts: config.rsiBybitHosts,
             rsiBinanceHosts: config.rsiBinanceHosts,
-            lrOkexHosts: config.lrOkexHosts,
-            lrBybitHosts: config.lrBybitHosts,
-            lrBinanceHosts: config.lrBinanceHosts,
             inOkexHosts: config.inOkexHosts,
             inBybitHosts: config.inBybitHosts,
             inBinanceHosts: config.inBinanceHosts,
@@ -583,81 +553,6 @@ export default {
                             // 排序
                             this.rsiBinancePositionsAvailable = true
                             this.rsiBinancePositionsLoading = false
-                        }
-                    }
-                )
-            }  
-
-            // lr okex
-            this.lrOkexPositions = []
-            var lrOkexCount = 0
-            this.lrOkexPositionsLoading = true
-            this.lrOkexPositionsAvailable = false
-            for(var i = 0; i < this.lrOkexHosts.length; i++){
-                getPositions(this.lrOkexHosts[i], 'normal').then(response => {
-                        lrOkexCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'long_short_ratio'
-                        }
-                        this.lrOkexPositions = this.lrOkexPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (lrOkexCount === this.lrOkexHosts.length ){
-                            // 排序
-                            this.lrOkexPositionsAvailable = true
-                            this.lrOkexPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // lr bybit
-            this.lrBybitPositions = []
-            var lrBybitCount = 0
-            this.lrBybitPositionsLoading = true
-            this.lrBybitPositionsAvailable = false
-            for(var i = 0; i < this.lrBybitHosts.length; i++){
-                getPositions(this.lrBybitHosts[i], 'normal').then(response => {
-                        lrBybitCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'long_short_ratio'
-                        }
-                        this.lrBybitPositions = this.lrBybitPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (lrBybitCount === this.lrBybitHosts.length ){
-                            // 排序
-                            this.lrBybitPositionsAvailable = true
-                            this.lrBybitPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // lr binance
-            this.lrBinancePositions = []
-            var lrBinanceCount = 0
-            this.lrBinancePositionsLoading = true
-            this.lrBinancePositionsAvailable = false
-            for(var i = 0; i < this.lrBinanceHosts.length; i++){
-                getPositions(this.lrBinanceHosts[i], 'normal').then(response => {
-                        lrBinanceCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'long_short_ratio'
-                        }
-                        this.lrBinancePositions = this.lrBinancePositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (lrBinanceCount === this.lrBinanceHosts.length ){
-                            // 排序
-                            this.lrBinancePositionsAvailable = true
-                            this.lrBinancePositionsLoading = false
                         }
                     }
                 )

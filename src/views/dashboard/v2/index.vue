@@ -171,10 +171,6 @@
                     data: pnlLines.rsi_mini.data
                 },
                 {
-                    title: pnlLines.long_short_ratio.name,
-                    data: pnlLines.long_short_ratio.data
-                },
-                {
                     title: pnlLines.id_nr.name,
                     data: pnlLines.id_nr.data
                 },
@@ -188,7 +184,6 @@
             pnlLines.trendline_break.available && 
             pnlLines.plunge_back.available &&
             pnlLines.rsi_mini.available && 
-            pnlLines.long_short_ratio.available &&
             pnlLines.id_nr.available &&
             pnlLines.pivot_reversal_mini.available
             " 
@@ -222,7 +217,6 @@
             && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
             pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBinancePositionsAvailable &&
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBinancePositionsAvailable &&
-            lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBinancePositionsAvailable &&
             inOkexPositionsAvailable && inBybitPositionsAvailable && inBinancePositionsAvailable &&
             prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable
             "
@@ -256,7 +250,6 @@
             && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
             pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBinancePositionsAvailable &&
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBinancePositionsAvailable &&
-            lrOkexPositionsAvailable && lrBybitPositionsAvailable && lrBinancePositionsAvailable &&
             inOkexPositionsAvailable && inBybitPositionsAvailable && inBinancePositionsAvailable &&
             prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable &&
             btPositions.all.available
@@ -398,9 +391,6 @@ export default {
             rsiOkexHosts: config.rsiOkexHosts,
             rsiBybitHosts: config.rsiBybitHosts,
             rsiBinanceHosts: config.rsiBinanceHosts,
-            lrOkexHosts: config.lrOkexHosts,
-            lrBybitHosts: config.lrBybitHosts,
-            lrBinanceHosts: config.lrBinanceHosts,
             inOkexHosts: config.inOkexHosts,
             inBybitHosts: config.inBybitHosts,
             inBinanceHosts: config.inBinanceHosts,
@@ -485,15 +475,6 @@ export default {
             rsiBinancePositions: [],
             rsiBinancePositionsAvailable: false,
             rsiBinancePositionsLoading: false,
-            lrOkexPositions: [],
-            lrOkexPositionsAvailable: false,
-            lrOkexPositionsLoading: false,
-            lrBybitPositions: [],
-            lrBybitPositionsAvailable: false,
-            lrBybitPositionsLoading: false,
-            lrBinancePositions: [],
-            lrBinancePositionsAvailable: false,
-            lrBinancePositionsLoading: false,
             inOkexPositions: [],
             inOkexPositionsAvailable: false,
             inOkexPositionsLoading: false,
@@ -557,12 +538,7 @@ export default {
                     'name': 'RS',
                     'data': null,
                     'available': false
-                },
-                'long_short_ratio': {
-                    'name': 'LR',
-                    'data': null,
-                    'available': false
-                },  
+                }, 
                 'id_nr': {
                     'name': 'IN',
                     'data': null,
@@ -958,10 +934,6 @@ export default {
                     this.pnlLines.rsi_mini.data = parentPfoData.pnl_line.rsi_mini.year_now
                     this.pnlLines.rsi_mini.available = true  
 
-                    // long_short_ratio
-                    this.pnlLines.long_short_ratio.data = parentPfoData.pnl_line.long_short_ratio.year_now
-                    this.pnlLines.long_short_ratio.available = true 
-
                     // id_nr
                     this.pnlLines.id_nr.data = parentPfoData.pnl_line.id_nr.year_now
                     this.pnlLines.id_nr.available = true 
@@ -975,7 +947,6 @@ export default {
                     this.pnlLines.trendline_break.data[firstDate] = 0
                     this.pnlLines.plunge_back.data[firstDate] = 0
                     this.pnlLines.rsi_mini.data[firstDate] = 0
-                    this.pnlLines.long_short_ratio.data[firstDate] = 0
                     this.pnlLines.id_nr.data[firstDate] = 0
                     this.pnlLines.pivot_reversal_mini.data[firstDate] = 0
                 }
@@ -1308,81 +1279,6 @@ export default {
                     }
                 )
             }  
-
-            // lr okex
-            this.lrOkexPositions = []
-            var lrOkexCount = 0
-            this.lrOkexPositionsLoading = true
-            this.lrOkexPositionsAvailable = false
-            for(var i = 0; i < this.lrOkexHosts.length; i++){
-                getPositions(this.lrOkexHosts[i], 'normal').then(response => {
-                        lrOkexCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'long_short_ratio'
-                        }
-                        this.lrOkexPositions = this.lrOkexPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (lrOkexCount === this.lrOkexHosts.length ){
-                            // 排序
-                            this.lrOkexPositionsAvailable = true
-                            this.lrOkexPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // lr bybit
-            this.lrBybitPositions = []
-            var lrBybitCount = 0
-            this.lrBybitPositionsLoading = true
-            this.lrBybitPositionsAvailable = false
-            for(var i = 0; i < this.lrBybitHosts.length; i++){
-                getPositions(this.lrBybitHosts[i], 'normal').then(response => {
-                        lrBybitCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'long_short_ratio'
-                        }
-                        this.lrBybitPositions = this.lrBybitPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (lrBybitCount === this.lrBybitHosts.length ){
-                            // 排序
-                            this.lrBybitPositionsAvailable = true
-                            this.lrBybitPositionsLoading = false
-                        }
-                    }
-                )
-            }
-
-            // lr binance
-            this.lrBinancePositions = []
-            var lrBinanceCount = 0
-            this.lrBinancePositionsLoading = true
-            this.lrBinancePositionsAvailable = false
-            for(var i = 0; i < this.lrBinanceHosts.length; i++){
-                getPositions(this.lrBinanceHosts[i], 'normal').then(response => {
-                        lrBinanceCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'long_short_ratio'
-                        }
-                        this.lrBinancePositions = this.lrBinancePositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (lrBinanceCount === this.lrBinanceHosts.length ){
-                            // 排序
-                            this.lrBinancePositionsAvailable = true
-                            this.lrBinancePositionsLoading = false
-                        }
-                    }
-                )
-            } 
 
             // in okex
             this.inOkexPositions = []

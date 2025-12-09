@@ -26,16 +26,6 @@ const rsiBybitHosts = [
     'http://ec2-13-212-71-103.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
 
-const lrBinanceHosts = [
-    'http://ec2-54-95-175-196.ap-northeast-1.compute.amazonaws.com:8000/api'
-]
-const lrOkexHosts = [
-    'http://ec2-54-46-70-97.ap-east-1.compute.amazonaws.com:8000/api'
-]
-const lrBybitHosts = [
-    'http://ec2-18-138-234-224.ap-southeast-1.compute.amazonaws.com:8000/api'
-]
-
 const inBinanceHosts = [
     'http://ec2-35-74-248-242.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
@@ -82,7 +72,6 @@ var production_hosts = [
     'http://ec2-35-74-248-242.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_in_1
     'http://ec2-13-158-130-180.ap-northeast-1.compute.amazonaws.com:8000/api',  // binance_prm_1
     'http://ec2-3-112-231-131.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_rsi_1
-    'http://ec2-54-95-175-196.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_lr_1
     'http://ec2-13-159-19-87.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_1
     'http://ec2-54-95-90-229.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_2
     'http://ec2-57-180-249-6.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_3
@@ -92,7 +81,6 @@ var production_hosts = [
     'http://ec2-43-199-194-46.ap-east-1.compute.amazonaws.com:8000/api',        // okex_in_1
     'http://ec2-54-46-16-152.ap-east-1.compute.amazonaws.com:8000/api',         // okex_prm_1
     'http://ec2-18-166-152-179.ap-east-1.compute.amazonaws.com:8000/api',       // okex_rsi_1
-    'http://ec2-54-46-70-97.ap-east-1.compute.amazonaws.com:8000/api',          // okex_lr_1
     'http://ec2-16-163-142-85.ap-east-1.compute.amazonaws.com:8000/api',        // okex_pb_1
     'http://ec2-54-46-126-24.ap-east-1.compute.amazonaws.com:8000/api',         // okex_pb_2
     'http://ec2-18-162-213-145.ap-east-1.compute.amazonaws.com:8000/api',       // okex_pb_3
@@ -102,7 +90,6 @@ var production_hosts = [
     'http://ec2-18-142-91-216.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_in_1
     'http://ec2-13-214-203-89.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_prm_1
     'http://ec2-13-212-71-103.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_rsi_1
-    'http://ec2-18-138-234-224.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_lr_1
     'http://ec2-13-229-243-221.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_pb_1
     'http://ec2-54-169-8-30.ap-southeast-1.compute.amazonaws.com:8000/api',     // bybit_pb_2
     'http://ec2-18-141-235-126.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_pb_3
@@ -113,12 +100,12 @@ var production_hosts = [
 
 var development_hosts = [
     // 开发/测试
-    'http://ec2-18-163-61-170.ap-east-1.compute.amazonaws.com:8000/api',  // test1
-    'http://ec2-54-46-5-226.ap-east-1.compute.amazonaws.com:8000/api',  // test2
-    'http://ec2-18-162-112-22.ap-east-1.compute.amazonaws.com:8000/api', // test3
-    'http://ec2-43-198-86-129.ap-east-1.compute.amazonaws.com:8000/api', // test4
-    'http://ec2-16-163-142-19.ap-east-1.compute.amazonaws.com:8000/api', // test5
-    'http://ec2-43-198-81-10.ap-east-1.compute.amazonaws.com:8000/api'  // test6
+    'http://ec2-95-40-84-131.ap-east-1.compute.amazonaws.com:8000/api',  // test1
+    'http://ec2-18-166-30-4.ap-east-1.compute.amazonaws.com:8000/api',  // test2
+    // 'http://ec2-18-162-112-22.ap-east-1.compute.amazonaws.com:8000/api', // test3
+    // 'http://ec2-43-198-86-129.ap-east-1.compute.amazonaws.com:8000/api', // test4
+    // 'http://ec2-16-163-142-19.ap-east-1.compute.amazonaws.com:8000/api', // test5
+    // 'http://ec2-43-198-81-10.ap-east-1.compute.amazonaws.com:8000/api'  // test6
 ]
 
 // 当前投资组合的Hosts地址
@@ -169,8 +156,6 @@ const strategies = [
     'trendline-break',
     'plunge-back',
     'rsi-mini',
-    // 'boll-mini',
-    'long-short-ratio',
     'id-nr',
     'pivot-reversal-mini'
 ]
@@ -187,7 +172,6 @@ const activeStrategyIDs = [
     'plunge_back_3',
     'plunge_back_4',
     'rsi_mini',
-    'long_short_ratio',
     'id_nr',
     'pivot_reversal_mini'
 ]
@@ -195,7 +179,6 @@ const activeStrategyIDs = [
 // 部分策略不展示子策略(只显示合并结果)
 const mergeStrategyIDs = [
     'rsi_mini',
-    'long_short_ratio',
     'id_nr',
     'pivot_reversal_mini'
 ]
@@ -212,14 +195,6 @@ const strategyAlias = {
     'rsi-mini': 'RS',
     'rsi_mini': 'RS',
     'rsi': 'RS',
-
-    // 'boll-mini': 'BL',
-    // 'boll_mini': 'BL',
-    // 'boll': 'BL',
-
-    'long-short-ratio': 'LR',
-    'long_short_ratio': 'LR',
-    'lr': 'LR',
 
     'id-nr': 'IN',
     'id_nr': 'IN',
@@ -384,9 +359,6 @@ export default {
     rsiOkexHosts,
     rsiBybitHosts,
     rsiBinanceHosts,
-    lrOkexHosts,
-    lrBybitHosts,
-    lrBinanceHosts,
     inOkexHosts,
     inBybitHosts,
     inBinanceHosts,
