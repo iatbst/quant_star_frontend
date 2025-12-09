@@ -16,54 +16,27 @@
                 </template>
             </el-table-column> 
 
-            <el-table-column label="VS状态" min-width="10%" align="center">
+            <el-table-column label="" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: red" v-if="scope.row.vsState">
-                        <b>激活</b>
-                    </span>   
-                    <span style="" v-else>
-                        未激活
-                    </span> 
                 </template>
             </el-table-column>
 
-            <el-table-column label="VS激活日期" min-width="10%" align="center" v-if="otherInfoDatas[0].vsState">
+
+            <el-table-column label="" min-width="10%" align="center" >
                 <template slot-scope="scope">
-                    {{ scope.row.vsActiveDt }}
-                </template>
-            </el-table-column>
-            <el-table-column label="VS低点日期" min-width="10%" align="center" v-else>
-                <template slot-scope="scope">
-                    {{ scope.row.vsCandidateDt }}
                 </template>
             </el-table-column>
 
-            <el-table-column label="VS剩余天数" min-width="10%" align="center" v-if="otherInfoDatas[0].vsState">
+            <el-table-column label="" min-width="10%" align="center" >
                 <template slot-scope="scope">
-                    {{ scope.row.vsLeftDays }}日
-                </template>
-            </el-table-column>
-            <el-table-column label="VS低点距今" min-width="10%" align="center" v-else>
-                <template slot-scope="scope">
-                    {{ scope.row.vsCandidateRight }}日
                 </template>
             </el-table-column>
 
-           <el-table-column label="VS激活后涨幅" min-width="10%" align="center" v-if="otherInfoDatas[0].vsState">
+            <el-table-column label="" min-width="10%" align="center" >
                 <template slot-scope="scope">
-                    <span style="color: green" v-if="scope.row.vsActiveSurge >= 0">
-                        {{ (scope.row.vsActiveSurge*100).toFixed(1) }}%
-                    </span>   
-                    <span style="color: red" v-else>
-                        {{ (scope.row.vsActiveSurge*100).toFixed(1) }}%
-                    </span> 
                 </template>
             </el-table-column>
-            <el-table-column label="VS低点涨幅" min-width="10%" align="center" v-else>
-                <template slot-scope="scope">
-                    {{ scope.row.vsCandidateSurge }}%
-                </template>
-            </el-table-column>
+
 
             <el-table-column label="24H抄底订单" min-width="10%" align="center">
                 <template slot-scope="scope">
@@ -223,12 +196,6 @@ export default {
             otherInfoDatas: [{
                 // 加权杠杆率
                 weight_leverage: null,
-
-                // 宏观策略: value_surge
-                vsState: null,
-                vsCandidateDt: null,
-                vsCandidateRight: null,
-                vsCandidateSurge: null,
 
                 // 24H内抄底订单
                 todayPbOrderCount: null,
@@ -411,20 +378,19 @@ export default {
             this.otherInfoDatas[0].weight_leverage = this.cal_weight_leverage()
 
             // 宏观策略仓位信息从系统后台获取
-            // debugger
-            var vsData = this.parentPfoMacroStrategies.value_surge
-            this.otherInfoDatas[0].vsState = vsData.active
-            if(vsData.active){
-                // 激活
-                this.otherInfoDatas[0].vsActiveDt = vsData.macro_strategy_date
-                this.otherInfoDatas[0].vsLeftDays = vsData.left_days.toFixed(1)
-                this.otherInfoDatas[0].vsActiveSurge = vsData.active_surge          
-            } else {
-                // 未激活,展示candidate信息
-                this.otherInfoDatas[0].vsCandidateDt = vsData.candidate_dt
-                this.otherInfoDatas[0].vsCandidateRight = vsData.candidate_right
-                this.otherInfoDatas[0].vsCandidateSurge = (vsData.candidate_surge*100).toFixed(1)                
-            }
+            // var vsData = this.parentPfoMacroStrategies.value_surge
+            // this.otherInfoDatas[0].vsState = vsData.active
+            // if(vsData.active){
+            //     // 激活
+            //     this.otherInfoDatas[0].vsActiveDt = vsData.macro_strategy_date
+            //     this.otherInfoDatas[0].vsLeftDays = vsData.left_days.toFixed(1)
+            //     this.otherInfoDatas[0].vsActiveSurge = vsData.active_surge          
+            // } else {
+            //     // 未激活,展示candidate信息
+            //     this.otherInfoDatas[0].vsCandidateDt = vsData.candidate_dt
+            //     this.otherInfoDatas[0].vsCandidateRight = vsData.candidate_right
+            //     this.otherInfoDatas[0].vsCandidateSurge = (vsData.candidate_surge*100).toFixed(1)                
+            // }
 
             // 抄底订单
             this.otherInfoDatas[0].todayPbOrderCount = this.todayPbOrderCount
