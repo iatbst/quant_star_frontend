@@ -78,44 +78,124 @@
 
     <!---------------------------------- 资产曲线 -----------------------------------
         函数:
-            - fetchLiveValueline 
+            - fetchLiveValuelines
             - fetchBacktestValuelinePosition
         更新频率: ?
     --->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
       <el-col :span="24" align="center">
           <div style="margin-bottom: 20px; width: 95%">
-            <two-value-line 
+            <total-value-line 
             v-bind:values="
             [
                 {
                     title: liveValueName,
                     data: totalBalanceValues
                 },
+            ]
+            "
+            v-if="totalBalanceValuesAvailable" 
+            style="margin-bottom: 20px">
+            </total-value-line>
+          </div>
+      </el-col>
+    </el-row>
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+        <!-- Binance -->
+        <el-col :span="6" align="center">
+            <div style="margin-bottom: 20px; width: 100%">
+            <exchange-value-lines
+            v-bind:values="
+            [
                 {
-                    title: btValueLines.all.name,
-                    data: btValueLines.all.data,
+                    title: liveValueLines.binance.name,
+                    data: liveValueLines.binance.data,
+                },
+                {
+                    title: btValueLines.binance.name,
+                    data: btValueLines.binance.data,
                     color: 'lightgray'
                 },
             ]
             "
-            v-if="totalBalanceValuesAvailable && btValueLines.all.available" 
+            v-if="liveValueLines.binance.available && btValueLines.binance.available" 
             style="margin-bottom: 20px">
-            </two-value-line>
+            </exchange-value-lines>
 
-            <!--- 刷新说明 --->
-            <div align="left">
-                <el-tooltip placement="top-start" align="left">
-                    <div slot="content">
-                        实盘资产曲线: 每天00:01:00刷新1次
-                        <br/>
-                        回测资产曲线: 每天09:00:00刷新1次
-                    </div>
-                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
-                </el-tooltip>
             </div>
-          </div>
-      </el-col>
+        </el-col>
+
+        <!-- Okex -->
+        <el-col :span="6" align="center">
+            <div style="margin-bottom: 20px; width: 100%">
+            <exchange-value-lines
+            v-bind:values="
+            [
+                {
+                    title: liveValueLines.okex.name,
+                    data: liveValueLines.okex.data,
+                },
+                {
+                    title: btValueLines.okex.name,
+                    data: btValueLines.okex.data,
+                    color: 'lightgray'
+                },
+            ]
+            "
+            v-if="liveValueLines.okex.available && btValueLines.okex.available" 
+            style="margin-bottom: 20px">
+            </exchange-value-lines>
+
+            </div>
+        </el-col>
+
+        <!-- Bybit -->
+        <el-col :span="6" align="center">
+            <div style="margin-bottom: 20px; width: 100%">
+            <exchange-value-lines
+            v-bind:values="
+            [
+                {
+                    title: liveValueLines.bybit.name,
+                    data: liveValueLines.bybit.data,
+                },
+                {
+                    title: btValueLines.bybit.name,
+                    data: btValueLines.bybit.data,
+                    color: 'lightgray'
+                },
+            ]
+            "
+            v-if="liveValueLines.bybit.available && btValueLines.bybit.available" 
+            style="margin-bottom: 20px">
+            </exchange-value-lines>
+
+            </div>
+        </el-col>
+
+        <!-- Bitget -->
+        <el-col :span="6" align="center">
+            <div style="margin-bottom: 20px; width: 100%">
+            <exchange-value-lines
+            v-bind:values="
+            [
+                {
+                    title: liveValueLines.bitget.name,
+                    data: liveValueLines.bitget.data,
+                },
+                {
+                    title: btValueLines.bitget.name,
+                    data: btValueLines.bitget.data,
+                    color: 'lightgray'
+                },
+            ]
+            "
+            v-if="liveValueLines.bitget.available && btValueLines.bitget.available" 
+            style="margin-bottom: 20px">
+            </exchange-value-lines>
+
+            </div>
+        </el-col>
     </el-row>
 
     <!---------------------------------- Perf Table -----------------------------------
@@ -244,7 +324,7 @@
           <div style="margin-bottom: 20px; width: 95%">
             <strategy-positions
             v-bind:positions="positions"
-            v-bind:btPositions="btPositions.all.data"
+            v-bind:btPositions="btPositions"
             v-if="
             tbBinancePositionsAvailable 
             && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
@@ -252,7 +332,7 @@
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBinancePositionsAvailable &&
             inOkexPositionsAvailable && inBybitPositionsAvailable && inBinancePositionsAvailable &&
             prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable &&
-            btPositions.all.available
+            btPositions.binance.available && btPositions.okex.available && btPositions.bybit.available && btPositions.bitget.available
             "
             ></strategy-positions> 
 
@@ -309,7 +389,8 @@ import otherInfoTable from '@/views/dashboard/v2/other_info_table'
 import exchangeTable from '@/views/dashboard/v2/exchange_table'
 import balanceTable from '@/views/dashboard/v2/balance_table'
 import valueLine from '@/views/balance/_value_line'
-import twoValueLine from '@/views/balance/_two_value_line'
+import totalValueLine from '@/views/dashboard/v2/total_valueline'
+import exchangeValueLines from '@/views/dashboard/v2/exchange_valuelines'
 import multiValueLine from '@/views/balance/_multi_value_line'
 import strategyLevelPositions from '@/views/position/_strategy_level_positions'
 // import strategyPositions from '@/views/position/_strategy_positions'
@@ -355,7 +436,8 @@ export default {
         todayTable,
 
         valueLine,
-        twoValueLine,
+        totalValueLine,
+        exchangeValueLines,
         multiValueLine,
         
 
@@ -504,22 +586,86 @@ export default {
 
             liveValueName: '实盘资金',
 
-            // 记录策略回测资产曲线
-            btValueLines: {
-                'all': {
-                    'name': '回测资金',
+            // 记录不同平台实盘资产曲线
+            liveValueLines: {
+                'binance': {
+                    'name': 'Binance实盘',
                     'data': null,
                     'available': false
-                },                                            
+                },  
+                'okex': {
+                    'name': 'Okex实盘',
+                    'data': null,
+                    'available': false
+                },
+                'bybit': {
+                    'name': 'Bybit实盘',
+                    'data': null,
+                    'available': false
+                },
+                'bitget': {
+                    'name': 'Bitget实盘',
+                    'data': null,
+                    'available': false
+                },                                           
+            },
+
+            // 记录策略回测资产曲线
+            btValueLines: {
+                // 'all': {
+                //     'name': '回测资金',
+                //     'data': null,
+                //     'available': false
+                // }, 
+                'binance': {
+                    'name': 'Binance回测',
+                    'data': null,
+                    'available': false
+                },  
+                'okex': {
+                    'name': 'Okex回测',
+                    'data': null,
+                    'available': false
+                },
+                'bybit': {
+                    'name': 'Bybit回测',
+                    'data': null,
+                    'available': false
+                },
+                'bitget': {
+                    'name': 'Bitget回测',
+                    'data': null,
+                    'available': false
+                },                                           
             },
 
             // 记录策略当前仓位
             btPositions: {
-                'all': {
+                // 'all': {
+                //     'name': '回测仓位',
+                //     'data': null,
+                //     'available': false
+                // }, 
+                 'binance': {
                     'name': '回测仓位',
                     'data': null,
                     'available': false
-                },                                            
+                },  
+                'okex': {
+                    'name': '回测仓位',
+                    'data': null,
+                    'available': false
+                },
+                'bybit': {
+                    'name': '回测仓位',
+                    'data': null,
+                    'available': false
+                },
+                'bitget': {
+                    'name': '回测仓位',
+                    'data': null,
+                    'available': false
+                },                                                           
             },
 
             // 策略的Pnl Line(今年)
@@ -613,7 +759,7 @@ export default {
             this.fetchParentPfoTradeStats()
 
             // 图表1: 实盘资产 VS 回测资产
-            this.fetchLiveValueline()   // 实盘资产曲线
+            this.fetchLiveValuelines()   // 实盘资产曲线
             this.fetchBacktestValuelinePosition()  // 策略的回测资产曲线
 
             // 图表2: 策略收益曲线
@@ -829,15 +975,15 @@ export default {
         // 从master获取回测资产曲线和仓位(目前只获取all)
         fetchBacktestValuelinePosition(){
             this.btBalanceValuesRefresh = new Date()
-            for (const sty in this.btValueLines){
-                var reportName = sty + '_backtest'
-                this.btValueLines[sty].available = false
-                this.btPositions[sty].available = false
+            for (const exchange in this.btValueLines){
+                var reportName = exchange + '_backtest'
+                this.btValueLines[exchange].available = false
+                this.btPositions[exchange].available = false
                 getBacktestReportByName(config.masterHost, reportName).then(response => {
-                    this.btValueLines[sty].data = response.results[0].analyzer_rets.value_line
-                    this.btValueLines[sty].available = true
-                    this.btPositions[sty].data = response.results[0].analyzer_rets.last_positions
-                    this.btPositions[sty].available = true
+                    this.btValueLines[exchange].data = response.results[0].analyzer_rets.value_line
+                    this.btValueLines[exchange].available = true
+                    this.btPositions[exchange].data = response.results[0].analyzer_rets.last_positions
+                    this.btPositions[exchange].available = true
                 })
             }
         },
@@ -854,12 +1000,35 @@ export default {
         },
 
         // 从Master获取实盘资产曲线
-        fetchLiveValueline(){
+        fetchLiveValuelines(){
             this.liveBalanceValuesRefresh = new Date()
+            // 获取总资金曲线
             getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'wallet').then(response => {
                 this.totalBalanceValues = response.results[0].wallet.history_values
                 this.totalBalanceValuesAvailable = true
             })
+            // 获取各平台资金曲线
+            getSubAccountDatas(config.masterHost, 'wallet,subaccount').then(response => {
+                    var subaccountDatas = response.results  
+                    for (const exchange in this.liveValueLines){
+                        var found = false
+                        for (const data of subaccountDatas){
+                            if (data.subaccount.name.includes(exchange)){
+                                this.liveValueLines[exchange].data = data.wallet.history_values
+                                this.liveValueLines[exchange].available = true
+                                found = true
+                                debugger;
+                                break
+                            }
+                        }
+                        if (found == false){
+                            // 没有找到对应的数据
+                            this.liveValueLines[exchange].data = {} // 空数据
+                            this.liveValueLines[exchange].available = true                          
+                        }
+                    }
+                }
+            )
         },
 
         // 从Master获取资产信息
@@ -1493,10 +1662,10 @@ export default {
                 }  
                 // 实盘资产VS回测资产
                 if(minute >= 1 && date != this.liveBalanceValuesRefresh.getDate()){
-                    console.log(now + '刷新:fetchLiveValueline');
-                    this.fetchLiveValueline()                   
+                    console.log(now + '刷新:fetchLiveValuelines');
+                    this.fetchLiveValuelines()                   
                 }
-                if(hour >= 9 && date != this.btBalanceValuesRefresh.getDate()){
+                if(hour >= 1 && date != this.btBalanceValuesRefresh.getDate()){
                     console.log(now + '刷新:fetchBacktestValuelinePosition');
                     this.fetchBacktestValuelinePosition()                   
                 }

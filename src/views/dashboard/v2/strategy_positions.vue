@@ -202,8 +202,20 @@ export default {
             }
 
             // 回测仓位(只加载和实盘策略名称完全一致的, eg, 不加载pb等短线策略)
-            for(const styID in this.btPositions){
-                var position = this.btPositions[styID]
+            // 先合并仓位
+            var mergeBtPositions = {}
+            for(const exchange in this.btPositions){
+                for(const styID in this.btPositions[exchange].data){
+                    var position = this.btPositions[exchange].data[styID]
+                    if(styID in mergeBtPositions){
+                        mergeBtPositions[styID] += position
+                    } else {
+                        mergeBtPositions[styID] = position
+                    }
+                }
+            }
+            for(const styID in mergeBtPositions){
+                var position = mergeBtPositions[styID]
                 if (styID.replace('-', '_') in styPositions){
                     btPositions.push({
                         'x': chineseStrategyID(styID),
