@@ -609,7 +609,7 @@ export default {
                 var reportName = sty + '_backtest'
                 this.btValueLines[sty].available = false
                 getBacktestReportByName(config.masterHost, reportName).then(response => {
-                    this.btValueLines[sty].data = response.results[0].analyzer_rets.value_line
+                    this.btValueLines[sty].data = response.results[0].value_line
 
                     // 扭曲变化
                     // 1: 固定尾, 首变为尾的1/20, 中间数值对应变化

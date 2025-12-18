@@ -980,9 +980,10 @@ export default {
                 this.btValueLines[exchange].available = false
                 this.btPositions[exchange].available = false
                 getBacktestReportByName(config.masterHost, reportName).then(response => {
-                    this.btValueLines[exchange].data = response.results[0].analyzer_rets.value_line
+                    this.btValueLines[exchange].data = response.results[0].value_line
                     this.btValueLines[exchange].available = true
-                    this.btPositions[exchange].data = response.results[0].analyzer_rets.last_positions
+                    this.btPositions[exchange].data = response.results[0].last_positions
+                    debugger;
                     this.btPositions[exchange].available = true
                 })
             }
@@ -994,7 +995,7 @@ export default {
             var reportName = 'bitget_backtest'
             this.bullBearDataAvailable = false
             getBacktestReportByName(config.masterHost, reportName).then(response => {
-                this.bullBearData = response.results[0].analyzer_rets.bull_bear
+                this.bullBearData = response.results[0].data.bull_bear
                 this.bullBearDataAvailable = true
             })
         },

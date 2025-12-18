@@ -338,7 +338,7 @@ export default {
                 var reportName = exchange + '_backtest'
                 getBacktestReportByName(config.masterHost, reportName).then(response => {
                         count += 1
-                        var data = response.results[0].analyzer_rets.worker_pnls
+                        var data = response.results[0].worker_pnls
 
                         // 提取信息
                         var startValue = data.valueline[startDt]

@@ -587,7 +587,7 @@ export default {
                     this.liveBacktestStatDatas[4].btLongTerm = (Math.abs(this.backtest2Rets.trade_stats.win_avg_pnl_ptg/this.backtest2Rets.trade_stats.lose_avg_pnl_ptg)).toFixed(2)
 
                     // 6月的annual_return和max_drawdown需要从3年的value_line中截取, 否则不能直接和实盘对比
-                    var valueLine3y = report.analyzer_rets.value_line
+                    var valueLine3y = report.value_line
                     var date = new Date()
                     date.setMonth(date.getMonth() - 6)
                     var firstDate = date.toISOString().slice(0, 10)
@@ -605,7 +605,7 @@ export default {
                 var reportName = sty + '_backtest'
                 this.btValueLines[sty].available = false
                 getBacktestReportByName(config.masterHost, reportName).then(response => {
-                    this.btValueLines[sty].data = response.results[0].analyzer_rets.value_line
+                    this.btValueLines[sty].data = response.results[0].value_line
                     this.btValueLines[sty].available = true
                 })
             }
