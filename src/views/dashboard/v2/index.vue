@@ -983,7 +983,6 @@ export default {
                     this.btValueLines[exchange].data = response.results[0].value_line
                     this.btValueLines[exchange].available = true
                     this.btPositions[exchange].data = response.results[0].last_positions
-                    debugger;
                     this.btPositions[exchange].available = true
                 })
             }

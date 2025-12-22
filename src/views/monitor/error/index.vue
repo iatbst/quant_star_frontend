@@ -9,7 +9,7 @@
           >
             <el-table-column align="center" label="">
               <template slot-scope="scope">
-                <el-button style="width: 100%" type="primary" v-on:click="fetchDatas(scope.row.hosts)" plain>
+                <el-button style="width: 100%" type="primary" v-on:click="fetchDatas(scope.row.hosts);errorTypes=scope.row.types" plain>
                   {{ scope.row.name }}
                 </el-button>
               </template>
@@ -175,23 +175,29 @@ export default {
       host: null,
       hostsList: [{
         name: 'master',
-        hostRole: 'master',
         hosts: [config.masterHost],
+        types: null,
       }, 
-      // {
-      //  name: 'backtest',
-      //   hostRole: 'backtest',
-      //   hosts: [config.backtestHost]
-      // }, 
       {
-       name: 'portfolios',
-        hostRole: 'pfo',
-        hosts: config.pfoHosts
-      }],
+        name: 'portfolios',
+        hosts: config.pfoHosts,
+        types: null,
+      },
+      {
+        name: '实盘仓位 VS 回测仓位',
+        hosts: config.pfoHosts,
+        types: [
+          'OpenTradeBacktestError',
+          'OpenTradeBacktestWarn',
+          'OpenTradeBacktestNotification'
+        ]
+      }
+      ],
       portfolioList: null,
       portfolioListLoading: true,
       // currentPfo: null,
       currentHosts: null,
+      errorTypes: null,
 
       errorTableLoading: true,
       errorTableList: [],
@@ -291,7 +297,20 @@ export default {
               response.results[i]['pfo'] = this.hostPfoMap[response.config.baseURL]
             }
           }
-          this.errorTableList = this.errorTableList.concat(response.results)
+          
+          // 只展示指定types的errors
+          if(this.errorTypes != null){
+            var errors = []
+            for(let error of response.results){
+              if(this.errorTypes.includes(error.type)){
+                errors.push(error)
+              }
+            }
+          } else {
+            var errors = response.results
+          }
+
+          this.errorTableList = this.errorTableList.concat(errors)
           this.totalCount += response.count
           request_count += 1
           if (request_count == hosts.length){  
