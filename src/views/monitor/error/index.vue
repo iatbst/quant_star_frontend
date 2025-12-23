@@ -186,11 +186,7 @@ export default {
       {
         name: '实盘仓位 VS 回测仓位',
         hosts: config.pfoHosts,
-        types: [
-          'OpenTradeBacktestError',
-          'OpenTradeBacktestWarn',
-          'OpenTradeBacktestNotification'
-        ]
+        types: 'OpenTradeBacktestError,OpenTradeBacktestWarn,OpenTradeBacktestNotification'
       }
       ],
       portfolioList: null,
@@ -223,7 +219,7 @@ export default {
 
   created() {
     this.fetchDatas(config.pfoHosts)  // 默认展示portfolios的Errors
-    this.dataRefreh()
+    this.dataRefresh()
   },
 
   methods: {
@@ -290,7 +286,7 @@ export default {
         page = null
       }
       for(const host of hosts){
-        getErrors(host, page).then(response => {
+        getErrors(host, page, this.errorTypes).then(response => {
           // 添加pfo
           if (this.showPfo){
             for(var i=0; i < response.results.length; i++){
@@ -299,18 +295,18 @@ export default {
           }
           
           // 只展示指定types的errors
-          if(this.errorTypes != null){
-            var errors = []
-            for(let error of response.results){
-              if(this.errorTypes.includes(error.type)){
-                errors.push(error)
-              }
-            }
-          } else {
-            var errors = response.results
-          }
+          // if(this.errorTypes != null){
+          //   var errors = []
+          //   for(let error of response.results){
+          //     if(this.errorTypes.includes(error.type)){
+          //       errors.push(error)
+          //     }
+          //   }
+          // } else {
+          //   var errors = response.results
+          // }
 
-          this.errorTableList = this.errorTableList.concat(errors)
+          this.errorTableList = this.errorTableList.concat(response.results)
           this.totalCount += response.count
           request_count += 1
           if (request_count == hosts.length){  
@@ -396,7 +392,7 @@ export default {
     },
 
     // 定时刷新数据函数
-    dataRefreh() {
+    dataRefresh() {
         // 计时器正在进行中，退出函数
         if (this.intervalId != null) {
             return;

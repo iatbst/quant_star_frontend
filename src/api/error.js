@@ -1,10 +1,14 @@
 import request from '@/utils/request'
 
-export function getErrors(host, page=null) {
+export function getErrors(host, page=null, type__in=null) {
   var url = '/errors/?'
   if (page != null){
     // 指定page
     url += '&page=' + page
+  }
+  if (type__in != null){
+    // 指定types
+    url += '&type__in=' + type__in
   }
   var req_obj = {
     url: url,
