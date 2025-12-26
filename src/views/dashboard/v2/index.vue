@@ -79,7 +79,7 @@
     <!---------------------------------- 资产曲线 -----------------------------------
         函数:
             - fetchLiveValuelines
-            - fetchBacktestValuelinePosition
+            - fetchBacktestValueline
         更新频率: ?
     --->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
@@ -324,15 +324,13 @@
           <div style="margin-bottom: 20px; width: 95%">
             <strategy-positions
             v-bind:positions="positions"
-            v-bind:btPositions="btPositions"
             v-if="
             tbBinancePositionsAvailable 
             && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
             pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBinancePositionsAvailable &&
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBinancePositionsAvailable &&
             inOkexPositionsAvailable && inBybitPositionsAvailable && inBinancePositionsAvailable &&
-            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable &&
-            btPositions.binance.available && btPositions.okex.available && btPositions.bybit.available && btPositions.bitget.available
+            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable
             "
             ></strategy-positions> 
 
@@ -639,35 +637,6 @@ export default {
                 },                                           
             },
 
-            // 记录策略当前仓位
-            btPositions: {
-                // 'all': {
-                //     'name': '回测仓位',
-                //     'data': null,
-                //     'available': false
-                // }, 
-                 'binance': {
-                    'name': '回测仓位',
-                    'data': null,
-                    'available': false
-                },  
-                'okex': {
-                    'name': '回测仓位',
-                    'data': null,
-                    'available': false
-                },
-                'bybit': {
-                    'name': '回测仓位',
-                    'data': null,
-                    'available': false
-                },
-                'bitget': {
-                    'name': '回测仓位',
-                    'data': null,
-                    'available': false
-                },                                                           
-            },
-
             // 策略的Pnl Line(今年)
             pnlLines: {
                 'trendline_break': {
@@ -760,7 +729,7 @@ export default {
 
             // 图表1: 实盘资产 VS 回测资产
             this.fetchLiveValuelines()   // 实盘资产曲线
-            this.fetchBacktestValuelinePosition()  // 策略的回测资产曲线
+            this.fetchBacktestValueline()  // 策略的回测资产曲线
 
             // 图表2: 策略收益曲线
             this.fetchPnlLines()
@@ -973,17 +942,14 @@ export default {
         },
 
         // 从master获取回测资产曲线和仓位(目前只获取all)
-        fetchBacktestValuelinePosition(){
+        fetchBacktestValueline(){
             this.btBalanceValuesRefresh = new Date()
             for (const exchange in this.btValueLines){
                 var reportName = exchange + '_backtest'
                 this.btValueLines[exchange].available = false
-                this.btPositions[exchange].available = false
                 getBacktestReportByName(config.masterHost, reportName).then(response => {
                     this.btValueLines[exchange].data = response.results[0].value_line
                     this.btValueLines[exchange].available = true
-                    this.btPositions[exchange].data = response.results[0].last_positions
-                    this.btPositions[exchange].available = true
                 })
             }
         },
@@ -1017,7 +983,7 @@ export default {
                                 this.liveValueLines[exchange].data = data.wallet.history_values
                                 this.liveValueLines[exchange].available = true
                                 found = true
-                                debugger;
+                                // debugger;
                                 break
                             }
                         }
@@ -1666,8 +1632,8 @@ export default {
                     this.fetchLiveValuelines()                   
                 }
                 if(hour >= 1 && date != this.btBalanceValuesRefresh.getDate()){
-                    console.log(now + '刷新:fetchBacktestValuelinePosition');
-                    this.fetchBacktestValuelinePosition()                   
+                    console.log(now + '刷新:fetchBacktestValueline');
+                    this.fetchBacktestValueline()                   
                 }
                 // 策略收益曲线
                 if(minute >= 30 && date != this.pnlLinesRefresh.getDate()){

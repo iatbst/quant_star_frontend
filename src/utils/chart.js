@@ -137,7 +137,8 @@ export function addTwoColumns(data_list1, data_list2, options) {
     for (var i = 0; i < data_list1.length; i++){
         options.series[0].data.push({
             y: data_list1[i].y,
-            color: data_list1[i].color
+            color: data_list1[i].color,
+            y2: data_list1[i].y2,   // y的另外一种呈现(eg, y是个位表示, y2是千位表示)
         })  
         options.xAxis.categories.push(data_list1[i].x)           
     }
@@ -147,7 +148,8 @@ export function addTwoColumns(data_list1, data_list2, options) {
     for (var i = 0; i < data_list2.length; i++){
         options.series[1].data.push({
             y: data_list2[i].y,
-            color: data_list2[i].color
+            color: data_list2[i].color,
+            y2: data_list2[i].y2,   // y的另外一种呈现(eg, y是个位表示, y2是千位表示)
         })  
         // options.xAxis.categories.push(data_list2[i].x)           
     }
