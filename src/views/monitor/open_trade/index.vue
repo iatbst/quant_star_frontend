@@ -284,6 +284,7 @@
                         <el-option label="error" value="error"></el-option>
                         <el-option label="success" value="success"></el-option>
                         <el-option label="none" value="none"></el-option>
+                        <el-option label="duplicate" value="duplicate"></el-option>
                       </el-select>
                     </el-form-item> 
                     
