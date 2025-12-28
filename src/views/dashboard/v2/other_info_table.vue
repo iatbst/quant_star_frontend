@@ -16,8 +16,29 @@
                 </template>
             </el-table-column> 
 
-            <el-table-column label="" min-width="10%" align="center">
+            <el-table-column label="实盘&回测仓位差" min-width="10%" align="center">
                 <template slot-scope="scope">
+                    <span style="color: green" v-if="scope.row.btPosition.position_diff < 0.0005">
+                        {{(scope.row.btPosition.position_diff*100).toFixed(3)}}%
+                    </span>   
+                    <span style="color: orange" v-else-if="scope.row.btPosition.position_diff < 0.001">
+                        {{(scope.row.btPosition.position_diff*100).toFixed(3)}}%
+                    </span>  
+                    <span style="color: red" v-else>
+                        {{(scope.row.btPosition.position_diff*100).toFixed(3)}}%
+                    </span> 
+                    
+                    <el-tooltip placement="top-start" align="left">
+                        <div slot="content">
+                            更新时间: {{ scope.row.btPosition.check_ts | epochToTimestamp}}
+                            <br/>
+                            总实盘仓位($): {{ scope.row.btPosition.live_positions.toFixed(0) }}
+                            <br />
+                            总回测仓位($): {{ scope.row.btPosition.bt_positions.toFixed(0) }}
+                            <br/>
+                        </div>
+                        <span style=""><i class="el-icon-info"></i></span>
+                    </el-tooltip>
                 </template>
             </el-table-column>
 
@@ -148,7 +169,7 @@ export default {
             type:Object,
             default:{}
         }, 
-        parentPfoMacroStrategies: {
+        parentPfoBacktest: {
             type:Object,
             default:{}
         }, 
@@ -191,11 +212,28 @@ export default {
         // },
     },
 
+    filters: {
+        epochToTimestamp(ts) {
+        if (ts) {
+            const stillUtc = moment.utc(ts*1000).toDate()
+            return moment(stillUtc)
+            .local()
+            .format('YYYY-MM-DD HH:mm:ss')
+        } else {
+            return '--'
+        }
+        return ts.replace('T', ' ').slice(0, 19)
+        },
+    },
+
     data() {
         return {
             otherInfoDatas: [{
                 // 加权杠杆率
                 weight_leverage: null,
+
+                // 实盘回测仓位差
+                btPosition: null,
 
                 // 24H内抄底订单
                 todayPbOrderCount: null,
@@ -391,6 +429,9 @@ export default {
             //     this.otherInfoDatas[0].vsCandidateRight = vsData.candidate_right
             //     this.otherInfoDatas[0].vsCandidateSurge = (vsData.candidate_surge*100).toFixed(1)                
             // }
+
+            // 实盘回测仓位差
+            this.otherInfoDatas[0].btPosition = this.parentPfoBacktest.positions
 
             // 抄底订单
             this.otherInfoDatas[0].todayPbOrderCount = this.todayPbOrderCount

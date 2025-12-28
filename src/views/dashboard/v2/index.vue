@@ -24,23 +24,21 @@
 
             <!--- 其他信息 ---
                 函数: 
-                    - fetchParentPfoMacroStrategies
+                    - fetchParentPfoBacktest
                     - fetchTodayPbOrderCount
                     - fetchLongShortRatios
                     - fetchSwapFundingRates
                     - fetchBullBearData
             --->
             <other-info-table 
-            v-bind:parentPfoMacroStrategies="parentPfoMacroStrategies" 
+            v-bind:parentPfoBacktest="parentPfoBacktest"
             v-bind:todayPbOrderCount="todayPbOrderCount"
             v-bind:longShortRatios="longShortRatios"
             v-bind:swapFundingRates="swapFundingRates"
             v-bind:subaccountDatas="subaccountDatas" 
             v-bind:parentPfoWallet="parentPfoWallet"
             v-bind:bullBearData="bullBearData" 
-            v-if="parentPfoMacroStrategiesAvailable && 
-            // todayPbOrderCountAvailable && 
-            longShortRatiosAvailable && swapFundingRatesAvailable && subaccountDatasAvailable && parentPfoWalletAvailable && bullBearDataAvailable">
+            v-if="longShortRatiosAvailable && swapFundingRatesAvailable && subaccountDatasAvailable && parentPfoWalletAvailable && bullBearDataAvailable && parentPfoBacktestAvailable">
             </other-info-table>
 
             <!--- 仓位表 ---
@@ -83,8 +81,24 @@
         更新频率: ?
     --->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
-      <el-col :span="24" align="center">
-          <div style="margin-bottom: 20px; width: 95%">
+      <el-col :span="12" align="center">
+          <div style="margin-bottom: 20px; width: 100%">
+            <hour-value-line 
+            v-bind:values="
+            [
+                {
+                    title: '小时实盘资金',
+                    data: hourBalanceValues
+                },
+            ]
+            "
+            v-if="hourBalanceValuesAvailable" 
+            style="margin-bottom: 20px">
+            </hour-value-line>
+          </div>
+      </el-col>        
+      <el-col :span="12" align="center">
+          <div style="margin-bottom: 20px; width: 100%">
             <total-value-line 
             v-bind:values="
             [
@@ -100,6 +114,7 @@
           </div>
       </el-col>
     </el-row>
+
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
         <!-- Binance -->
         <el-col :span="6" align="center">
@@ -388,6 +403,7 @@ import exchangeTable from '@/views/dashboard/v2/exchange_table'
 import balanceTable from '@/views/dashboard/v2/balance_table'
 import valueLine from '@/views/balance/_value_line'
 import totalValueLine from '@/views/dashboard/v2/total_valueline'
+import hourValueLine from '@/views/dashboard/v2/hour_valueline'
 import exchangeValueLines from '@/views/dashboard/v2/exchange_valuelines'
 import multiValueLine from '@/views/balance/_multi_value_line'
 import strategyLevelPositions from '@/views/position/_strategy_level_positions'
@@ -435,6 +451,7 @@ export default {
 
         valueLine,
         totalValueLine,
+        hourValueLine,
         exchangeValueLines,
         multiValueLine,
         
@@ -500,8 +517,8 @@ export default {
             parentPfoWallet: null,
             parentPfoWalletAvailable: false,
 
-            parentPfoMacroStrategies: null,
-            parentPfoMacroStrategiesAvailable: false,
+            parentPfoBacktest: null,
+            parentPfoBacktestAvailable: false,
 
             parentPfoPositions: null,
             parentPfoPositionsAvailable: false,
@@ -512,6 +529,8 @@ export default {
 
             totalBalanceValues: {},
             totalBalanceValuesAvailable: false,
+            hourBalanceValues: {},
+            hourBalanceValuesAvailable: false,
 
             subaccountDatas: [],
             subaccountDatasAvailable: false,
@@ -678,7 +697,7 @@ export default {
             bullBearDataAvailable: false,
 
             parentPfoWalletRefresh: null,
-            parentPfoMacroStrategiesRefresh: null,
+            parentPfoBacktestRefresh: null,
             parentPfoPositionsRefresh: null,
             todayOrdersRefresh: null,
             longShortRatioRefresh: null,
@@ -713,7 +732,7 @@ export default {
             this.fetchSubAccountDatas()
 
             // 表格4: 其他信息
-            this.fetchParentPfoMacroStrategies()
+            this.fetchParentPfoBacktest()
             // this.fetchTodayPbOrderCount()
             this.fetchLongShortRatios()
             this.fetchSwapFundingRates()
@@ -972,6 +991,8 @@ export default {
             getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'wallet').then(response => {
                 this.totalBalanceValues = response.results[0].wallet.history_values
                 this.totalBalanceValuesAvailable = true
+                this.hourBalanceValues = response.results[0].wallet.hour_values
+                this.hourBalanceValuesAvailable = true
             })
             // 获取各平台资金曲线
             getSubAccountDatas(config.masterHost, 'wallet,subaccount').then(response => {
@@ -1006,12 +1027,12 @@ export default {
             })
         },
 
-        // 从Master获取资产信息
-        fetchParentPfoMacroStrategies(){
-            this.parentPfoMacroStrategiesRefresh = new Date()
-            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'macro_strategies').then(response => {
-                this.parentPfoMacroStrategies = response.results[0].macro_strategies
-                this.parentPfoMacroStrategiesAvailable = true
+        // 从Master获取回测信息
+        fetchParentPfoBacktest(){
+            this.parentPfoBacktestRefresh = new Date()
+            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'backtest').then(response => {
+                this.parentPfoBacktest = response.results[0].backtest
+                this.parentPfoBacktestAvailable = true
             })
         },
 
@@ -1608,6 +1629,11 @@ export default {
                     console.log(now + '刷新:fetchSwapFundingRates');
                     this.fetchSwapFundingRates()
                 }   
+                // 回测数据
+                if(now - this.parentPfoBacktestRefresh > 60*1000){
+                    console.log(now + '刷新:fetchParentPfoBacktest');
+                    this.fetchParentPfoBacktest()
+                }  
                 // 今日表格
                 if(now - this.todayOrdersRefresh > 5*60*1000){
                     console.log(now + '刷新:fetchTodayOrders');

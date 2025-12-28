@@ -264,7 +264,6 @@ export default {
                 allLivePositions += data.size
                 allBtPositions += data.bt_size
             }
-            debugger
 
             // 回测仓位(只加载和实盘策略名称完全一致的, eg, 不加载pb等短线策略)
             // 先合并仓位
