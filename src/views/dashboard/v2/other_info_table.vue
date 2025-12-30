@@ -18,23 +18,23 @@
 
             <el-table-column label="实盘&回测仓位差" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: green" v-if="scope.row.btPosition.position_diff < 0.0005">
-                        {{(scope.row.btPosition.position_diff*100).toFixed(3)}}%
+                    <span style="color: green" v-if="Math.abs(scope.row.btPositions.position_diff) < 0.0003">
+                        {{(scope.row.btPositions.position_diff*100).toFixed(3)}}%
                     </span>   
-                    <span style="color: orange" v-else-if="scope.row.btPosition.position_diff < 0.001">
-                        {{(scope.row.btPosition.position_diff*100).toFixed(3)}}%
+                    <span style="color: orange" v-else-if="Math.abs(scope.row.btPositions.position_diff) < 0.001">
+                        {{(scope.row.btPositions.position_diff*100).toFixed(3)}}%
                     </span>  
                     <span style="color: red" v-else>
-                        {{(scope.row.btPosition.position_diff*100).toFixed(3)}}%
+                        {{(scope.row.btPositions.position_diff*100).toFixed(3)}}%
                     </span> 
                     
                     <el-tooltip placement="top-start" align="left">
                         <div slot="content">
-                            更新时间: {{ scope.row.btPosition.check_ts | epochToTimestamp}}
+                            更新时间: {{ scope.row.btPositions.check_ts | epochToTimestamp}}
                             <br/>
-                            总实盘仓位($): {{ scope.row.btPosition.live_positions.toFixed(0) }}
+                            总实盘仓位($): {{ scope.row.btPositions.live_positions.toFixed(0) }}
                             <br />
-                            总回测仓位($): {{ scope.row.btPosition.bt_positions.toFixed(0) }}
+                            总回测仓位($): {{ scope.row.btPositions.bt_positions.toFixed(0) }}
                             <br/>
                         </div>
                         <span style=""><i class="el-icon-info"></i></span>
@@ -42,14 +42,70 @@
                 </template>
             </el-table-column>
 
-
-            <el-table-column label="" min-width="10%" align="center" >
+            <el-table-column label="实盘&回测资金差($)" min-width="10%" align="center">
                 <template slot-scope="scope">
+                    <span style="color: green" v-if="scope.row.btBalances.balance_diff >= 0">
+                        {{(scope.row.btBalances.balance_diff).toFixed(0)}}
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{(scope.row.btBalances.balance_diff).toFixed(0)}}
+                    </span> 
+                    
+                    <el-tooltip placement="top-start" align="left">
+                        <div slot="content">
+                            更新时间: {{ scope.row.btBalances.check_ts | epochToTimestamp}}
+                        </div>
+                        <div slot="content">
+                            <li v-for="data in scope.row.btBalances.exchange_balance_diffs">
+                                <span style="font-size: 15px">{{ data.exchange }}: 
+                                    <span style="color: green" v-if="data.balance_diff >= 0">
+                                        {{ data.balance_diff.toFixed(0) }}
+                                    </span>
+                                    <span style="color: red" v-else>
+                                        {{ data.balance_diff.toFixed(0) }}
+                                    </span>                                    
+                                </span>
+                            </li>
+                        </div>
+                        <span style=""><i class="el-icon-info"></i></span>
+                    </el-tooltip>
                 </template>
             </el-table-column>
 
-            <el-table-column label="" min-width="10%" align="center" >
+            <el-table-column label="实盘&回测调整金额($)" min-width="10%" align="center">
                 <template slot-scope="scope">
+                    <span style="color: green" v-if="scope.row.btBalances.rewards >= 0">
+                        {{(scope.row.btBalances.rewards).toFixed(0)}}
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{(scope.row.btBalances.rewards).toFixed(0)}}
+                    </span> 
+                    
+                    <el-tooltip placement="top-start" align="left">
+                        <div slot="content">
+                            <div>
+                                手续费调整金额($): 
+                                <span style="color: green;font-size: 15px" v-if="scope.row.btBalances.bt_fee_rewards >= 0">
+                                    {{ scope.row.btBalances.bt_fee_rewards.toFixed(0) }}
+                                </span>
+                                <span style="color: red;font-size: 15px" v-else>
+                                    {{ scope.row.btBalances.bt_fee_rewards.toFixed(0) }}
+                                </span>  
+                            </div>
+                        
+                            <div>
+                                滑点调整金额($):
+                                <span style="color: green;font-size: 15px" v-if="scope.row.btBalances.bt_slippage_rewards >= 0">
+                                    {{ scope.row.btBalances.bt_slippage_rewards.toFixed(0) }}
+                                </span>
+                                <span style="color: red;font-size: 15px" v-else>
+                                    {{ scope.row.btBalances.bt_slippage_rewards.toFixed(0) }}
+                                </span>   
+                            </div>                          
+                            
+                        </div>
+                        <span style=""><i class="el-icon-info"></i></span>
+                    </el-tooltip>
                 </template>
             </el-table-column>
 
@@ -232,8 +288,11 @@ export default {
                 // 加权杠杆率
                 weight_leverage: null,
 
-                // 实盘回测仓位差
-                btPosition: null,
+                // 实盘回测仓位对比数据
+                btPositions: null,
+
+                // 实盘回测资金对比数据
+                btBalances: null,
 
                 // 24H内抄底订单
                 todayPbOrderCount: null,
@@ -430,8 +489,12 @@ export default {
             //     this.otherInfoDatas[0].vsCandidateSurge = (vsData.candidate_surge*100).toFixed(1)                
             // }
 
-            // 实盘回测仓位差
-            this.otherInfoDatas[0].btPosition = this.parentPfoBacktest.positions
+            // 实盘回测仓位对比数据
+            this.otherInfoDatas[0].btPositions = this.parentPfoBacktest.positions
+
+            // 实盘回测资金对比数据
+            this.otherInfoDatas[0].btBalances = this.parentPfoBacktest.balances
+            this.otherInfoDatas[0].btBalances['rewards'] = this.otherInfoDatas[0].btBalances['bt_fee_rewards'] + this.otherInfoDatas[0].btBalances['bt_slippage_rewards']
 
             // 抄底订单
             this.otherInfoDatas[0].todayPbOrderCount = this.todayPbOrderCount

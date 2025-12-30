@@ -348,7 +348,11 @@
             prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable
             "
             ></strategy-positions> 
-
+            <div align="left">
+                <span style="font-size: 12px;">
+                    回测数据时间: {{ backtestUpdateTs | epochToTimestamp }}
+                </span>
+            </div>
             <!--- 刷新说明 --->
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
@@ -439,6 +443,20 @@ import { offset } from 'highcharts'
 
 
 export default {
+    filters: {
+        epochToTimestamp(ts) {
+        if (ts) {
+            const stillUtc = moment.utc(ts*1000).toDate()
+            return moment(stillUtc)
+            .local()
+            .format('YYYY-MM-DD HH:mm:ss')
+        } else {
+            return '--'
+        }
+        return ts.replace('T', ' ').slice(0, 19)
+        },
+    },
+
     components: {
         orders,
 
@@ -519,6 +537,7 @@ export default {
 
             parentPfoBacktest: null,
             parentPfoBacktestAvailable: false,
+            backtestUpdateTs: null,
 
             parentPfoPositions: null,
             parentPfoPositionsAvailable: false,
@@ -960,7 +979,7 @@ export default {
             )
         },
 
-        // 从master获取回测资产曲线和仓位(目前只获取all)
+        // 从master获取回测资产曲线和仓位
         fetchBacktestValueline(){
             this.btBalanceValuesRefresh = new Date()
             for (const exchange in this.btValueLines){
@@ -1032,7 +1051,8 @@ export default {
             this.parentPfoBacktestRefresh = new Date()
             getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'backtest').then(response => {
                 this.parentPfoBacktest = response.results[0].backtest
-                this.parentPfoBacktestAvailable = true
+                this.backtestUpdateTs = this.parentPfoBacktest.positions.check_ts
+                this.parentPfoBacktestAvailable = true  
             })
         },
 
