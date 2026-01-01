@@ -57,7 +57,7 @@ export default {
         },
         range: {
             type: String,
-            default: 'thisYearHalf2'    // 默认展示
+            default: 'thisYear'    // 默认展示
         }
     },
 

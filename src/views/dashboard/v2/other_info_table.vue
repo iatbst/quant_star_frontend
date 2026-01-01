@@ -72,13 +72,13 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="实盘&回测调整金额($)" min-width="10%" align="center">
+            <el-table-column label="实盘&回测调整资金差($)" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: green" v-if="scope.row.btBalances.rewards >= 0">
-                        {{(scope.row.btBalances.rewards).toFixed(0)}}
+                    <span style="color: green" v-if="scope.row.btBalances.adjust_balance_diff >= 0">
+                        {{(scope.row.btBalances.adjust_balance_diff).toFixed(0)}}
                     </span>   
                     <span style="color: red" v-else>
-                        {{(scope.row.btBalances.rewards).toFixed(0)}}
+                        {{(scope.row.btBalances.adjust_balance_diff).toFixed(0)}}
                     </span> 
                     
                     <el-tooltip placement="top-start" align="left">
@@ -495,7 +495,9 @@ export default {
             // 实盘回测资金对比数据
             this.otherInfoDatas[0].btBalances = this.parentPfoBacktest.balances
             this.otherInfoDatas[0].btBalances['rewards'] = this.otherInfoDatas[0].btBalances['bt_fee_rewards'] + this.otherInfoDatas[0].btBalances['bt_slippage_rewards']
-
+            this.otherInfoDatas[0].btBalances['adjust_balance_diff'] = this.otherInfoDatas[0].btBalances['balance_diff'] + this.otherInfoDatas[0].btBalances['rewards']
+            debugger
+            
             // 抄底订单
             this.otherInfoDatas[0].todayPbOrderCount = this.todayPbOrderCount
 
