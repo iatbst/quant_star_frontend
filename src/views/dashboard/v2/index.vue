@@ -38,7 +38,9 @@
             v-bind:subaccountDatas="subaccountDatas" 
             v-bind:parentPfoWallet="parentPfoWallet"
             v-bind:bullBearData="bullBearData" 
-            v-if="longShortRatiosAvailable && swapFundingRatesAvailable && subaccountDatasAvailable && parentPfoWalletAvailable && bullBearDataAvailable && parentPfoBacktestAvailable">
+            v-bind:btValueLines="btValueLines"
+            v-if="longShortRatiosAvailable && swapFundingRatesAvailable && subaccountDatasAvailable && parentPfoWalletAvailable && bullBearDataAvailable && parentPfoBacktestAvailable &&
+            btValueLines.binance.available && btValueLines.okex.available && btValueLines.bybit.available && btValueLines.bitget.available">
             </other-info-table>
 
             <!--- 仓位表 ---
@@ -74,14 +76,30 @@
       </el-col>
     </el-row>   
 
-    <!---------------------------------- 资产曲线 -----------------------------------
+    <!---------------------------------- 资产/仓位曲线 -----------------------------------
         函数:
             - fetchLiveValuelines
             - fetchBacktestValueline
         更新频率: ?
     --->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
-      <el-col :span="12" align="center">
+      <el-col :span="8" align="center">
+          <div style="margin-bottom: 20px; width: 100%">
+            <hour-value-line 
+            v-bind:values="
+            [
+                {
+                    title: '小时实盘仓位',
+                    data: parentPfoPositionsHourHistory
+                },
+            ]
+            "
+            v-if="parentPfoPositionsAvailable" 
+            style="margin-bottom: 20px">
+            </hour-value-line>
+          </div>
+      </el-col>  
+      <el-col :span="8" align="center">
           <div style="margin-bottom: 20px; width: 100%">
             <hour-value-line 
             v-bind:values="
@@ -97,7 +115,7 @@
             </hour-value-line>
           </div>
       </el-col>        
-      <el-col :span="12" align="center">
+      <el-col :span="8" align="center">
           <div style="margin-bottom: 20px; width: 100%">
             <total-value-line 
             v-bind:values="
@@ -542,6 +560,7 @@ export default {
             parentPfoPositions: null,
             parentPfoPositionsAvailable: false,
             parentPfoPositionsHistory: null,
+            parentPfoPositionsHourHistory: null,
 
             parentPfoAtrptg: null,
             parentPfoAtrptgAvailable: false,
@@ -656,21 +675,25 @@ export default {
                 'binance': {
                     'name': 'Binance回测',
                     'data': null,
+                    'change': null,     // 滚动变化率(eg, 60日资产增长率)
                     'available': false
                 },  
                 'okex': {
                     'name': 'Okex回测',
                     'data': null,
+                    'change': null,     // 滚动变化率(eg, 60日资产增长率)
                     'available': false
                 },
                 'bybit': {
                     'name': 'Bybit回测',
                     'data': null,
+                    'change': null,     // 滚动变化率(eg, 60日资产增长率)
                     'available': false
                 },
                 'bitget': {
                     'name': 'Bitget回测',
                     'data': null,
+                    'change': null,     // 滚动变化率(eg, 60日资产增长率)
                     'available': false
                 },                                           
             },
@@ -987,8 +1010,23 @@ export default {
                 this.btValueLines[exchange].available = false
                 getBacktestReportByName(config.masterHost, reportName).then(response => {
                     this.btValueLines[exchange].data = response.results[0].value_line
+                    this.btValueLines[exchange].change = this.calValuelineChange(this.btValueLines[exchange].data)
                     this.btValueLines[exchange].available = true
                 })
+            }
+        },
+
+        // 计算valueline的滚动变化率(默认60日)
+        calValuelineChange(valueline, count=60){
+            var dt_list = Object.keys(valueline).sort().reverse()
+            if (dt_list.length < count + 1){
+                // 滚动数量不足
+                return null
+            } else {
+                var valueNow = valueline[dt_list[0]]
+                var valueAgo = valueline[dt_list[count]]
+                // debugger
+                return (valueNow - valueAgo) / valueAgo
             }
         },
 
@@ -1078,9 +1116,10 @@ export default {
         // 从Master获取仓位信息
         fetchParentPfoPositions(){
             this.parentPfoPositionsRefresh = new Date()
-            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'positions,positions_history').then(response => {
+            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'positions,positions_history,positions_hour_history').then(response => {
                 this.parentPfoPositions = response.results[0].positions
                 this.parentPfoPositionsHistory = response.results[0].positions_history
+                this.parentPfoPositionsHourHistory = response.results[0].positions_hour_history.all
                 this.parentPfoPositionsAvailable = true
             })
         },

@@ -83,7 +83,12 @@ export default {
                     }                     
                 ],
                 exporting: { enabled: false },
-                
+
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '${point.y}'
+                },
+
                 plotOptions: {
                     series: {
                         label: {

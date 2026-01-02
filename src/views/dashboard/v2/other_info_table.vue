@@ -109,8 +109,35 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="" min-width="10%" align="center" >
+            <el-table-column label="资金滚动变化率" min-width="10%" align="center" >
                 <template slot-scope="scope">
+                    <span style="color: green" v-if="scope.row.btValueLineChange[0] >= 0">
+                        {{ scope.row.btValueLineChange[0]  }}%
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{ scope.row.btValueLineChange[0]  }}%
+                    </span> 
+                    |
+                    <span style="color: green" v-if="scope.row.btValueLineChange[1] >= 0">
+                        {{ scope.row.btValueLineChange[1]  }}%
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{ scope.row.btValueLineChange[1]  }}%
+                    </span> 
+                    |
+                    <span style="color: green" v-if="scope.row.btValueLineChange[2] >= 0">
+                        {{ scope.row.btValueLineChange[2]  }}%
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{ scope.row.btValueLineChange[2]  }}%
+                    </span> 
+                    |
+                    <span style="color: green" v-if="scope.row.btValueLineChange[3] >= 0">
+                        {{ scope.row.btValueLineChange[3]  }}%
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{ scope.row.btValueLineChange[3]  }}%
+                    </span> 
                 </template>
             </el-table-column>
 
@@ -244,7 +271,11 @@ export default {
         bullBearData: {
             type:Object,
             default:{}
-        },                
+        },  
+        btValueLines: {
+            type:Object,
+            default:{}           
+        }              
     },
 
     watch: {
@@ -293,6 +324,9 @@ export default {
 
                 // 实盘回测资金对比数据
                 btBalances: null,
+
+                // 回测资产曲线滚动变化率
+                btValueLineChange: null,
 
                 // 24H内抄底订单
                 todayPbOrderCount: null,
@@ -496,8 +530,15 @@ export default {
             this.otherInfoDatas[0].btBalances = this.parentPfoBacktest.balances
             this.otherInfoDatas[0].btBalances['rewards'] = this.otherInfoDatas[0].btBalances['bt_fee_rewards'] + this.otherInfoDatas[0].btBalances['bt_slippage_rewards']
             this.otherInfoDatas[0].btBalances['adjust_balance_diff'] = this.otherInfoDatas[0].btBalances['balance_diff'] + this.otherInfoDatas[0].btBalances['rewards']
-            debugger
             
+            // 回测资产变化率
+            this.otherInfoDatas[0].btValueLineChange = [
+                (this.btValueLines.binance.change*100).toFixed(0), 
+                (this.btValueLines.okex.change*100).toFixed(0), 
+                (this.btValueLines.bybit.change*100).toFixed(0), 
+                (this.btValueLines.bitget.change*100).toFixed(0)
+            ]
+
             // 抄底订单
             this.otherInfoDatas[0].todayPbOrderCount = this.todayPbOrderCount
 
