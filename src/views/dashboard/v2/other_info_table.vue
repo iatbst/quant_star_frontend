@@ -109,7 +109,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="资金滚动变化率(60日)" min-width="10%" align="center" >
+            <el-table-column label="资金变化率(60日)" min-width="10%" align="center" >
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.btValueLineChange[0] >= 0">
                         {{ scope.row.btValueLineChange[0]  }}%
