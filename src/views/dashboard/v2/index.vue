@@ -1134,12 +1134,12 @@ export default {
                     this.pnlLines.trendline_break.data = parentPfoData.pnl_line.trendline_break.year_now
                     this.pnlLines.trendline_break.available = true
                     // 临时修正: 2025-03-11的trendline_break的策略pnl归零,之后的日期都减去这个offset
-                    var offsetPnl = this.pnlLines.trendline_break.data['2025-03-11']
-                    for(let date in this.pnlLines.trendline_break.data){
-                        if(date >= '2025-03-11'){
-                            this.pnlLines.trendline_break.data[date] -= offsetPnl
-                        }
-                    }
+                    // var offsetPnl = this.pnlLines.trendline_break.data['2025-03-11']
+                    // for(let date in this.pnlLines.trendline_break.data){
+                    //     if(date >= '2025-03-11'){
+                    //         this.pnlLines.trendline_break.data[date] -= offsetPnl
+                    //     }
+                    // }
 
                     // plunge_back
                     this.pnlLines.plunge_back.data = parentPfoData.pnl_line.plunge_back.year_now
