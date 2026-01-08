@@ -1,0 +1,391 @@
+<template>
+    <div class="app-container" style="background-color: lightgray">
+        <!-- 月度收益率表头 -->
+        <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+            <div style="margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 0px; width: 100%">
+                <!-- 2021 ~ Now -->
+                <el-col :span="4" align="center" v-for="headerData in monthPnlHeaders">
+                    <el-table
+                    :data="headerData"
+                    :show-header="false"
+                    :cell-style="{ background: '#f2f2f2' }"
+                    v-loading="!reportAvailable"
+                    style="width: 100%">
+                        <el-table-column label="" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                <b>{{ scope.row.rowName }}</b>
+                            </template>
+                        </el-table-column>
+        
+                        <el-table-column label="" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.value < 0" style="color: red">
+                                    <b>{{ (scope.row.value*100).toFixed(1) }}%</b>
+                                </span>
+                                <span v-else>
+                                    <b>{{ (scope.row.value*100).toFixed(1) }}%</b>
+                                </span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-col>
+            </div>
+        </el-row>
+
+        <!-- 月度收益率 -->
+        <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px">
+            <div style="margin-left: 20px; margin-right: 20px; margin-top: 0px; margin-bottom: 20px; width: 100%">
+                <!-- 2021 ~ Now -->
+                <el-col :span="4" align="center" v-for="monthPnl in monthPnls">
+                    <el-table
+                    :data="monthPnl"
+                    :show-header="false"
+                    v-loading="!reportAvailable"
+                    style="width: 100%">
+                        <el-table-column label="" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                {{ scope.row.rowName }}
+                            </template>
+                        </el-table-column>
+        
+                        <el-table-column label="" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.pnl < 0" style="color: red">
+                                    {{ (scope.row.pnl*100).toFixed(1) }}%
+                                </span>
+                                <span v-else>
+                                    {{ (scope.row.pnl*100).toFixed(1) }}%
+                                </span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-col>
+            </div>
+        </el-row>
+
+        <!-- 策略总体表现 + 回撤 -->
+        <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+            <div style="margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px; width: 100%">
+                <!-- 策略总体表现 -->
+                <el-col :span="12" align="center">
+                    <el-table
+                    :data="tradeStatsData"
+                    :header-cell-style="{ background: '#f2f2f2' }"
+                    v-loading="!reportAvailable"
+                    style="width: 100%;">
+                        <el-table-column label="" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                {{ scope.row.rowName }}
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="平均损益" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.avgPnl < 0" style="color: red">
+                                    {{ (scope.row.avgPnl*100).toFixed(2) }}%
+                                </span>
+                                <span v-else>
+                                    {{ (scope.row.avgPnl*100).toFixed(2) }}%
+                                </span>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="胜率" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                {{ (scope.row.winRatio*100).toFixed(1) }}%
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="盈亏比" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                {{ scope.row.winLoseRatio.toFixed(3) }}
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="夏普比率" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.sharpeRatio < 0" style="color: red">
+                                    {{ scope.row.sharpeRatio.toFixed(3) }}
+                                </span>
+                                <span v-else>
+                                    {{ scope.row.sharpeRatio.toFixed(3) }}
+                                </span>
+                            </template>
+                        </el-table-column>
+        
+                        <el-table-column label="索提诺比率" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.sortinoRatio < 0" style="color: red">
+                                    {{ scope.row.sortinoRatio.toFixed(3) }}
+                                </span>
+                                <span v-else>
+                                    {{ scope.row.sortinoRatio.toFixed(3) }}
+                                </span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-col>
+
+                <!-- 回撤 -->
+                <el-col :span="11" align="center" :offset="1">
+                    <el-table
+                    :data="drawBackData"
+                    :header-cell-style="{ background: '#f2f2f2' }"
+                    v-loading="!reportAvailable"
+                    style="width: 100%">
+                        <el-table-column label="实时回撤" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                {{ (scope.row.dd*100).toFixed(1) }}%
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="历史最大回撤" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                {{ (scope.row.mdd*100).toFixed(1) }}%
+                            </template>
+                        </el-table-column>
+        
+                        <el-table-column label="实时回撤日数" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                {{ scope.row.ddDays }}
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="历史最大回撤日数" min-width="10%" align="center">
+                            <template slot-scope="scope">
+                                {{ scope.row.mddDays }}
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-col>
+            </div>
+        </el-row>
+
+        <!-- 特定trades表现 -->
+        <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+            <div style="margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px; width: 100%">
+                <el-row :gutter="0" type="flex" >
+                    <!-- 趋势分多空过滤 -->
+                    <el-col :span="12" align="center">
+                        <el-table
+                        :data="bbSideTradeStats"
+                        :header-cell-style="{ background: '#f2f2f2' }"
+                        v-loading="!reportAvailable"
+                        style="width: 100%;">
+                            <el-table-column label="趋势分过滤" min-width="10%" align="center">
+                                <template slot-scope="scope">
+                                    {{ scope.row.rowName }}
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column label="牛" min-width="10%" align="center">
+                                <template slot-scope="scope">
+                                    {{ scope.row.shortBull.count }} x 
+                                    <span v-if="scope.row.shortBull.avg_pnl_ptg < 0" style="color: red">
+                                        {{ (scope.row.shortBull.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                    <span v-else>
+                                        {{ (scope.row.shortBull.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                </template>
+                            </el-table-column>
+ 
+                            <el-table-column label="熊" min-width="10%" align="center">
+                                <template slot-scope="scope">
+                                    {{ scope.row.shortBear.count }} x 
+                                    <span v-if="scope.row.shortBear.avg_pnl_ptg < 0" style="color: red">
+                                        {{ (scope.row.shortBear.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                    <span v-else>
+                                        {{ (scope.row.shortBear.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                </template>
+                            </el-table-column>  
+                        </el-table>
+                    </el-col> 
+                </el-row>
+            </div>
+        </el-row>
+    </div>
+</template>
+
+<script>
+import config from '@/configs/system_configs'
+import {toThousands} from '@/utils/general'
+import { getBacktestReportById, getBacktestReportByName } from '@/api/backtest_report'
+import moment from 'moment'
+import { offset } from 'highcharts'
+
+export default {
+    data() {
+        return {
+            reportAvailable: false,
+
+            // 月度收益
+            monthPnlHeaders: [],
+            monthPnls: [],
+        
+
+            // 策略总体表现
+            tradeStatsData: [
+                {
+                    rowName: '滚动90日',
+                    avgPnl: null,
+                    winRatio: null,
+                    winLoseRatio: null,
+                    sharpeRatio: null,
+                    sortinoRatio: null,
+                },
+                {
+                    rowName: '2021年至今',
+                    avgPnl: null,
+                    winRatio: null,
+                    winLoseRatio: null,
+                    sharpeRatio: null,
+                    sortinoRatio: null,
+                }
+            ],     
+
+            // 回撤数据
+            drawBackData: [
+                {
+                    dd: null,
+                    mdd: null,
+                    ddDays: null,
+                    mddDays: null,
+                }
+            ], 
+            
+            // 趋势分多空过滤
+            bbSideTradeStats: [
+                {
+                    rowName: '滚动90日',
+                    shortBull: null,
+                    shortBear: null,
+                },
+                {
+                    rowName: '2021年至今',
+                    shortBull: null,
+                    shortBear: null,
+                },   
+            ],
+
+            // 趋势分长短过滤
+            bbPeriodTradeStats: [
+                {
+                    rowName: '滚动90日',
+                    longPeriodBull: null,
+                    longPeriodBear: null,
+                    shortPeriodBull: null,
+                    shortPeriodBear: null,
+                },
+                {
+                    rowName: '2021年至今',
+                    longPeriodBull: null,
+                    longPeriodBear: null,
+                    shortPeriodBull: null,
+                    shortPeriodBear: null,
+                },   
+            ],
+
+            // 波动率过滤
+            atrRatioTradeStats: [
+                {
+                    rowName: '滚动90日',
+                    inRange: null,
+                    outRange: null,
+                },
+                {
+                    rowName: '2021年至今',
+                    inRange: null,
+                    outRange: null,
+                },   
+            ],
+
+            // 趋势惯性过滤
+            trendMomTradeStats: [
+                {
+                    rowName: '滚动90日',
+                    inRange: null,
+                    outRange: null,
+                },
+                {
+                    rowName: '2021年至今',
+                    inRange: null,
+                    outRange: null,
+                },   
+            ]
+        }
+    },
+
+    created() {
+        // 分析Data
+        this.fetchReport()
+    },
+
+    methods: {
+        fetchReport(){
+            var reportName = 'in_performance'
+            this.reportAvailable = false
+            getBacktestReportByName(config.masterHost, reportName).then(response => {
+                // 月度收益
+                var data = response.results[0].data.month_pnl
+                for(let yearData of data){
+                    var header = [
+                        {
+                            rowName: yearData.year,
+                            value: yearData.pnl,
+                        },
+                        {
+                            rowName: '平均',
+                            value: yearData.avg_month_pnl,
+                        },                          
+                    ]
+                    this.monthPnlHeaders.push(header)
+                    
+                    var monthPnl = []
+                    for(let monthData of yearData.data){
+                        monthPnl.push({
+                            rowName: monthData.month + '月',
+                            pnl: monthData.pnl
+                        })
+                    }
+                    this.monthPnls.push(monthPnl)
+
+                }
+                
+                // 策略总体表现
+                this.tradeStatsData[0].avgPnl = response.results[0].data.tradestats_90d.all.avg_pnl_ptg
+                this.tradeStatsData[0].winRatio = response.results[0].data.tradestats_90d.all.win_ratio
+                this.tradeStatsData[0].winLoseRatio = response.results[0].data.tradestats_90d.all.win_lose_pnl_ratio
+                this.tradeStatsData[0].sharpeRatio = response.results[0].data.sharp_ratio_90
+                this.tradeStatsData[0].sortinoRatio = response.results[0].data.sortino_ratio_90
+                this.tradeStatsData[1].avgPnl = response.results[0].data.tradestats.all.avg_pnl_ptg
+                this.tradeStatsData[1].winRatio = response.results[0].data.tradestats.all.win_ratio
+                this.tradeStatsData[1].winLoseRatio = response.results[0].data.tradestats.all.win_lose_pnl_ratio
+                this.tradeStatsData[1].sharpeRatio = response.results[0].data.sharp_ratio
+                this.tradeStatsData[1].sortinoRatio = response.results[0].data.sortino_ratio
+                
+
+                // 回撤数据
+                this.drawBackData[0].dd = response.results[0].data.mdd_data.dd
+                this.drawBackData[0].mdd = response.results[0].data.mdd_data.mdd
+                this.drawBackData[0].ddDays = response.results[0].data.mdd_data.dd_days
+                this.drawBackData[0].mddDays = response.results[0].data.mdd_data.max_dd_days
+                
+                // 趋势分多空过滤
+                this.bbSideTradeStats[0].shortBull = response.results[0].data.bb_short_bull_90d.all
+                this.bbSideTradeStats[0].shortBear = response.results[0].data.bb_short_bear_90d.all
+                this.bbSideTradeStats[1].shortBull = response.results[0].data.bb_short_bull.all
+                this.bbSideTradeStats[1].shortBear = response.results[0].data.bb_short_bear.all
+
+                this.reportAvailable = true
+            })
+        },
+
+        toThousands: toThousands,
+    },
+}
+
+
+</script>

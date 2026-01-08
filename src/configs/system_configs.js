@@ -55,7 +55,7 @@ const pbBinanceHosts = [
 const pbOkexHosts = [
     'http://ec2-16-163-142-85.ap-east-1.compute.amazonaws.com:8000/api',
     'http://ec2-54-46-126-24.ap-east-1.compute.amazonaws.com:8000/api',
-    'http://ec2-18-162-213-145.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-95-40-22-11.ap-east-1.compute.amazonaws.com:8000/api',
 ]
 
 const pbBybitHosts = [
@@ -83,7 +83,7 @@ var production_hosts = [
     'http://ec2-18-166-152-179.ap-east-1.compute.amazonaws.com:8000/api',       // okex_rsi_1
     'http://ec2-16-163-142-85.ap-east-1.compute.amazonaws.com:8000/api',        // okex_pb_1
     'http://ec2-54-46-126-24.ap-east-1.compute.amazonaws.com:8000/api',         // okex_pb_2
-    'http://ec2-18-162-213-145.ap-east-1.compute.amazonaws.com:8000/api',       // okex_pb_3
+    'http://ec2-95-40-22-11.ap-east-1.compute.amazonaws.com:8000/api',       // okex_pb_3
 
     // 新加坡: Bybit
     'http://ec2-13-214-121-142.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_tb_1

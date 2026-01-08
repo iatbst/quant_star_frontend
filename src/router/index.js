@@ -191,20 +191,6 @@ export const constantRoutes = [
     ]
   },
 
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/market',
-  //   children: [
-  //     {
-  //       path: '/market',
-  //       name: '市场标的',
-  //       component: () => import('@/views/market/index'),
-  //       meta: { title: '市场标的', icon: 'el-icon-s-marketing' }
-  //     }
-  //   ]
-  // },
-
   {
     path: '/monitors',
     component: Layout,
@@ -223,18 +209,58 @@ export const constantRoutes = [
         name: 'Open_Trades',
         component: () => import('@/views/monitor/open_trade/index'),
         meta: { title: '交易监控', icon: 'el-icon-bell' }
-      },
-      // {
-      //   path: 'snapshot',
-      //   name: '系统快照',
-      //   component: () => import('@/views/monitor/snapshot/index'),
-      //   meta: { title: '系统快照', icon: 'el-icon-camera' }
-      // },           
+      },         
       {
         path: 'errors',
         name: 'Errors',
         component: () => import('@/views/monitor/error/index'),
         meta: { title: '警报事件', icon: 'el-icon-warning' }
+      }
+    ]
+  },
+
+  {
+    path: '/performances',
+    component: Layout,
+    redirect: '/performances/all',
+    name: '策略表现',
+    meta: { title: '策略表现', icon: 'el-icon-s-data' },
+    children: [
+      {
+        path: '/performances/all',
+        name: '总体表现',
+        component: () => import('@/views/performance/v2/all_perf'),
+        meta: { title: '总体表现', icon: 'el-icon-document' }
+      },
+      {
+        path: '/performances/tb',
+        name: 'TB表现',
+        component: () => import('@/views/performance/v2/tb_perf'),
+        meta: { title: 'TB表现', icon: 'el-icon-s-marketing' }
+      },
+      {
+        path: '/performances/in',
+        name: 'IN表现',
+        component: () => import('@/views/performance/v2/in_perf'),
+        meta: { title: 'IN表现', icon: 'el-icon-s-marketing' }
+      },
+      {
+        path: '/performances/pm',
+        name: 'PM表现',
+        component: () => import('@/views/performance/v2/pm_perf'),
+        meta: { title: 'PM表现', icon: 'el-icon-s-marketing' }
+      },
+      {
+        path: '/performances/rsi',
+        name: 'RSI表现',
+        component: () => import('@/views/performance/v2/rsi_perf'),
+        meta: { title: 'RSI表现', icon: 'el-icon-s-marketing' }
+      },
+      {
+        path: '/performances/pb',
+        name: 'PB表现',
+        component: () => import('@/views/performance/v2/pb_perf'),
+        meta: { title: 'PB表现', icon: 'el-icon-s-marketing' }
       }
     ]
   },
