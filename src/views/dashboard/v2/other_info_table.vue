@@ -530,6 +530,8 @@ export default {
             this.otherInfoDatas[0].btBalances = this.parentPfoBacktest.balances
             this.otherInfoDatas[0].btBalances['rewards'] = this.otherInfoDatas[0].btBalances['bt_fee_rewards'] + this.otherInfoDatas[0].btBalances['bt_slippage_rewards']
             this.otherInfoDatas[0].btBalances['adjust_balance_diff'] = this.otherInfoDatas[0].btBalances['balance_diff'] + this.otherInfoDatas[0].btBalances['rewards']
+            var sf_rewards = 834
+            this.otherInfoDatas[0].btBalances['adjust_balance_diff'] += sf_rewards
             
             // 回测资产变化率
             this.otherInfoDatas[0].btValueLineChange = [
