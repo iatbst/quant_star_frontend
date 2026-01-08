@@ -376,14 +376,53 @@
         <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
             <div style="margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px; width: 100%">
                 <el-row :gutter="0" type="flex" >
-                    <!-- 当前open_trades数量 -->
+                    <!-- 均线过滤-->
                     <el-col :span="8" align="center">
+                        <el-table
+                        :data="emaTradeStats"
+                        :header-cell-style="{ background: '#f2f2f2' }"
+                        v-loading="!reportAvailable"
+                        style="width: 100%;">
+                            <el-table-column label="均线过滤" min-width="10%" align="center">
+                                <template slot-scope="scope">
+                                    {{ scope.row.rowName }}
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column label="200K上" min-width="10%" align="center">
+                                <template slot-scope="scope">
+                                    {{ scope.row.up.count }} x 
+                                    <span v-if="scope.row.up.avg_pnl_ptg < 0" style="color: red">
+                                        {{ (scope.row.up.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                    <span v-else>
+                                        {{ (scope.row.up.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column label="200K下" min-width="10%" align="center">
+                                <template slot-scope="scope">
+                                    {{ scope.row.down.count }} x 
+                                    <span v-if="scope.row.down.avg_pnl_ptg < 0" style="color: red">
+                                        {{ (scope.row.down.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                    <span v-else>
+                                        {{ (scope.row.down.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-col>
+
+                    <!-- 当前open_trades数量 -->
+                    <el-col :span="8" align="center" offset="1">
                         <el-table
                         :data="openTradeCountTradeStats"
                         :header-cell-style="{ background: '#f2f2f2' }"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
-                            <el-table-column label="当前仓位计数" min-width="10%" align="center">
+                            <el-table-column label="次序" min-width="10%" align="center">
                                 <template slot-scope="scope">
                                     {{ scope.row.rowName }}
                                 </template>
@@ -521,20 +560,20 @@ export default {
             ], 
             
             // 趋势分多空过滤
-            bbSideTradeStats: [
+            emaTradeStats: [
                 {
                     rowName: '滚动90日',
-                    shortBull: null,
-                    shortBear: null,
+                    up: null,
+                    down: null,
                 },
                 {
                     rowName: '2021年至今',
-                    shortBull: null,
-                    shortBear: null,
+                    up: null,
+                    down: null,
                 },   
             ],
 
-            // 多空过滤
+            // 次序过滤
             openTradeCountTradeStats: [
                 {
                     rowName: '滚动90日',
@@ -642,7 +681,13 @@ export default {
                 this.drawBackData[0].ddDays = response.results[0].data.mdd_data.dd_days
                 this.drawBackData[0].mddDays = response.results[0].data.mdd_data.max_dd_days
 
-                // 多空
+                // 均线过滤
+                this.emaTradeStats[0].up = {count: 12, avg_pnl_ptg: 0.021}
+                this.emaTradeStats[0].down = {count: 8, avg_pnl_ptg: 0.013}
+                this.emaTradeStats[1].up = {count: 1106, avg_pnl_ptg: 0.015}
+                this.emaTradeStats[1].down = {count: 867, avg_pnl_ptg: 0.003}
+
+                // 次序
                 this.openTradeCountTradeStats[0].low = response.results[0].data.open_trades_count_low_90d.all
                 this.openTradeCountTradeStats[0].mid = response.results[0].data.open_trades_count_mid_90d.all
                 this.openTradeCountTradeStats[0].high = response.results[0].data.open_trades_count_high_90d.all

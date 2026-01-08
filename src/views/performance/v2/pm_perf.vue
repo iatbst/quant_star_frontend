@@ -297,6 +297,45 @@
                             </el-table-column>  
                         </el-table>
                     </el-col> 
+
+                    <!-- 止盈 -->
+                    <el-col :span="8" align="center" :offset="1">
+                        <el-table
+                        :data="winStopTradeStats"
+                        :header-cell-style="{ background: '#f2f2f2' }"
+                        v-loading="!reportAvailable"
+                        style="width: 100%;">
+                            <el-table-column label="止盈" min-width="10%" align="center">
+                                <template slot-scope="scope">
+                                    {{ scope.row.rowName }}
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column label="有止盈" min-width="10%" align="center">
+                                <template slot-scope="scope">
+                                    {{ scope.row.ws.count }} x 
+                                    <span v-if="scope.row.ws.avg_pnl_ptg < 0" style="color: red">
+                                        {{ (scope.row.ws.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                    <span v-else>
+                                        {{ (scope.row.ws.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                </template>
+                            </el-table-column>
+ 
+                            <el-table-column label="无止盈" min-width="10%" align="center">
+                                <template slot-scope="scope">
+                                    {{ scope.row.noWs.count }} x 
+                                    <span v-if="scope.row.noWs.avg_pnl_ptg < 0" style="color: red">
+                                        {{ (scope.row.noWs.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                    <span v-else>
+                                        {{ (scope.row.noWs.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                </template>
+                            </el-table-column>  
+                        </el-table>
+                    </el-col> 
                 </el-row>
             </div>
         </el-row>
@@ -392,6 +431,20 @@ export default {
                     long: null,
                 },   
             ],
+
+            // 止盈
+            winStopTradeStats: [
+                {
+                    rowName: '滚动90日',
+                    ws: null,
+                    noWs: null,
+                },
+                {
+                    rowName: '2021年至今',
+                    ws: null,
+                    noWs: null,
+                },   
+            ],
         }
     },
 
@@ -471,6 +524,12 @@ export default {
                 this.longShortTradeStats[0].long = response.results[0].data.long_90d.all
                 this.longShortTradeStats[1].short = response.results[0].data.short.all
                 this.longShortTradeStats[1].long = response.results[0].data.long.all
+
+                // 止盈
+                this.winStopTradeStats[0].ws = response.results[0].data.ws_90d.all
+                this.winStopTradeStats[0].noWs = response.results[0].data.no_ws_90d.all
+                this.winStopTradeStats[1].ws = response.results[0].data.ws.all
+                this.winStopTradeStats[1].noWs = response.results[0].data.no_ws.all
 
                 this.reportAvailable = true
             })

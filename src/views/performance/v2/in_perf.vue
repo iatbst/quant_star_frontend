@@ -165,8 +165,47 @@
         <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
             <div style="margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px; width: 100%">
                 <el-row :gutter="0" type="flex" >
-                    <!-- 趋势分多空过滤 -->
+                    <!-- 波动率比值过滤 -->
                     <el-col :span="12" align="center">
+                        <el-table
+                        :data="volaRatioTradeStats"
+                        :header-cell-style="{ background: '#f2f2f2' }"
+                        v-loading="!reportAvailable"
+                        style="width: 100%;">
+                            <el-table-column label="波动率比值过滤" min-width="10%" align="center">
+                                <template slot-scope="scope">
+                                    {{ scope.row.rowName }}
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column label="6/100 < 0.5" min-width="10%" align="center">
+                                <template slot-scope="scope">
+                                    {{ scope.row.low.count }} x 
+                                    <span v-if="scope.row.low.avg_pnl_ptg < 0" style="color: red">
+                                        {{ (scope.row.low.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                    <span v-else>
+                                        {{ (scope.row.low.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                </template>
+                            </el-table-column>
+ 
+                            <el-table-column label="6/100 >= 0.5" min-width="10%" align="center">
+                                <template slot-scope="scope">
+                                    {{ scope.row.high.count }} x 
+                                    <span v-if="scope.row.high.avg_pnl_ptg < 0" style="color: red">
+                                        {{ (scope.row.high.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                    <span v-else>
+                                        {{ (scope.row.high.avg_pnl_ptg *100).toFixed(1) }}%
+                                    </span>
+                                </template>
+                            </el-table-column>  
+                        </el-table>
+                    </el-col> 
+
+                    <!-- 趋势分多空过滤 -->
+                    <el-col :span="11" align="center" offset="1">
                         <el-table
                         :data="bbSideTradeStats"
                         :header-cell-style="{ background: '#f2f2f2' }"
@@ -270,51 +309,19 @@ export default {
                 },   
             ],
 
-            // 趋势分长短过滤
-            bbPeriodTradeStats: [
-                {
-                    rowName: '滚动90日',
-                    longPeriodBull: null,
-                    longPeriodBear: null,
-                    shortPeriodBull: null,
-                    shortPeriodBear: null,
-                },
-                {
-                    rowName: '2021年至今',
-                    longPeriodBull: null,
-                    longPeriodBear: null,
-                    shortPeriodBull: null,
-                    shortPeriodBear: null,
-                },   
-            ],
-
             // 波动率过滤
-            atrRatioTradeStats: [
+            volaRatioTradeStats: [
                 {
                     rowName: '滚动90日',
-                    inRange: null,
-                    outRange: null,
+                    low: null,
+                    high: null,
                 },
                 {
                     rowName: '2021年至今',
-                    inRange: null,
-                    outRange: null,
+                    low: null,
+                    high: null,
                 },   
             ],
-
-            // 趋势惯性过滤
-            trendMomTradeStats: [
-                {
-                    rowName: '滚动90日',
-                    inRange: null,
-                    outRange: null,
-                },
-                {
-                    rowName: '2021年至今',
-                    inRange: null,
-                    outRange: null,
-                },   
-            ]
         }
     },
 
@@ -372,7 +379,13 @@ export default {
                 this.drawBackData[0].mdd = response.results[0].data.mdd_data.mdd
                 this.drawBackData[0].ddDays = response.results[0].data.mdd_data.dd_days
                 this.drawBackData[0].mddDays = response.results[0].data.mdd_data.max_dd_days
-                
+  
+                // 波动率比值过滤
+                this.volaRatioTradeStats[0].low = {count: 182, avg_pnl_ptg: 0.018}
+                this.volaRatioTradeStats[0].high = {count: 103, avg_pnl_ptg: 0.007}
+                this.volaRatioTradeStats[1].low = {count: 2918, avg_pnl_ptg: 0.0313}
+                this.volaRatioTradeStats[1].high = {count: 1566, avg_pnl_ptg: 0.011}
+
                 // 趋势分多空过滤
                 this.bbSideTradeStats[0].shortBull = response.results[0].data.bb_short_bull_90d.all
                 this.bbSideTradeStats[0].shortBear = response.results[0].data.bb_short_bear_90d.all

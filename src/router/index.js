@@ -252,7 +252,7 @@ export const constantRoutes = [
       },
       {
         path: '/performances/rsi',
-        name: 'RSI表现',
+        name: 'RS表现',
         component: () => import('@/views/performance/v2/rsi_perf'),
         meta: { title: 'RSI表现', icon: 'el-icon-s-marketing' }
       },
