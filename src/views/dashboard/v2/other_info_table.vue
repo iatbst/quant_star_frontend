@@ -18,14 +18,14 @@
 
             <el-table-column label="实盘&回测仓位差" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: green" v-if="Math.abs(scope.row.btPositions.position_diff) < 0.0003">
-                        {{(scope.row.btPositions.position_diff*100).toFixed(3)}}%
+                    <span style="color: green" v-if="Math.abs(scope.row.btPositions.position_diff_ptg) < 0.0003">
+                        {{(scope.row.btPositions.position_diff_ptg*100).toFixed(3)}}%
                     </span>   
-                    <span style="color: orange" v-else-if="Math.abs(scope.row.btPositions.position_diff) < 0.001">
-                        {{(scope.row.btPositions.position_diff*100).toFixed(3)}}%
+                    <span style="color: orange" v-else-if="Math.abs(scope.row.btPositions.position_diff_ptg) < 0.001">
+                        {{(scope.row.btPositions.position_diff_ptg*100).toFixed(3)}}%
                     </span>  
                     <span style="color: red" v-else>
-                        {{(scope.row.btPositions.position_diff*100).toFixed(3)}}%
+                        {{(scope.row.btPositions.position_diff_ptg*100).toFixed(3)}}%
                     </span> 
                     
                     <el-tooltip placement="top-start" align="left">
@@ -36,6 +36,7 @@
                             <br />
                             总回测仓位($): {{ scope.row.btPositions.bt_positions.toFixed(0) }}
                             <br/>
+                            总仓位差($): {{ scope.row.btPositions.position_diff.toFixed(0) }}
                         </div>
                         <span style=""><i class="el-icon-info"></i></span>
                     </el-tooltip>
