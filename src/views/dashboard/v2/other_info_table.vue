@@ -103,7 +103,16 @@
                                     {{ scope.row.btBalances.bt_slippage_rewards.toFixed(0) }}
                                 </span>   
                             </div>                          
-                            
+
+                            <div>
+                                资金费调整金额($):
+                                <span style="color: green;font-size: 15px" v-if="scope.row.btBalances.bt_swap_funding_rewards >= 0">
+                                    {{ scope.row.btBalances.bt_swap_funding_rewards.toFixed(0) }}
+                                </span>
+                                <span style="color: red;font-size: 15px" v-else>
+                                    {{ scope.row.btBalances.bt_swap_funding_rewards.toFixed(0) }}
+                                </span>   
+                            </div>  
                         </div>
                         <span style=""><i class="el-icon-info"></i></span>
                     </el-tooltip>
@@ -529,10 +538,8 @@ export default {
 
             // 实盘回测资金对比数据
             this.otherInfoDatas[0].btBalances = this.parentPfoBacktest.balances
-            this.otherInfoDatas[0].btBalances['rewards'] = this.otherInfoDatas[0].btBalances['bt_fee_rewards'] + this.otherInfoDatas[0].btBalances['bt_slippage_rewards']
+            this.otherInfoDatas[0].btBalances['rewards'] = this.otherInfoDatas[0].btBalances['bt_fee_rewards'] + this.otherInfoDatas[0].btBalances['bt_slippage_rewards'] + this.otherInfoDatas[0].btBalances['bt_swap_funding_rewards']
             this.otherInfoDatas[0].btBalances['adjust_balance_diff'] = this.otherInfoDatas[0].btBalances['balance_diff'] + this.otherInfoDatas[0].btBalances['rewards']
-            var sf_rewards = 834
-            this.otherInfoDatas[0].btBalances['adjust_balance_diff'] += sf_rewards
             
             // 回测资产变化率
             this.otherInfoDatas[0].btValueLineChange = [

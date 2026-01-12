@@ -55,10 +55,11 @@ export function chineseString(s) {
             case 'disable': cs = '下线'; break;
 
             // 报告
-            case 'week': cs = '周度报告'; break;
-            case 'month': cs = '月度报告'; break;
-            case 'quarter': cs = '季度报告'; break;
-            case 'year': cs = '年度报告'; break;  
+            case 'day_report': cs = '日报'; break;
+            case 'week_report': cs = '周报'; break;
+            case 'month_report': cs = '月报'; break;
+            case 'quarter_report': cs = '季报'; break;
+            case 'year_report': cs = '年报'; break;  
             
             // 表现
             case 'pnl': cs = '收益'; break;

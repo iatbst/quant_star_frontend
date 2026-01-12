@@ -79,7 +79,11 @@ export function dateToString(date){
 
 // 加入千位逗号(eg, 1000000 -> 1,000,000)
 export function toThousands(num) {
-    return (num || 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
+    if (num == null){
+        return null
+    } else {
+        return (num || 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')
+    }
 }
 
 // 千位逗号转为Integer(eg, 1,000,000 -> 1000000)
