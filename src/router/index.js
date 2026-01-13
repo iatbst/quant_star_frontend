@@ -209,7 +209,13 @@ export const constantRoutes = [
         name: 'Open_Trades',
         component: () => import('@/views/monitor/open_trade/index'),
         meta: { title: '交易监控', icon: 'el-icon-bell' }
-      },         
+      },  
+      {
+        path: 'backtest',
+        name: 'Backtest',
+        component: () => import('@/views/monitor/backtest/index'),
+        meta: { title: '回测对比', icon: 'el-icon-data-analysis' }
+      },               
       {
         path: 'errors',
         name: 'Errors',
