@@ -49,24 +49,38 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: '系统首页',
+      name: '首页',
       component: () => import('@/views/dashboard/v2/index'),
-      meta: { title: '系统首页', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
+  },
+
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/report',
+    children: [
+      {
+        path: '/report',
+        name: '报告',
+        component: () => import('@/views/report/index'),
+        meta: { title: '报告', icon: 'el-icon-document-copy' }
+      }
+    ]
   },
 
   {
     path: '/position',
     component: Layout,
     redirect: '/position',
-    name: '所有仓位',
-    meta: { title: '所有仓位', icon: 'el-icon-wind-power' },
+    name: '仓位',
+    meta: { title: '仓位', icon: 'el-icon-wind-power' },
     children: [
       {
         path: 'position',
-        name: '所有仓位',
+        name: '仓位',
         component: () => import('@/views/position/index'),
-        meta: { title: '所有仓位', icon: 'el-icon-wind-power' }
+        meta: { title: '仓位', icon: 'el-icon-wind-power' }
       }
     ]
   },
@@ -78,26 +92,64 @@ export const constantRoutes = [
     children: [
       {
         path: '/orders',
-        name: '所有订单',
+        name: '订单',
         component: () => import('@/views/orders/index'),
-        meta: { title: '所有订单', icon: 'el-icon-s-order' }
+        meta: { title: '订单', icon: 'el-icon-s-order' }
       }
     ]
   },
 
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/performances/summary',
-  //   children: [
-  //     {
-  //       path: '/performances/summary',
-  //       name: '策略表现',
-  //       component: () => import('@/views/performance/index'),
-  //       meta: { title: '策略表现', icon: 'el-icon-data-analysis' }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/performances',
+    component: Layout,
+    redirect: '/performances/all',
+    name: '策略',
+    meta: { title: '策略', icon: 'el-icon-s-data' },
+    children: [
+      {
+        path: '/performances/all',
+        name: '总体',
+        component: () => import('@/views/performance/v2/all_perf'),
+        meta: { title: '总体', icon: 'el-icon-document' }
+      },
+      {
+        path: '/performances/tb',
+        name: 'TB',
+        component: () => import('@/views/performance/v2/tb_perf'),
+        meta: { title: 'TB', icon: 'el-icon-s-marketing' }
+      },
+      {
+        path: '/performances/in',
+        name: 'IN',
+        component: () => import('@/views/performance/v2/in_perf'),
+        meta: { title: 'IN', icon: 'el-icon-s-marketing' }
+      },
+      {
+        path: '/performances/pm',
+        name: 'PM',
+        component: () => import('@/views/performance/v2/pm_perf'),
+        meta: { title: 'PM', icon: 'el-icon-s-marketing' }
+      },
+      {
+        path: '/performances/rsi',
+        name: 'RS',
+        component: () => import('@/views/performance/v2/rsi_perf'),
+        meta: { title: 'RSI', icon: 'el-icon-s-marketing' }
+      },
+      {
+        path: '/performances/pb',
+        name: 'PB',
+        component: () => import('@/views/performance/v2/pb_perf'),
+        meta: { title: 'PB', icon: 'el-icon-s-marketing' }
+      },
+      {
+        path: '/performances/offline',
+        name: '下线策略',
+        component: () => import('@/views/performance/v2/offline_perf'),
+        meta: { title: '下线策略', icon: 'el-icon-s-marketing' }
+      }
+    ]
+  },
 
   {
     path: '/worker-runs',
@@ -117,54 +169,6 @@ export const constantRoutes = [
         name: '已下线',
         component: () => import('@/views/worker_run/index'),
         meta: { title: '已下线', icon: 'el-icon-remove' }
-      }
-    ]
-  },
-
-  // {
-  //   path: '/backtest',
-  //   component: Layout,
-  //   redirect: '/backtest/runner',
-  //   name: '回测中心',
-  //   meta: { title: '回测中心', icon: 'el-icon-s-opportunity' },
-  //   children: [
-  //     {
-  //       path: 'runner',
-  //       name: '回测',
-  //       component: () => import('@/views/backtest/runner/index'),
-  //       meta: { title: '回测', icon: 'el-icon-video-play' }
-  //     },
-  //     {
-  //       path: 'plans',
-  //       name: '回测方案',
-  //       component: () => import('@/views/backtest/plans/index'),
-  //       meta: { title: '回测方案', icon: 'el-icon-date' }
-  //     },
-  //     {
-  //       path: 'reports',
-  //       name: '回测报告',
-  //       component: () => import('@/views/backtest/reports/index'),
-  //       meta: { title: '回测报告', icon: 'el-icon-document' }
-  //     },
-  //     {
-  //       path: 'bars',
-  //       name: '历史K线',
-  //       component: () => import('@/views/bar/index'),
-  //       meta: { title: '历史K线', icon: 'el-icon-s-marketing' }
-  //     },
-  //   ]
-  // },
-
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/report',
-    children: [
-      {
-        path: '/report',
-        name: '统计报告',
-        component: () => import('@/views/report/index'),
-        meta: { title: '统计报告', icon: 'el-icon-document-copy' }
       }
     ]
   },
@@ -226,52 +230,6 @@ export const constantRoutes = [
   },
 
   {
-    path: '/performances',
-    component: Layout,
-    redirect: '/performances/all',
-    name: '策略表现',
-    meta: { title: '策略表现', icon: 'el-icon-s-data' },
-    children: [
-      {
-        path: '/performances/all',
-        name: '总体表现',
-        component: () => import('@/views/performance/v2/all_perf'),
-        meta: { title: '总体表现', icon: 'el-icon-document' }
-      },
-      {
-        path: '/performances/tb',
-        name: 'TB表现',
-        component: () => import('@/views/performance/v2/tb_perf'),
-        meta: { title: 'TB表现', icon: 'el-icon-s-marketing' }
-      },
-      {
-        path: '/performances/in',
-        name: 'IN表现',
-        component: () => import('@/views/performance/v2/in_perf'),
-        meta: { title: 'IN表现', icon: 'el-icon-s-marketing' }
-      },
-      {
-        path: '/performances/pm',
-        name: 'PM表现',
-        component: () => import('@/views/performance/v2/pm_perf'),
-        meta: { title: 'PM表现', icon: 'el-icon-s-marketing' }
-      },
-      {
-        path: '/performances/rsi',
-        name: 'RS表现',
-        component: () => import('@/views/performance/v2/rsi_perf'),
-        meta: { title: 'RSI表现', icon: 'el-icon-s-marketing' }
-      },
-      {
-        path: '/performances/pb',
-        name: 'PB表现',
-        component: () => import('@/views/performance/v2/pb_perf'),
-        meta: { title: 'PB表现', icon: 'el-icon-s-marketing' }
-      }
-    ]
-  },
-
-  {
     path: '/other_settings',
     component: Layout,
     redirect: '/other_settings',
@@ -286,20 +244,6 @@ export const constantRoutes = [
       }
     ]
   },
-
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/coins',
-  //   children: [
-  //     {
-  //       path: '/coins',
-  //       name: '囤币记录',
-  //       component: () => import('@/views/coins/index'),
-  //       meta: { title: '囤币记录', icon: 'el-icon-s-order' }
-  //     }
-  //   ]
-  // },
 
   {
     path: '/analysis',
@@ -320,28 +264,6 @@ export const constantRoutes = [
         component: () => import('@/views/analysis/pnl'),
         meta: { title: '实盘VS回测', icon: 'el-icon-data-analysis' }
       } 
-    ]
-  },
-
-  {
-    path: '/performances',
-    component: Layout,
-    redirect: '/performances/history_pnl',
-    name: '历史收益',
-    meta: { title: '历史收益', icon: 'el-icon-s-data' },
-    children: [
-      {
-        path: '/performances/history_pnl',
-        name: '合计收益',
-        component: () => import('@/views/performance/history_pnl'),
-        meta: { title: '合计收益', icon: 'el-icon-document' }
-      },
-      {
-        path: '/performances/history_pnl_stack',
-        name: '策略收益',
-        component: () => import('@/views/performance/history_pnl_stack'),
-        meta: { title: '策略收益', icon: 'el-icon-s-marketing' }
-      }
     ]
   },
 

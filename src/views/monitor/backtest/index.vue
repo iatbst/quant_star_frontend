@@ -592,7 +592,7 @@ export default {
 
                 console.log("刷新检查:" + now);
                 // 资产表格
-                if(now - this.dataRefresh > 3600*1000){
+                if(now - this.dataRefresh > 300*1000){
                     console.log(now + ': 数据刷新.');
                     this.parseDatas()
                 }
