@@ -38,7 +38,7 @@ export default {
         },
         yType: {
             type: String,
-            default: 'logarithmic'      // 默认对数坐标
+            default: ''      // 默认对数坐标
         },
         range: {
             type: String,
