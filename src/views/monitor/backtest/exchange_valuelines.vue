@@ -3,7 +3,7 @@
         <!-- 总资金曲线 -->
         <el-col :span="24">
             <!-- 曲线 -->
-            <highcharts :options="totalBalanceOptions" style="margin-top: 20px"></highcharts>     
+            <highcharts :options="totalBalanceOptions" style="margin-top: 0px"></highcharts>     
         </el-col>
     </el-row>
 </template>
@@ -75,6 +75,7 @@ export default {
                         }  
                     }                     
                 ],
+                
                 exporting: { enabled: false },
                 
                 plotOptions: {

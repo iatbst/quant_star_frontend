@@ -1,12 +1,80 @@
-<!-- 
-    模板: 展示worker的所有sp和对应的orders
--->
 <template>
-    <div class="app-container" align="center" >
-        <div style="width: 90%; margin-top: 0px">
+    <div class="app-container" align="center" style="background-color: lightgray">
+        <div style="width: 100%; margin-top: 0px">
+            <!--- 总表 --->
+            <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 0px">
+                <!-- 仓位 -->
+                <el-col :span="6" align="center">
+                    <div style="margin-bottom: 20px; width: 100%">
+                    <exchange-value-lines
+                    v-bind:values="
+                    [
+                        {
+                            title: positionLiveLines.all.name,
+                            data: positionLiveLines.all.data,
+                        },
+                        {
+                            title: positionBtLines.all.name,
+                            data: positionBtLines.all.data,
+                            color: 'lightgray'
+                        },
+                    ]
+                    "
+                    v-if="backtestDataAvailable" 
+                    style="margin-bottom: 20px">
+                    </exchange-value-lines>
+
+                    </div>
+                </el-col>
+
+                <!-- 仓位差 -->
+                <el-col :span="6" align="center">
+                    <div style="margin-bottom: 20px; width: 100%">
+                        <div>
+                            <highcharts :options="positionDiffColumns.all" style="margin-top: 20px"></highcharts>
+                        </div>
+                    </div>
+                </el-col>
+
+                <!-- 资金 -->
+                <el-col :span="6" align="center">
+                    <div style="margin-bottom: 20px; width: 100%">
+                    <exchange-value-lines
+                    v-bind:values="
+                    [
+                        {
+                            title: balanceLiveLines.all.name,
+                            data: balanceLiveLines.all.data,
+                        },
+                        {
+                            title: balanceBtLines.all.name,
+                            data: balanceBtLines.all.data,
+                            color: 'lightgray'
+                        },
+                    ]
+                    "
+                    v-if="backtestDataAvailable" 
+                    style="margin-bottom: 20px">
+                    </exchange-value-lines>
+
+                    </div>
+                </el-col>
+
+                <!-- 资金差 -->
+                <el-col :span="6" align="center">
+                    <div style="margin-bottom: 20px; width: 100%">
+                        <div>
+                            <highcharts :options="balanceDiffColumns.all" style="margin-top: 20px"></highcharts>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+
             <!--- 实盘-回测: 仓位曲线对比 -->
-            <h4>仓位</h4>
-            <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+            <div style="background-color: white; margin-top: 20px">
+                <h4 style="margin-top: 20px">仓位</h4>
+            </div>
+            <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: -22px">
                 <!-- Binance -->
                 <el-col :span="6" align="center">
                     <div style="margin-bottom: 20px; width: 100%">
@@ -105,88 +173,44 @@
             </el-row>
 
             <!--- 实盘-回测: 仓位曲线差对比 -->
-            <h4>仓位差</h4>
-            <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+            <div style="background-color: white; margin-top: 20px">
+                <h4 style="margin-top: 20px">仓位差</h4>
+            </div>
+            <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: -22px">
                 <!-- Binance -->
                 <el-col :span="6" align="center">
-                    <div style="margin-bottom: 20px; width: 100%">
-                    <exchange-value-lines
-                    v-bind:values="
-                    [
-                        {
-                            title: positionDiffLines.binance.name,
-                            data: positionDiffLines.binance.data,
-                        }
-                    ]
-                    "
-                    v-if="backtestDataAvailable" 
-                    style="margin-bottom: 20px">
-                    </exchange-value-lines>
-
+                    <div>
+                        <highcharts :options="positionDiffColumns.binance" style="margin-top: 20px"></highcharts>
                     </div>
                 </el-col>
 
                 <!-- Okex -->
                 <el-col :span="6" align="center">
-                    <div style="margin-bottom: 20px; width: 100%">
-                    <exchange-value-lines
-                    v-bind:values="
-                    [
-                        {
-                            title: positionDiffLines.okex.name,
-                            data: positionDiffLines.okex.data,
-                        }
-                    ]
-                    "
-                    v-if="backtestDataAvailable" 
-                    style="margin-bottom: 20px">
-                    </exchange-value-lines>
-
+                    <div>
+                        <highcharts :options="positionDiffColumns.okex" style="margin-top: 20px"></highcharts>
                     </div>
                 </el-col>
 
                 <!-- Bybit -->
                 <el-col :span="6" align="center">
-                    <div style="margin-bottom: 20px; width: 100%">
-                    <exchange-value-lines
-                    v-bind:values="
-                    [
-                        {
-                            title: positionDiffLines.bybit.name,
-                            data: positionDiffLines.bybit.data,
-                        }
-                    ]
-                    "
-                    v-if="backtestDataAvailable" 
-                    style="margin-bottom: 20px">
-                    </exchange-value-lines>
-
+                    <div>
+                        <highcharts :options="positionDiffColumns.bybit" style="margin-top: 20px"></highcharts>
                     </div>
                 </el-col>
 
                 <!-- Bitget -->
                 <el-col :span="6" align="center">
-                    <div style="margin-bottom: 20px; width: 100%">
-                    <exchange-value-lines
-                    v-bind:values="
-                    [
-                        {
-                            title: positionDiffLines.bitget.name,
-                            data: positionDiffLines.bitget.data,
-                        }
-                    ]
-                    "
-                    v-if="backtestDataAvailable" 
-                    style="margin-bottom: 20px">
-                    </exchange-value-lines>
-
+                    <div>
+                        <highcharts :options="positionDiffColumns.bitget" style="margin-top: 20px"></highcharts>
                     </div>
-                </el-col>
+                </el-col>         
             </el-row>
 
             <!--- 实盘-回测: 资金曲线对比 -->
-            <h4>资金</h4>
-            <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+            <div style="background-color: white; margin-top: 20px">
+                <h4 style="margin-top: 20px">资金</h4>
+            </div>
+            <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: -22px">
                 <!-- Binance -->
                 <el-col :span="6" align="center">
                     <div style="margin-bottom: 20px; width: 100%">
@@ -285,81 +309,35 @@
             </el-row>
 
             <!--- 实盘-回测: 资金曲线差对比 -->
-            <h4>资金差</h4>
-            <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+            <div style="background-color: white; margin-top: 20px">
+                <h4 style="margin-top: 20px">资金差</h4>
+            </div>
+            <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: -22px">
                 <!-- Binance -->
                 <el-col :span="6" align="center">
-                    <div style="margin-bottom: 20px; width: 100%">
-                    <exchange-value-lines
-                    v-bind:values="
-                    [
-                        {
-                            title: balanceDiffLines.binance.name,
-                            data: balanceDiffLines.binance.data,
-                        }
-                    ]
-                    "
-                    v-if="backtestDataAvailable" 
-                    style="margin-bottom: 20px">
-                    </exchange-value-lines>
-
+                    <div>
+                        <highcharts :options="balanceDiffColumns.binance" style="margin-top: 20px"></highcharts>
                     </div>
                 </el-col>
 
                 <!-- Okex -->
                 <el-col :span="6" align="center">
-                    <div style="margin-bottom: 20px; width: 100%">
-                    <exchange-value-lines
-                    v-bind:values="
-                    [
-                        {
-                            title: balanceDiffLines.okex.name,
-                            data: balanceDiffLines.okex.data,
-                        }
-                    ]
-                    "
-                    v-if="backtestDataAvailable" 
-                    style="margin-bottom: 20px">
-                    </exchange-value-lines>
-
+                    <div>
+                        <highcharts :options="balanceDiffColumns.okex" style="margin-top: 20px"></highcharts>
                     </div>
                 </el-col>
 
                 <!-- Bybit -->
                 <el-col :span="6" align="center">
-                    <div style="margin-bottom: 20px; width: 100%">
-                    <exchange-value-lines
-                    v-bind:values="
-                    [
-                        {
-                            title: balanceDiffLines.bybit.name,
-                            data: balanceDiffLines.bybit.data,
-                        }
-                    ]
-                    "
-                    v-if="backtestDataAvailable" 
-                    style="margin-bottom: 20px">
-                    </exchange-value-lines>
-
+                    <div>
+                        <highcharts :options="balanceDiffColumns.bybit" style="margin-top: 20px"></highcharts>
                     </div>
                 </el-col>
 
                 <!-- Bitget -->
                 <el-col :span="6" align="center">
-                    <div style="margin-bottom: 20px; width: 100%">
-                    <exchange-value-lines
-                    v-bind:values="
-                    [
-                        {
-                            title: balanceDiffLines.bitget.name,
-                            data: balanceDiffLines.bitget.data,
-                        }
-                    ]
-                    "
-                    v-if="backtestDataAvailable" 
-                    style="margin-bottom: 20px">
-                    </exchange-value-lines>
-
+                    <div>
+                        <highcharts :options="balanceDiffColumns.bitget" style="margin-top: 20px"></highcharts>
                     </div>
                 </el-col>
             </el-row>
@@ -383,6 +361,7 @@ import { exchangeColors } from '@/utils/chart'
 import moment from 'moment'
 import exchangeValueLines from '@/views/report/exchange_valuelines'
 import { getPortfolioDatas, getPortfolioDataByName } from '@/api/portfolio' 
+import { addSingleColumn} from '@/utils/chart'
 
 
 export default {
@@ -404,6 +383,10 @@ export default {
 
             // 平台实盘资产曲线
             balanceLiveLines: {
+                'all': {
+                    'name': '实盘资金',
+                    'data': null
+                }, 
                 'binance': {
                     'name': 'Binance实盘',
                     'data': null
@@ -424,6 +407,10 @@ export default {
 
             // 平台回测资产曲线
             balanceBtLines: {
+                'all': {
+                    'name': '回测资金',
+                    'data': null
+                }, 
                 'binance': {
                     'name': 'Binance回测',
                     'data': null
@@ -442,48 +429,420 @@ export default {
                 },                                           
             },
 
-            // 平台资产差曲线
-            balanceDiffLines: {
+            // 平台仓位差柱状图
+            positionDiffColumns: {
+                'all': {
+                    chart: {
+                        type: 'column',
+                        height: 400
+                    },
+
+                    title: {
+                        text: '',
+                    },
+                    xAxis: {
+                        categories: []
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                    },
+                    
+                    exporting: { enabled: false },
+                    
+                    // legend: {
+                    //     enabled: false
+                    // },
+
+                    tooltip: {
+                        headerFormat: '<b>{point.x}</b><br/>',
+                        pointFormat: '${point.y}'
+                    },
+                    plotOptions: {
+                        column: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        },
+                    },
+                    series: [{
+                        name: '仓位差',
+                        data: [],
+                    }],
+                },  
                 'binance': {
-                    'name': 'Binance',
-                    'data': null
+                    chart: {
+                        type: 'column',
+                        height: 400
+                    },
+
+                    title: {
+                        text: '',
+                    },
+                    xAxis: {
+                        categories: []
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                    },
+                    
+                    exporting: { enabled: false },
+                    
+                    // legend: {
+                    //     enabled: false
+                    // },
+
+                    tooltip: {
+                        headerFormat: '<b>{point.x}</b><br/>',
+                        pointFormat: '${point.y}'
+                    },
+                    plotOptions: {
+                        column: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        },
+                    },
+                    series: [{
+                        name: 'Binance',
+                        data: [],
+                    }],
                 },  
                 'okex': {
-                    'name': 'Okex',
-                    'data': null
-                },
+                    chart: {
+                        type: 'column',
+                        height: 400
+                    },
+
+                    title: {
+                        text: '',
+                    },
+                    xAxis: {
+                        categories: []
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                    },
+                    
+                    exporting: { enabled: false },
+                    
+                    // legend: {
+                    //     enabled: false
+                    // },
+
+                    tooltip: {
+                        headerFormat: '<b>{point.x}</b><br/>',
+                        pointFormat: '${point.y}'
+                    },
+                    plotOptions: {
+                        column: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        },
+                    },
+                    series: [{
+                        name: 'Okex',
+                        data: [],
+                    }],
+                }, 
                 'bybit': {
-                    'name': 'Bybit',
-                    'data': null
-                },
+                    chart: {
+                        type: 'column',
+                        height: 400
+                    },
+
+                    title: {
+                        text: '',
+                    },
+                    xAxis: {
+                        categories: []
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                    },
+                    
+                    exporting: { enabled: false },
+                    
+                    // legend: {
+                    //     enabled: false
+                    // },
+
+                    tooltip: {
+                        headerFormat: '<b>{point.x}</b><br/>',
+                        pointFormat: '${point.y}'
+                    },
+                    plotOptions: {
+                        column: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        },
+                    },
+                    series: [{
+                        name: 'Bybit',
+                        data: [],
+                    }],
+                }, 
                 'bitget': {
-                    'name': 'Bitget',
-                    'data': null
-                },                                           
+                    chart: {
+                        type: 'column',
+                        height: 400
+                    },
+
+                    title: {
+                        text: '',
+                    },
+                    xAxis: {
+                        categories: []
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                    },
+                    
+                    exporting: { enabled: false },
+                    
+                    // legend: {
+                    //     enabled: false
+                    // },
+
+                    tooltip: {
+                        headerFormat: '<b>{point.x}</b><br/>',
+                        pointFormat: '${point.y}'
+                    },
+                    plotOptions: {
+                        column: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        },
+                    },
+                    series: [{
+                        name: 'Bitget',
+                        data: [],
+                    }],
+                },                                          
             },
 
-            // 平台仓位差曲线
-            positionDiffLines: {
+            // 平台资金差柱状图
+            balanceDiffColumns: {
+                'all': {
+                    chart: {
+                        type: 'column',
+                        height: 400
+                    },
+
+                    title: {
+                        text: '',
+                    },
+                    xAxis: {
+                        categories: []
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                    },
+                    
+                    exporting: { enabled: false },
+                    
+                    // legend: {
+                    //     enabled: false
+                    // },
+
+                    tooltip: {
+                        headerFormat: '<b>{point.x}</b><br/>',
+                        pointFormat: '${point.y}'
+                    },
+                    plotOptions: {
+                        column: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        },
+                    },
+                    series: [{
+                        name: '资金差',
+                        data: [],
+                    }],
+                },  
                 'binance': {
-                    'name': 'Binance',
-                    'data': null
+                    chart: {
+                        type: 'column',
+                        height: 400
+                    },
+
+                    title: {
+                        text: '',
+                    },
+                    xAxis: {
+                        categories: []
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                    },
+                    
+                    exporting: { enabled: false },
+                    
+                    // legend: {
+                    //     enabled: false
+                    // },
+
+                    tooltip: {
+                        headerFormat: '<b>{point.x}</b><br/>',
+                        pointFormat: '${point.y}'
+                    },
+                    plotOptions: {
+                        column: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        },
+                    },
+                    series: [{
+                        name: 'Binance',
+                        data: [],
+                    }],
                 },  
                 'okex': {
-                    'name': 'Okex',
-                    'data': null
-                },
+                    chart: {
+                        type: 'column',
+                        height: 400
+                    },
+
+                    title: {
+                        text: '',
+                    },
+                    xAxis: {
+                        categories: []
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                    },
+                    
+                    exporting: { enabled: false },
+                    
+                    // legend: {
+                    //     enabled: false
+                    // },
+
+                    tooltip: {
+                        headerFormat: '<b>{point.x}</b><br/>',
+                        pointFormat: '${point.y}'
+                    },
+                    plotOptions: {
+                        column: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        },
+                    },
+                    series: [{
+                        name: 'Okex',
+                        data: [],
+                    }],
+                }, 
                 'bybit': {
-                    'name': 'Bybit',
-                    'data': null
-                },
+                    chart: {
+                        type: 'column',
+                        height: 400
+                    },
+
+                    title: {
+                        text: '',
+                    },
+                    xAxis: {
+                        categories: []
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                    },
+                    
+                    exporting: { enabled: false },
+                    
+                    // legend: {
+                    //     enabled: false
+                    // },
+
+                    tooltip: {
+                        headerFormat: '<b>{point.x}</b><br/>',
+                        pointFormat: '${point.y}'
+                    },
+                    plotOptions: {
+                        column: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        },
+                    },
+                    series: [{
+                        name: 'Bybit',
+                        data: [],
+                    }],
+                }, 
                 'bitget': {
-                    'name': 'Bitget',
-                    'data': null
-                },                                           
+                    chart: {
+                        type: 'column',
+                        height: 400
+                    },
+
+                    title: {
+                        text: '',
+                    },
+                    xAxis: {
+                        categories: []
+                    },
+                    yAxis: {
+                        title: {
+                            text: ''
+                        },
+                    },
+                    
+                    exporting: { enabled: false },
+                    
+                    // legend: {
+                    //     enabled: false
+                    // },
+
+                    tooltip: {
+                        headerFormat: '<b>{point.x}</b><br/>',
+                        pointFormat: '${point.y}'
+                    },
+                    plotOptions: {
+                        column: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        },
+                    },
+                    series: [{
+                        name: 'Bitget',
+                        data: [],
+                    }],
+                },                                          
             },
 
             // 平台实盘仓位曲线
             positionLiveLines: {
+                'all': {
+                    'name': '实盘仓位',
+                    'data': null
+                }, 
                 'binance': {
                     'name': 'Binance实盘',
                     'data': null
@@ -504,6 +863,10 @@ export default {
 
             // 平台回测仓位曲线
             positionBtLines: {
+                'all': {
+                    'name': '回测仓位',
+                    'data': null
+                }, 
                 'binance': {
                     'name': 'Binance回测',
                     'data': null
@@ -547,32 +910,66 @@ export default {
 
                 // 准备实盘-回测: 资金曲线对比
                 for(let exchange in this.balanceLiveLines){
-                    this.balanceLiveLines[exchange].data = historyData.balances.balance_live[exchange]
+                    this.balanceLiveLines[exchange].data = this.getRangeData(historyData.balances.balance_live[exchange])
                 }
                 for(let exchange in this.balanceBtLines){
-                    this.balanceBtLines[exchange].data = historyData.balances.balance_bt[exchange]
+                    this.balanceBtLines[exchange].data = this.getRangeData(historyData.balances.balance_bt[exchange])
                 }
 
-                // 准备实盘-回测: 资金曲线差对比
-                for(let exchange in this.balanceDiffLines){
-                    this.balanceDiffLines[exchange].data = historyData.balances.balance_diff[exchange]
+                // 准备实盘-回测: 资金差柱状图
+                for(let exchange in this.balanceLiveLines){
+                    var colDatas = []
+                    for(let ts in this.getRangeData(historyData.balances.balance_diff[exchange])){
+                        var val = historyData.balances.balance_diff[exchange][ts]
+                        colDatas.push({
+                            'x': ts,
+                            'y': Math.abs(Number(val.toFixed(0))),
+                            'color': Number(val) >= 0 ? 'green' : 'red'
+                        })                   
+                    }
+                    // debugger
+                    addSingleColumn(colDatas, this.balanceDiffColumns[exchange]) 
                 }
 
                 // 准备实盘-回测: 仓位曲线对比
                 for(let exchange in this.positionLiveLines){
-                    this.positionLiveLines[exchange].data = historyData.positions.position_live[exchange]
+                    this.positionLiveLines[exchange].data = this.getRangeData(historyData.positions.position_live[exchange])
                 }
                 for(let exchange in this.positionBtLines){
-                    this.positionBtLines[exchange].data = historyData.positions.position_bt[exchange]
+                    this.positionBtLines[exchange].data = this.getRangeData(historyData.positions.position_bt[exchange])
                 }
 
-                // 准备实盘-回测: 仓位曲线差对比
-                for(let exchange in this.positionDiffLines){
-                    this.positionDiffLines[exchange].data = historyData.positions.position_diff[exchange]
+
+                // 准备实盘-回测: 仓位差柱状图
+                for(let exchange in this.positionLiveLines){
+                    var colDatas = []
+                    for(let ts in this.getRangeData(historyData.positions.position_diff[exchange])){
+                        var val = historyData.positions.position_diff[exchange][ts]
+                        colDatas.push({
+                            'x': ts,
+                            'y': Math.abs(Number(val.toFixed(0))),
+                            'color': Number(val) >= 0 ? 'green' : 'red'
+                        })                   
+                    }
+                    // debugger
+                    addSingleColumn(colDatas, this.positionDiffColumns[exchange]) 
                 }
 
                 this.backtestDataAvailable = true
             })
+        },
+        
+        // 最近N天的数据
+        getRangeData(data){
+            var keepDays = 3
+            var startDate = moment(new Date()).subtract(keepDays,'days').format('YYYY-MM-DD')
+            var rangeData = {}
+            for(let dt in data){
+                if (dt >= startDate){
+                    rangeData[dt] = data[dt]
+                }
+            }  
+            return rangeData 
         },
 
         // 定时刷新数据函数
