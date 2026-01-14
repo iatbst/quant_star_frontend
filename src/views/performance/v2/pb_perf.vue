@@ -62,7 +62,12 @@
                 </el-col>
             </div>
         </el-row>
-
+        <div align="left">
+            <span style="font-size: 12px;">
+                数据更新时间: {{ updateTs | epochToTimestamp }}
+            </span>
+        </div>
+        
         <!-- 子策略表现 -->
         <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
             <div style="margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px; width: 100%">
@@ -413,6 +418,19 @@ import moment from 'moment'
 import { offset } from 'highcharts'
 
 export default {
+    filters: {
+        epochToTimestamp(ts) {
+        if (ts) {
+            const stillUtc = moment.utc(ts*1000).toDate()
+            return moment(stillUtc)
+            .local()
+            .format('YYYY-MM-DD HH:mm:ss')
+        } else {
+            return '--'
+        }
+        return ts.replace('T', ' ').slice(0, 19)
+        },
+    },
     data() {
         return {
             reportAvailable: false,
@@ -476,6 +494,7 @@ export default {
                     mddDays: null,
                 }
             ], 
+            updateTs: null,
             
             // 小批过滤
             openTradesCountTradeStats: [
@@ -557,6 +576,7 @@ export default {
                     this.monthPnls.push(monthPnl)
 
                 }
+                this.updateTs = response.results[0].run_ts
                 
                 // 子策略表现
                 this.strategyStatsData[0].sty1 = response.results[0].data.strategy_tradestats_90d["2"]

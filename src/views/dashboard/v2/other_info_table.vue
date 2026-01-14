@@ -7,27 +7,22 @@
         style="width: 100%">
             <el-table-column label="加权杠杆率" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: green" v-if="scope.row.weight_leverage >= 0">
-                        {{(scope.row.weight_leverage).toFixed(2)}}X
-                    </span>   
-                    <span style="color: red" v-else>
-                        {{(scope.row.weight_leverage).toFixed(2)}}X
-                    </span>        
+                    <el-tooltip placement="top-start" align="left">
+                        <div slot="content">
+                            BTC仓位权重0.33,ETH仓位权重0.66,其他币种仓位权重1.
+                        </div>
+                        <span style="color: green" v-if="scope.row.weight_leverage >= 0">
+                            {{(scope.row.weight_leverage).toFixed(2)}}X
+                        </span>   
+                        <span style="color: red" v-else>
+                            {{(scope.row.weight_leverage).toFixed(2)}}X
+                        </span>    
+                    </el-tooltip>    
                 </template>
             </el-table-column> 
 
             <el-table-column label="实盘&回测仓位差" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: green" v-if="Math.abs(scope.row.btPositions.position_diff_ptg) < 0.0003">
-                        {{(scope.row.btPositions.position_diff_ptg*100).toFixed(3)}}%
-                    </span>   
-                    <span style="color: orange" v-else-if="Math.abs(scope.row.btPositions.position_diff_ptg) < 0.001">
-                        {{(scope.row.btPositions.position_diff_ptg*100).toFixed(3)}}%
-                    </span>  
-                    <span style="color: red" v-else>
-                        {{(scope.row.btPositions.position_diff_ptg*100).toFixed(3)}}%
-                    </span> 
-                    
                     <el-tooltip placement="top-start" align="left">
                         <div slot="content">
                             更新时间: {{ scope.row.btPositions.check_ts | epochToTimestamp}}
@@ -37,21 +32,26 @@
                             总回测仓位($): {{ scope.row.btPositions.bt_positions.toFixed(0) }}
                             <br/>
                             总仓位差($): {{ scope.row.btPositions.position_diff.toFixed(0) }}
+                            <br/>
+                            以上仓位数据表示对应小时的第10分钟的实盘仓位和回测仓位,非当前实时值.
+                            <br/>
+                            此数据每小时等待回测结束后更新一次.
                         </div>
-                        <span style=""><i class="el-icon-info"></i></span>
+                        <span style="color: green" v-if="Math.abs(scope.row.btPositions.position_diff_ptg) < 0.0003">
+                            {{(scope.row.btPositions.position_diff_ptg*100).toFixed(3)}}%
+                        </span>   
+                        <span style="color: orange" v-else-if="Math.abs(scope.row.btPositions.position_diff_ptg) < 0.001">
+                            {{(scope.row.btPositions.position_diff_ptg*100).toFixed(3)}}%
+                        </span>  
+                        <span style="color: red" v-else>
+                            {{(scope.row.btPositions.position_diff_ptg*100).toFixed(3)}}%
+                        </span> 
                     </el-tooltip>
                 </template>
             </el-table-column>
 
             <el-table-column label="实盘&回测资金差($)" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: green" v-if="scope.row.btBalances.balance_diff >= 0">
-                        {{(scope.row.btBalances.balance_diff).toFixed(0)}}
-                    </span>   
-                    <span style="color: red" v-else>
-                        {{(scope.row.btBalances.balance_diff).toFixed(0)}}
-                    </span> 
-                    
                     <el-tooltip placement="top-start" align="left">
                         <div slot="content">
                             更新时间: {{ scope.row.btBalances.check_ts | epochToTimestamp}}
@@ -67,21 +67,25 @@
                                     </span>                                    
                                 </span>
                             </li>
+                            <br/>
+                            以上资金差数据表示对应小时初始时的实盘和回测资金差,非当前实时值.
+                            <br/>
+                            此数据每小时等待回测结束后更新一次.
+                            <br/>
+                            此数据未考虑3费的影响.
                         </div>
-                        <span style=""><i class="el-icon-info"></i></span>
+                        <span style="color: green" v-if="scope.row.btBalances.balance_diff >= 0">
+                            {{(scope.row.btBalances.balance_diff).toFixed(0)}}
+                        </span>   
+                        <span style="color: red" v-else>
+                            {{(scope.row.btBalances.balance_diff).toFixed(0)}}
+                        </span> 
                     </el-tooltip>
                 </template>
             </el-table-column>
 
             <el-table-column label="实盘&回测调整资金差($)" min-width="10%" align="center">
-                <template slot-scope="scope">
-                    <span style="color: green" v-if="scope.row.btBalances.adjust_balance_diff >= 0">
-                        {{(scope.row.btBalances.adjust_balance_diff).toFixed(0)}}
-                    </span>   
-                    <span style="color: red" v-else>
-                        {{(scope.row.btBalances.adjust_balance_diff).toFixed(0)}}
-                    </span> 
-                    
+                <template slot-scope="scope">                    
                     <el-tooltip placement="top-start" align="left">
                         <div slot="content">
                             <div>
@@ -112,42 +116,58 @@
                                 <span style="color: red;font-size: 15px" v-else>
                                     {{ scope.row.btBalances.bt_swap_funding_rewards.toFixed(0) }}
                                 </span>   
-                            </div>  
+                            </div>
+                            <br/>
+                            此数据考虑3费的影响.
+                            <br/>
+                            正数表示对实盘资金不利(资金费),应该加上后再和回测资金比较;负数表示对实盘资金有利(滑点),应该减去后再和回测资金比较.
                         </div>
-                        <span style=""><i class="el-icon-info"></i></span>
+                        <span style="color: green" v-if="scope.row.btBalances.adjust_balance_diff >= 0">
+                            {{(scope.row.btBalances.adjust_balance_diff).toFixed(0)}}
+                        </span>   
+                        <span style="color: red" v-else>
+                            {{(scope.row.btBalances.adjust_balance_diff).toFixed(0)}}
+                        </span> 
                     </el-tooltip>
                 </template>
             </el-table-column>
 
             <el-table-column label="资金变化率(60日)" min-width="10%" align="center" >
                 <template slot-scope="scope">
-                    <span style="color: green" v-if="scope.row.btValueLineChange[0] >= 0">
-                        {{ scope.row.btValueLineChange[0]  }}%
-                    </span>   
-                    <span style="color: red" v-else>
-                        {{ scope.row.btValueLineChange[0]  }}%
-                    </span> 
-                    |
-                    <span style="color: green" v-if="scope.row.btValueLineChange[1] >= 0">
-                        {{ scope.row.btValueLineChange[1]  }}%
-                    </span>   
-                    <span style="color: red" v-else>
-                        {{ scope.row.btValueLineChange[1]  }}%
-                    </span> 
-                    |
-                    <span style="color: green" v-if="scope.row.btValueLineChange[2] >= 0">
-                        {{ scope.row.btValueLineChange[2]  }}%
-                    </span>   
-                    <span style="color: red" v-else>
-                        {{ scope.row.btValueLineChange[2]  }}%
-                    </span> 
-                    |
-                    <span style="color: green" v-if="scope.row.btValueLineChange[3] >= 0">
-                        {{ scope.row.btValueLineChange[3]  }}%
-                    </span>   
-                    <span style="color: red" v-else>
-                        {{ scope.row.btValueLineChange[3]  }}%
-                    </span> 
+                    <el-tooltip placement="top-start" align="left">
+                        <div slot="content">
+                            分别展示Binance | Okex | Bybit | Bitget的资金相对于60日前的变化率.
+                        </div>
+                        <div>
+                            <span style="color: green" v-if="scope.row.btValueLineChange[0] >= 0">
+                                {{ scope.row.btValueLineChange[0]  }}%
+                            </span>   
+                            <span style="color: red" v-else>
+                                {{ scope.row.btValueLineChange[0]  }}%
+                            </span> 
+                            |
+                            <span style="color: green" v-if="scope.row.btValueLineChange[1] >= 0">
+                                {{ scope.row.btValueLineChange[1]  }}%
+                            </span>   
+                            <span style="color: red" v-else>
+                                {{ scope.row.btValueLineChange[1]  }}%
+                            </span> 
+                            |
+                            <span style="color: green" v-if="scope.row.btValueLineChange[2] >= 0">
+                                {{ scope.row.btValueLineChange[2]  }}%
+                            </span>   
+                            <span style="color: red" v-else>
+                                {{ scope.row.btValueLineChange[2]  }}%
+                            </span> 
+                            |
+                            <span style="color: green" v-if="scope.row.btValueLineChange[3] >= 0">
+                                {{ scope.row.btValueLineChange[3]  }}%
+                            </span>   
+                            <span style="color: red" v-else>
+                                {{ scope.row.btValueLineChange[3]  }}%
+                            </span> 
+                        </div>
+                    </el-tooltip>
                 </template>
             </el-table-column>
 
@@ -165,18 +185,23 @@
 
             <el-table-column label="最新多头占比" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span v-if="scope.row.longShortRatio == null">
-                        N/A
-                    </span>
-                    <span style="" v-else>
-                        <span style="color: green" v-if="scope.row.longShortRatio > 60">
-                            {{ scope.row.longShortRatio }}%
-                        </span>   
+                        <span v-if="scope.row.longShortRatio == null">
+                            N/A
+                        </span>
                         <span style="" v-else>
-                            {{ scope.row.longShortRatio }}%
-                        </span> 
-                    </span>
-                    <i class="el-icon-data-line" v-on:click="showLongShortRatioDialog()" style="cursor: pointer"></i>
+                            <el-tooltip placement="top-start" align="left">
+                                <div slot="content">
+                                    每小时从4大平台获取BTC合约多空人数占比,返回平均值.
+                                </div>
+                                <span style="color: green" v-if="scope.row.longShortRatio > 60">
+                                    {{ scope.row.longShortRatio }}%
+                                </span>   
+                                <span style="" v-else>
+                                    {{ scope.row.longShortRatio }}%
+                                </span> 
+                            </el-tooltip>
+                        </span>
+                        <i class="el-icon-data-line" v-on:click="showLongShortRatioDialog()" style="cursor: pointer"></i>
                 </template>
             </el-table-column>
 
@@ -186,12 +211,17 @@
                         N/A
                     </span>
                     <span style="" v-else>
-                        <span style="color: green" v-if="scope.row.swapFundingRate > 0">
-                            {{ scope.row.swapFundingRate }}%
-                        </span>   
-                        <span style="" v-else>
-                            {{ scope.row.swapFundingRate }}%
-                        </span> 
+                        <el-tooltip placement="top-start" align="left">
+                            <div slot="content">
+                                Binance的BTC合约的资金费,一般每8小时收取一次.正数表示多头给空头钱,反之亦然.
+                            </div>
+                            <span style="color: green" v-if="scope.row.swapFundingRate > 0">
+                                {{ scope.row.swapFundingRate }}%
+                            </span>   
+                            <span style="" v-else>
+                                {{ scope.row.swapFundingRate }}%
+                            </span> 
+                        </el-tooltip>
                     </span>
                     <i class="el-icon-data-line" v-on:click="showSwapFundingRateDialog()" style="cursor: pointer"></i>
                 </template>
@@ -203,12 +233,17 @@
                         N/A
                     </span>
                     <span style="" v-else>
-                        <span style="color: green" v-if="scope.row.bullBearScore >= 0.6">
-                            {{ scope.row.bullBearScore }}
-                        </span>   
-                        <span style="color: red" v-else>
-                            {{ scope.row.bullBearScore }}
-                        </span> 
+                        <el-tooltip placement="top-start" align="left">
+                            <div slot="content">
+                                根据Bitget的BTC合约计算趋势分, 取值范围: 0 ~ 1. 0表示熊市, 1表示牛市.
+                            </div>
+                            <span style="color: green" v-if="scope.row.bullBearScore >= 0.6">
+                                {{ scope.row.bullBearScore }}
+                            </span>   
+                            <span style="color: red" v-else>
+                                {{ scope.row.bullBearScore }}
+                            </span> 
+                        </el-tooltip>
                     </span>
                     <i class="el-icon-data-line" v-on:click="showBullBearDialog()" style="cursor: pointer"></i>
                 </template>

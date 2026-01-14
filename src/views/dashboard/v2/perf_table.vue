@@ -69,6 +69,17 @@
                 </template> 
             </el-table-column>  
 
+            <el-table-column label="手续费" min-width="10%" align="center" style="background: white"> 
+                <template slot-scope="scope">
+                    <span style="color: green" v-if="scope.row.fee >= 0">
+                        {{ scope.row.fee.toFixed(0) }}
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{ scope.row.fee.toFixed(0) }}
+                    </span>               
+                </template> 
+            </el-table-column>  
+
             <el-table-column label="总损益额" min-width="10%" align="center" style="background: white"> 
                 <template slot-scope="scope">
                     <span style="color: green" v-if="scope.row.total_pnl >= 0">
@@ -190,7 +201,8 @@ export default {
                         lose_avg_pnl_ptg: styData[key].year_now.lose_avg_pnl_ptg != null ? (styData[key].year_now.lose_avg_pnl_ptg*100).toFixed(1) + '%' : null,
                         avg_pnl_ptg: styData[key].year_now.avg_pnl_ptg != null ? styData[key].year_now.avg_pnl_ptg : null,
                         weight_slippage: styData[key].year_now.weight_slippage != null ? styData[key].year_now.weight_slippage : null,
-                        total_pnl: styData[key].year_now.total_pnl
+                        total_pnl: styData[key].year_now.total_pnl,
+                        fee: styData[key].year_now.fee
                     })
                 }
             }             

@@ -156,7 +156,12 @@
 
         <el-table-column label="手续费" min-width="10%" align="center">
             <template slot-scope="scope">
-                {{ Math.round(scope.row.fee) }}            
+                <span v-if="scope.row.fee >= 0" style="color: green">
+                    {{ Math.round(scope.row.fee) }}    
+                </span>
+                <span v-else style="color: red">
+                    {{ Math.round(scope.row.fee) }}    
+                </span>      
             </template>
         </el-table-column>
 

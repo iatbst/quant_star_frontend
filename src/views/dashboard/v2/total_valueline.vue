@@ -5,28 +5,28 @@
             <!-- 曲线 -->
             <highcharts :options="totalBalanceOptions" style="margin-top: 20px"></highcharts>
             <div align="center" style="margin-bottom: 20px">
-                <el-button style="margin-left: 0px" type="info" size="mini"  @click="parseData()" :plain="buttonAllPlain">
+                <el-button style="margin-left: 0px" type="info" size="mini"  @click="parseData()" :plain="buttonAllPlain" v-if="range_set.includes('all') ">
                     全部
                 </el-button> 
-                <el-button type="info" size="mini"  @click="parseData('thisYear')" :plain="buttonThisYearPlain">
+                <el-button type="info" size="mini"  @click="parseData('thisYear')" :plain="buttonThisYearPlain" v-if="range_set.includes('thisYear') ">
                     今年
                 </el-button> 
-                <el-button type="info" size="mini"  @click="parseData('thisYearHalf2')" :plain="buttonThisYearHalf2Plain">
+                <el-button type="info" size="mini"  @click="parseData('thisYearHalf2')" :plain="buttonThisYearHalf2Plain" v-if="range_set.includes('thisYearHalf2') ">
                     今年下
                 </el-button> 
-                <el-button type="info" size="mini"  @click="parseData('6M')" :plain="button6MPlain">
+                <el-button type="info" size="mini"  @click="parseData('6M')" :plain="button6MPlain" v-if="range_set.includes('6M') ">
                     6个月
                 </el-button>   
-                <el-button type="info" size="mini"  @click="parseData('12M')" :plain="button12MPlain">
+                <el-button type="info" size="mini"  @click="parseData('12M')" :plain="button12MPlain" v-if="range_set.includes('12M') ">
                     12个月
                 </el-button>  
-                <el-button type="info" size="mini"  @click="parseData('2Y')" :plain="button2YPlain">
+                <el-button type="info" size="mini"  @click="parseData('2Y')" :plain="button2YPlain" v-if="range_set.includes('2Y') ">
                     2年
                 </el-button>  
-                <el-button type="info" size="mini"  @click="parseData('3Y')" :plain="button3YPlain">
+                <el-button type="info" size="mini"  @click="parseData('3Y')" :plain="button3YPlain" v-if="range_set.includes('3Y') ">
                     3年
                 </el-button>  
-                <el-button type="info" size="mini"  @click.native="switchLineType()" :plain="buttonLogPlain">
+                <el-button type="info" size="mini"  @click.native="switchLineType()" :plain="buttonLogPlain" v-if="range_set.includes('lineType') ">
                     对数
                 </el-button>  
             </div>       
@@ -58,16 +58,20 @@ export default {
         range: {
             type: String,
             default: 'thisYear'    // 默认展示
+        },
+        range_set: {
+            type: Array,
+            default: ['1W', '1M', '3M', '6M', '12M', 'thisYear', 'all']
         }
     },
 
     watch: {
-        // values: {
-        //     handler(val, oldVal){
-        //         this.parseData(this.range)
-        //     },
-        //     deep: true
-        // },
+        values: {
+            handler(val, oldVal){
+                this.parseData(this.range)
+            },
+            deep: true
+        },
     },
     
     data() {

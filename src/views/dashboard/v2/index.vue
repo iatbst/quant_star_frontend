@@ -55,23 +55,17 @@
             v-if="parentPfoPositionsAvailable && subaccountDatasAvailable && parentPfoAtrptgAvailable">
             </position-table>
 
-            <!--- 今日表 ---
-                函数: 
-                    - fetchParentPfoPositions
-                    - fetchTodayOrders
-                    - fetchTodayPnls
-                    - fetchTodayFundingFees
-            --->
-            <today-table 
-            v-bind:parentPfoPositions="parentPfoPositions" 
-            v-bind:parentPfoPositionsHistory="parentPfoPositionsHistory" 
-            v-bind:todayOrders="todayOrders" 
-            v-bind:todayStrategyPnl="todayStrategyPnl"
-            v-bind:todayExchangePnl="todayExchangePnl"
-            v-bind:todayFundingFees="todayFundingFees" 
-            v-if="parentPfoPositionsAvailable && todayOrdersAvailable && todayPnlAvailable && todayFundingFeesAvailable"
-            >
-            </today-table>
+            <!--- 刷新说明 --->
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        资产数据(表1): 每分钟第5秒刷新1次
+                        <br/>
+                        仓位数据(表2,表4): 每分钟第5秒刷新1次
+                    </div>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                </el-tooltip>
+            </div>
         </div>
       </el-col>
     </el-row>   
@@ -80,10 +74,11 @@
         函数:
             - fetchLiveValuelines
             - fetchBacktestValueline
+            - fetchPnlLines
         更新频率: ?
     --->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
-      <el-col :span="8" align="center">
+      <el-col :span="6" align="center">
           <div style="margin-bottom: 20px; width: 100%">
             <hour-value-line 
             v-bind:values="
@@ -97,9 +92,18 @@
             v-if="parentPfoPositionsAvailable" 
             style="margin-bottom: 20px">
             </hour-value-line>
+            <!--- 说明 --->
+            <div align="left" style="margin-left: 48px;">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        每小时更新一次,时间戳表示该小时结束后的仓位.
+                    </div>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                </el-tooltip>
+            </div>
           </div>
       </el-col>  
-      <el-col :span="8" align="center">
+      <el-col :span="6" align="center">
           <div style="margin-bottom: 20px; width: 100%">
             <hour-value-line 
             v-bind:values="
@@ -113,9 +117,18 @@
             v-if="hourBalanceValuesAvailable" 
             style="margin-bottom: 20px">
             </hour-value-line>
+            <!--- 说明 --->
+            <div align="left" style="margin-left: 20px;">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        每小时更新一次,时间戳表示该小时结束后的资金.
+                    </div>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                </el-tooltip>
+            </div>
           </div>
       </el-col>        
-      <el-col :span="8" align="center">
+      <el-col :span="6" align="center">
           <div style="margin-bottom: 20px; width: 100%">
             <total-value-line 
             v-bind:values="
@@ -126,9 +139,68 @@
                 },
             ]
             "
+            v-bind:range_set="['all', 'thisYear', 'lineType', '6M', '12M', '2Y']" 
             v-if="totalBalanceValuesAvailable" 
             style="margin-bottom: 20px">
             </total-value-line>
+            <!--- 说明 --->
+            <div align="left" style="margin-left: 20px;">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        每日零点(北京时区)更新一次,时间戳表示该日结束后的资金.
+                    </div>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                </el-tooltip>
+            </div>
+          </div>
+      </el-col>
+      <el-col :span="6" align="center">
+          <div style="margin-bottom: 20px; width: 100%">
+            <multi-value-line 
+            v-bind:values="
+            [
+                {
+                    title: pnlLines.trendline_break.name,
+                    data: pnlLines.trendline_break.data
+                },
+                {
+                    title: pnlLines.plunge_back.name,
+                    data: pnlLines.plunge_back.data
+                },
+                {
+                    title: pnlLines.rsi_mini.name,
+                    data: pnlLines.rsi_mini.data
+                },
+                {
+                    title: pnlLines.id_nr.name,
+                    data: pnlLines.id_nr.data
+                },
+                {
+                    title: pnlLines.pivot_reversal_mini.name,
+                    data: pnlLines.pivot_reversal_mini.data
+                }                                  
+            ]
+            "
+            v-bind:range_set="['1M', '6M', 'thisYear']" 
+            v-if="
+            pnlLines.trendline_break.available && 
+            pnlLines.plunge_back.available &&
+            pnlLines.rsi_mini.available && 
+            pnlLines.id_nr.available &&
+            pnlLines.pivot_reversal_mini.available
+            " 
+            style="margin-bottom: 20px">
+            </multi-value-line>
+
+            <!--- 刷新说明 --->
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        策略收益曲线: 每天00:30:00刷新1次
+                    </div>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                </el-tooltip>
+            </div>
           </div>
       </el-col>
     </el-row>
@@ -154,7 +226,15 @@
             v-if="liveValueLines.binance.available && btValueLines.binance.available" 
             style="margin-bottom: 20px">
             </exchange-value-lines>
-
+            <!--- 说明 --->
+            <div align="left" style="margin-left: 48px;">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        每日零点(UTC时区)更新一次,时间戳表示该日结束后的实盘/回测资金.
+                    </div>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                </el-tooltip>
+            </div>
             </div>
         </el-col>
 
@@ -231,12 +311,48 @@
         </el-col>
     </el-row>
 
+    <!--- 今日表 ---
+        函数: 
+            - fetchParentPfoPositions
+            - fetchTodayOrders
+            - fetchTodayPnls
+            - fetchTodayFundingFees
+    --->
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+        <el-col :span="24" align="center">
+            <h4 style="font-weight: 400;">今日统计</h4>
+            <div style="margin-bottom: 20px; margin-top: 20px; width: 95%">
+                <today-table 
+                v-bind:parentPfoPositions="parentPfoPositions" 
+                v-bind:parentPfoPositionsHistory="parentPfoPositionsHistory" 
+                v-bind:todayOrders="todayOrders" 
+                v-bind:todayStrategyPnl="todayStrategyPnl"
+                v-bind:todayExchangePnl="todayExchangePnl"
+                v-bind:todayFundingFees="todayFundingFees" 
+                v-if="parentPfoPositionsAvailable && todayOrdersAvailable && todayPnlAvailable && todayFundingFeesAvailable"
+                >
+                </today-table>
+
+                <!--- 刷新说明 --->
+                <div align="left">
+                    <el-tooltip placement="top-start" align="left">
+                        <div slot="content">
+                            今日统计表格: 每间隔5分钟刷新1次(非整点);盈亏列每小时第5分钟刷新1次;资金费每小时第30分钟刷新1次
+                        </div>
+                        <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                    </el-tooltip>
+                </div>
+            </div>
+        </el-col>
+    </el-row>
+
     <!---------------------------------- Perf Table -----------------------------------
         函数: fetchParentPfoTradeStats
     --->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
       <el-col :span="24" align="center">
-          <div style="margin-bottom: 20px; margin-top: 20px; width: 95%">
+          <h4 style="font-weight: 400;">策略今年表现</h4>
+          <div style="margin-bottom: 20px; margin-top: 10px; width: 95%">
             <perf-table 
             v-bind:parentPfoTradeStats="parentPfoTradeStats" 
             v-if="parentPfoTradeStatsAvailable">
@@ -246,70 +362,49 @@
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
                     <div slot="content">
-                        资产表格: 每分钟第5秒刷新1次
-                        <br/>
-                        仓位表格: 每分钟第5秒刷新1次
-                        <br />
-                        今日表格: 每间隔5分钟刷新1次(非整点);盈亏列每小时第5分钟刷新1次;资金费每小时第30分钟刷新1次
-                        <br/>
                         策略今年表现表格: 每小时第5分钟刷新1次
                     </div>
-                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
                 </el-tooltip>
             </div>            
           </div>
       </el-col>
     </el-row>
 
-    <!---------------------------------- 策略的Pnl Lines -----------------------------------
-        函数:fetchPnlLines 
+    <!----------------------------------- 策略仓位ranks ---------------------------------------
+        函数:fetchPositions 
         更新频率: ?
-    --->
+    --->  
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
       <el-col :span="24" align="center">
           <div style="margin-bottom: 20px; width: 95%">
-            <multi-value-line 
-            v-bind:values="
-            [
-                {
-                    title: pnlLines.trendline_break.name,
-                    data: pnlLines.trendline_break.data
-                },
-                {
-                    title: pnlLines.plunge_back.name,
-                    data: pnlLines.plunge_back.data
-                },
-                {
-                    title: pnlLines.rsi_mini.name,
-                    data: pnlLines.rsi_mini.data
-                },
-                {
-                    title: pnlLines.id_nr.name,
-                    data: pnlLines.id_nr.data
-                },
-                {
-                    title: pnlLines.pivot_reversal_mini.name,
-                    data: pnlLines.pivot_reversal_mini.data
-                }                                  
-            ]
-            " 
+            <strategy-positions
+            v-bind:positions="positions"
             v-if="
-            pnlLines.trendline_break.available && 
-            pnlLines.plunge_back.available &&
-            pnlLines.rsi_mini.available && 
-            pnlLines.id_nr.available &&
-            pnlLines.pivot_reversal_mini.available
-            " 
-            style="margin-bottom: 20px">
-            </multi-value-line>
-
+            tbBinancePositionsAvailable 
+            && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
+            pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBinancePositionsAvailable &&
+            rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBinancePositionsAvailable &&
+            inOkexPositionsAvailable && inBybitPositionsAvailable && inBinancePositionsAvailable &&
+            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable
+            "
+            ></strategy-positions> 
+            <div align="left">
+                <span style="font-size: 12px;">
+                    回测仓位更新: {{ backtestUpdateTs | epochToTimestamp }}
+                </span>
+            </div>
             <!--- 刷新说明 --->
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
                     <div slot="content">
-                        策略收益曲线: 每天00:30:00刷新1次
+                        仓位数据: 每间隔5分钟刷新1次(非整点)
+                        </br>
+                        回测仓位: 每小时第10分钟开始运行回测,大约20分钟运行结束,回测仓位更新.
+                        </br>
+                        目前两种原因(除了执行错误外)可能导致实盘-回测仓位不齐: 当前小时回测仓位还未更新; 当前小时第10分钟后有实盘仓位发生变化(止盈/止损).
                     </div>
-                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
                 </el-tooltip>
             </div>
           </div>
@@ -341,43 +436,7 @@
                     <div slot="content">
                         仓位排名: 每间隔5分钟刷新1次(非整点)
                     </div>
-                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
-                </el-tooltip>
-            </div>
-          </div>
-      </el-col>
-    </el-row>
-
-    <!----------------------------------- 策略仓位ranks ---------------------------------------
-        函数:fetchPositions 
-        更新频率: ?
-    --->  
-    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
-      <el-col :span="24" align="center">
-          <div style="margin-bottom: 20px; width: 95%">
-            <strategy-positions
-            v-bind:positions="positions"
-            v-if="
-            tbBinancePositionsAvailable 
-            && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
-            pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBinancePositionsAvailable &&
-            rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBinancePositionsAvailable &&
-            inOkexPositionsAvailable && inBybitPositionsAvailable && inBinancePositionsAvailable &&
-            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable
-            "
-            ></strategy-positions> 
-            <div align="left">
-                <span style="font-size: 12px;">
-                    回测数据时间: {{ backtestUpdateTs | epochToTimestamp }}
-                </span>
-            </div>
-            <!--- 刷新说明 --->
-            <div align="left">
-                <el-tooltip placement="top-start" align="left">
-                    <div slot="content">
-                        策略仓位: 每间隔5分钟刷新1次(非整点)
-                    </div>
-                    <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
                 </el-tooltip>
             </div>
           </div>
@@ -387,17 +446,15 @@
     <!----------------------------------- 订单(1天内) ---------------------------------------
         函数:fetchOrders
         更新频率: ?
-    ---> 
+    
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
       <el-col :span="24" align="center">
           <div style="margin-bottom: 20px; width: 95%">
-            <!-- 仓位详情 -->
             <orders 
             v-bind:orders="orders" 
             v-bind:orders-loading="ordersLoading"
             ></orders>
 
-            <!--- 刷新说明 --->
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
                     <div slot="content">
@@ -409,6 +466,7 @@
          </div>
       </el-col>
     </el-row>
+    --->
 
   </div>
 </template>
@@ -799,7 +857,7 @@ export default {
             this.fetchPositions()
 
             // 订单列表
-            this.fetchOrders()
+            // this.fetchOrders()
         },
 
         // 获取worker的pnls
@@ -1731,10 +1789,10 @@ export default {
                     this.fetchPositions()
                 } 
                 // 订单列表
-                if(now - this.ordersRefresh > 5*60*1000){
-                    console.log(now + '刷新:fetchOrders');
-                    this.fetchOrders()
-                } 
+                // if(now - this.ordersRefresh > 5*60*1000){
+                //     console.log(now + '刷新:fetchOrders');
+                //     this.fetchOrders()
+                // } 
 
             }, this.refreshInterval);
         }, 

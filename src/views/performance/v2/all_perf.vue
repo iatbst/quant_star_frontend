@@ -94,6 +94,11 @@
                 </el-col>
             </div>
         </el-row>
+        <div align="left">
+            <span style="font-size: 12px;">
+                数据更新时间: {{ statsUpdateTs | epochToTimestamp }}
+            </span>
+        </div>
 
         <!-- 总体月度收益率表头 -->
         <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
@@ -157,6 +162,11 @@
                 </el-col>
             </div>
         </el-row>
+        <div align="left">
+            <span style="font-size: 12px;">
+                数据更新时间: {{ updateTs | epochToTimestamp }}
+            </span>
+        </div>
 
         <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
             <div style="margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px; width: 100%">
@@ -232,6 +242,20 @@ import moment from 'moment'
 import { offset } from 'highcharts'
 
 export default {
+    filters: {
+        epochToTimestamp(ts) {
+        if (ts) {
+            const stillUtc = moment.utc(ts*1000).toDate()
+            return moment(stillUtc)
+            .local()
+            .format('YYYY-MM-DD HH:mm:ss')
+        } else {
+            return '--'
+        }
+        return ts.replace('T', ' ').slice(0, 19)
+        },
+    },
+
     data() {
         return {
             reportBtcStatsAvailable: false,
@@ -281,6 +305,8 @@ export default {
             // 月度收益
             monthPnlHeaders: [],
             monthPnls: [],
+            statsUpdateTs: null,
+            updateTs: null,
 
             // sharpe/sortino Ratios
             sharpeRatioData: [
@@ -332,6 +358,7 @@ export default {
                 this.statsData2[0].atrTopRatioBtc = data.atr_top_ratio_2y
                 this.statsData2[1].atrTopRatioBtc = data.atr_top_ratio
                 this.reportBtcStatsAvailable = true
+                this.statsUpdateTs = response.results[0].run_ts
             })
         },
 
@@ -383,7 +410,8 @@ export default {
                     this.monthPnls.push(monthPnl)
 
                 }
-                // debugger
+                this.updateTs = response.results[0].run_ts
+
                 // 夏普比率
                 this.sharpeRatioData[0].sharpeRatio = response.results[0].data.sharp_ratio_90
                 this.sharpeRatioData[0].sortinoRatio = response.results[0].data.sortino_ratio_90

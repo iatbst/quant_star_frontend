@@ -58,6 +58,7 @@
                     </el-table>
                 </el-col>
 
+
                 <!-- 策略PR -->
                 <el-col :span="12" align="center">
                     <h4>策略: Pivot Reversal</h4>
@@ -115,6 +116,11 @@
                 </el-col>
             </div>
         </el-row>
+        <div align="left">
+            <span style="font-size: 12px;">
+                数据更新时间: {{ updateTs | epochToTimestamp }}
+            </span>
+        </div>
 
         <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
             <div style="margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px; width: 100%">
@@ -163,6 +169,19 @@ import { offset } from 'highcharts'
 import exchangeValueLines from '@/views/performance/v2/exchange_valuelines'
 
 export default {
+    filters: {
+        epochToTimestamp(ts) {
+        if (ts) {
+            const stillUtc = moment.utc(ts*1000).toDate()
+            return moment(stillUtc)
+            .local()
+            .format('YYYY-MM-DD HH:mm:ss')
+        } else {
+            return '--'
+        }
+        return ts.replace('T', ' ').slice(0, 19)
+        },
+    },
     components: {
         exchangeValueLines
     },
@@ -197,7 +216,8 @@ export default {
                     mddDays: null,
                 }
             ], 
-        
+                
+            updateTs: null,
         }
     },
 
@@ -226,6 +246,8 @@ export default {
                 this.dcValueline = response.results[0].data.valueline
 
                 this.dcReportAvailable = true
+
+                this.updateTs = response.results[0].run_ts
             })
         },
 
