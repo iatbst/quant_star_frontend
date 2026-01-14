@@ -44,7 +44,12 @@
                     >
                       <el-table-column align="left" label="时间" min-width="15%">
                         <template slot-scope="_scope">
-                          {{ _scope.row.ts }}
+                          <span v-if="currentHour(_scope.row.ts)">
+                             <b><u>{{ _scope.row.ts }}</u></b>
+                          </span>
+                          <span v-else>
+                              {{ _scope.row.ts }}
+                          </span>
                         </template>
                       </el-table-column>    
 
@@ -389,6 +394,13 @@ export default {
         }
       }
       //console.log(this.errorTableDict)
+    },
+
+    // 是否当前小时
+    currentHour(ts){
+       var ch = moment(new Date()).format('YYYY-MM-DD HH') + ':00:00'
+       // debugger
+       return ts >= ch
     },
 
     // 定时刷新数据函数
