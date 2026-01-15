@@ -23,7 +23,7 @@
 
             <el-table-column label="实盘&回测仓位差" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <el-tooltip placement="top-start" align="left">
+                    <el-tooltip placement="top-start" align="center">
                         <div slot="content">
                             更新时间: {{ scope.row.btPositions.check_ts | epochToTimestamp}}
                             <br/>
@@ -52,7 +52,7 @@
 
             <el-table-column label="实盘&回测资金差($)" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <el-tooltip placement="top-start" align="left">
+                    <el-tooltip placement="top-start" align="center">
                         <div slot="content">
                             更新时间: {{ scope.row.btBalances.check_ts | epochToTimestamp}}
                         </div>
@@ -86,7 +86,7 @@
 
             <el-table-column label="实盘&回测调整资金差($)" min-width="10%" align="center">
                 <template slot-scope="scope">                    
-                    <el-tooltip placement="top-start" align="left">
+                    <el-tooltip placement="top-start" align="center">
                         <div slot="content">
                             <div>
                                 手续费调整金额($): 
@@ -134,7 +134,7 @@
 
             <el-table-column label="资金变化率(60日)" min-width="10%" align="center" >
                 <template slot-scope="scope">
-                    <el-tooltip placement="top-start" align="left">
+                    <el-tooltip placement="top-start" align="center">
                         <div slot="content">
                             分别展示Binance | Okex | Bybit | Bitget的资金相对于60日前的变化率.
                         </div>
@@ -189,7 +189,7 @@
                             N/A
                         </span>
                         <span style="" v-else>
-                            <el-tooltip placement="top-start" align="left">
+                            <el-tooltip placement="top-start" align="center">
                                 <div slot="content">
                                     每小时从4大平台获取BTC合约多空人数占比,返回平均值.
                                 </div>
@@ -211,7 +211,7 @@
                         N/A
                     </span>
                     <span style="" v-else>
-                        <el-tooltip placement="top-start" align="left">
+                        <el-tooltip placement="top-start" align="center">
                             <div slot="content">
                                 Binance的BTC合约的资金费,一般每8小时收取一次.正数表示多头给空头钱,反之亦然.
                             </div>
@@ -233,7 +233,7 @@
                         N/A
                     </span>
                     <span style="" v-else>
-                        <el-tooltip placement="top-start" align="left">
+                        <el-tooltip placement="top-start" align="center">
                             <div slot="content">
                                 根据Bitget的BTC合约计算趋势分, 取值范围: 0 ~ 1. 0表示熊市, 1表示牛市.
                             </div>

@@ -197,6 +197,8 @@
                 <el-tooltip placement="top-start" align="left">
                     <div slot="content">
                         策略收益曲线: 每天00:30:00刷新1次
+                        <br/>
+                        包括未平仓的持仓收益
                     </div>
                     <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
                 </el-tooltip>
@@ -363,6 +365,8 @@
                 <el-tooltip placement="top-start" align="left">
                     <div slot="content">
                         策略今年表现表格: 每小时第5分钟刷新1次
+                        <br/>
+                        只统计已经关仓的trades
                     </div>
                     <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
                 </el-tooltip>
