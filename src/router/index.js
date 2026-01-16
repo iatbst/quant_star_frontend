@@ -155,8 +155,8 @@ export const constantRoutes = [
     path: '/worker-runs',
     component: Layout,
     redirect: '/worker-runs',
-    name: '策略执行',
-    meta: { title: '策略执行', icon: 'el-icon-s-promotion' },
+    name: '交易',
+    meta: { title: '交易', icon: 'el-icon-s-promotion' },
     children: [
       {
         path: 'worker-runs',
@@ -173,34 +173,34 @@ export const constantRoutes = [
     ]
   },
 
-  {
-    path: '/fee',
-    component: Layout,
-    redirect: '/fee/fees',
-    name: '费用统计',
-    meta: { title: '费用统计', icon: 'el-icon-pie-chart' },
-    children: [
-      {
-        path: 'fees',
-        name: '交易费',
-        component: () => import('@/views/fee/fees/index'),
-        meta: { title: '交易费用', icon: 'el-icon-money' }
-      },
-      {
-        path: 'volumes',
-        name: '成交量',
-        component: () => import('@/views/fee/volumes/index'),
-        meta: { title: '成交量', icon: 'el-icon-data-line' }
-      },
-    ]
-  },
+  // {
+  //   path: '/fee',
+  //   component: Layout,
+  //   redirect: '/fee/fees',
+  //   name: '费用统计',
+  //   meta: { title: '费用统计', icon: 'el-icon-pie-chart' },
+  //   children: [
+  //     {
+  //       path: 'fees',
+  //       name: '交易费',
+  //       component: () => import('@/views/fee/fees/index'),
+  //       meta: { title: '交易费用', icon: 'el-icon-money' }
+  //     },
+  //     {
+  //       path: 'volumes',
+  //       name: '成交量',
+  //       component: () => import('@/views/fee/volumes/index'),
+  //       meta: { title: '成交量', icon: 'el-icon-data-line' }
+  //     },
+  //   ]
+  // },
 
   {
     path: '/monitors',
     component: Layout,
     redirect: '/monitors/basics',
-    name: '系统监控',
-    meta: { title: '系统监控', icon: 'el-icon-odometer' },
+    name: '监控',
+    meta: { title: '监控', icon: 'el-icon-odometer' },
     children: [
       {
         path: 'basics',
@@ -225,47 +225,77 @@ export const constantRoutes = [
         name: 'Errors',
         component: () => import('@/views/monitor/error/index'),
         meta: { title: '警报事件', icon: 'el-icon-warning' }
-      }
-    ]
-  },
-
-  {
-    path: '/other_settings',
-    component: Layout,
-    redirect: '/other_settings',
-    name: '其他设置',
-    meta: { title: '其他设置', icon: 'el-icon-s-operation' },
-    children: [
-      {
-        path: 'product_leverages',
-        name: '仓位档位',
-        component: () => import('@/views/other_settings/product_leverages/index'),
-        meta: { title: '仓位档位', icon: 'el-icon-s-operation' }
-      }
-    ]
-  },
-
-  {
-    path: '/analysis',
-    component: Layout,
-    redirect: '/analysis/pnl',
-    name: '收益分析',
-    meta: { title: '收益分析', icon: 'el-icon-data-analysis' },
-    children: [
+      }, 
       {
         path: '/analysis/pnl_live',
         name: '实盘收益',
         component: () => import('@/views/analysis/pnl_live'),
-        meta: { title: '实盘收益', icon: 'el-icon-data-analysis' }
+        meta: { title: '实盘收益', icon: 'el-icon-wind-power' }
       },
       {
         path: '/analysis/pnl',
         name: '实盘VS回测',
         component: () => import('@/views/analysis/pnl'),
-        meta: { title: '实盘VS回测', icon: 'el-icon-data-analysis' }
-      } 
+        meta: { title: '实盘VS回测', icon: 'el-icon-document-copy' }
+      },                   
+      {
+        path: 'product_leverages',
+        name: '仓位档位',
+        component: () => import('@/views/other_settings/product_leverages/index'),
+        meta: { title: '仓位档位', icon: 'el-icon-s-operation' }
+      },
+      {
+        path: 'fees',
+        name: '交易费',
+        component: () => import('@/views/fee/fees/index'),
+        meta: { title: '交易费用', icon: 'el-icon-money' }
+      },
+      {
+        path: 'volumes',
+        name: '成交量',
+        component: () => import('@/views/fee/volumes/index'),
+        meta: { title: '成交量', icon: 'el-icon-data-line' }
+      },
     ]
   },
+
+  // {
+  //   path: '/other_settings',
+  //   component: Layout,
+  //   redirect: '/other_settings',
+  //   name: '其他设置',
+  //   meta: { title: '其他设置', icon: 'el-icon-s-operation' },
+  //   children: [
+  //     {
+  //       path: 'product_leverages',
+  //       name: '仓位档位',
+  //       component: () => import('@/views/other_settings/product_leverages/index'),
+  //       meta: { title: '仓位档位', icon: 'el-icon-s-operation' }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/analysis',
+  //   component: Layout,
+  //   redirect: '/analysis/pnl',
+  //   name: '收益分析',
+  //   meta: { title: '收益分析', icon: 'el-icon-data-analysis' },
+  //   children: [
+  //     {
+  //       path: '/analysis/pnl_live',
+  //       name: '实盘收益',
+  //       component: () => import('@/views/analysis/pnl_live'),
+  //       meta: { title: '实盘收益', icon: 'el-icon-data-analysis' }
+  //     },
+  //     {
+  //       path: '/analysis/pnl',
+  //       name: '实盘VS回测',
+  //       component: () => import('@/views/analysis/pnl'),
+  //       meta: { title: '实盘VS回测', icon: 'el-icon-data-analysis' }
+  //     } 
+  //   ]
+  // },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
