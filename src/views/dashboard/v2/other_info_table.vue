@@ -652,8 +652,11 @@ export default {
 
             // Line
             var datas = {}
+            var startDate = moment(new Date()).subtract(1,'months').format('YYYY-MM-DD')    // 最近1月数据
             for(let dt of Object.keys(this.bullBearData).sort()){
-                datas[dt] = this.bullBearData[dt]
+                if (dt >= startDate){
+                    datas[dt] = this.bullBearData[dt]
+                }
             }
             addSingleLine('趋势分(BTC)', datas, this.bullBearOptions, false, 1)
 
@@ -725,7 +728,7 @@ export default {
             this.longShortRatios = []
             // this.longShortRatioLineData = []
             this.longShortRatiosOptions.series = []
-            var hours = 72  // 展示最近多久的数据
+            var hours = 24*30  // 展示最近多久的数据
             var startMts = Date.now() - hours * 3600 * 1000
             var filters = 'show_exchange=true&mts__gte=' + startMts
             getLongShortRatios(config.masterHost, filters).then(response => {
