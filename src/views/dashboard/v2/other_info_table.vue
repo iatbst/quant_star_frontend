@@ -57,7 +57,7 @@
                             更新时间: {{ scope.row.btBalances.check_ts | epochToTimestamp}}
                         </div>
                         <div slot="content">
-                            <li v-for="data in scope.row.btBalances.exchange_balance_diffs">
+                            <li v-for="data in scope.row.btBalances.exchange_balances">
                                 <span style="font-size: 15px">{{ data.exchange }}: 
                                     <span style="color: green" v-if="data.balance_diff >= 0">
                                         {{ data.balance_diff.toFixed(0) }}

@@ -85,7 +85,13 @@
             [
                 {
                     title: '小时实盘仓位',
-                    data: parentPfoPositionsHourHistory
+                    data: parentPfoPositionsHourHistory,
+                    colorZones: [{
+                        value: 0,
+                        color: 'red'
+                    }, {
+                        color: 'green' 
+                    }]
                 },
             ]
             "
@@ -96,7 +102,7 @@
             <div align="left" style="margin-left: 48px;">
                 <el-tooltip placement="top-start" align="left">
                     <div slot="content">
-                        每小时更新一次,时间戳表示该小时结束后的仓位.
+                        每小时更新一次,时间戳表示该小时结束后的仓位(绿色: 多头;红色: 空头).
                     </div>
                     <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
                 </el-tooltip>

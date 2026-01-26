@@ -2,11 +2,11 @@
 
 // 添加单line
 // data_obj: key -> x axis, value -> y axis
-export function addSingleLine(name, data_obj, options, reset_series=true, roundLevel=0, color=null){
+export function addSingleLine(name, data_obj, options, reset_series=true, roundLevel=0, color=null, colorZones=null){
     if (reset_series){
         options.series = [] 
     }
-    var lineData = {name: name, data: []}
+    var lineData = {name: name, data: [], zones: colorZones}
     if (color){
         lineData['color'] = color
     }
@@ -22,6 +22,7 @@ export function addSingleLine(name, data_obj, options, reset_series=true, roundL
             lineData.data.push(Number(Number(data_obj[key]).toFixed(roundLevel))) 
         }
     }
+
     options.series.push(lineData)
 }
 

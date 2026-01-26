@@ -126,7 +126,7 @@ export default {
             this.totalBalanceOptions.xAxis.categories = []
             this._clearButtons()
             for(let i = 0; i < this.values.length; i++){
-               addSingleLine(this.values[i].title, this.filterDates(this.values[i].data, range), this.totalBalanceOptions, false, 0, this.values[i].color)
+               addSingleLine(this.values[i].title, this.filterDates(this.values[i].data, range), this.totalBalanceOptions, false, 0, this.values[i].color, this.values[i].colorZones)
             }
             // addTwoLine(this.title1, this.filterDates(this.values1, range), this.title2, this.filterDates(this.values2, range), this.totalBalanceOptions)
             // debugger
