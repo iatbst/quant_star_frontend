@@ -191,7 +191,7 @@ export default {
       {
         name: '实盘仓位 VS 回测仓位',
         hosts: config.pfoHosts,
-        types: 'OpenTradeBacktestError,OpenTradeBacktestWarn,OpenTradeBacktestNotification'
+        types: 'OpenTradeBacktestError,OpenTradeBacktestWarn,OpenTradeBacktestAlert,OpenTradeBacktestNotification'
       }
       ],
       portfolioList: null,
