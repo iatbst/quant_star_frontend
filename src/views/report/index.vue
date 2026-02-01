@@ -485,6 +485,78 @@
                     </div>
                 </el-col>
             </el-row>
+
+            <!--- 月报专属图表-->
+            <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px" v-if="level == 'month'">
+                <!-- 成交量 -->
+                <el-col :span="6" align="center">
+                    <div>
+                        <highcharts :options="volumeColumn" style="margin-top: 20px"></highcharts>
+                    </div>
+                </el-col>
+
+                <!-- 3费 -->
+                <el-col :span="6" align="center">
+                    <div>
+                    <exchange-value-lines
+                    v-bind:values="
+                    [
+                        {
+                            title: '交易费',
+                            data: feeLine,
+                        },
+                        {
+                            title: '资金费',
+                            data: swapFundingLine,
+                        },
+                        {
+                            title: '滑点费',
+                            data: slippageFeeLine,
+                        },
+                    ]
+                    "
+                    v-if="reportAvailable" 
+                    style="margin-bottom: 20px">
+                    </exchange-value-lines>
+                    </div>
+                </el-col>
+
+                <!-- btc波动率 -->
+                <el-col :span="6" align="center">
+                    <div>
+                        <atr-line
+                        v-bind:values="
+                        [
+                            {
+                                title: 'BTC波动率',
+                                data: btcAtrLine,
+                            }
+                        ]
+                        "
+                        v-if="reportAvailable" 
+                        style="margin-bottom: 20px">
+                        </atr-line>
+                    </div>
+                </el-col>
+
+                <!-- 山寨波动率 -->
+                <el-col :span="6" align="center">
+                    <div>
+                       <atr-line
+                        v-bind:values="
+                        [
+                            {
+                                title: '24币平均波动率',
+                                data: symbolsAtrLine,
+                            }
+                        ]
+                        "
+                        v-if="reportAvailable" 
+                        style="margin-bottom: 20px">
+                        </atr-line>
+                    </div>
+                </el-col>
+            </el-row>
         </div>
     </div>
 </template>
@@ -504,6 +576,7 @@ import {Chart} from 'highcharts-vue'
 import { exchangeColors } from '@/utils/chart'
 import moment from 'moment'
 import exchangeValueLines from '@/views/report/exchange_valuelines'
+import atrLine from '@/views/report/atr_line'
 import { addSingleColumn} from '@/utils/chart'
 
 
@@ -512,7 +585,8 @@ export default {
         tradeOrders,
         valueLine,
         highcharts: Chart,
-        exchangeValueLines
+        exchangeValueLines,
+        atrLine
     },
 
     watch: {
@@ -1013,6 +1087,54 @@ export default {
                 },                                          
             },
 
+            volumeColumn: {
+                chart: {
+                    type: 'column',
+                    height: 400
+                },
+
+                title: {
+                    text: '',
+                },
+                xAxis: {
+                    categories: []
+                },
+                yAxis: {
+                    title: {
+                        text: '千美元'
+                    },
+                },
+                
+                exporting: { enabled: false },
+                
+                // legend: {
+                //     enabled: false
+                // },
+
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '${point.y}k'
+                },
+                plotOptions: {
+                    column: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    },
+                },
+                series: [{
+                    name: '成交量',
+                    data: [],
+                }],
+            },
+
+            feeLine: null,
+            swapFundingLine: null,
+            slippageFeeLine: null,
+
+            btcAtrLine: null,
+            symbolsAtrLine: null,
+
             strategyAlias: config.strategyAlias, 
             config: config,
             pfoHosts: config.pfoHosts,
@@ -1134,6 +1256,52 @@ export default {
                 // for(let exchange in this.positionDiffLines){
                 //     this.positionDiffLines[exchange].data = this.report.history.position_diff[exchange]
                 // }
+
+                // 月报
+                if (this.level == 'month'){
+                    // 成交量曲线
+                    var colDatas = []
+                    for(let ts in this.report.history.volumes){
+                        var val = this.report.history.volumes[ts]
+                        colDatas.push({
+                            'x': ts,
+                            'y': Number((val/1000).toFixed(0)),
+                            // 'color': Number(val) >= 0 ? 'green' : 'red'
+                        })                   
+                    }
+                    addSingleColumn(colDatas, this.volumeColumn) 
+                    
+                    // 3费
+                    this.feeLine = {}
+                   for(let dt in this.report.history.fees){
+                        var val = this.report.history.fees[dt]
+                        this.feeLine[dt] = -val
+                    }
+                    this.swapFundingLine = {}
+                    for(let dt in this.report.history.swap_fundings){
+                        var val = this.report.history.swap_fundings[dt]
+                        this.swapFundingLine[dt] = -val
+                    }
+                   this.slippageFeeLine = {}
+                    for(let dt in this.report.history.slippage_fees){
+                        var val = this.report.history.slippage_fees[dt]
+                        this.slippageFeeLine[dt] = -val
+                    }
+
+                    // btc波动性
+                    this.btcAtrLine = {}
+                    for(let dt in this.report.history.btc_atr_ptg){
+                        var val = this.report.history.btc_atr_ptg[dt]
+                        this.btcAtrLine[dt] = val * 100
+                    }
+
+                    // 山寨波动性
+                    this.symbolsAtrLine = {}
+                    for(let dt in this.report.history.symbols_atr_ptg){
+                        var val = this.report.history.symbols_atr_ptg[dt]
+                        this.symbolsAtrLine[dt] = val * 100
+                    }
+                }
 
                 this.reportLoading = false
             })

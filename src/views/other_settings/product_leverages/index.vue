@@ -114,7 +114,7 @@
             </el-table>
 
             <!-- Diaglog: 配置 -->
-            <el-dialog title="订单详情" :visible.sync="dialogParamsVisible" append-to-body>
+            <el-dialog title="币种杠杆率" :visible.sync="dialogParamsVisible" append-to-body>
                 <pre>{{ paramsJson }}</pre>
             </el-dialog>
         </div>
