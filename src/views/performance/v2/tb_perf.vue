@@ -265,7 +265,7 @@
                     <el-col :span="12" align="center">
                         <el-table
                         :data="bbSideTradeStats"
-                        :header-cell-style="{ background: '#f2f2f2' }"
+                        :header-cell-style="bbSideTableColColor"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
                             <el-table-column label="趋势分多空过滤" min-width="10%" align="center">
@@ -276,13 +276,15 @@
 
                             <el-table-column label="多/牛" min-width="10%" align="center">
                                 <template slot-scope="scope">
-                                    {{ scope.row.longBull.count }} x 
-                                    <span v-if="scope.row.longBull.avg_pnl_ptg < 0" style="color: red">
-                                        {{ (scope.row.longBull.avg_pnl_ptg *100).toFixed(1) }}%
-                                    </span>
-                                    <span v-else>
-                                        {{ (scope.row.longBull.avg_pnl_ptg *100).toFixed(1) }}%
-                                    </span>
+          
+                                        {{ scope.row.longBull.count }} x 
+                                        <span v-if="scope.row.longBull.avg_pnl_ptg < 0" style="color: red">
+                                            {{ (scope.row.longBull.avg_pnl_ptg *100).toFixed(1) }}%
+                                        </span>
+                                        <span v-else>
+                                            {{ (scope.row.longBull.avg_pnl_ptg *100).toFixed(1) }}%
+                                        </span>
+
                                 </template>
                             </el-table-column>
  
@@ -328,7 +330,7 @@
                     <el-col :span="11" align="center" :offset="1">
                         <el-table
                         :data="atrRatioTradeStats"
-                        :header-cell-style="{ background: '#f2f2f2' }"
+                        :header-cell-style="atrRatioTableColColor"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
                             <el-table-column label="波动率过滤" min-width="10%" align="center">
@@ -369,7 +371,7 @@
                     <el-col :span="12" align="center">
                         <el-table
                         :data="bbPeriodTradeStats"
-                        :header-cell-style="{ background: '#f2f2f2' }"
+                        :header-cell-style="bbStrategyTableColColor"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
                             <el-table-column label="趋势分长短过滤" min-width="10%" align="center">
@@ -432,7 +434,7 @@
                     <el-col :span="11" align="center" :offset="1">
                         <el-table
                         :data="trendMomTradeStats"
-                        :header-cell-style="{ background: '#f2f2f2' }"
+                        :header-cell-style="trendMomTableColColor"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
                             <el-table-column label="趋势惯性过滤" min-width="10%" align="center">
@@ -453,7 +455,7 @@
                                 </template>
                             </el-table-column>
  
-                            <el-table-column label="波动率: 0.4 ~ 1" min-width="10%" align="center">
+                            <el-table-column label="趋势惯性: 0.4 ~ 1" min-width="10%" align="center">
                                 <template slot-scope="scope">
                                     {{ scope.row.inRange.count }} x 
                                     <span v-if="scope.row.inRange.avg_pnl_ptg < 0" style="color: red">
@@ -628,6 +630,42 @@ export default {
     },
 
     methods: {
+        bbSideTableColColor({ column, rowIndex }) {
+            if (column.label == '多/牛' || column.label == '空/熊') {
+                return "background: #f2f2f2; color: green;";
+            } else if (column.label == '多/熊' || column.label == '空/牛') {
+                return "background: #f2f2f2; color: red;";
+            }
+            return "background: #f2f2f2;"
+        },
+
+        bbStrategyTableColColor({ column, rowIndex }) {
+            if (column.label == '短/熊') {
+                return "background: #f2f2f2; color: green;";
+            } else if (column.label == '长/熊') {
+                return "background: #f2f2f2; color: red;";
+            }
+            return "background: #f2f2f2;"
+        },
+
+        atrRatioTableColColor({ column, rowIndex }) {
+            if (column.label == '波动率: 0.6 ~ 1') {
+                return "background: #f2f2f2; color: red;";
+            } else if (column.label == '波动率: 0.6 ~ 1 之外') {
+                return "background: #f2f2f2; color: green;";
+            }
+            return "background: #f2f2f2;"
+        },
+
+        trendMomTableColColor({ column, rowIndex }) {
+            if (column.label == '趋势惯性: 0 ~ 0.4') {
+                return "background: #f2f2f2; color: red;";
+            } else if (column.label == '趋势惯性: 0.4 ~ 1') {
+                return "background: #f2f2f2; color: green;";
+            }
+            return "background: #f2f2f2;"
+        },
+
         fetchReport(){
             var reportName = 'tb_performance'
             this.reportAvailable = false
@@ -731,6 +769,10 @@ export default {
         toThousands: toThousands,
     },
 }
-
-
 </script>
+
+<style>
+.el-table thead {
+  color: 'lightgreen';
+} 
+</style>

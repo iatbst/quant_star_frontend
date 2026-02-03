@@ -385,7 +385,7 @@
                     <el-col :span="8" align="center">
                         <el-table
                         :data="emaTradeStats"
-                        :header-cell-style="{ background: '#f2f2f2' }"
+                        :header-cell-style="emaTableColColor"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
                             <el-table-column label="均线过滤" min-width="10%" align="center">
@@ -424,7 +424,7 @@
                     <el-col :span="8" align="center" offset="1">
                         <el-table
                         :data="openTradeCountTradeStats"
-                        :header-cell-style="{ background: '#f2f2f2' }"
+                        :header-cell-style="openTradeCountTableColColor"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
                             <el-table-column label="次序" min-width="10%" align="center">
@@ -616,6 +616,26 @@ export default {
     },
 
     methods: {
+        emaTableColColor({ column, rowIndex }) {
+            if (column.label == '200K上') {
+                return "background: #f2f2f2; color: green;";
+            } else if (column.label == '200K下') {
+                return "background: #f2f2f2; color: red;";
+            }
+            return "background: #f2f2f2;"
+        },
+
+        openTradeCountTableColColor({ column, rowIndex }) {
+            if (column.label == '计数 = 0') {
+                return "background: #f2f2f2; color: red;";
+            } else if (column.label == '计数 = 1~4') {
+                return "background: #f2f2f2; color: lightgreen;";
+            } else if (column.label == '计数 > 4') {
+                return "background: #f2f2f2; color: green;";
+            }
+            return "background: #f2f2f2;"
+        },
+        
         fetchReport(){
             var reportName = 'rsi_performance'
             this.reportAvailable = false

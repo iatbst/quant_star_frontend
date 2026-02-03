@@ -229,7 +229,7 @@
                     <el-col :span="8" align="center">
                         <el-table
                         :data="longShortTradeStats"
-                        :header-cell-style="{ background: '#f2f2f2' }"
+                        :header-cell-style="longShortTableColColor"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
                             <el-table-column label="多空过滤" min-width="10%" align="center">
@@ -268,7 +268,7 @@
                     <el-col :span="8" align="center" :offset="1">
                         <el-table
                         :data="bbSideTradeStats"
-                        :header-cell-style="{ background: '#f2f2f2' }"
+                        :header-cell-style="bbSideTableColColor"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
                             <el-table-column label="趋势分过滤" min-width="10%" align="center">
@@ -472,6 +472,24 @@ export default {
     },
 
     methods: {
+        longShortTableColColor({ column, rowIndex }) {
+            if (column.label == '做空') {
+                return "background: #f2f2f2; color: green;";
+            } else if (column.label == '做多') {
+                return "background: #f2f2f2; color: red;";
+            }
+            return "background: #f2f2f2;"
+        },
+
+        bbSideTableColColor({ column, rowIndex }) {
+            if (column.label == '熊') {
+                return "background: #f2f2f2; color: green;";
+            } else if (column.label == '牛') {
+                return "background: #f2f2f2; color: red;";
+            }
+            return "background: #f2f2f2;"
+        },
+
         fetchReport(){
             var reportName = 'pm_performance'
             this.reportAvailable = false

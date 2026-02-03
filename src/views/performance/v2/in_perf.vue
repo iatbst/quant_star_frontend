@@ -174,7 +174,7 @@
                     <el-col :span="12" align="center">
                         <el-table
                         :data="volaRatioTradeStats"
-                        :header-cell-style="{ background: '#f2f2f2' }"
+                        :header-cell-style="volaRatioTableColColor"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
                             <el-table-column label="波动率比值过滤" min-width="10%" align="center">
@@ -213,7 +213,7 @@
                     <el-col :span="11" align="center" offset="1">
                         <el-table
                         :data="bbSideTradeStats"
-                        :header-cell-style="{ background: '#f2f2f2' }"
+                        :header-cell-style="bbSideTableColColor"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
                             <el-table-column label="趋势分过滤" min-width="10%" align="center">
@@ -350,6 +350,24 @@ export default {
     },
 
     methods: {
+        volaRatioTableColColor({ column, rowIndex }) {
+            if (column.label == '6/100 < 0.5') {
+                return "background: #f2f2f2; color: green;";
+            } else if (column.label == '6/100 >= 0.5') {
+                return "background: #f2f2f2; color: red;";
+            }
+            return "background: #f2f2f2;"
+        },
+
+        bbSideTableColColor({ column, rowIndex }) {
+            if (column.label == '熊') {
+                return "background: #f2f2f2; color: green;";
+            } else if (column.label == '牛') {
+                return "background: #f2f2f2; color: red;";
+            }
+            return "background: #f2f2f2;"
+        },
+
         fetchReport(){
             var reportName = 'in_performance'
             this.reportAvailable = false

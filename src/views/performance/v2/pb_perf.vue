@@ -292,7 +292,7 @@
                     <el-col :span="8" align="center">
                         <el-table
                         :data="openTradesCountTradeStats"
-                        :header-cell-style="{ background: '#f2f2f2' }"
+                        :header-cell-style="openTradesCountTableColColor"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
                             <el-table-column label="小批过滤" min-width="10%" align="center">
@@ -331,7 +331,7 @@
                     <el-col :span="8" align="center" :offset="1">
                         <el-table
                         :data="btcEmaTradeStats"
-                        :header-cell-style="{ background: '#f2f2f2' }"
+                        :header-cell-style="btcEmaTableColColor"
                         v-loading="!reportAvailable"
                         style="width: 100%;">
                             <el-table-column label="BTC-EMA50日过滤" min-width="10%" align="center">
@@ -340,7 +340,7 @@
                                 </template>
                             </el-table-column>
 
-                            <el-table-column label="1-2层订单BTC-EMA50日上" min-width="10%" align="center">
+                            <el-table-column label="BTC-EMA50日上(1-2层)" min-width="10%" align="center">
                                 <template slot-scope="scope">
                                     {{ scope.row.up.count }} x 
                                     <span v-if="scope.row.up.avg_pnl_ptg < 0" style="color: red">
@@ -352,7 +352,7 @@
                                 </template>
                             </el-table-column>
  
-                            <el-table-column label="1-2层订单BTC-EMA50日下" min-width="10%" align="center">
+                            <el-table-column label="BTC-EMA50日下(1-2层)" min-width="10%" align="center">
                                 <template slot-scope="scope">
                                     {{ scope.row.down.count }} x 
                                     <span v-if="scope.row.down.avg_pnl_ptg < 0" style="color: red">
@@ -546,6 +546,24 @@ export default {
     },
 
     methods: {
+        openTradesCountTableColColor({ column, rowIndex }) {
+            if (column.label == '符合过滤条件订单') {
+                return "background: #f2f2f2; color: green;";
+            } else if (column.label == '不符合过滤条件订单') {
+                return "background: #f2f2f2; color: red;";
+            }
+            return "background: #f2f2f2;"
+        },
+
+        btcEmaTableColColor({ column, rowIndex }) {
+            if (column.label == 'BTC-EMA50日上(1-2层)') {
+                return "background: #f2f2f2; color: green;";
+            } else if (column.label == 'BTC-EMA50日下(1-2层)') {
+                return "background: #f2f2f2; color: red;";
+            }
+            return "background: #f2f2f2;"
+        },
+
         fetchReport(){
             var reportName = 'pb_performance'
             this.reportAvailable = false
