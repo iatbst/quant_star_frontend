@@ -1780,7 +1780,7 @@ export default {
                     this.fetchParentPfoTradeStats()
                 }  
                 // 实盘资产VS回测资产
-                if(minute >= 1 && date != this.liveBalanceValuesRefresh.getDate()){
+                if(minute >= 5 && hour != this.liveBalanceValuesRefresh.getHours()){
                     console.log(now + '刷新:fetchLiveValuelines');
                     this.fetchLiveValuelines()                   
                 }
