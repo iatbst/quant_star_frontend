@@ -707,7 +707,17 @@ export default {
                 var ts = new Date((data.mts/1000 + 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')
                 datas[ts] = data.value
             }
-            addSingleLine('恐慌贪婪指数', datas, this.fearGreedIndexsOptions)
+            var colorZones = [{
+                        value: 20,
+                        color: 'red'
+                    }, {
+                        value: 80,
+                        color: 'lightgray' 
+                    }, {
+                         value: 100,
+                        color: 'green'                        
+                    }]
+            addSingleLine('恐慌贪婪指数', datas, this.fearGreedIndexsOptions, true, 0, null, colorZones)
         },
 
         showSwapFundingRateDialog(){

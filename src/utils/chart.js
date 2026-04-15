@@ -3,6 +3,7 @@
 // 添加单line
 // data_obj: key -> x axis, value -> y axis
 export function addSingleLine(name, data_obj, options, reset_series=true, roundLevel=0, color=null, colorZones=null){
+    // debugger
     if (reset_series){
         options.series = [] 
     }
