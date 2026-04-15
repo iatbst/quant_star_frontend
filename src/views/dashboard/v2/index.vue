@@ -35,12 +35,13 @@
             v-bind:todayPbOrderCount="todayPbOrderCount"
             v-bind:longShortRatios="longShortRatios"
             v-bind:swapFundingRates="swapFundingRates"
+            v-bind:fearGreedIndexs="fearGreedIndexs"
             v-bind:subaccountDatas="subaccountDatas" 
             v-bind:parentPfoWallet="parentPfoWallet"
             v-bind:bullBearData="bullBearData" 
             v-bind:btValueLines="btValueLines"
             v-if="longShortRatiosAvailable && swapFundingRatesAvailable && subaccountDatasAvailable && parentPfoWalletAvailable && bullBearDataAvailable && parentPfoBacktestAvailable &&
-            btValueLines.binance.available && btValueLines.okex.available && btValueLines.bybit.available && btValueLines.bitget.available">
+            btValueLines.binance.available && btValueLines.okex.available && btValueLines.bybit.available && btValueLines.bitget.available && fearGreedIndexsAvailable">
             </other-info-table>
 
             <!--- 仓位表 ---
@@ -520,6 +521,7 @@ import { getPositions } from '@/api/position'
 import { getBacktestPlanByName } from '@/api/backtest_plan'
 import { getBacktestReportById, getBacktestReportByName } from '@/api/backtest_report'
 import { getLongShortRatios } from '@/api/long_short_ratio'
+import { getCryptoDatas } from '@/api/crypto_data'
 import { getSwapFundingRates } from '@/api/swap_funding_rate'
 import { getOrders } from '@/api/order'
 import { getNormalWorkerDatas } from '@/api/worker'
@@ -649,6 +651,8 @@ export default {
             longShortRatiosAvailable: false,
             swapFundingRates: [],
             swapFundingRatesAvailable: false,
+            fearGreedIndexs: [],
+            fearGreedIndexsAvailable: false,           
 
             tbBinancePositions: [],
             tbBinancePositionsAvailable: false,
@@ -811,6 +815,7 @@ export default {
             parentPfoPositionsRefresh: null,
             todayOrdersRefresh: null,
             longShortRatioRefresh: null,
+            fearGreedIndexRefresh: null,
             swapFundingRateRefresh: null,
             todayFundingFeesRefresh: null,
             todayPnlsRefresh: null,
@@ -847,6 +852,7 @@ export default {
             this.fetchLongShortRatios()
             this.fetchSwapFundingRates()
             this.fetchBullBearData()
+            this.fetchFearGreedIndexs()
 
             // 表格4: 总体今日信息
             this.fetchTodayOrders()
@@ -948,6 +954,21 @@ export default {
             getLongShortRatios(config.masterHost, filters).then(response => {
                     this.longShortRatios = response.results
                     this.longShortRatiosAvailable = true
+                }
+            )
+        },
+ 
+        // 获取最近30天的恐慌数据
+        fetchFearGreedIndexs(){
+            this.fearGreedIndexRefresh = new Date()
+            this.fearGreedIndexs = []
+            this.fearGreedIndexsAvailable = false
+            var startMts = Date.now() - 24 * 31 * 3600 * 1000
+            var filters = 'type=fear_greed_index&mts__gte=' + startMts
+            getCryptoDatas(config.masterHost, filters).then(response => {
+                    this.fearGreedIndexs = response.results
+                    this.fearGreedIndexsAvailable = true
+                    // debugger
                 }
             )
         },
@@ -1750,6 +1771,11 @@ export default {
                 if(minute >= 25 && now - this.longShortRatioRefresh > 3600*1000){
                     console.log(now + '刷新:fetchLongShortRatios');
                     this.fetchLongShortRatios()
+                } 
+                // 恐慌数据(后台每个小时的20分钟时爬取数据)
+                if(minute >= 25 && now - this.fearGreedIndexRefresh > 3600*1000){
+                    console.log(now + '刷新:fetchFearGreedIndexs');
+                    this.fetchFearGreedIndexs()
                 } 
                 // 资金费率数据(后台每8个小时爬取资金费率数据)
                 if(now - this.swapFundingRateRefresh > 8*3600*1000){

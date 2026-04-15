@@ -64,11 +64,14 @@
                 </template>
             </el-table-column>  
 
-            <el-table-column label="IN空头" min-width="10%" align="center">
+            <el-table-column label="IN仓位" min-width="10%" align="center">
                 <template slot-scope="scope">
-                    <span style="color: red">
+                    <span style="color: green" v-if="scope.row.inPosition >= 0">
                         {{toThousands(scope.row.inPosition)}}
-                    </span>          
+                    </span>   
+                    <span style="color: red" v-else>
+                        {{toThousands(scope.row.inPosition)}}
+                    </span>                              
                 </template>
             </el-table-column> 
 
@@ -215,7 +218,7 @@ export default {
             this.positionDatas[0].tbShortPosition = Math.round(tbData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
             this.positionDatas[0].rsiPosition = Math.round(rsiData.long)
-            this.positionDatas[0].inPosition = Math.round(inData.short)
+            this.positionDatas[0].inPosition = Math.round(inData.long + inData.short)
             this.positionDatas[0].prmPosition = Math.round(prmData.short)
 
 

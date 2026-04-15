@@ -100,8 +100,8 @@ var production_hosts = [
 
 var development_hosts = [
     // 开发/测试
-    'http://ec2-95-40-84-131.ap-east-1.compute.amazonaws.com:8000/api',  // test1
-    'http://ec2-18-166-30-4.ap-east-1.compute.amazonaws.com:8000/api',  // test2
+    'http://ec2-95-40-32-128.ap-east-1.compute.amazonaws.com:8000/api',  // test1
+    // 'http://ec2-18-166-30-4.ap-east-1.compute.amazonaws.com:8000/api',  // test2
     // 'http://ec2-18-162-112-22.ap-east-1.compute.amazonaws.com:8000/api', // test3
     // 'http://ec2-43-198-86-129.ap-east-1.compute.amazonaws.com:8000/api', // test4
     // 'http://ec2-16-163-142-19.ap-east-1.compute.amazonaws.com:8000/api', // test5
@@ -111,7 +111,7 @@ var development_hosts = [
 // 当前投资组合的Hosts地址
 if (process.env.NODE_ENV === 'development'){
     // 开发环境
-    var hostList = production_hosts
+    var hostList = development_hosts
 } else {
     // 线上环境
     var hostList = production_hosts

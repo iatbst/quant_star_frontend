@@ -171,15 +171,26 @@
                 </template>
             </el-table-column>
 
-
-            <el-table-column label="24H抄底订单" min-width="10%" align="center">
+            <el-table-column label="24H抄底订单" min-width="10%" align="center" v-if="this.todayPbOrderCount > 0">
                 <template slot-scope="scope">
-                    <span style="color: red" v-if="scope.row.todayPbOrderCount > 0">
+                    <span style="color: red">
                         <b>{{ scope.row.todayPbOrderCount }}</b>
                     </span>   
-                    <span style="" v-else>
-                        {{ scope.row.todayPbOrderCount }}
+                </template>
+            </el-table-column>
+
+            <el-table-column label="恐慌贪婪指数" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: green" v-if="scope.row.fearGreedIndex >= 80">
+                        {{ scope.row.fearGreedIndex  }}
+                    </span>   
+                    <span style="color: red" v-else-if="scope.row.fearGreedIndex <= 20">
+                        {{ scope.row.fearGreedIndex  }}
                     </span> 
+                    <span v-else>
+                        {{ scope.row.fearGreedIndex  }}
+                    </span>                 
+                    <i class="el-icon-data-line" v-on:click="showFearGreedIndexDialog()" style="cursor: pointer"></i> 
                 </template>
             </el-table-column>
 
@@ -256,6 +267,12 @@
             </div>
         </el-dialog>
 
+        <el-dialog width="80%" title="恐慌贪婪指数" :visible.sync="fearGreedIndexDialogVisible">
+            <div>
+                <highcharts :options="fearGreedIndexsOptions" style="margin-top: 20px"></highcharts>
+            </div>
+        </el-dialog>
+
         <el-dialog width="80%" title="" :visible.sync="swapFundingRateDialogVisible">
             <div>
                 <highcharts :options="swapFundingRatesOptions" style="margin-top: 20px"></highcharts>
@@ -309,6 +326,10 @@ export default {
             type: Array,
             default: []
         },   
+        fearGreedIndexs: {
+            type: Array,
+            default: []
+        },     
         swapFundingRates: {
             type: Array,
             default: []
@@ -376,6 +397,9 @@ export default {
                 // 24H内抄底订单
                 todayPbOrderCount: null,
 
+                // 最新的恐慌贪婪指数
+                fearGreedIndex: null,
+
                 // 最近的多空数据(平均值)
                 longShortRatio: null,
 
@@ -387,9 +411,45 @@ export default {
             }],
 
             // 曲线图: 多空占比
-            // longShortRatioLineData: null,
             longShortRatioDialogVisible: false,
             longShortRatiosOptions: {
+                chart: {
+                    type: 'line',
+                    zoomType: 'x'
+                },
+                title: {
+                    text: '',
+                },
+                xAxis: {
+                    categories: []
+                },
+                yAxis: {
+                    type: this.yType,
+                    title: {
+                        text: '%'
+                    }
+                },
+                exporting: { enabled: false },
+                
+                plotOptions: {
+                    series: {
+                        label: {
+                            connectorAllowed: false
+                        },
+                    },
+                    line: {
+                        marker: {
+                            enabled: false
+                        },
+                    }			        
+                },
+                
+                series: [],  
+            }, 
+
+            // 曲线图: 恐慌指数
+            fearGreedIndexDialogVisible: false,
+            fearGreedIndexsOptions: {
                 chart: {
                     type: 'line',
                     zoomType: 'x'
@@ -587,8 +647,11 @@ export default {
             // 抄底订单
             this.otherInfoDatas[0].todayPbOrderCount = this.todayPbOrderCount
 
+            // 分析fear_greed_index
+            this.otherInfoDatas[0].fearGreedIndex = this.getLastFearGreedIndex()
+
             // 分析long_short_ratios
-            this.otherInfoDatas[0].longShortRatio = this.getLastLongShortRatio()
+            this.otherInfoDatas[0].longShortRatio = this.getBybitLastLongShortRatio()
 
             // 分析swap_funding_rates
             this.otherInfoDatas[0].swapFundingRate = this.getLastSwapFundingRate()
@@ -624,7 +687,7 @@ export default {
         },
         
         parseLongShortRatios(){
-            this.otherInfoDatas[0].longShortRatio = this.getLastLongShortRatio()
+            this.otherInfoDatas[0].longShortRatio = this.getBybitLastLongShortRatio()
         },
 
         parseSwapFundingRates(){
@@ -634,6 +697,17 @@ export default {
         showLongShortRatioDialog(){
             this.longShortRatioDialogVisible = true
             this.fetchLongShortRatios()
+        },
+        
+        // 不重新爬取, 直接展示从index.vue中传入的数据(30天数据)
+        showFearGreedIndexDialog(){
+            this.fearGreedIndexDialogVisible = true
+            var datas = {}
+            for(let data of this.fearGreedIndexs){
+                var ts = new Date((data.mts/1000 + 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')
+                datas[ts] = data.value
+            }
+            addSingleLine('恐慌贪婪指数', datas, this.fearGreedIndexsOptions)
         },
 
         showSwapFundingRateDialog(){
@@ -694,6 +768,33 @@ export default {
                     count = 1
                     sum = data.long
                     last_mts = data.mts
+                }
+            }
+
+            // 没找到
+            return null
+        },
+
+        getLastFearGreedIndex(){
+            // 获取最近的fg值
+            this.fearGreedIndexs.sort((a, b) => b.mts - a.mts)
+            if (this.fearGreedIndexs.length > 0){
+                return this.fearGreedIndexs[0].value
+            } else {
+                return null
+            }
+        },
+
+        getBybitLastLongShortRatio(){
+            // 获取Bybit的最近数据(因为当前策略只使用bybit的数据)
+            this.longShortRatios.sort((a, b) => b.mts - a.mts)
+            var last_mts = null
+            var count = 0
+            var sum = 0
+            for(let data of this.longShortRatios){
+                // 找到bybit的第一个数据
+                if(data.exchange.name == 'bybit'){
+                    return (data.long*100).toFixed(1)
                 }
             }
 
