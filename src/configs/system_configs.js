@@ -4,7 +4,7 @@ import { getProductDatas } from "@/api/product"
 const masterHost = 'http://ec2-16-163-25-203.ap-east-1.compute.amazonaws.com:8000/api'
 
 const tbBinanceHosts = [
-    'http://ec2-52-69-118-247.ap-northeast-1.compute.amazonaws.com:8000/api'
+    'http://ec2-13-231-247-40.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
 const tbOkexHosts = [
     'http://ec2-16-163-106-126.ap-east-1.compute.amazonaws.com:8000/api'
@@ -17,7 +17,7 @@ const tbBitgetHosts = [
 ]
 
 const rsiBinanceHosts = [
-    'http://ec2-3-112-231-131.ap-northeast-1.compute.amazonaws.com:8000/api'
+    'http://ec2-18-183-176-28.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
 const rsiOkexHosts = [
     'http://ec2-18-166-152-179.ap-east-1.compute.amazonaws.com:8000/api'
@@ -27,7 +27,7 @@ const rsiBybitHosts = [
 ]
 
 const inBinanceHosts = [
-    'http://ec2-35-74-248-242.ap-northeast-1.compute.amazonaws.com:8000/api'
+    'http://ec2-35-77-80-155.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
 const inOkexHosts = [
     'http://ec2-43-199-194-46.ap-east-1.compute.amazonaws.com:8000/api'
@@ -47,9 +47,9 @@ const prmBybitHosts = [
 ]
 
 const pbBinanceHosts = [
-    'http://ec2-13-159-19-87.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-54-95-90-229.ap-northeast-1.compute.amazonaws.com:8000/api',
-    'http://ec2-57-180-249-6.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-54-92-117-76.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-54-95-47-235.ap-northeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-52-194-226-32.ap-northeast-1.compute.amazonaws.com:8000/api',
 ]
 
 const pbOkexHosts = [
@@ -68,13 +68,13 @@ const pbBybitHosts = [
 
 var production_hosts = [
     // 东京: Binance
-    'http://ec2-52-69-118-247.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_tb_1
-    'http://ec2-35-74-248-242.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_in_1
+    'http://ec2-13-231-247-40.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_tb_1
+    'http://ec2-35-77-80-155.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_in_1
     'http://ec2-13-158-130-180.ap-northeast-1.compute.amazonaws.com:8000/api',  // binance_prm_1
-    'http://ec2-3-112-231-131.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_rsi_1
-    'http://ec2-13-159-19-87.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_1
-    'http://ec2-54-95-90-229.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_2
-    'http://ec2-57-180-249-6.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_3
+    'http://ec2-18-183-176-28.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_rsi_1
+    'http://ec2-54-92-117-76.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_1
+    'http://ec2-54-95-47-235.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_2
+    'http://ec2-52-194-226-32.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_3
 
     // 香港: Okex
     'http://ec2-16-163-106-126.ap-east-1.compute.amazonaws.com:8000/api',       // okex_tb_1
