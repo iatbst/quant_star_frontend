@@ -320,6 +320,32 @@
         </el-col>
     </el-row>
 
+    <!--- 回撤表 ---
+        函数: 
+            - fetchMddFromBacktestReports
+    --->
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
+        <el-col :span="24" align="center">
+            <h4 style="font-weight: 400;">策略回撤</h4>
+            <div style="margin-bottom: 20px; margin-top: 20px; width: 95%">
+                <mdd-table 
+                v-bind:mddDatas="mddDatas" 
+                v-if="mddDatasAvailable" >
+                </mdd-table>
+
+                <!--- 刷新说明 --->
+                <div align="left">
+                    <el-tooltip placement="top-start" align="left">
+                        <div slot="content">
+                            回撤表格: 每周更新一次;周一上午完成更新.
+                        </div>
+                        <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                    </el-tooltip>
+                </div>
+            </div>
+        </el-col>
+    </el-row>
+
     <!--- 今日表 ---
         函数: 
             - fetchParentPfoPositions
@@ -501,6 +527,7 @@ import strategyLevelPositions from '@/views/position/_strategy_level_positions'
 // import strategyPositions from '@/views/position/_strategy_positions'
 import exchangeBalanceDistributions from '@/views/balance/_exchange_balance_distributions'
 import positionMap2 from '@/views/position/position_map2'
+import mddTable from '@/views/dashboard/v2/mdd_table'
 
 import totalBalance from '@/views/balance/total_balance'
 import pfoBalances from '@/views/balance/pfo_balances'
@@ -554,6 +581,7 @@ export default {
         exchangeTable,
         perfTable,
         todayTable,
+        mddTable,
 
         valueLine,
         totalValueLine,
@@ -702,6 +730,9 @@ export default {
             prmBinancePositions: [],
             prmBinancePositionsAvailable: false,
             prmBinancePositionsLoading: false,
+            
+            mddDatasAvailable: false,
+            mddDatas: null,
 
             jiaPnl: 0,
             jiaPnlAvailable: false,
@@ -854,7 +885,10 @@ export default {
             this.fetchBullBearData()
             this.fetchFearGreedIndexs()
 
-            // 表格4: 总体今日信息
+            // 表格5: 策略回撤数据
+            this.fetchMddFromBacktestReports()
+
+            // 表格6: 总体今日信息
             this.fetchTodayOrders()
             this.fetchTodayPnls()
             this.fetchTodayFundingFees()
@@ -1040,6 +1074,35 @@ export default {
                         }
                     }
                 )
+            }
+        },
+        
+        // 从backtest reports中提取mdd数据
+        fetchMddFromBacktestReports(){
+            var reportList = [
+                'tb_performance',
+                'in_performance',
+                'pm_performance',
+                'rsi_performance',
+                'pb_performance',
+                'low_tb_performance',
+                'low_5s_performance',
+                'mid_5s_performance',
+                'high_5s_performance',
+                'super_high_3s_performance'
+            ]
+            this.mddDatasAvailable = false
+            this.mddDatas = {}
+            for(let reportName of reportList){
+                getBacktestReportByName(config.masterHost, reportName).then(response => {
+                    // 回撤数据
+                    this.mddDatas[reportName] = response.results[0].data.mdd_data
+
+                    if (Object.keys(this.mddDatas).length == reportList.length){
+                        this.mddDatasAvailable = true
+                        //debugger
+                    }
+                })
             }
         },
 
