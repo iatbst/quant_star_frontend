@@ -337,6 +337,9 @@
                 <div align="left">
                     <el-tooltip placement="top-start" align="left">
                         <div slot="content">
+                            更新时间: {{ mddDatasUpdateTs | epochToTimestamp }}
+                        </div>
+                        <div slot="content">
                             回撤表格: 每周更新一次;周一上午完成更新.
                         </div>
                         <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
@@ -733,6 +736,7 @@ export default {
             
             mddDatasAvailable: false,
             mddDatas: null,
+            mddDatasUpdateTs: null,
 
             jiaPnl: 0,
             jiaPnlAvailable: false,
@@ -1099,6 +1103,7 @@ export default {
                     this.mddDatas[reportName] = response.results[0].data.mdd_data
 
                     if (Object.keys(this.mddDatas).length == reportList.length){
+                        this.mddDatasUpdateTs = response.results[0].run_ts
                         this.mddDatasAvailable = true
                         //debugger
                     }

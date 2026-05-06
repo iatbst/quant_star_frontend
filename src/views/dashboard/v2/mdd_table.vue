@@ -122,7 +122,7 @@ export default {
         mddDatas: {
             type:Object,
             default:{}
-        }, 
+        },
     },
 
     watch: {
