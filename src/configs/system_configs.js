@@ -27,7 +27,7 @@ const rsiBybitHosts = [
 ]
 
 const inBinanceHosts = [
-    'http://ec2-57-183-10-251.ap-northeast-1.compute.amazonaws.com:8000/api'
+    'http://ec2-43-207-63-65.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
 const inOkexHosts = [
     'http://ec2-43-199-194-46.ap-east-1.compute.amazonaws.com:8000/api'
@@ -63,7 +63,7 @@ const pbBybitHosts = [
 var production_hosts = [
     // 东京: Binance
     'http://ec2-18-182-64-79.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_tb_1
-    'http://ec2-57-183-10-251.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_in_1
+    'http://ec2-43-207-63-65.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_in_1
     'http://ec2-18-181-203-111.ap-northeast-1.compute.amazonaws.com:8000/api',  // binance_prm_1
     'http://ec2-13-231-52-188.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_rsi_1
     'http://ec2-52-194-225-106.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_1
