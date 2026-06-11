@@ -284,6 +284,16 @@ export default {
                             var strategy = response.results[i].worker.strategy_name
                             var strategyID = response.results[i].worker.name.slice(-1,)     //worker最后一位表示子策略
                             var symbol = response.results[i].worker.product.symbol
+                            // TEST
+                            // if (symbol != 'BTC/USDT'){
+                            //     continue
+                            // }
+                            // if (exchange != 'binance'){
+                            //     continue
+                            // }
+                            // if (strategy != 'trendline-break'){
+                            //     continue
+                            // }                         
                             pnls.push({
                                 'pnl': pnl,
                                 'host': response.config.baseURL,

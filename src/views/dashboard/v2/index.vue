@@ -644,6 +644,7 @@ export default {
             todayPnlAvailable: false,
             todayStrategyPnl: null,
             todayExchangePnl: null,
+            todayCoinPnl: null,
             todayFundingFeesAvailable: false,
             todayPbOrderCount: null,
             todayPbOrderCountAvailable: false,
@@ -940,10 +941,12 @@ export default {
                                 var pnl = response.results[i]["pnl_line"][endDt] - response.results[i]["pnl_line"][startDt]
                                 var strategy = response.results[i].worker.strategy_name.replaceAll('-', '_')
                                 var exchange = response.results[i].worker.name.split('_')[0]
+                                var coin = response.results[i].worker.name.split('_')[2].split('/')[0]
                                 pnls.push({
                                     'pnl': pnl,
                                     'strategy': strategy,
-                                    'exchange': exchange
+                                    'exchange': exchange,
+                                    'coin': coin
                                 })
                             }
                         }
@@ -963,7 +966,9 @@ export default {
         parsePnl(workerPnls){
             this.todayStrategyPnl = {}
             this.todayExchangePnl = {}
+            this.todayCoinPnl = {}
             for(const data of workerPnls){
+                // 统计策略的pnl
                 var sty = data.strategy
                 if (!(sty in this.todayStrategyPnl)){
                     this.todayStrategyPnl[sty] = 0             
@@ -971,7 +976,8 @@ export default {
                 if (data.pnl != null && data.pnl != 0){
                     this.todayStrategyPnl[sty] += data.pnl              
                 }
-
+                
+                // 统计平台的pnl
                 var exchange = data.exchange
                 if (!(exchange in this.todayExchangePnl)){
                     this.todayExchangePnl[exchange] = 0             
@@ -979,7 +985,18 @@ export default {
                 if (data.pnl != null && data.pnl != 0){
                     this.todayExchangePnl[exchange] += data.pnl              
                 }
+
+                // 统计币种的pnl
+                // var coin = data.coin
+                // if (!(coin in this.todayCoinPnl)){
+                //     this.todayCoinPnl[coin] = 0             
+                // }
+                // if (data.pnl != null && data.pnl != 0){
+                //     this.todayCoinPnl[coin] += data.pnl              
+                // }
             }
+            // 币种的pnl排序, 获取tops
+            // var tops = 3
         },
 
         // 获取最近24H的多空数据
