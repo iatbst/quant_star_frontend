@@ -138,6 +138,7 @@ export default {
             styRsi: 'rsi_mini',
             styIn: 'id_nr',
             styPrm: 'pivot_reversal_mini',
+            styDad: 'dc_atr_divergence',
             strategyAlias: config.strategyAlias, 
         }
     },
@@ -157,6 +158,7 @@ export default {
             var rsiData = this.parentPfoTradeStats.rsi_mini
             var inData = this.parentPfoTradeStats.id_nr
             var prmData = this.parentPfoTradeStats.pivot_reversal_mini
+            var dadData = this.parentPfoTradeStats.dc_atr_divergence
             var tbList = [
                 [this.styTb + '_1', 'TB_1'],
                 [this.styTb + '_2', 'TB_2'],
@@ -180,12 +182,16 @@ export default {
             var prmList = [
                 ['all', 'PM']
             ]   // 只展示合并stats
+            var dadList = [
+                ['all', 'AD']
+            ]   // 只展示合并stats
             var dataList = [
                 [tbList, tbData],
                 [pbList, pbData],
                 [rsiList, rsiData],
                 [inList, inData],
-                [prmList, prmData]
+                [prmList, prmData],
+                [dadList, dadData]
             ]
             for(let data of dataList){
                 var styData = data[1]

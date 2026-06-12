@@ -83,6 +83,14 @@
                     </span>          
                 </template>
             </el-table-column>   
+
+            <el-table-column label="AD空头" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: red">
+                        {{toThousands(scope.row.dadPosition)}}
+                    </span>          
+                </template>
+            </el-table-column>  
         </el-table>
     </div>
 </template>
@@ -190,6 +198,7 @@ export default {
                 rsiPosition: null,
                 inPosition: null,
                 prmPosition: null,
+                dadPosition: null,
 
 
                 leverage: null
@@ -214,12 +223,14 @@ export default {
             var rsiData = this.parentPfoPositions.rsi_mini
             var inData = this.parentPfoPositions.id_nr
             var prmData = this.parentPfoPositions.pivot_reversal_mini
+            var dadData = this.parentPfoPositions.dc_atr_divergence
             this.positionDatas[0].tbLongPosition = Math.round(tbData.long)
             this.positionDatas[0].tbShortPosition = Math.round(tbData.short)
             this.positionDatas[0].pbPosition = Math.round(pbData.long)
             this.positionDatas[0].rsiPosition = Math.round(rsiData.long)
             this.positionDatas[0].inPosition = Math.round(inData.long + inData.short)
             this.positionDatas[0].prmPosition = Math.round(prmData.short)
+            this.positionDatas[0].dadPosition = Math.round(dadData.short)
 
 
             // 币头寸叠加到总头寸

@@ -39,9 +39,9 @@
             v-bind:subaccountDatas="subaccountDatas" 
             v-bind:parentPfoWallet="parentPfoWallet"
             v-bind:bullBearData="bullBearData" 
-            v-bind:btValueLines="btValueLines"
+            v-bind:totalBalanceValues="totalBalanceValues"
             v-if="longShortRatiosAvailable && swapFundingRatesAvailable && subaccountDatasAvailable && parentPfoWalletAvailable && bullBearDataAvailable && parentPfoBacktestAvailable &&
-            btValueLines.binance.available && btValueLines.okex.available && btValueLines.bybit.available && btValueLines.bitget.available && fearGreedIndexsAvailable">
+            totalBalanceValuesAvailable && fearGreedIndexsAvailable">
             </other-info-table>
 
             <!--- 仓位表 ---
@@ -185,7 +185,12 @@
                 {
                     title: pnlLines.pivot_reversal_mini.name,
                     data: pnlLines.pivot_reversal_mini.data
-                }                                  
+                },
+                {
+                    title: pnlLines.dc_atr_divergence.name,
+                    data: pnlLines.dc_atr_divergence.data
+                }   
+
             ]
             "
             v-bind:range_set="['1M', '6M', 'thisYear']" 
@@ -194,7 +199,8 @@
             pnlLines.plunge_back.available &&
             pnlLines.rsi_mini.available && 
             pnlLines.id_nr.available &&
-            pnlLines.pivot_reversal_mini.available
+            pnlLines.pivot_reversal_mini.available &&
+            pnlLines.dc_atr_divergence.available
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
@@ -426,7 +432,8 @@
             pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBinancePositionsAvailable &&
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBinancePositionsAvailable &&
             inOkexPositionsAvailable && inBybitPositionsAvailable && inBinancePositionsAvailable &&
-            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable
+            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable &&
+            dadOkexPositionsAvailable && dadBybitPositionsAvailable && dadBinancePositionsAvailable
             "
             ></strategy-positions> 
             <div align="left">
@@ -466,7 +473,8 @@
             pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBinancePositionsAvailable &&
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBinancePositionsAvailable &&
             inOkexPositionsAvailable && inBybitPositionsAvailable && inBinancePositionsAvailable &&
-            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable
+            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable &&
+            dadOkexPositionsAvailable && dadBybitPositionsAvailable && dadBinancePositionsAvailable
             "
             ></position-ranks2> 
 
@@ -630,11 +638,15 @@ export default {
             inBinanceHosts: config.inBinanceHosts,
             prmOkexHosts: config.prmOkexHosts,
             prmBybitHosts: config.prmBybitHosts,
-            prmBinanceHosts: config.prmBinanceHosts,
+            prmBinanceHosts: config.prmBinanceHosts,         
             tbBinanceSortWeights: config.tbBinanceSortWeights,
             tbOkexSortWeights: config.tbOkexSortWeights,
             tbBybitSortWeights: config.tbOkexSortWeights,
             tbBitgetSortWeights: config.tbOkexSortWeights,
+
+            dadOkexHosts: config.dadOkexHosts,
+            dadBybitHosts: config.dadBybitHosts,
+            dadBinanceHosts: config.dadBinanceHosts,  
 
             orders: [],
             ordersLoading: false,
@@ -734,7 +746,16 @@ export default {
             prmBinancePositions: [],
             prmBinancePositionsAvailable: false,
             prmBinancePositionsLoading: false,
-            
+            dadOkexPositions: [],
+            dadOkexPositionsAvailable: false,
+            dadOkexPositionsLoading: false,
+            dadBybitPositions: [],
+            dadBybitPositionsAvailable: false,
+            dadBybitPositionsLoading: false,
+            dadBinancePositions: [],
+            dadBinancePositionsAvailable: false,
+            dadBinancePositionsLoading: false,
+
             mddDatasAvailable: false,
             mddDatas: null,
             mddDatasUpdateTs: null,
@@ -783,25 +804,25 @@ export default {
                 'binance': {
                     'name': 'Binance回测',
                     'data': null,
-                    'change': null,     // 滚动变化率(eg, 60日资产增长率)
+                    //'change': null,     // 滚动变化率(eg, 60日资产增长率)
                     'available': false
                 },  
                 'okex': {
                     'name': 'Okex回测',
                     'data': null,
-                    'change': null,     // 滚动变化率(eg, 60日资产增长率)
+                    //'change': null,     // 滚动变化率(eg, 60日资产增长率)
                     'available': false
                 },
                 'bybit': {
                     'name': 'Bybit回测',
                     'data': null,
-                    'change': null,     // 滚动变化率(eg, 60日资产增长率)
+                    //'change': null,     // 滚动变化率(eg, 60日资产增长率)
                     'available': false
                 },
                 'bitget': {
                     'name': 'Bitget回测',
                     'data': null,
-                    'change': null,     // 滚动变化率(eg, 60日资产增长率)
+                    //'change': null,     // 滚动变化率(eg, 60日资产增长率)
                     'available': false
                 },                                           
             },
@@ -832,7 +853,12 @@ export default {
                     'name': 'PM',
                     'data': null,
                     'available': false
-                },                                                               
+                },
+                'dc_atr_divergence': {
+                    'name': 'AD',
+                    'data': null,
+                    'available': false
+                },                                                                              
             },
 
             refreshInterval: 1000,
@@ -1184,25 +1210,25 @@ export default {
                 this.btValueLines[exchange].available = false
                 getBacktestReportByName(config.masterHost, reportName).then(response => {
                     this.btValueLines[exchange].data = response.results[0].value_line
-                    this.btValueLines[exchange].change = this.calValuelineChange(this.btValueLines[exchange].data)
+                    // this.btValueLines[exchange].change = this.calValuelineChange(this.btValueLines[exchange].data)
                     this.btValueLines[exchange].available = true
                 })
             }
         },
 
         // 计算valueline的滚动变化率(默认60日)
-        calValuelineChange(valueline, count=60){
-            var dt_list = Object.keys(valueline).sort().reverse()
-            if (dt_list.length < count + 1){
-                // 滚动数量不足
-                return null
-            } else {
-                var valueNow = valueline[dt_list[0]]
-                var valueAgo = valueline[dt_list[count]]
-                // debugger
-                return (valueNow - valueAgo) / valueAgo
-            }
-        },
+        // calValuelineChange(valueline, count=60){
+        //     var dt_list = Object.keys(valueline).sort().reverse()
+        //     if (dt_list.length < count + 1){
+        //         // 滚动数量不足
+        //         return null
+        //     } else {
+        //         var valueNow = valueline[dt_list[0]]
+        //         var valueAgo = valueline[dt_list[count]]
+        //         // debugger
+        //         return (valueNow - valueAgo) / valueAgo
+        //     }
+        // },
 
         // 从master获取趋势分历史数据(从bitget_backtest中获取)
         fetchBullBearData(){
@@ -1331,6 +1357,17 @@ export default {
                     this.pnlLines.pivot_reversal_mini.data = parentPfoData.pnl_line.pivot_reversal_mini.year_now
                     this.pnlLines.pivot_reversal_mini.available = true 
 
+                    // dc_atr_divergence
+                    this.pnlLines.dc_atr_divergence.data = parentPfoData.pnl_line.dc_atr_divergence.year_now
+                    this.pnlLines.dc_atr_divergence.available = true 
+                    // 临时修正: 2026-06-12的策略pnl归零,之后的日期都减去这个offset(因为中途入场建仓了!)
+                    var offsetPnl = this.pnlLines.dc_atr_divergence.data['2026-06-12']
+                    for(let date in this.pnlLines.dc_atr_divergence.data){
+                        if(date >= '2026-06-12'){
+                            this.pnlLines.dc_atr_divergence.data[date] -= offsetPnl
+                        }
+                    }
+
                     // 添加上一年最后一日数据为起点数据(pnl = 0), 否则pnl的起点不是0
                     var firstDate = moment().year() - 1 + '-' + '12-31'
                     this.pnlLines.trendline_break.data[firstDate] = 0
@@ -1338,6 +1375,7 @@ export default {
                     this.pnlLines.rsi_mini.data[firstDate] = 0
                     this.pnlLines.id_nr.data[firstDate] = 0
                     this.pnlLines.pivot_reversal_mini.data[firstDate] = 0
+                    this.pnlLines.dc_atr_divergence.data[firstDate] = 0
                 }
             )
         },
@@ -1814,6 +1852,81 @@ export default {
                             // 排序
                             this.prmBinancePositionsAvailable = true
                             this.prmBinancePositionsLoading = false
+                        }
+                    }
+                )
+            }  
+
+            // dad okex
+            this.dadOkexPositions = []
+            var dadOkexCount = 0
+            this.dadOkexPositionsLoading = true
+            this.dadOkexPositionsAvailable = false
+            for(var i = 0; i < this.dadOkexHosts.length; i++){
+                getPositions(this.dadOkexHosts[i], 'normal').then(response => {
+                        dadOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'dc_atr_divergence'
+                        }
+                        this.dadOkexPositions = this.dadOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (dadOkexCount === this.dadOkexHosts.length ){
+                            // 排序
+                            this.dadOkexPositionsAvailable = true
+                            this.dadOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // dad bybit
+            this.dadBybitPositions = []
+            var dadBybitCount = 0
+            this.dadBybitPositionsLoading = true
+            this.dadBybitPositionsAvailable = false
+            for(var i = 0; i < this.dadBybitHosts.length; i++){
+                getPositions(this.dadBybitHosts[i], 'normal').then(response => {
+                        dadBybitCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'dc_atr_divergence'
+                        }
+                        this.dadBybitPositions = this.dadBybitPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (dadBybitCount === this.dadBybitHosts.length ){
+                            // 排序
+                            this.dadBybitPositionsAvailable = true
+                            this.dadBybitPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // dad binance
+            this.dadBinancePositions = []
+            var dadBinanceCount = 0
+            this.dadBinancePositionsLoading = true
+            this.dadBinancePositionsAvailable = false
+            for(var i = 0; i < this.dadBinanceHosts.length; i++){
+                getPositions(this.dadBinanceHosts[i], 'normal').then(response => {
+                        dadBinanceCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'dc_atr_divergence'
+                        }
+                        this.dadBinancePositions = this.dadBinancePositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (dadBinanceCount === this.dadBinanceHosts.length ){
+                            // 排序
+                            this.dadBinancePositionsAvailable = true
+                            this.dadBinancePositionsLoading = false
                         }
                     }
                 )

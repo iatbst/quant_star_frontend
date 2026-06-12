@@ -136,36 +136,18 @@
                 <template slot-scope="scope">
                     <el-tooltip placement="top-start" align="center">
                         <div slot="content">
-                            分别展示Binance | Okex | Bybit | Bitget的资金相对于60日前的变化率.
+                            展示实盘总体资金相对于60日前的变化率.
                         </div>
                         <div>
-                            <span style="color: green" v-if="scope.row.btValueLineChange[0] >= 0">
-                                {{ scope.row.btValueLineChange[0]  }}%
+                            <span style="color: green" v-if="scope.row.liveValueLineChange >= 60">
+                                {{ scope.row.liveValueLineChange  }}%
                             </span>   
-                            <span style="color: red" v-else>
-                                {{ scope.row.btValueLineChange[0]  }}%
-                            </span> 
-                            |
-                            <span style="color: green" v-if="scope.row.btValueLineChange[1] >= 0">
-                                {{ scope.row.btValueLineChange[1]  }}%
-                            </span>   
-                            <span style="color: red" v-else>
-                                {{ scope.row.btValueLineChange[1]  }}%
-                            </span> 
-                            |
-                            <span style="color: green" v-if="scope.row.btValueLineChange[2] >= 0">
-                                {{ scope.row.btValueLineChange[2]  }}%
-                            </span>   
-                            <span style="color: red" v-else>
-                                {{ scope.row.btValueLineChange[2]  }}%
-                            </span> 
-                            |
-                            <span style="color: green" v-if="scope.row.btValueLineChange[3] >= 0">
-                                {{ scope.row.btValueLineChange[3]  }}%
-                            </span>   
-                            <span style="color: red" v-else>
-                                {{ scope.row.btValueLineChange[3]  }}%
-                            </span> 
+                             <span style="color: red" v-else-if="scope.row.liveValueLineChange < 0">
+                                {{ scope.row.liveValueLineChange  }}%
+                            </span>                              
+                            <span v-else>
+                                {{ scope.row.liveValueLineChange  }}%
+                            </span>
                         </div>
                     </el-tooltip>
                 </template>
@@ -338,7 +320,7 @@ export default {
             type:Object,
             default:{}
         },  
-        btValueLines: {
+        totalBalanceValues: {
             type:Object,
             default:{}           
         }              
@@ -391,8 +373,8 @@ export default {
                 // 实盘回测资金对比数据
                 btBalances: null,
 
-                // 回测资产曲线滚动变化率
-                btValueLineChange: null,
+                // 实盘资产曲线滚动变化率
+                liveValueLineChange: null,
 
                 // 24H内抄底订单
                 todayPbOrderCount: null,
@@ -637,12 +619,12 @@ export default {
             this.otherInfoDatas[0].btBalances['adjust_balance_diff'] = this.otherInfoDatas[0].btBalances['balance_diff'] + this.otherInfoDatas[0].btBalances['rewards']
             
             // 回测资产变化率
-            this.otherInfoDatas[0].btValueLineChange = [
-                (this.btValueLines.binance.change*100).toFixed(0), 
-                (this.btValueLines.okex.change*100).toFixed(0), 
-                (this.btValueLines.bybit.change*100).toFixed(0), 
-                (this.btValueLines.bitget.change*100).toFixed(0)
-            ]
+            this.otherInfoDatas[0].liveValueLineChange = (this.calValuelineChange(this.totalBalanceValues)*100).toFixed(0)
+            //     (this.btValueLines.binance.change*100).toFixed(0), 
+            //     (this.btValueLines.okex.change*100).toFixed(0), 
+            //     (this.btValueLines.bybit.change*100).toFixed(0), 
+            //     (this.btValueLines.bitget.change*100).toFixed(0)
+            // ]
 
             // 抄底订单
             this.otherInfoDatas[0].todayPbOrderCount = this.todayPbOrderCount
@@ -893,6 +875,20 @@ export default {
                     this.parseLongShortRatios()
                 }
             )
+        },
+
+        // 计算valueline的滚动变化率(默认60日)
+        calValuelineChange(valueline, count=60){
+            var dt_list = Object.keys(valueline).sort().reverse()
+            if (dt_list.length < count + 1){
+                // 滚动数量不足
+                return null
+            } else {
+                var valueNow = valueline[dt_list[0]]
+                var valueAgo = valueline[dt_list[count]]
+                // debugger
+                return (valueNow - valueAgo) / valueAgo
+            }
         },
 
         // 获取最近N小时的资金费率数据

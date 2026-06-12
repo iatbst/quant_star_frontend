@@ -264,6 +264,7 @@ export default {
                 'rsi_mini',
                 'id_nr',
                 'pivot_reversal_mini',
+                'dc_atr_divergence',
                 'binance',
                 'okex',
                 'bybit',
@@ -300,7 +301,13 @@ export default {
                     initPosition: null,
                     position: null,
                     fundingFees: null
-                },                                                   
+                },
+                'dc_atr_divergence': {
+                    name: 'AD',
+                    initPosition: null,
+                    position: null,
+                    fundingFees: null
+                },                                                                     
                 'binance': {
                     name: 'Binance',
                     initPosition: null,
@@ -390,16 +397,21 @@ export default {
                     this.todayObj[key].shortTimer = null
                     this.todayObj[key].longWinStop = null
                     this.todayObj[key].shortWinStop = null                                                   
-                } else if (key == 'id_nr') {
-                    this.todayObj[key].longOpen = null
-                    this.todayObj[key].longFlip = null   
-                    this.todayObj[key].longTimer = null     
-                    this.todayObj[key].longWinStop = null               
+                // } else if (key == 'id_nr') {
+                //     this.todayObj[key].longOpen = null
+                //     this.todayObj[key].longFlip = null   
+                //     this.todayObj[key].longTimer = null     
+                //     this.todayObj[key].longWinStop = null               
                 } else if (key == 'pivot_reversal_mini') {
                     this.todayObj[key].longOpen = null
                     this.todayObj[key].longFlip = null   
                     this.todayObj[key].longTimer = null   
                     this.todayObj[key].shortTimer = null  
+                    this.todayObj[key].longWinStop = null               
+                } else if (key == 'dc_atr_divergence') {
+                    this.todayObj[key].longOpen = null
+                    this.todayObj[key].longFlip = null   
+                    this.todayObj[key].longTimer = null   
                     this.todayObj[key].longWinStop = null               
                 }
             }

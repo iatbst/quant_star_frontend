@@ -159,7 +159,8 @@ const strategies = [
     'plunge-back',
     'rsi-mini',
     'id-nr',
-    'pivot-reversal-mini'
+    'pivot-reversal-mini',
+    'dc-atr-divergence'
 ]
 
 const activeStrategyIDs = [
@@ -175,14 +176,16 @@ const activeStrategyIDs = [
     'plunge_back_4',
     'rsi_mini',
     'id_nr',
-    'pivot_reversal_mini'
+    'pivot_reversal_mini',
+    'dc_atr_divergence'
 ]
 
 // 部分策略不展示子策略(只显示合并结果)
 const mergeStrategyIDs = [
     'rsi_mini',
     'id_nr',
-    'pivot_reversal_mini'
+    'pivot_reversal_mini',
+    'dc_atr_divergence'
 ]
 
 const strategyAlias = {
@@ -205,6 +208,10 @@ const strategyAlias = {
     'pivot-reversal-mini': 'PM',
     'pivot_reversal_mini': 'PM',
     'prm': 'PM',
+
+    'dc-atr-divergence': 'AD',
+    'dc_atr_divergence': 'AD',
+    'dad': 'AD'
 }
 
 
@@ -367,6 +374,9 @@ export default {
     prmOkexHosts,
     prmBybitHosts,
     prmBinanceHosts,
+    dadOkexHosts,
+    dadBybitHosts,
+    dadBinanceHosts,    
     pfoAlias,
     backtestHost,
     cryptoParentPfo,

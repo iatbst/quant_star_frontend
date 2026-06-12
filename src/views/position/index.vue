@@ -143,6 +143,33 @@
             </div>
 
             <position-map2 
+            v-bind:positions="dadBinancePositions" 
+            v-bind:positions-loading="dadBinancePositionsLoading"
+            v-bind:exchange="'Binance'"
+            v-bind:strategy="'AD'"
+            v-bind:col-count="10"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <position-map2 
+            v-bind:positions="dadOkexPositions" 
+            v-bind:positions-loading="dadOkexPositionsLoading"
+            v-bind:exchange="'Okex'"
+            v-bind:strategy="'AD'"
+            v-bind:col-count="10"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <position-map2 
+            v-bind:positions="dadBybitPositions" 
+            v-bind:positions-loading="dadBybitPositionsLoading"
+            v-bind:exchange="'Bybit'"
+            v-bind:strategy="'AD'"
+            v-bind:col-count="10"
+            v-bind:show-zero="false"
+            ></position-map2> 
+
+            <position-map2 
             v-bind:positions="pbBinancePositions" 
             v-bind:positions-loading="pbBinancePositionsLoading"
             v-bind:exchange="'Binance'"
@@ -215,6 +242,9 @@ export default {
             prmOkexHosts: config.prmOkexHosts,
             prmBybitHosts: config.prmBybitHosts,
             prmBinanceHosts: config.prmBinanceHosts,
+            dadOkexHosts: config.dadOkexHosts,
+            dadBybitHosts: config.dadBybitHosts,
+            dadBinanceHosts: config.dadBinanceHosts,
             tbBinanceSortWeights: config.tbBinanceSortWeights,
             tbOkexSortWeights: config.tbOkexSortWeights,
             tbBybitSortWeights: config.tbOkexSortWeights,
@@ -281,6 +311,15 @@ export default {
             prmBinancePositions: [],
             prmBinancePositionsAvailable: false,
             prmBinancePositionsLoading: false,
+            dadOkexPositions: [],
+            dadOkexPositionsAvailable: false,
+            dadOkexPositionsLoading: false,
+            dadBybitPositions: [],
+            dadBybitPositionsAvailable: false,
+            dadBybitPositionsLoading: false,
+            dadBinancePositions: [],
+            dadBinancePositionsAvailable: false,
+            dadBinancePositionsLoading: false,
 
             refreshInterval: 1000,
             refreshIntervalId: null,
@@ -703,6 +742,81 @@ export default {
                             // 排序
                             this.prmBinancePositionsAvailable = true
                             this.prmBinancePositionsLoading = false
+                        }
+                    }
+                )
+            } 
+
+            // dad okex
+            this.dadOkexPositions = []
+            var dadOkexCount = 0
+            this.dadOkexPositionsLoading = true
+            this.dadOkexPositionsAvailable = false
+            for(var i = 0; i < this.dadOkexHosts.length; i++){
+                getPositions(this.dadOkexHosts[i], 'normal').then(response => {
+                        dadOkexCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'pivot_reversal_mini'
+                        }
+                        this.dadOkexPositions = this.dadOkexPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (dadOkexCount === this.dadOkexHosts.length ){
+                            // 排序
+                            this.dadOkexPositionsAvailable = true
+                            this.dadOkexPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // dad bybit
+            this.dadBybitPositions = []
+            var dadBybitCount = 0
+            this.dadBybitPositionsLoading = true
+            this.dadBybitPositionsAvailable = false
+            for(var i = 0; i < this.dadBybitHosts.length; i++){
+                getPositions(this.dadBybitHosts[i], 'normal').then(response => {
+                        dadBybitCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'pivot_reversal_mini'
+                        }
+                        this.dadBybitPositions = this.dadBybitPositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (dadBybitCount === this.dadBybitHosts.length ){
+                            // 排序
+                            this.dadBybitPositionsAvailable = true
+                            this.dadBybitPositionsLoading = false
+                        }
+                    }
+                )
+            }
+
+            // dad binance
+            this.dadBinancePositions = []
+            var dadBinanceCount = 0
+            this.dadBinancePositionsLoading = true
+            this.dadBinancePositionsAvailable = false
+            for(var i = 0; i < this.dadBinanceHosts.length; i++){
+                getPositions(this.dadBinanceHosts[i], 'normal').then(response => {
+                        dadBinanceCount += 1
+                        var positions = response.results
+                        // 每个position添加其他信息
+                        for (let j = 0; j < positions.length; j++){
+                            positions[j]['host'] = response.config.baseURL
+                            positions[j]['sty'] = 'pivot_reversal_mini'
+                        }
+                        this.dadBinancePositions = this.dadBinancePositions.concat(positions)
+                        this.positions = this.positions.concat(positions)
+                        if (dadBinanceCount === this.dadBinanceHosts.length ){
+                            // 排序
+                            this.dadBinancePositionsAvailable = true
+                            this.dadBinancePositionsLoading = false
                         }
                     }
                 )
