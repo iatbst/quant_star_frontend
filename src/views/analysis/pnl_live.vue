@@ -6,7 +6,7 @@
         <div style="width: 90%; margin-top: 0px">
             <el-row :gutter="0" type="flex" style="margin-bottom: 10px">
                 <!----------------------------------- 查询Bar --------------------------------------->
-                <el-col :span="7" align="left">
+                <el-col :span="8" align="left">
                     <el-date-picker
                     style="margin-left: 50px"
                     v-model="datetimeRange"
@@ -15,6 +15,41 @@
                     start-placeholder="开始时间"
                     end-placeholder="结束时间">
                     </el-date-picker>
+                </el-col>
+
+                <el-col :span="4">
+                    <el-row style="margin-left: 20px">
+                    <el-select v-model="pnlFilter.exchange" placeholder="交易所">
+                        <el-option
+                        v-for="item in ['any'].concat(config.exchanges)"
+                        :key="item"
+                        :label="item"
+                        :value="item">
+                        </el-option>
+                    </el-select>  
+                    </el-row>      
+                </el-col>
+
+                <el-col :span="4">
+                    <el-row style="margin-left: 20px">
+                        <el-input
+                            v-model="pnlFilter.symbol"
+                            placeholder="标的"
+                        ></el-input> 
+                    </el-row>      
+                </el-col>
+
+                <el-col :span="4">
+                    <el-row style="margin-left: 20px">
+                    <el-select v-model="pnlFilter.strategy" placeholder="策略">
+                        <el-option
+                        v-for="item in ['any'].concat(config.strategies)"
+                        :key="item"
+                        :label="config.strategyAlias[item]"
+                        :value="item">
+                        </el-option>
+                    </el-select>  
+                    </el-row>      
                 </el-col>
 
                 <el-col :span="6" align="left">
@@ -213,6 +248,12 @@ export default {
 
             btPnlDatas: {},
 
+            pnlFilter: {
+                'exchange': null,
+                'symbol': null,
+                'strategy': null
+            },
+
             startDt: null,
             endDt: null
         }
@@ -284,16 +325,18 @@ export default {
                             var strategy = response.results[i].worker.strategy_name
                             var strategyID = response.results[i].worker.name.slice(-1,)     //worker最后一位表示子策略
                             var symbol = response.results[i].worker.product.symbol
-                            // TEST
-                            // if (symbol != 'BTC/USDT'){
-                            //     continue
-                            // }
-                            // if (exchange != 'binance'){
-                            //     continue
-                            // }
-                            // if (strategy != 'trendline-break'){
-                            //     continue
-                            // }                         
+
+                            // 过滤
+                            if (this.pnlFilter.symbol != null && this.pnlFilter.symbol != '' && !symbol.includes(this.pnlFilter.symbol)){
+                                continue
+                            }
+                            if (this.pnlFilter.exchange != null && this.pnlFilter.exchange != 'any' && this.pnlFilter.exchange != exchange){
+                                continue
+                            }
+                            if (this.pnlFilter.strategy != null && this.pnlFilter.strategy != 'any' && this.pnlFilter.strategy != strategy){
+                                continue
+                            }
+                        
                             pnls.push({
                                 'pnl': pnl,
                                 'host': response.config.baseURL,
