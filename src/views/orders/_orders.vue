@@ -420,18 +420,16 @@ export default {
                 var filters = 'show_worker=true&no_parent_order=true&exec_size__gt=0&exec_ts__gte=' + startDt + '&exec_ts__lte=' + endDt
                 getOrders(this.pfoHosts[i], null, filters).then(response => {
                         count += 1
-                        // this.orders = this.orders.concat(response.results)
 
                         // 过滤
                         var _orders = []
-                        for(var i = 0; i < response.results.length; i++){
-                            if (this.filterOrder(response.results[i])){
-                                response.results[i]["host"] = response.config.baseURL   // 添加host
-                                _orders.push(response.results[i])
+                        for(var j = 0; j < response.results.length; j++){
+                            if (this.filterOrder(response.results[j])){
+                                response.results[j]["host"] = response.config.baseURL   // 添加host
+                                _orders.push(response.results[j])
                             }
                         }
                         this.orders = this.orders.concat(_orders)
-
                         if (count === this.pfoHosts.length){
                             // 排序
                             this.orders.sort((a, b) => b.exec_ts.localeCompare(a.exec_ts))
@@ -443,6 +441,11 @@ export default {
         },
 
         filterOrder(order){
+            // worker被删除(eg, 下线了)，以后不要删除workers, 标注为disabled即可!
+            if (order.worker == null){
+                return false
+            }
+
             var exchange = order.worker.name.split('_')[0]
             var symbol = order.symbol
             var strategy = order.worker.strategy_name
