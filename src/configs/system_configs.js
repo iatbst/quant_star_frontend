@@ -20,10 +20,10 @@ const rsiBinanceHosts = [
     'http://ec2-13-231-52-188.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
 const rsiOkexHosts = [
-    'http://ec2-18-166-152-179.ap-east-1.compute.amazonaws.com:8000/api'
+    'http://ec2-43-199-45-50.ap-east-1.compute.amazonaws.com:8000/api'
 ]
 const rsiBybitHosts = [
-    'http://ec2-13-212-71-103.ap-southeast-1.compute.amazonaws.com:8000/api'
+    'http://ec2-54-255-188-214.ap-southeast-1.compute.amazonaws.com:8000/api'
 ]
 
 const inBinanceHosts = [
@@ -51,11 +51,11 @@ const pbBinanceHosts = [
 ]
 
 const pbOkexHosts = [
-    'http://ec2-16-163-142-85.ap-east-1.compute.amazonaws.com:8000/api',
+    'http://ec2-16-163-145-239.ap-east-1.compute.amazonaws.com:8000/api',
 ]
 
 const pbBybitHosts = [
-    'http://ec2-13-229-243-221.ap-southeast-1.compute.amazonaws.com:8000/api',
+    'http://ec2-47-129-229-250.ap-southeast-1.compute.amazonaws.com:8000/api',
 ]
 
 const dadBinanceHosts = [
@@ -84,16 +84,16 @@ var production_hosts = [
     'http://ec2-16-163-106-126.ap-east-1.compute.amazonaws.com:8000/api',       // okex_tb_1
     'http://ec2-43-199-194-46.ap-east-1.compute.amazonaws.com:8000/api',        // okex_in_1
     'http://ec2-54-46-16-152.ap-east-1.compute.amazonaws.com:8000/api',         // okex_prm_1
-    'http://ec2-18-166-152-179.ap-east-1.compute.amazonaws.com:8000/api',       // okex_rsi_1
-    'http://ec2-16-163-142-85.ap-east-1.compute.amazonaws.com:8000/api',        // okex_pb_1
+    'http://ec2-43-199-45-50.ap-east-1.compute.amazonaws.com:8000/api',       // okex_rsi_1
+    'http://ec2-16-163-145-239.ap-east-1.compute.amazonaws.com:8000/api',        // okex_pb_1
     'http://ec2-18-162-154-181.ap-east-1.compute.amazonaws.com:8000/api',        // okex_dad_1
 
     // 新加坡: Bybit
     'http://ec2-13-214-121-142.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_tb_1
     'http://ec2-18-142-91-216.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_in_1
     'http://ec2-13-214-203-89.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_prm_1
-    'http://ec2-13-212-71-103.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_rsi_1
-    'http://ec2-13-229-243-221.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_pb_1
+    'http://ec2-54-255-188-214.ap-southeast-1.compute.amazonaws.com:8000/api',   // bybit_rsi_1
+    'http://ec2-47-129-229-250.ap-southeast-1.compute.amazonaws.com:8000/api',  // bybit_pb_1
     'http://ec2-13-228-75-30.ap-southeast-1.compute.amazonaws.com:8000/api',    // bybit_dad_1
 
     // // 新加坡: Bitget
