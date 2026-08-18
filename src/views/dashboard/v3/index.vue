@@ -45,7 +45,7 @@
                         <br />
                         今日表格: 每间隔5分钟刷新1次(非整点);盈亏列每小时第5分钟刷新1次;资金费每小时第30分钟刷新1次
                         <br/>
-                        策略今年表现表格: 每小时第5分钟刷新1次
+                        策略半年表现表格: 每小时第5分钟刷新1次
                     </div>
                     <span style="color: gray; font-size: 10px"><i class="el-icon-refresh"></i>说明</span>
                 </el-tooltip>

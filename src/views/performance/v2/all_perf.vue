@@ -382,7 +382,7 @@ export default {
         },
 
         fetchReportAllPerf(){
-            var reportName = 'all_performance'
+            var reportName = 'low_5s_performance'
             this.reportAllPerfAvailable = false
             getBacktestReportByName(config.masterHost, reportName).then(response => {
                 // 月度收益
