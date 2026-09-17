@@ -395,7 +395,7 @@
     --->
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px">
       <el-col :span="24" align="center">
-          <h4 style="font-weight: 400;">策略半年表现</h4>
+          <h4 style="font-weight: 400;">策略今年表现</h4>
           <div style="margin-bottom: 20px; margin-top: 10px; width: 95%">
             <perf-table 
             v-bind:parentPfoTradeStats="parentPfoTradeStats" 

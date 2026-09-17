@@ -615,6 +615,9 @@ export default {
 
             // 实盘回测资金对比数据
             this.otherInfoDatas[0].btBalances = this.parentPfoBacktest.balances
+            // *** 临时调整 *** //
+            // this.otherInfoDatas[0].btBalances['bt_slippage_rewards'] += 3018
+            // ************** //
             this.otherInfoDatas[0].btBalances['rewards'] = this.otherInfoDatas[0].btBalances['bt_fee_rewards'] + this.otherInfoDatas[0].btBalances['bt_slippage_rewards'] + this.otherInfoDatas[0].btBalances['bt_swap_funding_rewards']
             this.otherInfoDatas[0].btBalances['adjust_balance_diff'] = this.otherInfoDatas[0].btBalances['balance_diff'] + this.otherInfoDatas[0].btBalances['rewards']
             
