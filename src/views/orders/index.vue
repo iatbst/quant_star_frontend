@@ -57,13 +57,16 @@ export default {
                 var filters = 'show_worker=true&no_parent_order=true&exec_size__gt=0&created_ts__gte=' + startDt + '&created_ts__lte=' + endDt
                 getOrders(host, null, filters).then(response => {
                         count += 1
-                        // 添加host
-                        for(var i = 0; i < response.results.length; i++){
-                            // 点击获取对应的trade时知道从那个host获取
-                            response.results[i]["host"] = response.config.baseURL
-                        }
 
-                        this.orders = this.orders.concat(response.results)
+                        // 过滤: 默认去掉手动订单
+                        var _orders = []
+                        for(var j = 0; j < response.results.length; j++){
+                            if (response.results[j]["order_type"] != 'temp'){
+                                response.results[j]["host"] = response.config.baseURL   // 添加host
+                                _orders.push(response.results[j])
+                            }
+                        }
+                        this.orders = this.orders.concat(_orders)
 
                         if (count === this.pfoHosts.length){
                             // 排序

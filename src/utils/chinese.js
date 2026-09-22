@@ -41,6 +41,7 @@ export function chineseString(s) {
             case 'timer': cs = '定时'; break;
             case 'offline': cs = '下线'; break;
             case 'flip': cs = '反转'; break;
+            case 'indicator': cs = '指标'; break;
             case 'temp': cs = '手动'; break;
 
             // 费用
@@ -76,6 +77,7 @@ export function chineseString(s) {
             case 'completed': cs = '成交'; break;
             case 'partial': cs = '部分'; break;
             case 'canceled': cs = '取消'; break;
+            case 'place_error': cs = '下单失败'; break;
 
             default: cs = '翻译失败:' + s 
         }

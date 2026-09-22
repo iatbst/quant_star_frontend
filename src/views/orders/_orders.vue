@@ -78,6 +78,12 @@
                             </el-row>      
                         </el-col>
 
+                        <el-col :span="2">
+                            <el-row style="margin-left: 20px;">
+                                <el-checkbox v-model="orderFilter.no_temp" class="big-checkbox" style="margin-top: 10px;">无手动</el-checkbox>
+                            </el-row>      
+                        </el-col>
+
                         <el-col :span="5">
                             <el-row style="margin-left: 20px">
                                 <el-col :span="10" :offset="2">
@@ -302,10 +308,11 @@ export default {
                 'symbol': null,
                 'strategy': null,
                 'strategy_id': null,
-                'order_type': null
+                'order_type': null,
+                'no_temp': true
             },
             strategy_ids: ['1', '2', '3', '4', '5', '6'],  
-            order_types: ['any', 'open', 'win_stop', 'timer', 'flip', 'lose_stop'],
+            order_types: ['any', 'open', 'win_stop', 'timer', 'flip', 'lose_stop', 'indicator'],
 
         }
     },
@@ -461,7 +468,9 @@ export default {
                 return false
             } else if (this.orderFilter.order_type && this.orderFilter.order_type != 'any' && order_type != this.orderFilter.order_type){
                 return false
-            } else {
+            } else if (this.orderFilter.no_temp && order_type == 'temp'){
+                return false
+            }else {
                 // 通过
                 return true
             }
@@ -494,3 +503,14 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.big-checkbox {
+    transform: scale(1.1);
+    transform-origin: left center;
+}
+::v-deep .el-checkbox__input.is-checked + .el-checkbox__label {
+    color: black !important;
+    font-weight: 400;
+}
+</style>
