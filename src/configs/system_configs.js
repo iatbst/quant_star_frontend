@@ -70,34 +70,53 @@ const dadBybitHosts = [
     'http://ec2-18-180-133-192.ap-northeast-1.compute.amazonaws.com:8000/api',
 ]
 
+const tbTradfiBinanceHosts = [
+    'http://ec2-13-115-133-22.ap-northeast-1.compute.amazonaws.com:8000/api',
+]
+
+const tbTradfiOkexHosts = [
+    'http://ec2-13-196-30-121.ap-northeast-1.compute.amazonaws.com:8000/api',
+]
+
+const tbTradfiBybitHosts = [
+    'http://ec2-18-176-240-173.ap-northeast-1.compute.amazonaws.com:8000/api',
+]
+
+const tbTradfiBitgetHosts = [
+    'http://ec2-57-182-60-43.ap-northeast-1.compute.amazonaws.com:8000/api',
+]
 
 var production_hosts = [
     // 东京: Binance
     'http://ec2-18-182-169-126.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_tb_1
+    'http://ec2-13-115-133-22.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_tb_tradfi_1
     'http://ec2-18-182-239-55.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_in_1
     'http://ec2-3-115-251-247.ap-northeast-1.compute.amazonaws.com:8000/api',  // binance_prm_1
     'http://ec2-35-75-77-201.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_rsi_1
     'http://ec2-52-68-122-128.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_1
     'http://ec2-52-68-195-72.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_dad_1
 
-    // 香港: Okex
+    // 东京: Okex
     'http://ec2-13-159-51-218.ap-northeast-1.compute.amazonaws.com:8000/api',       // okex_tb_1
+    'http://ec2-13-196-30-121.ap-northeast-1.compute.amazonaws.com:8000/api',       // okex_tb_tradfi_1
     'http://ec2-18-176-89-28.ap-northeast-1.compute.amazonaws.com:8000/api',        // okex_in_1
     'http://ec2-3-113-65-199.ap-northeast-1.compute.amazonaws.com:8000/api',         // okex_prm_1
     'http://ec2-3-114-103-191.ap-northeast-1.compute.amazonaws.com:8000/api',       // okex_rsi_1
     'http://ec2-54-248-198-50.ap-northeast-1.compute.amazonaws.com:8000/api',        // okex_pb_1
     'http://ec2-54-250-135-39.ap-northeast-1.compute.amazonaws.com:8000/api',        // okex_dad_1
 
-    // 新加坡: Bybit
+    // 东京: Bybit
     'http://ec2-13-115-8-25.ap-northeast-1.compute.amazonaws.com:8000/api',  // bybit_tb_1
+    'http://ec2-18-176-240-173.ap-northeast-1.compute.amazonaws.com:8000/api',  // bybit_tb_tradfi_1
     'http://ec2-13-158-164-142.ap-northeast-1.compute.amazonaws.com:8000/api',   // bybit_in_1
     'http://ec2-13-159-3-197.ap-northeast-1.compute.amazonaws.com:8000/api',   // bybit_prm_1
     'http://ec2-13-193-156-100.ap-northeast-1.compute.amazonaws.com:8000/api',   // bybit_rsi_1
     'http://ec2-16-76-23-121.ap-northeast-1.compute.amazonaws.com:8000/api',  // bybit_pb_1
     'http://ec2-18-180-133-192.ap-northeast-1.compute.amazonaws.com:8000/api',    // bybit_dad_1
 
-    // // 新加坡: Bitget
+    // 东京: Bitget
     'http://ec2-57-181-65-92.ap-northeast-1.compute.amazonaws.com:8000/api',    // bitget_tb_1
+    'http://ec2-57-182-60-43.ap-northeast-1.compute.amazonaws.com:8000/api',    // bitget_tb_tradfi_1
 ]
 
 var development_hosts = [
