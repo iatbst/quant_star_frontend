@@ -86,6 +86,14 @@ const tbTradfiBitgetHosts = [
     'http://ec2-57-182-60-43.ap-northeast-1.compute.amazonaws.com:8000/api',
 ]
 
+const tbTradfiHosts = [
+    'http://ec2-13-115-133-22.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_tb_tradfi_1
+    'http://ec2-13-196-30-121.ap-northeast-1.compute.amazonaws.com:8000/api',       // okex_tb_tradfi_1
+    'http://ec2-18-176-240-173.ap-northeast-1.compute.amazonaws.com:8000/api',  // bybit_tb_tradfi_1
+    'http://ec2-57-182-60-43.ap-northeast-1.compute.amazonaws.com:8000/api',    // bitget_tb_tradfi_1
+
+]
+
 var production_hosts = [
     // 东京: Binance
     'http://ec2-18-182-169-126.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_tb_1
@@ -196,7 +204,9 @@ const activeStrategyIDs = [
     'rsi_mini',
     'id_nr',
     'pivot_reversal_mini',
-    'dc_atr_divergence'
+    'dc_atr_divergence',
+    'trendline_break_tradfi_stock',
+    'trendline_break_tradfi_future'
 ]
 
 // 部分策略不展示子策略(只显示合并结果)
@@ -204,7 +214,9 @@ const mergeStrategyIDs = [
     'rsi_mini',
     'id_nr',
     'pivot_reversal_mini',
-    'dc_atr_divergence'
+    'dc_atr_divergence',
+    'trendline_break_tradfi_stock',
+    'trendline_break_tradfi_future',
 ]
 
 const strategyAlias = {
@@ -230,7 +242,10 @@ const strategyAlias = {
 
     'dc-atr-divergence': 'AD',
     'dc_atr_divergence': 'AD',
-    'dad': 'AD'
+    'dad': 'AD',
+
+    'trendline_break_tradfi_stock': 'TB个股',
+    'trendline_break_tradfi_future': 'TB期货',
 }
 
 
@@ -381,6 +396,10 @@ export default {
     tbOkexHosts,
     tbBybitHosts,
     tbBitgetHosts,
+    tbTradfiBinanceHosts,
+    tbTradfiOkexHosts,
+    tbTradfiBybitHosts,
+    tbTradfiBitgetHosts,
     pbOkexHosts,
     pbBybitHosts,
     pbBinanceHosts,
@@ -395,7 +414,8 @@ export default {
     prmBinanceHosts,
     dadOkexHosts,
     dadBybitHosts,
-    dadBinanceHosts,    
+    dadBinanceHosts,  
+    tbTradfiHosts,  
     pfoAlias,
     backtestHost,
     cryptoParentPfo,

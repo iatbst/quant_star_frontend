@@ -77,11 +77,17 @@ export const constantRoutes = [
     meta: { title: '仓位', icon: 'el-icon-wind-power' },
     children: [
       {
-        path: 'position',
-        name: '仓位',
+        path: 'position/crypto',
+        name: '数字货币仓位',
         component: () => import('@/views/position/index'),
-        meta: { title: '仓位', icon: 'el-icon-wind-power' }
-      }
+        meta: { title: '数字货币仓位', icon: 'el-icon-eleme' }
+      },
+      {
+        path: 'position/tradfi',
+        name: '传统金融仓位',
+        component: () => import('@/views/position/index_tradfi'),
+        meta: { title: '传统金融仓位', icon: 'el-icon-money' }
+      }     
     ]
   },
 

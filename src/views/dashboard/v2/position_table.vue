@@ -1,6 +1,7 @@
 <template>
-    <!--- 表2: 仓位 --->
+    <!--- 仓位表 --->
     <div>
+        <!--- 表1 --->
         <el-table
         :data="positionDatas"
         :header-cell-style="{ background: '#f2f2f2' }"
@@ -48,14 +49,6 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="PB多头" min-width="10%" align="center">
-                <template slot-scope="scope">
-                    <span style="color: green">
-                        {{toThousands(scope.row.pbPosition)}}
-                    </span>          
-                </template>
-            </el-table-column>
-
             <el-table-column label="RS多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
@@ -91,6 +84,69 @@
                     </span>          
                 </template>
             </el-table-column>  
+        </el-table>
+
+        <!--- 表2 --->
+        <el-table
+        :data="positionDatas"
+        :header-cell-style="{ background: '#f2f2f2' }"
+        style="width: 100%">
+            <el-table-column label="PB多头" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: green">
+                        {{toThousands(scope.row.pbPosition)}}
+                    </span>          
+                </template>
+            </el-table-column>
+
+            <el-table-column label="TB个股多头" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: green">
+                        {{toThousands(scope.row.tbStockLongPosition)}}
+                    </span>              
+                </template>
+            </el-table-column>
+
+            <el-table-column label="TB个股空头" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: red">
+                        {{toThousands(scope.row.tbStockShortPosition)}}
+                    </span>               
+                </template>
+            </el-table-column>
+
+            <el-table-column label="TB期货多头" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: green">
+                        {{toThousands(scope.row.tbFutureLongPosition)}}
+                    </span>               
+                </template>       
+            </el-table-column>
+
+            <el-table-column label="TB期货空头" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span style="color: red">
+                        {{toThousands(scope.row.tbFutureShortPosition)}}
+                    </span>        
+                </template>
+            </el-table-column>
+
+            <el-table-column label="" min-width="10%" align="center">
+
+            </el-table-column>
+
+            <el-table-column label="" min-width="10%" align="center">
+
+            </el-table-column>  
+
+            <el-table-column label="" min-width="10%" align="center">
+
+            </el-table-column> 
+
+
+            <el-table-column label="" min-width="10%" align="center">
+
+            </el-table-column>   
         </el-table>
     </div>
 </template>
@@ -200,6 +256,10 @@ export default {
                 prmPosition: null,
                 dadPosition: null,
 
+                tbStockLongPosition: null,
+                tbStockShortPosition: null,
+                tbFutureLongPosition: null,
+                tbFutureShortPosition: null, 
 
                 leverage: null
             }],
@@ -219,6 +279,7 @@ export default {
         parseParentPfoPositions(){
             // 策略仓位信息从系统后台获取
             var tbData = this.parentPfoPositions.trendline_break
+            var tbTradfiData = this.parentPfoPositions.trendline_break_tradfi
             var pbData = this.parentPfoPositions.plunge_back
             var rsiData = this.parentPfoPositions.rsi_mini
             var inData = this.parentPfoPositions.id_nr
@@ -231,7 +292,10 @@ export default {
             this.positionDatas[0].inPosition = Math.round(inData.long + inData.short)
             this.positionDatas[0].prmPosition = Math.round(prmData.short)
             this.positionDatas[0].dadPosition = Math.round(dadData.short)
-
+            this.positionDatas[0].tbStockLongPosition = Math.round(tbTradfiData.long_stock)
+            this.positionDatas[0].tbStockShortPosition = Math.round(tbTradfiData.short_stock)
+            this.positionDatas[0].tbFutureLongPosition = Math.round(tbTradfiData.long_future)
+            this.positionDatas[0].tbFutureShortPosition = Math.round(tbTradfiData.short_future)
 
             // 币头寸叠加到总头寸
             // this.positionDatas[0].totalPosition += this.positionDatas[0].holdPosition

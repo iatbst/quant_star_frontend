@@ -189,7 +189,15 @@
                 {
                     title: pnlLines.dc_atr_divergence.name,
                     data: pnlLines.dc_atr_divergence.data
-                }   
+                },
+                {
+                    title: pnlLines.trendline_break_tradfi_stock.name,
+                    data: pnlLines.trendline_break_tradfi_stock.data
+                },
+                {
+                    title: pnlLines.trendline_break_tradfi_future.name,
+                    data: pnlLines.trendline_break_tradfi_future.data
+                }       
 
             ]
             "
@@ -200,7 +208,8 @@
             pnlLines.rsi_mini.available && 
             pnlLines.id_nr.available &&
             pnlLines.pivot_reversal_mini.available &&
-            pnlLines.dc_atr_divergence.available
+            pnlLines.dc_atr_divergence.available &&
+            pnlLines.trendline_break_tradfi_stock.available && pnlLines.trendline_break_tradfi_future.available
             " 
             style="margin-bottom: 20px">
             </multi-value-line>
@@ -433,7 +442,8 @@
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBinancePositionsAvailable &&
             inOkexPositionsAvailable && inBybitPositionsAvailable && inBinancePositionsAvailable &&
             prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable &&
-            dadOkexPositionsAvailable && dadBybitPositionsAvailable && dadBinancePositionsAvailable
+            dadOkexPositionsAvailable && dadBybitPositionsAvailable && dadBinancePositionsAvailable &&
+            tbTradfiPositionsAvailable
             "
             ></strategy-positions> 
             <div align="left">
@@ -647,6 +657,7 @@ export default {
             dadOkexHosts: config.dadOkexHosts,
             dadBybitHosts: config.dadBybitHosts,
             dadBinanceHosts: config.dadBinanceHosts,  
+            tbTradfiHosts: config.tbTradfiHosts,
 
             orders: [],
             ordersLoading: false,
@@ -755,6 +766,7 @@ export default {
             dadBinancePositions: [],
             dadBinancePositionsAvailable: false,
             dadBinancePositionsLoading: false,
+            tbTradfiPositionsAvailable: false,
 
             mddDatasAvailable: false,
             mddDatas: null,
@@ -858,7 +870,17 @@ export default {
                     'name': 'AD',
                     'data': null,
                     'available': false
-                },                                                                              
+                },
+                'trendline_break_tradfi_stock': {
+                    'name': 'TB个股',
+                    'data': null,
+                    'available': false
+                },
+                'trendline_break_tradfi_future': {
+                    'name': 'TB期货',
+                    'data': null,
+                    'available': false
+                },                                                                                 
             },
 
             refreshInterval: 1000,
@@ -972,7 +994,8 @@ export default {
                                     'pnl': pnl,
                                     'strategy': strategy,
                                     'exchange': exchange,
-                                    'coin': coin
+                                    'coin': coin,
+                                    'crypto_product_type': response.results[i].worker.product.crypto_product_type
                                 })
                             }
                         }
@@ -996,6 +1019,12 @@ export default {
             for(const data of workerPnls){
                 // 统计策略的pnl
                 var sty = data.strategy
+
+                // 特殊处理: trendline_break_tradfi
+                if (sty == 'trendline_break_tradfi'){
+                    sty = sty + '_' + data.crypto_product_type  // trendline_break_tradfi_stock OR trendline_break_tradfi_future
+                }
+                
                 if (!(sty in this.todayStrategyPnl)){
                     this.todayStrategyPnl[sty] = 0             
                 }
@@ -1327,7 +1356,7 @@ export default {
         // 从Master获取所pnl lines
         fetchPnlLines(){
             this.pnlLinesRefresh = new Date()
-            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'pnl_line').then(response => {
+            getPortfolioDataByName(config.cryptoParentPfo, config.masterHost, 'pnl_line,pnl_line_set').then(response => {
                     var parentPfoData = response.results[0]
 
                     // trendline
@@ -1368,6 +1397,12 @@ export default {
                         }
                     }
 
+                    // trendline_break_tradfi
+                    this.pnlLines.trendline_break_tradfi_stock.data = parentPfoData.pnl_line_set.trendline_break_tradfi.stock.year_now
+                    this.pnlLines.trendline_break_tradfi_stock.available = true
+                    this.pnlLines.trendline_break_tradfi_future.data = parentPfoData.pnl_line_set.trendline_break_tradfi.future.year_now
+                    this.pnlLines.trendline_break_tradfi_future.available = true
+                    
                     // 添加上一年最后一日数据为起点数据(pnl = 0), 否则pnl的起点不是0
                     var firstDate = moment().year() - 1 + '-' + '12-31'
                     this.pnlLines.trendline_break.data[firstDate] = 0
@@ -1376,6 +1411,8 @@ export default {
                     this.pnlLines.id_nr.data[firstDate] = 0
                     this.pnlLines.pivot_reversal_mini.data[firstDate] = 0
                     this.pnlLines.dc_atr_divergence.data[firstDate] = 0
+                    this.pnlLines.trendline_break_tradfi_stock.data[firstDate] = 0
+                    this.pnlLines.trendline_break_tradfi_future.data[firstDate] = 0
                 }
             )
         },
@@ -1931,6 +1968,31 @@ export default {
                     }
                 )
             }  
+
+            // 测试是否可以合并(成功后推广到上面其他策略)
+            // tb_tradfi
+            var tbTradfiCount = 0
+            this.tbTradfiPositionsAvailable = false
+            for(var i = 0; i < this.tbTradfiHosts.length; i++){
+                getPositions(this.tbTradfiHosts[i], 'normal').then(response => {
+                        tbTradfiCount += 1
+                        var positions = response.results
+                        // 把每个postion根据crypto_product_type分为2类:
+                        // - trendline_break_tradfi_stock
+                        // - trendline_break_tradfi__future
+                        for (let j = 0; j < positions.length; j++){
+                            // positions[j]['host'] = response.config.baseURL
+                            var crypto_product_type = positions[j]['worker']['crypto_product_type']
+                            positions[j]['sty'] = 'trendline_break_tradfi_' + crypto_product_type
+                        }
+                        this.positions = this.positions.concat(positions)
+                        if (tbTradfiCount === this.tbTradfiHosts.length ){
+                            // 排序
+                            this.tbTradfiPositionsAvailable = true
+                        }
+                    }
+                )
+            } 
         },
 
         // 定时刷新数据函数

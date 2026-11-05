@@ -14,7 +14,10 @@
 
         <el-table-column label="初始仓位(k)" min-width="10%" align="center">
             <template slot-scope="scope">
-                <span v-if="scope.row.initPosition > 0" style="color: green">
+                <span v-if="scope.row.initPosition == null" style="color: gray">
+                    N/A
+                </span>
+                <span v-else-if="scope.row.initPosition > 0" style="color: green">
                     {{toThousands(Math.round(scope.row.initPosition/1000))}}
                 </span>
                 <span v-else style="color: red">
@@ -265,6 +268,8 @@ export default {
                 'id_nr',
                 'pivot_reversal_mini',
                 'dc_atr_divergence',
+                'trendline_break_tradfi_stock',
+                'trendline_break_tradfi_future',
                 'binance',
                 'okex',
                 'bybit',
@@ -278,6 +283,18 @@ export default {
                     position: null,
                     fundingFees: null
                 },
+                'trendline_break_tradfi_stock': {
+                    name: 'TB个股',
+                    initPosition: null,
+                    position: null,
+                    fundingFees: null
+                },  
+                'trendline_break_tradfi_future': {
+                    name: 'TB期货',
+                    initPosition: null,
+                    position: null,
+                    fundingFees: null
+                },                               
                 'plunge_back': {
                     name: 'PB',
                     initPosition: null,
@@ -383,7 +400,10 @@ export default {
                 if (key == 'trendline_break') {
                     this.todayObj[key].longWinStop = null
                     this.todayObj[key].longTimer = null     
-                    this.todayObj[key].shortTimer = null                     
+                    this.todayObj[key].shortTimer = null    
+                } else if (key == 'trendline_break_tradfi_stock' || key == 'trendline_break_tradfi_future') {
+                    this.todayObj[key].longTimer = null     
+                    this.todayObj[key].shortTimer = null   
                 } else if (key == 'plunge_back') {
                     this.todayObj[key].shortOpen = null
                     this.todayObj[key].longFlip = null
@@ -451,7 +471,15 @@ export default {
                     var positionData = this.parentPfoPositions[label]
                     this.todayObj[label].position = Math.round(positionData.long + positionData.short)
                 }
+
+                // 特殊处理: trendline_break_tradfi
+                if (label == 'trendline_break_tradfi'){
+                    var positionData = this.parentPfoPositions[label]
+                    this.todayObj['trendline_break_tradfi_stock'].position = Math.round(positionData.long_stock + positionData.short_stock)
+                    this.todayObj['trendline_break_tradfi_future'].position = Math.round(positionData.long_future + positionData.short_future)
+                }
             }
+
             var ep = Math.round(Date.now()/1000)
             var yesterday = new Date((ep - 86400 + 3600*8)*1000).toISOString().slice(0, 10).replace('T', ' ')   // Beijing
             for(let label in this.parentPfoPositionsHistory){
@@ -461,10 +489,24 @@ export default {
                         this.todayObj[label].initPosition = Math.round(positionHistoryData[yesterday].long + positionHistoryData[yesterday].short)
                     }
                 }
+
+                // 特殊处理: trendline_break_tradfi
+                if (label == 'trendline_break_tradfi'){
+                    var positionHistoryData = this.parentPfoPositionsHistory[label]
+                    if(yesterday in positionHistoryData){
+                        this.todayObj['trendline_break_tradfi_stock'].initPosition = Math.round(positionHistoryData[yesterday].long_stock + positionHistoryData[yesterday].short_stock)
+                        this.todayObj['trendline_break_tradfi_future'].initPosition = Math.round(positionHistoryData[yesterday].long_future + positionHistoryData[yesterday].short_future)
+                    }
+                }
             }
             // alert(JSON.stringify(this.todayStrategyPnl))
             // console.log(JSON.stringify(this.todayStrategyPnl))
         },
+        
+        // // 
+        // getStrategyByCryptoProductType(sty){
+
+        // },
 
         // 根据todayOrders分析
         parseTodayOrders(){
@@ -472,6 +514,13 @@ export default {
 
             for(let order of this.todayOrders){
                 var sty = order.worker.strategy_name.replaceAll('-', '_')
+                // 特殊处理: trendline_break_tradfi
+                if (sty == 'trendline_break_tradfi'){
+                    var crypto_product_type = order.worker.product.crypto_product_type
+                    if (crypto_product_type != null){
+                        sty = sty + '_' + crypto_product_type   // trendline_break_tradfi_stock OR trendline_break_tradfi_future
+                    }
+                }
                 var exchange = order.worker.name.split('_')[0]
 
                 // 交易额
