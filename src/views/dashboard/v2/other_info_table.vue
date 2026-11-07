@@ -228,8 +228,32 @@
                     <span style="" v-else>
                         <el-tooltip placement="top-start" align="center">
                             <div slot="content">
-                                根据Bitget的BTC合约计算趋势分, 取值范围: 0 ~ 1. 0表示熊市, 1表示牛市.
+                                <div>
+                                    根据Bitget的BTC合约计算趋势分, 取值范围: 0 ~ 1. 0表示熊市, 1表示牛市, 每项得分如下:
+                                </div>
+                                <div>
+                                    sma_slope: {{ scope.row.bullBearScoreDetail.sma_slope }}
+                                </div>
+                                <div>
+                                    ma_slope: {{ scope.row.bullBearScoreDetail.ma_slope }}
+                                </div>
+                                <div>
+                                    adx_ma: {{ scope.row.bullBearScoreDetail.adx_ma }}
+                                </div>
+                                <div>
+                                    macd_hist_slope: {{ scope.row.bullBearScoreDetail.macd_hist_slope }}
+                                </div>
+                                <div>
+                                    trendline: {{ scope.row.bullBearScoreDetail.trendline }}
+                                </div>
+                                <div>
+                                    bull_bear_period: {{ scope.row.bullBearScoreDetail.bull_bear_period }}
+                                </div>
+                                <div>
+                                    finance_sma: {{ scope.row.bullBearScoreDetail.finance_sma }}
+                                </div>
                             </div>
+
                             <span style="color: green" v-if="scope.row.bullBearScore >= 0.6">
                                 {{ scope.row.bullBearScore }}
                             </span>   
@@ -389,7 +413,8 @@ export default {
                 swapFundingRate: null,
 
                 // 最近的趋势分
-                bullBearScore: null
+                bullBearScore: null,
+                bullBearScoreDetail: {}
             }],
 
             // 曲线图: 多空占比
@@ -642,7 +667,8 @@ export default {
             this.otherInfoDatas[0].swapFundingRate = this.getLastSwapFundingRate()
 
             // 分析bull_bear
-            this.otherInfoDatas[0].bullBearScore = this.getBullBearData()
+            this.otherInfoDatas[0].bullBearScore = this.bullBearData.last_score_detail.avg_score
+            this.otherInfoDatas[0].bullBearScoreDetail = this.bullBearData.last_score_detail
         },
 
         cal_weight_leverage(){
@@ -722,27 +748,16 @@ export default {
             // Line
             var datas = {}
             var startDate = moment(new Date()).subtract(1,'months').format('YYYY-MM-DD')    // 最近1月数据
-            for(let dt of Object.keys(this.bullBearData).sort()){
+            for(let dt of Object.keys(this.bullBearData.history_scores).sort()){
                 if (dt >= startDate){
-                    datas[dt] = this.bullBearData[dt]
+                    datas[dt] = this.bullBearData.history_scores[dt]
                 }
             }
-            addSingleLine('趋势分(BTC)', datas, this.bullBearOptions, false, 1)
-
-            // Column
-            // var colDatas = []
-            // for(let data of this.swapFundingRates){
-            //     var ts = new Date((data.mts/1000 + 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')
-            //     colDatas.push({
-            //         'x': ts,
-            //         'y': Number(((data.rate*100)).toFixed(4)),
-            //         'color': data.rate >= 0 ? 'green' : 'red'
-            //     })                   
-            // }
-            // addSingleColumn(colDatas, this.swapFundingRatesOptions) 
+            addSingleLine('趋势分(BTC)', datas, this.bullBearOptions, false, 2)
 
             // 顺便更新
-            this.otherInfoDatas[0].bullBearScore = this.getBullBearData()         
+            this.otherInfoDatas[0].bullBearScore = this.bullBearData.last_score_detail.avg_score
+            this.otherInfoDatas[0].bullBearScoreDetail = this.bullBearData.last_score_detail
         },
 
         getLastLongShortRatio(){
@@ -808,16 +823,16 @@ export default {
             }
         },
 
-        getBullBearData(){
-            // 从数据中分析出最近的值
-            var dates = Object.keys(this.bullBearData).sort()
-            if (dates.length > 0){
-                var last_dt = dates[dates.length - 1]
-                return this.bullBearData[last_dt]
-            } else {
-                return null
-            }
-        },
+        // getBullBearData(){
+        //     // 从数据中分析出最近的值
+        //     var dates = Object.keys(this.bullBearData.history_scores).sort()
+        //     if (dates.length > 0){
+        //         var last_dt = dates[dates.length - 1]
+        //         return this.bullBearData.history_scores[last_dt]
+        //     } else {
+        //         return null
+        //     }
+        // },
 
         // 获取最近N小时的多空数据
         fetchLongShortRatios(){

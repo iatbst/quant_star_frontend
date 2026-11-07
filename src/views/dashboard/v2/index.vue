@@ -891,7 +891,7 @@ export default {
             slowRefreshInterval: 300000,
             slowIntervalId: null,
 
-            bullBearData: null,
+            bullBearData: {},
             bullBearDataAvailable: false,
 
             parentPfoWalletRefresh: null,
@@ -1265,7 +1265,8 @@ export default {
             var reportName = 'bitget_backtest'
             this.bullBearDataAvailable = false
             getBacktestReportByName(config.masterHost, reportName).then(response => {
-                this.bullBearData = response.results[0].data.bull_bear
+                this.bullBearData['history_scores'] = response.results[0].data.bull_bear
+                this.bullBearData['last_score_detail'] = response.results[0].data.bull_bear_detail
                 this.bullBearDataAvailable = true
             })
         },
