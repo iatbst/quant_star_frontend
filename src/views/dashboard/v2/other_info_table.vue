@@ -175,7 +175,8 @@
                     <i class="el-icon-data-line" v-on:click="showFearGreedIndexDialog()" style="cursor: pointer"></i> 
                 </template>
             </el-table-column>
-
+            
+            <!--
             <el-table-column label="最新多头占比" min-width="10%" align="center">
                 <template slot-scope="scope">
                         <span v-if="scope.row.longShortRatio == null">
@@ -197,6 +198,7 @@
                         <i class="el-icon-data-line" v-on:click="showLongShortRatioDialog()" style="cursor: pointer"></i>
                 </template>
             </el-table-column>
+            -->
 
             <el-table-column label="最新资金费率" min-width="10%" align="center">
                 <template slot-scope="scope">
@@ -217,6 +219,22 @@
                         </el-tooltip>
                     </span>
                     <i class="el-icon-data-line" v-on:click="showSwapFundingRateDialog()" style="cursor: pointer"></i>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="最新QQQ趋势" min-width="10%" align="center">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.bullBearScoreDetail.finance_sma == null">
+                        N/A
+                    </span>
+                    <span style="" v-else>
+                            <span style="color: green" v-if="scope.row.bullBearScoreDetail.finance_sma > 0">
+                                牛
+                            </span>   
+                            <span style="color: red" v-else>
+                                熊
+                            </span> 
+                    </span>
                 </template>
             </el-table-column>
 
