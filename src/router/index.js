@@ -120,9 +120,9 @@ export const constantRoutes = [
       },
       {
         path: '/performances/tb',
-        name: 'TB',
+        name: 'TC',
         component: () => import('@/views/performance/v2/tb_perf'),
-        meta: { title: 'TB', icon: 'el-icon-s-marketing' }
+        meta: { title: 'TC', icon: 'el-icon-s-marketing' }
       },
       {
         path: '/performances/in',

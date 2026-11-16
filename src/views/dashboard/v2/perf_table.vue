@@ -161,12 +161,12 @@ export default {
             var dadData = this.parentPfoTradeStats.dc_atr_divergence
             var tbTradfiData = this.parentPfoTradeStats.trendline_break_tradfi
             var tbList = [
-                [this.styTb + '_1', 'TB_1'],
-                [this.styTb + '_2', 'TB_2'],
-                [this.styTb + '_3', 'TB_3'],
-                [this.styTb + '_4', 'TB_4'],
-                [this.styTb + '_5', 'TB_5'],
-                [this.styTb + '_6', 'TB_6'],
+                [this.styTb + '_1', 'TC_1'],
+                [this.styTb + '_2', 'TC_2'],
+                [this.styTb + '_3', 'TC_3'],
+                [this.styTb + '_4', 'TC_4'],
+                [this.styTb + '_5', 'TC_5'],
+                [this.styTb + '_6', 'TC_6'],
             ]
             var pbList = [
                 [this.styPb + '_1', 'PB_1'],
@@ -187,8 +187,8 @@ export default {
                 ['all', 'AD']
             ]   // 只展示合并stats
             var tbTradfiList = [
-                ['stock', 'TB个股'],
-                ['future', 'TB期货']
+                ['stock', 'TS'],
+                ['future', 'TF']
             ]   // 按照类型展示
             var dataList = [
                 [tbList, tbData],

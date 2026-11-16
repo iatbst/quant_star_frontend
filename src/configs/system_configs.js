@@ -220,9 +220,9 @@ const mergeStrategyIDs = [
 ]
 
 const strategyAlias = {
-    'trendline-break': 'TB',
-    'trendline_break': 'TB',
-    'tb': 'TB',
+    'trendline-break': 'TC',
+    'trendline_break': 'TC',
+    'tb': 'TC',
 
     'plunge-back': 'PB',
     'plunge_back': 'PB',
@@ -244,8 +244,8 @@ const strategyAlias = {
     'dc_atr_divergence': 'AD',
     'dad': 'AD',
 
-    'trendline_break_tradfi_stock': 'TB个股',
-    'trendline_break_tradfi_future': 'TB期货',
+    'trendline_break_tradfi_stock': 'TS',
+    'trendline_break_tradfi_future': 'TF',
 }
 
 

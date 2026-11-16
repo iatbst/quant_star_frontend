@@ -842,7 +842,7 @@ export default {
             // 策略的Pnl Line(今年)
             pnlLines: {
                 'trendline_break': {
-                    'name': 'TB',
+                    'name': 'TC',
                     'data': null,
                     'available': false
                 },
@@ -872,12 +872,12 @@ export default {
                     'available': false
                 },
                 'trendline_break_tradfi_stock': {
-                    'name': 'TB个股',
+                    'name': 'TS',
                     'data': null,
                     'available': false
                 },
                 'trendline_break_tradfi_future': {
-                    'name': 'TB期货',
+                    'name': 'TF',
                     'data': null,
                     'available': false
                 },                                                                                 

@@ -33,7 +33,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="TB多头" min-width="10%" align="center">
+            <el-table-column label="TC多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
                         {{toThousands(scope.row.tbLongPosition)}}
@@ -41,7 +41,7 @@
                 </template>       
             </el-table-column>
 
-            <el-table-column label="TB空头" min-width="10%" align="center">
+            <el-table-column label="TC空头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: red">
                         {{toThousands(scope.row.tbShortPosition)}}
@@ -99,7 +99,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="TB个股多头" min-width="10%" align="center">
+            <el-table-column label="TS多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
                         {{toThousands(scope.row.tbStockLongPosition)}}
@@ -107,7 +107,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="TB个股空头" min-width="10%" align="center">
+            <el-table-column label="TS空头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: red">
                         {{toThousands(scope.row.tbStockShortPosition)}}
@@ -115,7 +115,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="TB期货多头" min-width="10%" align="center">
+            <el-table-column label="TF多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
                         {{toThousands(scope.row.tbFutureLongPosition)}}
@@ -123,7 +123,7 @@
                 </template>       
             </el-table-column>
 
-            <el-table-column label="TB期货空头" min-width="10%" align="center">
+            <el-table-column label="TF空头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: red">
                         {{toThousands(scope.row.tbFutureShortPosition)}}

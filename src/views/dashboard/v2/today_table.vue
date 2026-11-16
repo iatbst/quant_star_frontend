@@ -278,19 +278,19 @@ export default {
             ],
             todayObj: {
                 'trendline_break': {
-                    name: 'TB',
+                    name: 'TC',
                     initPosition: null,
                     position: null,
                     fundingFees: null
                 },
                 'trendline_break_tradfi_stock': {
-                    name: 'TB个股',
+                    name: 'TS',
                     initPosition: null,
                     position: null,
                     fundingFees: null
                 },  
                 'trendline_break_tradfi_future': {
-                    name: 'TB期货',
+                    name: 'TF',
                     initPosition: null,
                     position: null,
                     fundingFees: null

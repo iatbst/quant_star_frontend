@@ -150,13 +150,13 @@ export default {
 
             // 第一行
             var row1 = {}
-            row1.name1 = '单TB'
+            row1.name1 = '单TC'
             row1.dd1 = this.mddDatas.low_tb_performance.dd
             row1.dd_days1 = this.mddDatas.low_tb_performance.dd_days
             row1.mdd11 = this.mddDatas.low_tb_performance.mdd_list[0]   
             row1.mdd21 = this.mddDatas.low_tb_performance.mdd_list[1]   
             row1.mdd31 = this.mddDatas.low_tb_performance.mdd_list[2]  
-            row1.name2 = 'TB'
+            row1.name2 = 'TC'
             row1.dd2 = this.mddDatas.tb_performance.dd
             row1.dd_days2 = this.mddDatas.tb_performance.dd_days
             row1.mdd12 = this.mddDatas.tb_performance.mdd_list[0]   

@@ -102,7 +102,7 @@ export default {
                 },
 
                 title: {
-                    text: 'TB总仓位',
+                    text: 'TC总仓位',
                 },
                 xAxis: {
                     categories: []
@@ -294,7 +294,7 @@ export default {
             // }
 
             addTwoColumns([{'x': '总仓位', 'y': Math.round(allLivePositions/1000), 'y2': Math.round(allLivePositions)}], [{'x': '总仓位', 'y': Math.round(allBtPositions/1000), 'y2': Math.round(allBtPositions)}], this.allPositionOptions)
-            addTwoColumns([{'x': 'TB总仓位', 'y': Math.round(tbLivePositions/1000), 'y2': Math.round(tbLivePositions)}], [{'x': 'TB总仓位', 'y': Math.round(tbBtPositions/1000), 'y2': Math.round(tbBtPositions)}], this.tbPositionOptions)
+            addTwoColumns([{'x': 'TC总仓位', 'y': Math.round(tbLivePositions/1000), 'y2': Math.round(tbLivePositions)}], [{'x': 'TC总仓位', 'y': Math.round(tbBtPositions/1000), 'y2': Math.round(tbBtPositions)}], this.tbPositionOptions)
             addTwoColumns(livePositions, btPositions, this.positionOptions)
         },
     }
