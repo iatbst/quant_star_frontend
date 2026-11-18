@@ -432,7 +432,8 @@ export default {
                 return stragegyId.split('_').slice(0,-1).join('_')
             }
         },
-
+        
+        // 通过strategy_id分析strategyId
         getStrategyId(order){
             var stragegyId = order.strategy_id
             if(order.type == 'temp'){
@@ -489,7 +490,8 @@ export default {
             var order_type = order.order_type
             if (this.orderFilter.exchange && this.orderFilter.exchange != 'any' && exchange != this.orderFilter.exchange){
                 return false
-            } else if (this.orderFilter.strategy && this.orderFilter.strategy != 'any' && strategy != this.orderFilter.strategy){
+            } else if (this.orderFilter.strategy && this.orderFilter.strategy != 'any' && strategy != this.orderFilter.strategy.replaceAll('-', '_')){
+                //debugger
                 return false
             } else if (this.orderFilter.symbol && !symbol.includes(this.orderFilter.symbol.toUpperCase())){
                 return false
