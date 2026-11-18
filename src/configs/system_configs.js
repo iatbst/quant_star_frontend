@@ -183,7 +183,7 @@ const subacctPfoAlias = [
 // 策略名称和缩写的映射
 const strategies = [
     'trendline-break',
-    'plunge-back',
+    // 'plunge-back',
     'rsi-mini',
     'id-nr',
     'pivot-reversal-mini',
@@ -199,10 +199,10 @@ const activeStrategyIDs = [
     'trendline_break_4',
     'trendline_break_5',
     'trendline_break_6',
-    'plunge_back_1',
-    'plunge_back_2',
-    'plunge_back_3',
-    'plunge_back_4',
+    // 'plunge_back_1',
+    // 'plunge_back_2',
+    // 'plunge_back_3',
+    // 'plunge_back_4',
     'rsi_mini',
     'id_nr',
     'pivot_reversal_mini',

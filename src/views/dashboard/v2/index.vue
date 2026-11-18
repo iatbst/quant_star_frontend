@@ -433,7 +433,6 @@
             v-if="
             tbBinancePositionsAvailable 
             && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
-            pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBinancePositionsAvailable &&
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBinancePositionsAvailable &&
             inOkexPositionsAvailable && inBybitPositionsAvailable && inBinancePositionsAvailable &&
             prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable &&
@@ -475,7 +474,6 @@
             v-if="
             tbBinancePositionsAvailable 
             && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
-            pbOkexPositionsAvailable && pbBybitPositionsAvailable && pbBinancePositionsAvailable &&
             rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBinancePositionsAvailable &&
             inOkexPositionsAvailable && inBybitPositionsAvailable && inBinancePositionsAvailable &&
             prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable &&
@@ -716,15 +714,15 @@ export default {
             tbBitgetositions: [],
             tbBitgetPositionsAvailable: false,
             tbBitgetPositionsLoading: false,
-            pbOkexPositions: [],
-            pbOkexPositionsAvailable: false,
-            pbOkexPositionsLoading: false,
-            pbBybitPositions: [],
-            pbBybitPositionsAvailable: false,
-            pbBybitPositionsLoading: false,
-            pbBinancePositions: [],
-            pbBinancePositionsAvailable: false,
-            pbBinancePositionsLoading: false,
+            // pbOkexPositions: [],
+            // pbOkexPositionsAvailable: false,
+            // pbOkexPositionsLoading: false,
+            // pbBybitPositions: [],
+            // pbBybitPositionsAvailable: false,
+            // pbBybitPositionsLoading: false,
+            // pbBinancePositions: [],
+            // pbBinancePositionsAvailable: false,
+            // pbBinancePositionsLoading: false,
             rsiOkexPositions: [],
             rsiOkexPositionsAvailable: false,
             rsiOkexPositionsLoading: false,

@@ -200,7 +200,7 @@ export default {
 
     methods: {
         // 处理父组件建传入data: positions
-        parseData() {    
+        parseData() { 
             var styPositions = {}     
             var livePositions = []
             var btPositions = []
