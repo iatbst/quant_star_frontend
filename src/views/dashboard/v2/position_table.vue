@@ -91,14 +91,6 @@
         :data="positionDatas"
         :header-cell-style="{ background: '#f2f2f2' }"
         style="width: 100%">
-            <el-table-column label="PB多头" min-width="10%" align="center">
-                <template slot-scope="scope">
-                    <span style="color: green">
-                        {{toThousands(scope.row.pbPosition)}}
-                    </span>          
-                </template>
-            </el-table-column>
-
             <el-table-column label="TS多头" min-width="10%" align="center">
                 <template slot-scope="scope">
                     <span style="color: green">
@@ -143,7 +135,10 @@
 
             </el-table-column> 
 
+            <el-table-column label="" min-width="10%" align="center">
 
+            </el-table-column>   
+            
             <el-table-column label="" min-width="10%" align="center">
 
             </el-table-column>   
@@ -250,7 +245,6 @@ export default {
 
                 tbLongPosition: null,
                 tbShortPosition: null,
-                pbPosition: null,
                 rsiPosition: null,
                 inPosition: null,
                 prmPosition: null,
@@ -287,7 +281,6 @@ export default {
             var dadData = this.parentPfoPositions.dc_atr_divergence
             this.positionDatas[0].tbLongPosition = Math.round(tbData.long)
             this.positionDatas[0].tbShortPosition = Math.round(tbData.short)
-            this.positionDatas[0].pbPosition = Math.round(pbData.long)
             this.positionDatas[0].rsiPosition = Math.round(rsiData.long)
             this.positionDatas[0].inPosition = Math.round(inData.long + inData.short)
             this.positionDatas[0].prmPosition = Math.round(prmData.short)

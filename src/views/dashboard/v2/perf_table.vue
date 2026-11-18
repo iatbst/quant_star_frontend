@@ -134,7 +134,6 @@ export default {
             // 策略表现
             perfData: [],
             styTb: 'trendline_break',
-            styPb: 'plunge_back',
             styRsi: 'rsi_mini',
             styIn: 'id_nr',
             styPrm: 'pivot_reversal_mini',
@@ -154,7 +153,6 @@ export default {
             
              // 策略表现(trade_stats)
             var tbData = this.parentPfoTradeStats.trendline_break
-            var pbData = this.parentPfoTradeStats.plunge_back
             var rsiData = this.parentPfoTradeStats.rsi_mini
             var inData = this.parentPfoTradeStats.id_nr
             var prmData = this.parentPfoTradeStats.pivot_reversal_mini
@@ -167,12 +165,6 @@ export default {
                 [this.styTb + '_4', 'TC_4'],
                 [this.styTb + '_5', 'TC_5'],
                 [this.styTb + '_6', 'TC_6'],
-            ]
-            var pbList = [
-                [this.styPb + '_1', 'PB_1'],
-                [this.styPb + '_2', 'PB_2'],
-                [this.styPb + '_3', 'PB_3'],
-                [this.styPb + '_4', 'PB_4']
             ]
             var rsiList = [
                 ['all', 'RS']
@@ -192,7 +184,6 @@ export default {
             ]   // 按照类型展示
             var dataList = [
                 [tbList, tbData],
-                [pbList, pbData],
                 [rsiList, rsiData],
                 [inList, inData],
                 [prmList, prmData],

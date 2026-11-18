@@ -263,7 +263,6 @@ export default {
             ],
             keys: [
                 'trendline_break',
-                'plunge_back',
                 'rsi_mini',
                 'id_nr',
                 'pivot_reversal_mini',
@@ -295,12 +294,6 @@ export default {
                     position: null,
                     fundingFees: null
                 },                               
-                'plunge_back': {
-                    name: 'PB',
-                    initPosition: null,
-                    position: null,
-                    fundingFees: null
-                },
                  'rsi_mini': {
                     name: 'RS',
                     initPosition: null,
@@ -403,12 +396,6 @@ export default {
                     this.todayObj[key].shortTimer = null    
                 } else if (key == 'trendline_break_tradfi_stock' || key == 'trendline_break_tradfi_future') {
                     this.todayObj[key].longTimer = null     
-                    this.todayObj[key].shortTimer = null   
-                } else if (key == 'plunge_back') {
-                    this.todayObj[key].shortOpen = null
-                    this.todayObj[key].longFlip = null
-                    this.todayObj[key].shortFlip = null  
-                    this.todayObj[key].shortWinStop = null  
                     this.todayObj[key].shortTimer = null                                 
                 } else if (key == 'rsi_mini') {
                     this.todayObj[key].shortOpen = null

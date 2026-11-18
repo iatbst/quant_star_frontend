@@ -46,17 +46,17 @@ const prmBybitHosts = [
     'http://ec2-13-159-3-197.ap-northeast-1.compute.amazonaws.com:8000/api'
 ]
 
-const pbBinanceHosts = [
-    'http://ec2-52-68-122-128.ap-northeast-1.compute.amazonaws.com:8000/api',
-]
+// const pbBinanceHosts = [
+//     'http://ec2-52-68-122-128.ap-northeast-1.compute.amazonaws.com:8000/api',
+// ]
 
-const pbOkexHosts = [
-    'http://ec2-54-248-198-50.ap-northeast-1.compute.amazonaws.com:8000/api',
-]
+// const pbOkexHosts = [
+//     'http://ec2-54-248-198-50.ap-northeast-1.compute.amazonaws.com:8000/api',
+// ]
 
-const pbBybitHosts = [
-    'http://ec2-16-76-23-121.ap-northeast-1.compute.amazonaws.com:8000/api',
-]
+// const pbBybitHosts = [
+//     'http://ec2-16-76-23-121.ap-northeast-1.compute.amazonaws.com:8000/api',
+// ]
 
 const dadBinanceHosts = [
     'http://ec2-52-68-195-72.ap-northeast-1.compute.amazonaws.com:8000/api',
@@ -101,7 +101,7 @@ var production_hosts = [
     'http://ec2-18-182-239-55.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_in_1
     'http://ec2-3-115-251-247.ap-northeast-1.compute.amazonaws.com:8000/api',  // binance_prm_1
     'http://ec2-35-75-77-201.ap-northeast-1.compute.amazonaws.com:8000/api',   // binance_rsi_1
-    'http://ec2-52-68-122-128.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_1
+    //'http://ec2-52-68-122-128.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_pb_1
     'http://ec2-52-68-195-72.ap-northeast-1.compute.amazonaws.com:8000/api',    // binance_dad_1
 
     // 东京: Okex
@@ -110,7 +110,7 @@ var production_hosts = [
     'http://ec2-18-176-89-28.ap-northeast-1.compute.amazonaws.com:8000/api',        // okex_in_1
     'http://ec2-3-113-65-199.ap-northeast-1.compute.amazonaws.com:8000/api',         // okex_prm_1
     'http://ec2-3-114-103-191.ap-northeast-1.compute.amazonaws.com:8000/api',       // okex_rsi_1
-    'http://ec2-54-248-198-50.ap-northeast-1.compute.amazonaws.com:8000/api',        // okex_pb_1
+    //'http://ec2-54-248-198-50.ap-northeast-1.compute.amazonaws.com:8000/api',        // okex_pb_1
     'http://ec2-54-250-135-39.ap-northeast-1.compute.amazonaws.com:8000/api',        // okex_dad_1
 
     // 东京: Bybit
@@ -119,7 +119,7 @@ var production_hosts = [
     'http://ec2-13-158-164-142.ap-northeast-1.compute.amazonaws.com:8000/api',   // bybit_in_1
     'http://ec2-13-159-3-197.ap-northeast-1.compute.amazonaws.com:8000/api',   // bybit_prm_1
     'http://ec2-13-193-156-100.ap-northeast-1.compute.amazonaws.com:8000/api',   // bybit_rsi_1
-    'http://ec2-16-76-23-121.ap-northeast-1.compute.amazonaws.com:8000/api',  // bybit_pb_1
+    //'http://ec2-16-76-23-121.ap-northeast-1.compute.amazonaws.com:8000/api',  // bybit_pb_1
     'http://ec2-18-180-133-192.ap-northeast-1.compute.amazonaws.com:8000/api',    // bybit_dad_1
 
     // 东京: Bitget
@@ -187,7 +187,9 @@ const strategies = [
     'rsi-mini',
     'id-nr',
     'pivot-reversal-mini',
-    'dc-atr-divergence'
+    'dc-atr-divergence',
+    'trendline-break-tradfi-stock',
+    'trendline-break-tradfi-future'
 ]
 
 const activeStrategyIDs = [
@@ -245,7 +247,9 @@ const strategyAlias = {
     'dad': 'AD',
 
     'trendline_break_tradfi_stock': 'TS',
+    'trendline-break-tradfi-stock': 'TS',
     'trendline_break_tradfi_future': 'TF',
+    'trendline-break-tradfi-future': 'TF',
 }
 
 
@@ -400,9 +404,9 @@ export default {
     tbTradfiOkexHosts,
     tbTradfiBybitHosts,
     tbTradfiBitgetHosts,
-    pbOkexHosts,
-    pbBybitHosts,
-    pbBinanceHosts,
+    // pbOkexHosts,
+    // pbBybitHosts,
+    // pbBinanceHosts,
     rsiOkexHosts,
     rsiBybitHosts,
     rsiBinanceHosts,

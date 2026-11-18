@@ -123,14 +123,13 @@
 
                     <el-table-column align="center" label="策略" min-width="5%">
                         <template slot-scope="scope">
-                            {{ strategyAlias[scope.row.worker.name.split('_')[3]] }}
+                            {{ strategyAlias[getStrategy(scope.row)] }}
                         </template>
                     </el-table-column>
 
                     <el-table-column align="center" label="策略ID" min-width="5%">
                         <template slot-scope="scope">
-                            {{ scope.row.order_type == 'temp' ? 'N/A' : 
-                            (scope.row.worker.name.split('_').length == 5 ? scope.row.worker.name.slice(-1,) :  scope.row.worker.name.split('_').slice(-2,).join('_') ) }}
+                            {{ getStrategyId(scope.row) }}
                         </template>
                     </el-table-column>
 
@@ -418,6 +417,36 @@ export default {
             return cKey
         },
 
+        // 通过strategy_id分析strategy
+        getStrategy(order){
+            var stragegyId = order.strategy_id
+            if(stragegyId.includes('rsi_mini')){
+                // rsi_mini策略
+                return stragegyId.split('_').slice(0,-2).join('_')
+            } else if(stragegyId.includes('trendline_break_tradfi')){
+                // trendline_break_tradfi策略(区分stock和future)
+                var crypto_product_type = order.worker.product.crypto_product_type
+                return stragegyId.split('_').slice(0,-1).join('_') + '_' + crypto_product_type
+            } else {
+                // 其他
+                return stragegyId.split('_').slice(0,-1).join('_')
+            }
+        },
+
+        getStrategyId(order){
+            var stragegyId = order.strategy_id
+            if(order.type == 'temp'){
+                // temp订单
+                return 'N/A'
+            } else if(stragegyId.includes('rsi_mini')){
+                // rsi_mini策略(展示bar_level)
+                return stragegyId.split('_').slice(-2,).join('_')
+            } else {
+                // 其他
+                return stragegyId.slice(-1,)
+            }
+        },
+
         // 搜索指定时间范围内的订单
         searchOrders(startDt, endDt){
             this.orders = []
@@ -455,7 +484,7 @@ export default {
 
             var exchange = order.worker.name.split('_')[0]
             var symbol = order.symbol
-            var strategy = order.worker.strategy_name
+            var strategy = this.getStrategy(order)
             var strategy_id = order.worker.name.slice(-1,)
             var order_type = order.order_type
             if (this.orderFilter.exchange && this.orderFilter.exchange != 'any' && exchange != this.orderFilter.exchange){

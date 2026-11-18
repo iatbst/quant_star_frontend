@@ -171,10 +171,6 @@
                     data: pnlLines.trendline_break.data
                 },
                 {
-                    title: pnlLines.plunge_back.name,
-                    data: pnlLines.plunge_back.data
-                },
-                {
                     title: pnlLines.rsi_mini.name,
                     data: pnlLines.rsi_mini.data
                 },
@@ -204,7 +200,6 @@
             v-bind:range_set="['1M', '6M', 'thisYear']" 
             v-if="
             pnlLines.trendline_break.available && 
-            pnlLines.plunge_back.available &&
             pnlLines.rsi_mini.available && 
             pnlLines.id_nr.available &&
             pnlLines.pivot_reversal_mini.available &&
@@ -637,9 +632,9 @@ export default {
             tbOkexHosts: config.tbOkexHosts,
             tbBybitHosts: config.tbBybitHosts,
             tbBitgetHosts: config.tbBitgetHosts,
-            pbOkexHosts: config.pbOkexHosts,
-            pbBybitHosts: config.pbBybitHosts,
-            pbBinanceHosts: config.pbBinanceHosts,
+            // pbOkexHosts: config.pbOkexHosts,
+            // pbBybitHosts: config.pbBybitHosts,
+            // pbBinanceHosts: config.pbBinanceHosts,
             rsiOkexHosts: config.rsiOkexHosts,
             rsiBybitHosts: config.rsiBybitHosts,
             rsiBinanceHosts: config.rsiBinanceHosts,
@@ -843,11 +838,6 @@ export default {
             pnlLines: {
                 'trendline_break': {
                     'name': 'TC',
-                    'data': null,
-                    'available': false
-                },
-                'plunge_back': {
-                    'name': 'PB',
                     'data': null,
                     'available': false
                 },
@@ -1129,29 +1119,29 @@ export default {
             }
         },
 
-        // 获取今日抄底orders
-        fetchTodayPbOrderCount(){
-            this.todayPbOrderCount = 0
-            var ep = Math.round(Date.now()/1000)
-            ep += 8*3600
-            var startDt = new Date((ep - ep%86400 - 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')    // UTC 
-            var count = 0
-            var pbHosts = this.pbOkexHosts.concat(this.pbBybitHosts).concat(this.pbBinanceHosts)
-            for(var i = 0; i < pbHosts.length; i++){
-                // debugger
-                var host = pbHosts[i]
-                var filters = 'no_parent_order=true&exec_size__gt=0&exec_ts__gte=' + startDt
-                getOrders(host, null, filters).then(response => {
-                        count += 1
-                        this.todayPbOrderCount += response.results.length
-                        if (count === pbHosts.length){
-                            // 排序
-                            this.todayPbOrderCountAvailable = true
-                        }
-                    }
-                )
-            }
-        },
+        // 获取今日抄底orders(已经下线!)
+        // fetchTodayPbOrderCount(){
+        //     this.todayPbOrderCount = 0
+        //     var ep = Math.round(Date.now()/1000)
+        //     ep += 8*3600
+        //     var startDt = new Date((ep - ep%86400 - 3600*8)*1000).toISOString().slice(0, 19).replace('T', ' ')    // UTC 
+        //     var count = 0
+        //     var pbHosts = this.pbOkexHosts.concat(this.pbBybitHosts).concat(this.pbBinanceHosts)
+        //     for(var i = 0; i < pbHosts.length; i++){
+        //         // debugger
+        //         var host = pbHosts[i]
+        //         var filters = 'no_parent_order=true&exec_size__gt=0&exec_ts__gte=' + startDt
+        //         getOrders(host, null, filters).then(response => {
+        //                 count += 1
+        //                 this.todayPbOrderCount += response.results.length
+        //                 if (count === pbHosts.length){
+        //                     // 排序
+        //                     this.todayPbOrderCountAvailable = true
+        //                 }
+        //             }
+        //         )
+        //     }
+        // },
         
         // 从backtest reports中提取mdd数据
         fetchMddFromBacktestReports(){
@@ -1372,8 +1362,8 @@ export default {
                     // }
 
                     // plunge_back
-                    this.pnlLines.plunge_back.data = parentPfoData.pnl_line.plunge_back.year_now
-                    this.pnlLines.plunge_back.available = true  
+                    // this.pnlLines.plunge_back.data = parentPfoData.pnl_line.plunge_back.year_now
+                    // this.pnlLines.plunge_back.available = true  
 
                     // rsi_mini
                     this.pnlLines.rsi_mini.data = parentPfoData.pnl_line.rsi_mini.year_now
@@ -1407,7 +1397,6 @@ export default {
                     // 添加上一年最后一日数据为起点数据(pnl = 0), 否则pnl的起点不是0
                     var firstDate = moment().year() - 1 + '-' + '12-31'
                     this.pnlLines.trendline_break.data[firstDate] = 0
-                    this.pnlLines.plunge_back.data[firstDate] = 0
                     this.pnlLines.rsi_mini.data[firstDate] = 0
                     this.pnlLines.id_nr.data[firstDate] = 0
                     this.pnlLines.pivot_reversal_mini.data[firstDate] = 0
@@ -1595,80 +1584,80 @@ export default {
                 )
             }
 
-            // pb okex
-            this.pbOkexPositions = []
-            var pbOkexCount = 0
-            this.pbOkexPositionsLoading = true
-            this.pbOkexPositionsAvailable = false
-            for(var i = 0; i < this.pbOkexHosts.length; i++){
-                getPositions(this.pbOkexHosts[i], 'normal').then(response => {
-                        pbOkexCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'plunge_back'
-                        }
-                        this.pbOkexPositions = this.pbOkexPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (pbOkexCount === this.pbOkexHosts.length ){
-                            // 排序
-                            this.pbOkexPositionsAvailable = true
-                            this.pbOkexPositionsLoading = false
-                        }
-                    }
-                )
-            }
+            // // pb okex
+            // this.pbOkexPositions = []
+            // var pbOkexCount = 0
+            // this.pbOkexPositionsLoading = true
+            // this.pbOkexPositionsAvailable = false
+            // for(var i = 0; i < this.pbOkexHosts.length; i++){
+            //     getPositions(this.pbOkexHosts[i], 'normal').then(response => {
+            //             pbOkexCount += 1
+            //             var positions = response.results
+            //             // 每个position添加其他信息
+            //             for (let j = 0; j < positions.length; j++){
+            //                 positions[j]['host'] = response.config.baseURL
+            //                 positions[j]['sty'] = 'plunge_back'
+            //             }
+            //             this.pbOkexPositions = this.pbOkexPositions.concat(positions)
+            //             this.positions = this.positions.concat(positions)
+            //             if (pbOkexCount === this.pbOkexHosts.length ){
+            //                 // 排序
+            //                 this.pbOkexPositionsAvailable = true
+            //                 this.pbOkexPositionsLoading = false
+            //             }
+            //         }
+            //     )
+            // }
 
-            // pb bybit
-            this.pbBybitPositions = []
-            var pbBybitCount = 0
-            this.pbBybitPositionsLoading = true
-            this.pbBybitPositionsAvailable = false
-            for(var i = 0; i < this.pbBybitHosts.length; i++){
-                getPositions(this.pbBybitHosts[i], 'normal').then(response => {
-                        pbBybitCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'plunge_back'
-                        }
-                        this.pbBybitPositions = this.pbBybitPositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (pbBybitCount === this.pbBybitHosts.length ){
-                            // 排序
-                            this.pbBybitPositionsAvailable = true
-                            this.pbBybitPositionsLoading = false
-                        }
-                    }
-                )
-            }
+            // // pb bybit
+            // this.pbBybitPositions = []
+            // var pbBybitCount = 0
+            // this.pbBybitPositionsLoading = true
+            // this.pbBybitPositionsAvailable = false
+            // for(var i = 0; i < this.pbBybitHosts.length; i++){
+            //     getPositions(this.pbBybitHosts[i], 'normal').then(response => {
+            //             pbBybitCount += 1
+            //             var positions = response.results
+            //             // 每个position添加其他信息
+            //             for (let j = 0; j < positions.length; j++){
+            //                 positions[j]['host'] = response.config.baseURL
+            //                 positions[j]['sty'] = 'plunge_back'
+            //             }
+            //             this.pbBybitPositions = this.pbBybitPositions.concat(positions)
+            //             this.positions = this.positions.concat(positions)
+            //             if (pbBybitCount === this.pbBybitHosts.length ){
+            //                 // 排序
+            //                 this.pbBybitPositionsAvailable = true
+            //                 this.pbBybitPositionsLoading = false
+            //             }
+            //         }
+            //     )
+            // }
 
-            // pb Binance
-            this.pbBinancePositions = []
-            var pbBinanceCount = 0
-            this.pbBinancePositionsLoading = true
-            this.pbBinancePositionsAvailable = false
-            for(var i = 0; i < this.pbBinanceHosts.length; i++){
-                getPositions(this.pbBinanceHosts[i], 'normal').then(response => {
-                        pbBinanceCount += 1
-                        var positions = response.results
-                        // 每个position添加其他信息
-                        for (let j = 0; j < positions.length; j++){
-                            positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'plunge_back'
-                        }
-                        this.pbBinancePositions = this.pbBinancePositions.concat(positions)
-                        this.positions = this.positions.concat(positions)
-                        if (pbBinanceCount === this.pbBinanceHosts.length ){
-                            // 排序
-                            this.pbBinancePositionsAvailable = true
-                            this.pbBinancePositionsLoading = false
-                        }
-                    }
-                )
-            }
+            // // pb Binance
+            // this.pbBinancePositions = []
+            // var pbBinanceCount = 0
+            // this.pbBinancePositionsLoading = true
+            // this.pbBinancePositionsAvailable = false
+            // for(var i = 0; i < this.pbBinanceHosts.length; i++){
+            //     getPositions(this.pbBinanceHosts[i], 'normal').then(response => {
+            //             pbBinanceCount += 1
+            //             var positions = response.results
+            //             // 每个position添加其他信息
+            //             for (let j = 0; j < positions.length; j++){
+            //                 positions[j]['host'] = response.config.baseURL
+            //                 positions[j]['sty'] = 'plunge_back'
+            //             }
+            //             this.pbBinancePositions = this.pbBinancePositions.concat(positions)
+            //             this.positions = this.positions.concat(positions)
+            //             if (pbBinanceCount === this.pbBinanceHosts.length ){
+            //                 // 排序
+            //                 this.pbBinancePositionsAvailable = true
+            //                 this.pbBinancePositionsLoading = false
+            //             }
+            //         }
+            //     )
+            // }
 
             // rsi okex
             this.rsiOkexPositions = []
