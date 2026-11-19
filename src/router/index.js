@@ -143,12 +143,6 @@ export const constantRoutes = [
         meta: { title: 'RSI', icon: 'el-icon-s-marketing' }
       },
       {
-        path: '/performances/pb',
-        name: 'PB',
-        component: () => import('@/views/performance/v2/pb_perf'),
-        meta: { title: 'PB', icon: 'el-icon-s-marketing' }
-      },
-      {
         path: '/performances/offline',
         name: '下线策略',
         component: () => import('@/views/performance/v2/offline_perf'),

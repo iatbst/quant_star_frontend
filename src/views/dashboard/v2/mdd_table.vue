@@ -219,13 +219,14 @@ export default {
             row5.dd_days1 = this.mddDatas.super_high_3s_performance.dd_days
             row5.mdd11 = this.mddDatas.super_high_3s_performance.mdd_list[0]   
             row5.mdd21 = this.mddDatas.super_high_3s_performance.mdd_list[1]   
-            row5.mdd31 = this.mddDatas.super_high_3s_performance.mdd_list[2]  
-            row5.name2 = 'PB'
-            row5.dd2 = this.mddDatas.pb_performance.dd
-            row5.dd_days2 = this.mddDatas.pb_performance.dd_days
-            row5.mdd12 = this.mddDatas.pb_performance.mdd_list[0]   
-            row5.mdd22 = this.mddDatas.pb_performance.mdd_list[1]   
-            row5.mdd32 = this.mddDatas.pb_performance.mdd_list[2]  
+            row5.mdd31 = this.mddDatas.super_high_3s_performance.mdd_list[2]
+            // 删除了PB策略  
+            row5.name2 = null
+            row5.dd2 = 0
+            row5.dd_days2 = 0
+            row5.mdd12 = 0
+            row5.mdd22 = 0
+            row5.mdd32 = 0
             this.mddRows.push(row5) 
         },
 
