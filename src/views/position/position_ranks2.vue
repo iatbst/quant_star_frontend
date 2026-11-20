@@ -15,6 +15,8 @@ import {addSingleColumn} from '@/utils/chart'
 import {quoteToUSD} from '@/utils/general'
 import {deepCopy, getCoinUnifiedName} from '@/utils/general'
 import { getSignalPointsByWorker } from '@/api/signal_point'
+import { Number } from 'core-js'
+
 
 export default {
     components: {
@@ -25,6 +27,14 @@ export default {
         positions: {
             type:Array,
             default:[]
+        },
+        title: {
+            type:String,
+            default:'币种仓位排名'
+        },
+        tops: {
+            type:Number,
+            default: 10
         }
     },
 
@@ -45,7 +55,7 @@ export default {
                 },
 
                 title: {
-                    text: '币种仓位排名',
+                    text: this.title,
                 },
                 xAxis: {
                     categories: []
@@ -89,9 +99,9 @@ export default {
 
     methods: {
         // 处理父组件建传入data: positions
-        parseData() {    
+        parseData() { 
             var coinPositions = {}   
-            var tops = 10     
+            var tops = this.tops   
             var columnDatas = []
             for(const data of this.positions){
                 var workerName = data.worker.name

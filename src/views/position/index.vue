@@ -1,5 +1,38 @@
 <template>
   <div class="app-container" style="background-color: lightgray">
+    <!----------------------------------- 币种仓位ranks ---------------------------------------
+        函数:fetchPositions 
+        更新频率: ?
+    --->  
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
+      <el-col :span="24" align="center">
+          <div style="margin-bottom: 20px; width: 95%">
+            <position-ranks2
+            v-bind:positions="positions"
+            v-bind:title="'数字货币仓位排名'"
+            v-if="
+            tbBinancePositionsAvailable && tbOkexPositionsAvailable && tbBybitPositionsAvailable && tbBitgetPositionsAvailable &&
+            rsiOkexPositionsAvailable && rsiBybitPositionsAvailable && rsiBinancePositionsAvailable &&
+            inOkexPositionsAvailable && inBybitPositionsAvailable && inBinancePositionsAvailable &&
+            prmOkexPositionsAvailable && prmBybitPositionsAvailable && prmBinancePositionsAvailable &&
+            dadOkexPositionsAvailable && dadBybitPositionsAvailable && dadBinancePositionsAvailable
+            "
+            ></position-ranks2> 
+
+            <!--- 刷新说明 
+            <div align="left">
+                <el-tooltip placement="top-start" align="left">
+                    <div slot="content">
+                        仓位排名: 每间隔5分钟刷新1次(非整点)
+                    </div>
+                    <span style="color: gray; font-size: 12px"><i class="el-icon-info"></i>说明</span>
+                </el-tooltip>
+            </div>
+            -->
+          </div>
+      </el-col>
+    </el-row>
+
     <!----------------------------------- 仓位 ---------------------------------------
         函数:fetchPositions 
         更新频率: ?
@@ -16,7 +49,8 @@
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="tbBinanceSortWeights"
+            v-bind:sort-coin-weights="binanceSortWeights"
+            v-if="tbBinancePositionsAvailable"
             ></position-map2> 
             
             <position-map2 
@@ -27,7 +61,8 @@
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="tbOkexSortWeights"
+            v-bind:sort-coin-weights="okexSortWeights"
+            v-if="tbOkexPositionsAvailable"
             ></position-map2> 
 
             <position-map2 
@@ -38,7 +73,8 @@
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="tbBybitSortWeights"
+            v-bind:sort-coin-weights="bybitSortWeights"
+            v-if="tbBybitPositionsAvailable"
             ></position-map2>
 
             <position-map2 
@@ -49,7 +85,8 @@
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
-            v-bind:sort-coin-weights="tbBitgetSortWeights"
+            v-bind:sort-coin-weights="bitgetSortWeights"
+            v-if="tbBitgetPositionsAvailable"
             ></position-map2> 
 
             <position-map2 
@@ -59,6 +96,9 @@
             v-bind:strategy="'IN'"
             v-bind:col-count="10"
             v-bind:show-zero="false"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="binanceSortWeights"
+            v-if="tbBinancePositionsAvailable && inBinancePositionsAvailable"
             ></position-map2> 
 
             <position-map2 
@@ -68,6 +108,9 @@
             v-bind:strategy="'IN'"
             v-bind:col-count="10"
             v-bind:show-zero="false"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="okexSortWeights"
+            v-if="tbOkexPositionsAvailable && inOkexPositionsAvailable"
             ></position-map2> 
 
             <position-map2 
@@ -77,6 +120,9 @@
             v-bind:strategy="'IN'"
             v-bind:col-count="10"
             v-bind:show-zero="false"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="bybitSortWeights"
+            v-if="tbBybitPositionsAvailable && inBybitPositionsAvailable"
             ></position-map2> 
 
 
@@ -87,6 +133,9 @@
             v-bind:strategy="'PRM'"
             v-bind:col-count="10"
             v-bind:show-zero="false"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="binanceSortWeights"
+            v-if="tbBinancePositionsAvailable && prmBinancePositionsAvailable"
             ></position-map2> 
 
             <position-map2 
@@ -96,6 +145,9 @@
             v-bind:strategy="'PRM'"
             v-bind:col-count="10"
             v-bind:show-zero="false"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="okexSortWeights"
+            v-if="tbOkexPositionsAvailable && prmOkexPositionsAvailable"
             ></position-map2> 
 
             <position-map2 
@@ -105,6 +157,9 @@
             v-bind:strategy="'PRM'"
             v-bind:col-count="10"
             v-bind:show-zero="false"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="bybitSortWeights"
+            v-if="tbBybitPositionsAvailable && prmBybitPositionsAvailable"
             ></position-map2> 
 
             <position-map2 
@@ -114,6 +169,9 @@
             v-bind:strategy="'RSI'"
             v-bind:col-count="2"
             v-bind:show-zero="false"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="binanceSortWeights"
+            v-if="tbBinancePositionsAvailable && rsiBinancePositionsAvailable"
             ></position-map2> 
 
             <position-map2 
@@ -123,6 +181,9 @@
             v-bind:strategy="'RSI'"
             v-bind:col-count="2"
             v-bind:show-zero="false"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="okexSortWeights"
+            v-if="tbOkexPositionsAvailable && rsiOkexPositionsAvailable"
             ></position-map2> 
 
             <position-map2 
@@ -132,6 +193,9 @@
             v-bind:strategy="'RSI'"
             v-bind:col-count="2"
             v-bind:show-zero="false"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="bybitSortWeights"
+            v-if="tbBybitPositionsAvailable && rsiBybitPositionsAvailable"
             ></position-map2> 
             <div align="left">
                 <el-tooltip placement="top-start" align="left">
@@ -149,6 +213,8 @@
             v-bind:strategy="'AD'"
             v-bind:col-count="10"
             v-bind:show-zero="false"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="binanceSortWeights"
             ></position-map2> 
 
             <position-map2 
@@ -158,6 +224,8 @@
             v-bind:strategy="'AD'"
             v-bind:col-count="10"
             v-bind:show-zero="false"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="okexSortWeights"
             ></position-map2> 
 
             <position-map2 
@@ -167,6 +235,8 @@
             v-bind:strategy="'AD'"
             v-bind:col-count="10"
             v-bind:show-zero="false"
+            v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="bybitSortWeights"
             ></position-map2> 
 
             <!--- 刷新说明 --->
@@ -189,11 +259,12 @@
 import positionMap2 from '@/views/position/position_map2'
 import config from '@/configs/system_configs'
 import { getPositions } from '@/api/position'
-
+import positionRanks2 from '@/views/position/position_ranks2'
 
 export default {
     components: {
-        positionMap2
+        positionMap2,
+        positionRanks2
     },
 
     data() {
@@ -203,9 +274,6 @@ export default {
             tbOkexHosts: config.tbOkexHosts,
             tbBybitHosts: config.tbBybitHosts,
             tbBitgetHosts: config.tbBitgetHosts,
-            // pbOkexHosts: config.pbOkexHosts,
-            // pbBybitHosts: config.pbBybitHosts,
-            // pbBinanceHosts: config.pbBinanceHosts,
             rsiOkexHosts: config.rsiOkexHosts,
             rsiBybitHosts: config.rsiBybitHosts,
             rsiBinanceHosts: config.rsiBinanceHosts,
@@ -218,10 +286,10 @@ export default {
             dadOkexHosts: config.dadOkexHosts,
             dadBybitHosts: config.dadBybitHosts,
             dadBinanceHosts: config.dadBinanceHosts,
-            tbBinanceSortWeights: config.tbBinanceSortWeights,
-            tbOkexSortWeights: config.tbOkexSortWeights,
-            tbBybitSortWeights: config.tbOkexSortWeights,
-            tbBitgetSortWeights: config.tbOkexSortWeights,
+            binanceSortWeights: {},
+            okexSortWeights: {},
+            bybitSortWeights: {},
+            bitgetSortWeights: {},
 
             positions: [],
             positionsAvailable: false,
@@ -302,6 +370,7 @@ export default {
 
     methods: {
         // 从Pfo获取所有positions(normal workers)
+        // 注意: 其他pfo必须等待tb加载后才加载(tb负责coin weights的更新), tb pfo的products必须赋值weight, 至少前10大币种要赋值!
         fetchPositions() {
             this.positionsRefresh = new Date()
 
@@ -319,14 +388,23 @@ export default {
                 getPositions(this.tbBinanceHosts[i], 'normal').then(response => {
                         tbBinanceCount += 1
                         var positions = response.results
+
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal'
+
+                            // tb策略负责coin权重
+                            var coin = positions[j].worker.name.split('/')[0].split('_').slice(-1,)[0]
+                            if (!(coin in this.binanceSortWeights)){
+                                this.binanceSortWeights[coin] = positions[j].worker.product_weight == null ? 0 : positions[j].worker.product_weight    // NULL则赋值0
+                            }
                         }
                         this.tbBinancePositions = this.tbBinancePositions.concat(positions)
                         this.positions = this.positions.concat(positions)
                         if (tbBinanceCount === this.tbBinanceHosts.length ){
+                            // tb策略负责coin权重: weight按照ABC再次排序
+                            this.binanceSortWeights = this.rebuildWeights(this.binanceSortWeights)
+
                             // 排序
                             this.tbBinancePositionsAvailable = true
                             this.tbBinancePositionsLoading = false
@@ -348,11 +426,19 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal'
+
+                            // tb策略负责coin权重
+                            var coin = positions[j].worker.name.split('/')[0].split('_').slice(-1,)[0]
+                            if (!(coin in this.okexSortWeights)){
+                                this.okexSortWeights[coin] = positions[j].worker.product_weight == null ? 0 : positions[j].worker.product_weight    // NULL则赋值0
+                            }
                         }
                         this.tbOkexPositions = this.tbOkexPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
                         if (tbOkexCount === this.tbOkexHosts.length ){
+                            // tb策略负责coin权重: weight按照ABC再次排序
+                            this.okexSortWeights = this.rebuildWeights(this.okexSortWeights)
+
                             // 排序
                             this.tbOkexPositionsAvailable = true
                             this.tbOkexPositionsLoading = false
@@ -373,11 +459,19 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal'
+
+                            // tb策略负责coin权重
+                            var coin = positions[j].worker.name.split('/')[0].split('_').slice(-1,)[0]
+                            if (!(coin in this.bybitSortWeights)){
+                                this.bybitSortWeights[coin] = positions[j].worker.product_weight == null ? 0 : positions[j].worker.product_weight    // NULL则赋值0
+                            }
                         }
                         this.tbBybitPositions = this.tbBybitPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
                         if (tbBybitCount === this.tbBybitHosts.length ){
+                            // tb策略负责coin权重: weight按照ABC再次排序
+                            this.bybitSortWeights = this.rebuildWeights(this.bybitSortWeights)
+
                             // 排序
                             this.tbBybitPositionsAvailable = true
                             this.tbBybitPositionsLoading = false
@@ -398,11 +492,19 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal'
+
+                            // tb策略负责coin权重
+                            var coin = positions[j].worker.name.split('/')[0].split('_').slice(-1,)[0]
+                            if (!(coin in this.bitgetSortWeights)){
+                                this.bitgetSortWeights[coin] = positions[j].worker.product_weight == null ? 0 : positions[j].worker.product_weight    // NULL则赋值0
+                            }
                         }
                         this.tbBitgetPositions = this.tbBitgetPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
                         if (tbBitgetCount === this.tbBitgetHosts.length ){
+                            // tb策略负责coin权重: weight按照ABC再次排序
+                            this.bitgetSortWeights = this.rebuildWeights(this.bitgetSortWeights)
+
                             // 排序
                             this.tbBitgetPositionsAvailable = true
                             this.tbBitgetPositionsLoading = false
@@ -410,81 +512,6 @@ export default {
                     }
                 )
             }
-
-            // // pb okex
-            // this.pbOkexPositions = []
-            // var pbOkexCount = 0
-            // this.pbOkexPositionsLoading = true
-            // this.pbOkexPositionsAvailable = false
-            // for(var i = 0; i < this.pbOkexHosts.length; i++){
-            //     getPositions(this.pbOkexHosts[i], 'normal').then(response => {
-            //             pbOkexCount += 1
-            //             var positions = response.results
-            //             // 每个position添加其他信息
-            //             for (let j = 0; j < positions.length; j++){
-            //                 positions[j]['host'] = response.config.baseURL
-            //                 positions[j]['sty'] = 'plunge_back'
-            //             }
-            //             this.pbOkexPositions = this.pbOkexPositions.concat(positions)
-            //             this.positions = this.positions.concat(positions)
-            //             if (pbOkexCount === this.pbOkexHosts.length ){
-            //                 // 排序
-            //                 this.pbOkexPositionsAvailable = true
-            //                 this.pbOkexPositionsLoading = false
-            //             }
-            //         }
-            //     )
-            // }
-
-            // // pb bybit
-            // this.pbBybitPositions = []
-            // var pbBybitCount = 0
-            // this.pbBybitPositionsLoading = true
-            // this.pbBybitPositionsAvailable = false
-            // for(var i = 0; i < this.pbBybitHosts.length; i++){
-            //     getPositions(this.pbBybitHosts[i], 'normal').then(response => {
-            //             pbBybitCount += 1
-            //             var positions = response.results
-            //             // 每个position添加其他信息
-            //             for (let j = 0; j < positions.length; j++){
-            //                 positions[j]['host'] = response.config.baseURL
-            //                 positions[j]['sty'] = 'plunge_back'
-            //             }
-            //             this.pbBybitPositions = this.pbBybitPositions.concat(positions)
-            //             this.positions = this.positions.concat(positions)
-            //             if (pbBybitCount === this.pbBybitHosts.length ){
-            //                 // 排序
-            //                 this.pbBybitPositionsAvailable = true
-            //                 this.pbBybitPositionsLoading = false
-            //             }
-            //         }
-            //     )
-            // }
-
-            // // pb binance
-            // this.pbBinancePositions = []
-            // var pbBinanceCount = 0
-            // this.pbBinancePositionsLoading = true
-            // this.pbBinancePositionsAvailable = false
-            // for(var i = 0; i < this.pbBinanceHosts.length; i++){
-            //     getPositions(this.pbBinanceHosts[i], 'normal').then(response => {
-            //             pbBinanceCount += 1
-            //             var positions = response.results
-            //             // 每个position添加其他信息
-            //             for (let j = 0; j < positions.length; j++){
-            //                 positions[j]['host'] = response.config.baseURL
-            //                 positions[j]['sty'] = 'plunge_back'
-            //             }
-            //             this.pbBinancePositions = this.pbBinancePositions.concat(positions)
-            //             this.positions = this.positions.concat(positions)
-            //             if (pbBinanceCount === this.pbBinanceHosts.length ){
-            //                 // 排序
-            //                 this.pbBinancePositionsAvailable = true
-            //                 this.pbBinancePositionsLoading = false
-            //             }
-            //         }
-            //     )
-            // }
 
             // rsi okex
             this.rsiOkexPositions = []
@@ -498,7 +525,6 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'rsi_mini'
                         }
                         this.rsiOkexPositions = this.rsiOkexPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -523,7 +549,6 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'rsi_mini'
                         }
                         this.rsiBybitPositions = this.rsiBybitPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -548,7 +573,6 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'rsi_mini'
                         }
                         this.rsiBinancePositions = this.rsiBinancePositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -573,7 +597,6 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'id_nr'
                         }
                         this.inOkexPositions = this.inOkexPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -598,7 +621,6 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'id_nr'
                         }
                         this.inBybitPositions = this.inBybitPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -623,7 +645,6 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'id_nr'
                         }
                         this.inBinancePositions = this.inBinancePositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -648,7 +669,6 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal_mini'
                         }
                         this.prmOkexPositions = this.prmOkexPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -673,7 +693,6 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal_mini'
                         }
                         this.prmBybitPositions = this.prmBybitPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -698,7 +717,6 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal_mini'
                         }
                         this.prmBinancePositions = this.prmBinancePositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -723,7 +741,6 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal_mini'
                         }
                         this.dadOkexPositions = this.dadOkexPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -748,7 +765,6 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal_mini'
                         }
                         this.dadBybitPositions = this.dadBybitPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -773,7 +789,6 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            positions[j]['sty'] = 'pivot_reversal_mini'
                         }
                         this.dadBinancePositions = this.dadBinancePositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -785,6 +800,35 @@ export default {
                     }
                 )
             } 
+        },
+
+        rebuildWeights(weights) {
+            const result = { ...weights };
+            const groups = new Map();
+
+            for (const [key, value] of Object.entries(weights)) {
+                if (!groups.has(value)) groups.set(value, []);
+                groups.get(value).push(key);
+            }
+
+            const values = [...groups.keys()].sort((a, b) => a - b);
+
+            values.forEach((value, index) => {
+                const keys = groups.get(value);
+                if (keys.length < 2) return;
+
+                keys.sort(); // 按字母顺序排序
+
+                // 将新值限制在当前值与下一个更大值之间，避免改变组间顺序
+                const upper = values[index + 1] ?? value + 1;
+                const step = (upper - value) / keys.length;
+
+                keys.forEach((key, i) => {
+                result[key] = value + step * (keys.length - 1 - i);
+                });
+            });
+
+            return result;
         },
 
         // 定时刷新数据函数

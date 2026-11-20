@@ -1,5 +1,36 @@
 <template>
   <div class="app-container" style="background-color: lightgray">
+    <!----------------------------------- 币种仓位ranks ---------------------------------------
+        函数:fetchPositions 
+        更新频率: ?
+    --->  
+    <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
+      <el-col :span="12" align="center">
+          <div style="margin-bottom: 20px; width: 95%">
+            <position-ranks2
+            v-bind:positions="stockPositions"
+            v-bind:title="'美股仓位排名'"
+            v-bind:tops="5"
+            v-if="
+            tbTradfiBinancePositionsAvailable && tbTradfiOkexPositionsAvailable && tbTradfiBybitPositionsAvailable && tbTradfiBitgetPositionsAvailable
+            "
+            ></position-ranks2> 
+          </div>
+      </el-col>
+      <el-col :span="12" align="center">
+          <div style="margin-bottom: 20px; width: 95%">
+            <position-ranks2
+            v-bind:positions="futurePositions"
+            v-bind:title="'期货仓位排名'"
+            v-bind:tops="5"
+            v-if="
+            tbTradfiBinancePositionsAvailable && tbTradfiOkexPositionsAvailable && tbTradfiBybitPositionsAvailable && tbTradfiBitgetPositionsAvailable
+            "
+            ></position-ranks2> 
+          </div>
+      </el-col>
+    </el-row>
+
     <!----------------------------------- 仓位 ---------------------------------------
         函数:fetchPositions 
         更新频率: ?
@@ -68,11 +99,13 @@
 import positionMap2 from '@/views/position/position_map2'
 import config from '@/configs/system_configs'
 import { getPositions } from '@/api/position'
+import positionRanks2 from '@/views/position/position_ranks2'
 
 
 export default {
     components: {
-        positionMap2
+        positionMap2,
+        positionRanks2
     },
 
     data() {
@@ -126,8 +159,8 @@ export default {
 
             // 所有positions
             this.positions = []
-            this.positionsAvailable = false
-            this.positionsLoading = true
+            this.stockPositions = []
+            this.futurePositions = []
 
             // tb_tradfi binance
             this.tbTradfiBinancePositions = []
@@ -141,7 +174,14 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            // positions[j]['sty'] = 'pivot_reversal'
+                            
+                            // 区分美股VS期货
+                            if(positions[j].worker.crypto_product_type == 'stock'){
+                                this.stockPositions.push(positions[j])
+                            } else {
+                                this.futurePositions.push(positions[j])
+                            }
+
                         }
                         this.tbTradfiBinancePositions = this.tbTradfiBinancePositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -167,7 +207,13 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            // positions[j]['sty'] = 'pivot_reversal'
+
+                            // 区分美股VS期货
+                            if(positions[j].worker.crypto_product_type == 'stock'){
+                                this.stockPositions.push(positions[j])
+                            } else {
+                                this.futurePositions.push(positions[j])
+                            }
                         }
                         this.tbTradfiOkexPositions = this.tbTradfiOkexPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -192,7 +238,13 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            // positions[j]['sty'] = 'pivot_reversal'
+
+                            // 区分美股VS期货
+                            if(positions[j].worker.crypto_product_type == 'stock'){
+                                this.stockPositions.push(positions[j])
+                            } else {
+                                this.futurePositions.push(positions[j])
+                            }
                         }
                         this.tbTradfiBybitPositions = this.tbTradfiBybitPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
@@ -217,7 +269,13 @@ export default {
                         // 每个position添加其他信息
                         for (let j = 0; j < positions.length; j++){
                             positions[j]['host'] = response.config.baseURL
-                            // positions[j]['sty'] = 'pivot_reversal'
+
+                            // 区分美股VS期货
+                            if(positions[j].worker.crypto_product_type == 'stock'){
+                                this.stockPositions.push(positions[j])
+                            } else {
+                                this.futurePositions.push(positions[j])
+                            }
                         }
                         this.tbTradfiBitgetPositions = this.tbTradfiBitgetPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
