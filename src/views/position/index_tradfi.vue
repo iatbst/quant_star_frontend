@@ -5,30 +5,32 @@
         更新频率: ?
     --->  
     <el-row :gutter="0" type="flex"  style="background-color: white; margin-top: 20px;">
-      <el-col :span="12" align="center">
+      <el-col :span="24" align="center">
           <div style="margin-bottom: 20px; width: 95%">
             <position-ranks2
-            v-bind:positions="stockPositions"
-            v-bind:title="'美股仓位排名'"
-            v-bind:tops="5"
+            v-bind:positions="positions"
+            v-bind:title="'传统金融仓位排名'"
+            v-bind:tops="10"
             v-if="
             tbTradfiBinancePositionsAvailable && tbTradfiOkexPositionsAvailable && tbTradfiBybitPositionsAvailable && tbTradfiBitgetPositionsAvailable
             "
             ></position-ranks2> 
           </div>
       </el-col>
-      <el-col :span="12" align="center">
-          <div style="margin-bottom: 20px; width: 95%">
-            <position-ranks2
-            v-bind:positions="futurePositions"
-            v-bind:title="'期货仓位排名'"
-            v-bind:tops="5"
-            v-if="
-            tbTradfiBinancePositionsAvailable && tbTradfiOkexPositionsAvailable && tbTradfiBybitPositionsAvailable && tbTradfiBitgetPositionsAvailable
-            "
-            ></position-ranks2> 
-          </div>
-      </el-col>
+        <!--
+        <el-col :span="12" align="center">
+            <div style="margin-bottom: 20px; width: 95%">
+                <position-ranks2
+                v-bind:positions="futurePositions"
+                v-bind:title="'期货仓位排名'"
+                v-bind:tops="5"
+                v-if="
+                tbTradfiBinancePositionsAvailable && tbTradfiOkexPositionsAvailable && tbTradfiBybitPositionsAvailable && tbTradfiBitgetPositionsAvailable
+                "
+                ></position-ranks2> 
+            </div>
+        </el-col>
+        -->
     </el-row>
 
     <!----------------------------------- 仓位 ---------------------------------------
@@ -47,6 +49,8 @@
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="binanceSortWeights"
+            v-if="tbTradfiBinancePositionsAvailable"
             ></position-map2> 
             
             <position-map2 
@@ -57,6 +61,8 @@
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="okexSortWeights"
+            v-if="tbTradfiOkexPositionsAvailable"
             ></position-map2> 
 
             <position-map2 
@@ -67,6 +73,8 @@
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="bybitSortWeights"
+            v-if="tbTradfiBybitPositionsAvailable"
             ></position-map2>
 
             <position-map2 
@@ -77,6 +85,8 @@
             v-bind:col-count="5"
             v-bind:show-zero="true"
             v-bind:sort-coin="true"
+            v-bind:sort-coin-weights="bitgetSortWeights"
+            v-if="tbTradfiBitgetPositionsAvailable"
             ></position-map2> 
 
             <!--- 刷新说明 --->
@@ -137,6 +147,11 @@ export default {
             tbTradfiBitgetPositionsAvailable: false,
             tbTradfiBitgetPositionsLoading: false,
 
+            binanceSortWeights: {},
+            okexSortWeights: {},
+            bybitSortWeights: {},
+            bitgetSortWeights: {},
+
             refreshInterval: 1000,
             refreshIntervalId: null,
             fastRefreshInterval: 60000,
@@ -176,16 +191,21 @@ export default {
                             positions[j]['host'] = response.config.baseURL
                             
                             // 区分美股VS期货
+                            var coin = positions[j].worker.name.split('/')[0].split('_').slice(-1,)[0]
                             if(positions[j].worker.crypto_product_type == 'stock'){
                                 this.stockPositions.push(positions[j])
+                                this.binanceSortWeights[coin] = 1   // stock权重 > future权重
                             } else {
                                 this.futurePositions.push(positions[j])
+                                this.binanceSortWeights[coin] = 0   // stock权重 > future权重
                             }
-
                         }
                         this.tbTradfiBinancePositions = this.tbTradfiBinancePositions.concat(positions)
                         this.positions = this.positions.concat(positions)
                         if (tbTradfiBinanceCount === this.tbTradfiBinanceHosts.length ){
+                            // weight按照ABC再次排序
+                            this.binanceSortWeights = this.rebuildWeights(this.binanceSortWeights)
+
                             // 排序
                             this.tbTradfiBinancePositionsAvailable = true
                             this.tbTradfiBinancePositionsLoading = false
@@ -209,15 +229,21 @@ export default {
                             positions[j]['host'] = response.config.baseURL
 
                             // 区分美股VS期货
+                            var coin = positions[j].worker.name.split('/')[0].split('_').slice(-1,)[0]
                             if(positions[j].worker.crypto_product_type == 'stock'){
                                 this.stockPositions.push(positions[j])
+                                this.okexSortWeights[coin] = 1   // stock权重 > future权重
                             } else {
                                 this.futurePositions.push(positions[j])
+                                this.okexSortWeights[coin] = 0   // stock权重 > future权重
                             }
                         }
                         this.tbTradfiOkexPositions = this.tbTradfiOkexPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
                         if (tbTradfiOkexCount === this.tbTradfiOkexHosts.length ){
+                            // weight按照ABC再次排序
+                            this.okexSortWeights = this.rebuildWeights(this.okexSortWeights)
+
                             // 排序
                             this.tbTradfiOkexPositionsAvailable = true
                             this.tbTradfiOkexPositionsLoading = false
@@ -240,15 +266,21 @@ export default {
                             positions[j]['host'] = response.config.baseURL
 
                             // 区分美股VS期货
+                            var coin = positions[j].worker.name.split('/')[0].split('_').slice(-1,)[0]
                             if(positions[j].worker.crypto_product_type == 'stock'){
                                 this.stockPositions.push(positions[j])
+                                this.bybitSortWeights[coin] = 1   // stock权重 > future权重
                             } else {
                                 this.futurePositions.push(positions[j])
+                                this.bybitSortWeights[coin] = 0   // stock权重 > future权重
                             }
                         }
                         this.tbTradfiBybitPositions = this.tbTradfiBybitPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
                         if (tbTradfiBybitCount === this.tbTradfiBybitHosts.length ){
+                            // weight按照ABC再次排序
+                            this.bybitSortWeights = this.rebuildWeights(this.bybitSortWeights)
+
                             // 排序
                             this.tbTradfiBybitPositionsAvailable = true
                             this.tbTradfiBybitPositionsLoading = false
@@ -271,15 +303,21 @@ export default {
                             positions[j]['host'] = response.config.baseURL
 
                             // 区分美股VS期货
+                            var coin = positions[j].worker.name.split('/')[0].split('_').slice(-1,)[0]
                             if(positions[j].worker.crypto_product_type == 'stock'){
                                 this.stockPositions.push(positions[j])
+                                this.bitgetSortWeights[coin] = 1   // stock权重 > future权重
                             } else {
                                 this.futurePositions.push(positions[j])
+                                this.bitgetSortWeights[coin] = 0   // stock权重 > future权重
                             }
                         }
                         this.tbTradfiBitgetPositions = this.tbTradfiBitgetPositions.concat(positions)
                         this.positions = this.positions.concat(positions)
                         if (tbTradfiBitgetCount === this.tbTradfiBitgetHosts.length ){
+                            // weight按照ABC再次排序
+                            this.bitgetSortWeights = this.rebuildWeights(this.bitgetSortWeights)
+
                             // 排序
                             this.tbTradfiBitgetPositionsAvailable = true
                             this.tbTradfiBitgetPositionsLoading = false
@@ -287,6 +325,35 @@ export default {
                     }
                 )
             }
+        },
+
+        rebuildWeights(weights) {
+            const result = { ...weights };
+            const groups = new Map();
+
+            for (const [key, value] of Object.entries(weights)) {
+                if (!groups.has(value)) groups.set(value, []);
+                groups.get(value).push(key);
+            }
+
+            const values = [...groups.keys()].sort((a, b) => a - b);
+
+            values.forEach((value, index) => {
+                const keys = groups.get(value);
+                if (keys.length < 2) return;
+
+                keys.sort(); // 按字母顺序排序
+
+                // 将新值限制在当前值与下一个更大值之间，避免改变组间顺序
+                const upper = values[index + 1] ?? value + 1;
+                const step = (upper - value) / keys.length;
+
+                keys.forEach((key, i) => {
+                result[key] = value + step * (keys.length - 1 - i);
+                });
+            });
+
+            return result;
         },
 
         // 定时刷新数据函数
