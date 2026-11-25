@@ -150,6 +150,14 @@
                         </template>
                     </el-table-column>
 
+                    <el-table-column align="center" label="信号" min-width="10%">
+                        <template slot-scope="scope">
+                            <span>
+                                {{ scope.row.flags.signal_name }}                                
+                            </span>
+                        </template>
+                    </el-table-column>
+
                     <el-table-column align="center" label="交易" min-width="5%">
                         <template slot-scope="scope">
                             <span style="color: red" v-if="scope.row.side === 'sell'">
@@ -162,7 +170,7 @@
                     </el-table-column>
 
 
-                    <el-table-column align="center" label="状态" min-width="8%">
+                    <el-table-column align="center" label="状态" min-width="5%">
                         <template slot-scope="scope">
                             <span v-if="scope.row.status === 'completed'">
                             {{ chineseString(scope.row.status) }}
